@@ -141,8 +141,8 @@
                                     <WidgetHeading :id="4" :Title="'Bar Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
                                     <WidgetBody>                                    
                                         <div class="portlet-body">
-                                            <div id="chart1_loading" class="display-none">
-                                                <img src="../../assets/global/img/loading.gif" alt="loading" /> 
+                                            <div id="chart1_loading">
+                                                <img src="../../assets/global/img/loading.gif" alt="loading.." /> 
                                             </div>
                                             <div id="chart1_content">
                                                 <div id="barChart" style="height:400px;"></div>
@@ -161,8 +161,8 @@
                                     <WidgetHeading :id="2" :Title="'Pie Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
                                     <WidgetBody>                                    
                                         <div class="portlet-body">
-                                          <div id="chart2_loading" class="display-none">
-                                            <img src="../../assets/global/img/loading.gif" alt="loading" /> </div>
+                                          <div id="chart2_loading">
+                                            <img src="../../assets/global/img/loading.gif" alt="loading.." /> </div>
                                           <div id="chart2_content">
                                               <div id="pieChart" style="height:400px;"></div>
                                           </div>
@@ -183,8 +183,8 @@
                                     <WidgetHeading :id="3" :Title="'Line Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
                                     <WidgetBody>                                    
                                         <div class="portlet-body">
-                                          <div id="chart3_loading" class="display-none">
-                                              <img src="../../assets/global/img/loading.gif" alt="loading" /> </div>
+                                          <div id="chart3_loading">
+                                              <img src="../../assets/global/img/loading.gif" alt="loading.." /> </div>
                                           <div id="chart3_content">
                                               <div id="lineChart" style="height:400px;"> </div>
                                           </div>
@@ -199,11 +199,11 @@
                               <div class="col-lg-6 col-xs-12 col-sm-12">
                                   <!-- BEGIN PORTLET-->
                                   <Widget>
-                                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                                    <WidgetHeading :id="6" :Title="'Amount Cashflow'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
                                     <WidgetBody>                                    
                                         <div class="portlet-body">
-                                          <div id="chart4_loading" class="display-none">
-                                              <img src="../../assets/global/img/loading.gif" alt="loading" /> </div>
+                                          <div id="chart4_loading">
+                                              <img src="../../assets/global/img/loading.gif" alt="loading.." /> </div>
                                           <div id="chart4_content">
                                               <div id="waterfall" style="height: 400px;"> </div>
                                           </div>
@@ -299,6 +299,7 @@ export default {
           })
           console.log("options",option)
           // use configuration item and data specified to show chart
+          document.getElementById('chart1_loading').style = "display:none"
           barchart.setOption(option)
       },
       async PieChartFun() {
@@ -346,6 +347,7 @@ export default {
           option.series[0].data.push(piedata);
         })
         // use configuration item and data specified to show chart
+        document.getElementById('chart2_loading').style = "display:none"
         piechart.setOption(option);
       },
       async lineChartFun() {
@@ -395,6 +397,7 @@ export default {
         })
         console.log("Inside line chart",option)
         // use configuration item and data specified to show chart
+        document.getElementById('chart3_loading').style = "display:none" 
         linechart.setOption(option);
       },
       async totalAmt() {
@@ -447,6 +450,9 @@ export default {
             trigger: 'axis',
             axisPointer : {
                 type : 'shadow'
+            },
+            formatter: function (params) {
+                return params[0].value + params[1].value
             }
           },
           legend: {
@@ -534,7 +540,7 @@ export default {
         console.log("data1",data1);
         console.log("data2",data2);
         console.log("data3",data3);
-        
+        document.getElementById('chart4_loading').style = "display:none" 
         waterfallChart.setOption(option);
       }
   },
