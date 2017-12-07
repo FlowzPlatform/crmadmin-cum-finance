@@ -73,6 +73,17 @@
         background-color: #010a0e;
     }
 
+    .ivu-select{
+        
+        margin: 15px 9px;
+        
+    }
+
+    div.ivu-select-selection{
+        background-color: #5a626f !important;
+    }
+    
+
 
    
 .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
@@ -85,24 +96,6 @@
     <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
         <Row type="flex">
             <Col :span="spanLeft" class="layout-menu-left">
-                <!-- <Menu active-name="1" theme="dark" width="auto">
-                    <div class="layout-logo-left">
-                        <img src="../assets/images/Flowz.svg" style="width: 85px;">
-                    </div>
-                   
-                    <MenuItem name="1">
-                        <Icon type="ios-navigate" :size="iconSize"></Icon>
-                        <span class="layout-text">Dashboard</span>
-                    </MenuItem>
-                    <MenuItem name="2">
-                        <Icon type="ios-keypad" :size="iconSize"></Icon>
-                        <span class="layout-text">Option 2</span>
-                    </MenuItem>
-                    <MenuItem name="3">
-                        <Icon type="ios-analytics" :size="iconSize"></Icon>
-                        <span class="layout-text">Option 3</span>
-                    </MenuItem>
-                </Menu> -->
                 
                 <Menu active-name="1-2" width="auto"  theme="dark" >
                     <div class="layout-logo-left">
@@ -139,9 +132,10 @@
                         <Icon type="navicon" color=#fff size="32"></Icon>
                     </Button>
                     <div style="float:right">
-                    <Button type="text"  @click="toggleClick">
-                        <Icon type="bathtub" color=#fff size="32"></Icon>
-                    </Button>
+                    <Select class="user-options"  style="width:200px;" placeholder="User">
+                         <Option value="myaccount">My Account</Option>
+                         <Option value="LogOut"><span @click="logout">Logout</span></Option>
+                    </Select>
                     </div>
                 </div>
                
@@ -183,6 +177,10 @@ import Footer from './Footer'
                     this.spanLeft = 5;
                     this.spanRight = 19;
                 }
+            },
+            logout(){
+                this.$cookie.delete('auth_token', {domain: location});
+                this.$router.push('/login');
             }
         }
     }
