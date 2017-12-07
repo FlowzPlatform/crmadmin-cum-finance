@@ -82,22 +82,19 @@
     div.ivu-select-selection{
         background-color: #5a626f !important;
     }
-    
-
-
    
-.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
-    border-right: none;
-    color: #fff;
-    background: #091e33!important;
-}
+    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
+        border-right: none;
+        color: #fff;
+        background: #091e33!important;
+    }
 </style>
 <template>
     <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
         <Row type="flex">
             <Col :span="spanLeft" class="layout-menu-left">
                 
-                <Menu active-name="1-2" width="auto"  theme="dark" >
+                <Menu active-name="1-2" width="auto" theme="dark" >
                     <div class="layout-logo-left">
                         <img src="../assets/images/Flowz.svg" style="width: 85px;">
                     </div>
@@ -121,8 +118,24 @@
                                 <Icon type="ios-analytics" :size="iconSize"></Icon>
                                 <span class="layout-text">  Accounting </span>
                             </template>
-                            <MenuItem name="3-1">Invoice</MenuItem>
-                            <MenuItem name="3-2">Payment</MenuItem>
+                            <Submenu name="3-1">
+                                <template slot="title">
+                                    <Icon type="bag" :size="iconSize"></Icon>
+                                    <span class="layout-text">  Invoice </span>
+                                </template>
+                                <!-- <MenuItem name="3-1">Invoice</MenuItem> -->
+                                    <MenuItem name="3-1-1">New Invoice</MenuItem>
+                                    <MenuItem name="3-1-2">List Invoice</MenuItem>
+                            </Submenu>
+                            <Submenu name="3-2">
+                                <template slot="title">
+                                    <Icon type="cash" :size="iconSize"></Icon>
+                                    <span class="layout-text">  Payment </span>
+                                </template>
+                                <!-- <MenuItem name="3-1">Invoice</MenuItem> -->
+                                    <MenuItem name="3-2-1">New Payment</MenuItem>
+                                    <MenuItem name="3-2-2">List Payment</MenuItem>
+                            </Submenu>
                         </Submenu>
                     </Menu>
             </Col>
