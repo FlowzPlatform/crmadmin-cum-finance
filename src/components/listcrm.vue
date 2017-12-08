@@ -16,11 +16,12 @@
         </div>
 </template>
 <script>
+import config from '../../config/customConfig.js'
 var result
 var cols = []
 var productHtml
 var api= 'editcrm'
-var crmpostapiurl = "http://localhost:3030/crm-case";
+var crmpostapiurl = config.databasepost;
 	export default {
     name: 'newcrm',
     data() {

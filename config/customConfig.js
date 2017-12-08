@@ -12,6 +12,6 @@ export default{
     loginWithGoogleUrl :                            "http://ec2-54-88-11-110.compute-1.amazonaws.com/auth/Gplus",
     apiurl : "http://172.16.230.225:5000/api/xero/contacts",
     databaseurl : "http://localhost:3030/crm-service",
-    databasepost : "http://localhost:3030/crm-case"
+    databasepost : "http://localhost:3030/crm-case/"
 }
 
