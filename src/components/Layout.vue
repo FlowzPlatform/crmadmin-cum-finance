@@ -13,7 +13,7 @@
         min-height:800px;
         margin: 15px;
         overflow: hidden;
-        background: #010a0f;
+        /*background: #010a0f;*/
         border-radius: 4px;
     }
     .layout-content-main{
@@ -101,7 +101,7 @@
                         <Submenu name="1">
                             <template slot="title">
                                 <Icon type="ios-navigate" :size="iconSize"></Icon>
-                                 <span class="layout-text">Dashboard</span>
+                                 <span class="layout-text" @click="goToDashboard">Dashboard</span>
                             </template>
                             
                         </Submenu>
@@ -110,8 +110,8 @@
                                 <Icon type="ios-keypad" :size="iconSize"></Icon>
                                 <span class="layout-text"> CRM </span>
                             </template>
-                            <MenuItem name="2-1">New CRM</MenuItem>
-                            <MenuItem name="2-2">CRM List</MenuItem>
+                            <MenuItem name="2-1"><span @click="goToNewCrm">New</span></MenuItem>
+                            <MenuItem name="2-2"><span @click="goToListCrm">List</span></MenuItem>
                         </Submenu>
                         <Submenu name="3">
                             <template slot="title">
@@ -194,6 +194,15 @@ import Footer from './Footer'
             logout(){
                 this.$cookie.delete('auth_token', {domain: location});
                 this.$router.push('/login');
+            },
+            goToNewCrm(){
+                this.$router.push('/newcrm');
+            },
+            goToListCrm() {
+                this.$router.push('/listcrm')
+            },
+            goToDashboard() {
+                 this.$router.push('/')
             }
         }
     }

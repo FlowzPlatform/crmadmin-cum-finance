@@ -99,17 +99,130 @@
                                 </div>
                             </div>
                         </div>
-                    </div> <span class="panel" id="c17165"> <button class="form-control" id="create">Create</button> <button class="form-control" id="createandcontinue">Create and Continue</button> </span>
+                    </div> <span class="panel" id="c17165"> <button class="form-control" id="create" @click="postdata">Create</button> <button class="form-control" id="createandcontinue">Create and Continue</button> </span>
                 </div>
             </div>
         </div>
 </template>
 <script>
+import config from '../../config/customConfig.js'
+var nextdate;
+var priceinput;
+var price;
+var email;
+var phone;
+var apiurl = config.apiurl;
+var databaseurl = config.databaseurl;
+var result;
+var result1;
+var name;
+var cname;
+var project;
+var status;
+var assignee;
+var product_line;
+var contractdate;
+var databasepost = config.databasepost;
 	export default {
     name: 'newcrm',
     data() {
         return { }
-    }
+    },
+    methods: {
+    	async calldata() {
+	    	await $.ajax({
+				type: 'GET',
+				url: apiurl,
+				async: true,
+				dataType: 'json',
+				success: function (data) {
+					result = data.data.data
+					// console.log(data)
+				},error: function(err) {
+					console.log("Error",err)
+				}
+			});	
+	        // console.log("resp data",result);
+	        result.forEach(item => {
+				var customer = item.Name;
+				cname = new Option(customer);
+		    $("#customer").append(cname);
+			})
+    	},
+
+    	async dbdata() {
+    		await $.ajax({
+			    url: databaseurl,
+			    success: function (data) {
+			        result1 = data.data;
+			    },error: function(err){
+			       console.log("error",err);
+			    } 
+			});
+			// console.log("json data databaseurl",result1);
+			result1.forEach(function(item){
+				project = item.project_name;
+				status = item.project_status;
+				assignee = item.assignee;
+				price = item.price;
+				product_line = item.product_line;
+				$("#project").append('<option>'+ project +'</option>');
+				$("#status").append('<option>'+ status +'</option>');
+				$("#assignee").append('<option>'+ assignee +'</option>');
+				$("#price").append('<option>'+ price +'</option>');
+				$("#product_line").append('<option>'+ product_line +'</option>');
+				// console.log('!!!!!!!!!!!!', item);
+			})
+    	},
+
+    	async postdata() {
+    		name = $('#name').val()
+			cname = $('#customer').val()
+			project = $('#project').val()
+			status = $('#status').val()
+			assignee = $('#assignee').val()
+			product_line = $('#product_line').val()
+			contractdate = $('#contractdate').val()
+			nextdate = $('#nextdate').val()
+			priceinput = $('#priceinput').val()
+			price = $('#price').val()
+			email = $('#email').val()
+			phone = $('#phone').val()
+			var obj = {
+				name: name,
+				cname: cname,
+				project: project,
+				status: status,
+				assignee : assignee,
+				product_line: product_line,
+				contractdate : contractdate,
+			    nextdate : nextdate,
+			    priceinput : priceinput,
+			    price : price,
+			    email: email,
+			    phone: phone
+			}
+
+			console.log("obj", obj, databasepost)
+			await $.ajax({
+				type: 'POST',
+			    url: databasepost,
+			    data: obj,
+			    success: function (data1) {
+			        result = data1;
+					console.log("json data******123",result);
+			    },error: function(err){
+			       console.log("error",err);
+			    } 
+			});
+    	}
+
+    },
+    mounted() {
+    	CKEDITOR.replace("editor1"),
+    	this.calldata(),
+    	this.dbdata()
+	}
 }
 
 </script>
@@ -134,8 +247,16 @@
 		margin-bottom: 10px;
 	}
 
+	div {
+		border-radius: 4px !important;
+	}
+
 	p {
 	    margin: 20px 0 !important
+	}
+
+	label{
+		font-weight: 700 !important;
 	}
 
 	.row {
