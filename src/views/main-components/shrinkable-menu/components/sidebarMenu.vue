@@ -60,7 +60,7 @@ export default {
         });
     },
     mounted(){
-        alert(1);
+        
         console.log(this.menuList)
     }
 

@@ -134,6 +134,29 @@ export const appRouter = [
         ]
     },
     {
+        path: '/customer',
+        icon: 'person-stalker',
+        title: 'CUSTOMER',
+        name: 'CUSTOMER',
+        component: Main,
+        children: [
+            { 
+                path: 'new-customer', 
+                title: 'new-customer',
+                icon: 'ios-plus-outline',
+                name: 'newcustomer', 
+                component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
+            },
+            { 
+                path: 'list-customer', 
+                title: 'list-customer',
+                icon: 'ios-list-outline',
+                name: 'listcustomer', 
+                component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
+            }
+        ]
+    },
+    {
         path: '/international',
         icon: 'earth',
         title: {i18n: 'international'},
