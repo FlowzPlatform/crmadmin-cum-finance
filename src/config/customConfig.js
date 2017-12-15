@@ -11,10 +11,8 @@ module.exports =  {
         facebookSuccessCallbackUrl :        "http://dashboard.flowz.com",
         loginWithFacebookUrl :                  "http://auth.flowz.com/auth/facebook",
         googleSuccessCallbackUrl :                  "http://dashboard.flowz.com",
-        loginWithGoogleUrl :                            "http://auth.flowz.com/auth/Gplus",    
-        // serviceUrl : process.env.serviceUrl
-        serviceUrl : "http://localhost:3030/"
+        loginWithGoogleUrl :                            "http://auth.flowz.com/auth/Gplus",  
+        serviceUrl :                                        "http://api.flowz.com/crm/"
     }
-    
 }
 
