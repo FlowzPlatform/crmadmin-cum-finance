@@ -16,7 +16,7 @@
                                     <label>Customer Name</label>
                                 </div>
                                 <div class="panel-collapse collapse" id="Customer">
-                                    <select class="form-control" id="selectCustomer" v-model="cname">
+                                    <select class="form-control"  v-model="cname" id="selectCustomer">
                                       <option disabled value="">Please select</option>
                                     </select>
                                 </div>
@@ -29,8 +29,9 @@
                                 <div class="panel-collapse collapse" id="status">
                                     <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
                                         <option disabled value="">Please select</option>
-                                        <option value="paid">Paid</option>
-                                        <option value="Unpaid">Unpaid</option>
+                                        <option value="PAID">PAID</option>
+                                        <option value="AUTHORISED">AUTHORISED</option>
+                                        <option value="DRAFT">DRAFT</option>
                                     </select>
                                 </div>
                             </div>
@@ -57,8 +58,7 @@
                                 </div>
                                 <div class="form-group row panel-collapse collapse" id="amount">
                                     <div class="col-xs-3">
-                                        <input class="form-control" type="text" v-model="totalgt" placeholder="Min-Amount" 
-                                        />
+                                        <input class="form-control" type="text" v-model="totalgt" placeholder="Min-Amount" />
                                     </div>
                                     <div class="col-xs-3">
                                        
@@ -77,10 +77,12 @@
                                         <input class="form-control" type="text" v-model="duegt" placeholder="Min-Due Amount"/>
                                     </div>
                                     <div class="col-xs-3">
-                                        
-                                        <input class="form-control" type="text" v-model="duelt" placeholder="Max-Due Amount"/>
+                                      <input class="form-control" type="text" v-model="duelt" placeholder="Max-Due Amount"/>
                                     </div>
                                 </div>
+                            </div>
+                            <div>
+                              <Button type="warning" @click= "reset()" style= "float:right;">Reset</Button>
                             </div>
                         </div>
                     </form>
@@ -93,12 +95,12 @@
 <div>
     <invoicetable style="padding: 10px; margin: 5px; display: block;" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
         <div class="container">
-         <Table border :columns="columns1" :data="data1" id="tbdata"></Table>
-         <!-- <div style="margin: 10px;overflow: hidden">
+         <Table border :columns="columns1" :data="list" id="tbdata"></Table>
+         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
-                <Page :total="100" :current="1" @on-change="changePage"></Page>
+                <Page :total="len" :current="page" @on-change="changePage"></Page>
             </div>
-        </div> -->
+        </div>
         </div>
     </invoicetable>
 </div>
@@ -108,8 +110,10 @@
 
 
 <script>
-import config from '../../config/customConfig'
+import config from '@/config/customConfig.js'
+// import configurl from '@/config/configurl.js'
 import axios from 'axios'
+var pageSize = 10
 export default {
   name: 'hello',
   data () {
@@ -183,6 +187,9 @@ export default {
 
       ],
       data1: [],
+      page: 1,
+      pageSize: pageSize,
+      list: [],
       resdata: '',
       resp: '',
       ids: '',
@@ -200,26 +207,53 @@ export default {
     }
   },
    methods: {
+    async mockTableData1 (p,size) {
+      this.len = this.data1.length
+      console.log("this.data1",this.data1)
+                return this.data1.slice((p - 1) * size, p * size);
+            },
+    async changePage (p) {
+      
+      this.page = p
+      this.list = await this.mockTableData1(p,pageSize);
+            },
     async searchdata() {
       $('.preload').css("display","block")
       this.resdata = await this.apiData();
       console.log("response------------------------>", this.resdata)
-      this.tableDataBind(); 
+      this.tableDataBind();
+      this.list = await this.mockTableData1(1,pageSize)
+    },
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.totalgt = '';
+      this.totallt = '';
+      this.duegt = '';
+      this.duelt = '';
+      this.data1 = []
+      this.list = []
+      this.searchdata();
     },
     async changeData() {
       this.data1 = []
+      this.list = []
       console.log("Inside change data")
       this.resdata = await this.changeApiData();
       console.log("response------------------------>", this.resdata)
       this.tableDataBind();
+      this.list = await this.mockTableData1(1,pageSize);
+
     },
     async getCustomerUrl(){
-      console.log("inside getCustomerUrl")
+      console.log("inside getCustomerUrl " )
       var res
         var settings = {
         "async": true,
         "crossDomain": true,
-        "url": config.customerurl,
+        "url": config.serviceUrl + 'contacts',
         "method": "GET",
         "headers": {
           "cache-control": "no-cache"
@@ -241,17 +275,8 @@ export default {
     async apiData () {
       var resp;
       console.log("TRTYYTYTT");
-      await axios.get(config.invoiceurl, {
-
+      await axios.get(config.serviceUrl + 'invoice', {
         params: {
-          // cname: this.cname,
-          // status: this.status,
-          // totalgt: this.totalgt,
-          // totallt: this.totallt,
-          // duegt: this.duegt,
-          // duelt: this.duelt,
-          // datelt: this.datelt,
-          // dategt: this.dategt
         }
       })
       .then(function (response) {
@@ -267,24 +292,53 @@ export default {
     },
     async changeApiData () {
       var resp;
-      console.log("TRTYYTYTT");
-      var params =  {
-          cname: this.cname,
-          status: this.status,
-          totalgt: this.totalgt,
-          totallt: this.totallt,
-          duegt: this.duegt,
-          duelt: this.duelt,
-          datelt: this.datelt,
-          dategt: this.dategt
-        }
-        console.log("params api data", params)
-      await axios.get(config.invoiceurl, {
+      var params = {}
+      if(this.cname != ''){
+        params['Name'] = this.cname   
+      }
+
+      if(this.status != ''){ 
+        params['Status'] = this.status  
+      }
+
+      if(this.dategt != ''){
+        params['Date'] = this.dategt        
+      }
+      if(this.totalgt != ''){
+        params['Total'] = this.totalgt
+        
+      }
+      if(this.duegt != ''){ 
+        params['AmountDue'] =  this.duegt
+      }
+
+      
+      console.log("params api data", params)
+
+      // this.cname = '';
+      // this.status = '';
+      // this.dategt = '';
+      // this.totalgt = '';
+      // this.duegt = '';
+      // var params =  {
+      //     Name: this.cname,
+      //     Status: this.status,
+      //     Total: this.totalgt,
+      //     AmountDue: this.duegt,
+      //     Date: this.dategt
+      //     // totalgt: this.totalgt,
+      //     // totallt: this.totallt,
+      //     // duegt: this.duegt,
+      //     // duelt: this.duelt,
+      //     // datelt: this.datelt,
+      //     // dategt: this.dategt
+      //   }
+      await axios.get(config.serviceUrl + 'invoice', {
         params: params
       })
       .then(function (response) {
         resp = response
-        console.log("response------>iuy",resp);
+        console.log("response changePage------>",resp);
         $('.preload').css("display","none")
       })
       .catch(function (error) {
@@ -298,21 +352,19 @@ export default {
           if(this.resdata.data.Err){
             console.log("error in response",this.resdata.data.Err)
           }else{
-            this.resp = this.resdata.data.data
-            // console.log("inside table data bind",this.resp)
+            this.resp = this.resdata.data
+            console.log("inside table data bind",this.resp)
             this.resp.forEach(result =>{
               var myobj = {}
-              myobj.Name = result.data.Contact.Name
-              myobj.InvoiceID = result.data.InvoiceID
-              myobj.AmountDue = result.data.AmountDue
-              myobj.AmountPaid = result.data.AmountPaid
-              myobj.Date = result.data.Date
-              myobj.Total = result.data.Total
-              myobj.status = result.status
+              myobj.Name = result.Contact.Name
+              myobj.InvoiceID = result.InvoiceID
+              myobj.AmountDue = result.AmountDue
+              myobj.AmountPaid = result.AmountPaid
+              myobj.Date = result.Date
+              myobj.Total = result.Total
+              myobj.status = result.Status
               self.data1.push(myobj)
-              // console.log("result", result)
             })
-
             }
           
     },
@@ -322,12 +374,14 @@ export default {
      
   },
   mounted() {
+    // console.log("config main :: "+configurl.invoiceurl);
+    // console.log("config file ", config.apiConfig.apiUrl)
     let self = this;
     
      $('.maindiv').change(async function() {
       // $('#tdata').remove();
       await self.changeData();
-    });
+    }); 
     this.getCustomerUrl();
     this.searchdata();
   }
