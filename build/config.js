@@ -1,8 +1,8 @@
 import Env from './env';
-
+console.log("CCCCCCCCCCCCCCCCCCCCCCCCC ", process.env.serviceUrl)
 let config = {
     env: Env,
-    abc: process.env.consumer
+
 };
 
 export default config;
