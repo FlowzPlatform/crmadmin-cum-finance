@@ -12,13 +12,13 @@
                     <form>
                         <div class="collapse-maindiv maindiv">
                             <div class="panel panel-default">
-                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                    data-target="#Customer"></span>
+                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                     <label>Customer Name</label>
                                 </div>
                                 <div class="panel-collapse collapse" id="Customer">
-                                    <select class="form-control" id="selectCustomer"
-                                    multiple="multiple" name="cname"></select>
+                                    <select class="form-control"  v-model="cname" id="selectCustomer">
+                                      <option disabled value="">Please select</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="panel panel-default">
@@ -27,10 +27,11 @@
                                     <label>status</label>
                                 </div>
                                 <div class="panel-collapse collapse" id="status">
-                                    <select class="form-control mb-2 mb-sm-0" name="status">
-                                        <option value="select">Select</option>
-                                        <option value="paid">Paid</option>
-                                        <option value="Unpaid">Unpaid</option>
+                                    <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
+                                        <option disabled value="">Please select</option>
+                                        <option value="PAID">PAID</option>
+                                        <option value="AUTHORISED">AUTHORISED</option>
+                                        <option value="DRAFT">DRAFT</option>
                                     </select>
                                 </div>
                             </div>
@@ -42,11 +43,11 @@
                                 <div class="form-group row panel-collapse collapse" id="date">
                                     <div class="col-xs-3">
                                       <label>From Date</label>
-                                        <input class="form-control" type="date" name="dategt"/>
+                                        <input class="form-control" type="date" v-model="dategt"/>
                                     </div>
                                     <div class="col-xs-3">
                                       <label>To Date</label>
-                                        <input class="form-control" type="date" name="datelt" />
+                                        <input class="form-control" type="date" v-model="datelt" />
                                     </div>
                                 </div>
                             </div>
@@ -57,12 +58,11 @@
                                 </div>
                                 <div class="form-group row panel-collapse collapse" id="amount">
                                     <div class="col-xs-3">
-                                        <input class="form-control" type="text" name="totalgt" placeholder="Min-Amount" 
-                                        />
+                                        <input class="form-control" type="text" v-model="totalgt" placeholder="Min-Amount" />
                                     </div>
                                     <div class="col-xs-3">
                                        
-                                        <input class="form-control" type="text" name="totallt" placeholder="Max-Amount" 
+                                        <input class="form-control" type="text" v-model="totallt" placeholder="Max-Amount" 
                                         />
                                     </div>
                                 </div>
@@ -74,13 +74,15 @@
                                 </div>
                                 <div class="form-group row panel-collapse collapse" id="dueamount">
                                     <div class="col-xs-3">
-                                        <input class="form-control" type="text" name="duegt" placeholder="Min-Due Amount"/>
+                                        <input class="form-control" type="text" v-model="duegt" placeholder="Min-Due Amount"/>
                                     </div>
                                     <div class="col-xs-3">
-                                        
-                                        <input class="form-control" type="text" name="duelt" placeholder="Max-Due Amount"/>
+                                      <input class="form-control" type="text" v-model="duelt" placeholder="Max-Due Amount"/>
                                     </div>
                                 </div>
+                            </div>
+                            <div>
+                              <Button type="warning" @click= "reset()" style= "float:right;">Reset</Button>
                             </div>
                         </div>
                     </form>
@@ -91,26 +93,14 @@
 </invoicefilter>
 
 <div>
-    <invoicetable style="padding: 10px; margin: 5px; display: block;" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status">
+    <invoicetable style="padding: 10px; margin: 5px; display: block;" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
         <div class="container">
-            <table class="table table-bordered table-striped table-collapsed" id="tbdata">
-            <thead>
-                <tr>
-                    <th id="InvoiceID">InvoiceID</th>
-                    <th id="Name">Name</th>
-                    <th id="Date">Date</th>
-                    <th id="AmountPaid">AmountPaid</th>
-                    <th id="AmountDue">AmountDue</th>
-                    <th id="Total">Total</th>
-                    <th id="status">status</th>
-                </tr>
-            </thead>
-            </table>
-            <div class="preload" style="width:100px;height: 100px;position: relative;top: 70%;left: 50%;display: none;">
-                <img  src="http://i.imgur.com/KUJoe.gif" style="height:50px;"/>
+         <Table border :columns="columns1" :data="list" id="tbdata"></Table>
+         <div style="margin: 10px;overflow: hidden">
+            <div style="float: right;">
+                <Page :total="len" :current="page" @on-change="changePage"></Page>
             </div>
-            <div class="pull-right" id="total1"></div>
-            <ul id="pagin"></ul>
+        </div>
         </div>
     </invoicetable>
 </div>
@@ -120,166 +110,278 @@
 
 
 <script>
-import config from '../../config/customConfig'
+import config from '@/config/customConfig.js'
+// import configurl from '@/config/configurl.js'
+import axios from 'axios'
+var pageSize = 10
 export default {
   name: 'hello',
   data () {
     return {
-      hcols: '',
+       columns1: [
+          {
+              title: 'InvoiceID',
+              key: 'InvoiceID',
+              sortable: true
+          },
+          {
+              title: 'Name',
+              key: 'Name',
+              sortable: true
+          },
+          {
+              title: 'Date',
+              key: 'Date',
+              sortable: true
+          },
+           {
+              title: 'AmountPaid',
+              key: 'AmountPaid',
+              sortable: true
+          },
+          {
+              title: 'AmountDue',
+              key: 'AmountDue',
+              sortable: true
+          },
+          {
+              title: 'Total',
+              key: 'Total',
+              sortable: true
+          },
+          {
+              title: 'status',
+              key: 'status',
+              sortable: true
+          },
+          {
+            title: 'Action',
+            key: 'action',
+            width: 100,
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small',
+                    // text: 'action'
+                  },
+                  style: {
+                    // color: '#CC0000',
+                    // marginRight: '3px',
+                    // padding: '0px',
+                    // fontSize: '20px'
+                  },
+                  on: {
+                    click: () => {
+                      alert('111')
+                      // alert(this.tabPane)
+                      this.performAction(params)
+                    }
+                  }
+                }, 'action')
+              ])
+            }
+          }
+
+      ],
+      data1: [],
+      page: 1,
+      pageSize: pageSize,
+      list: [],
       resdata: '',
       resp: '',
       ids: '',
       titles: '',
-      len: ''
+      len: '',
+      cname: '',
+      status: '',
+      dategt: '',
+      datelt: '',
+      totalgt: '',
+      totallt: '',
+      duegt: '',
+      duelt: ''
+
     }
   },
    methods: {
+    async mockTableData1 (p,size) {
+      this.len = this.data1.length
+      console.log("this.data1",this.data1)
+                return this.data1.slice((p - 1) * size, p * size);
+            },
+    async changePage (p) {
+      
+      this.page = p
+      this.list = await this.mockTableData1(p,pageSize);
+            },
     async searchdata() {
       $('.preload').css("display","block")
       this.resdata = await this.apiData();
       console.log("response------------------------>", this.resdata)
-        if (this.resdata.Err) {
-          console.log("Error")
-          productHtml = ''
-          productHtml = '<tbody id="tdata"><tr><td colspan="7" style="text-align: center;">No data found</td></tr></tbody>'
-          $('table').append(productHtml)  
-        }
-        else {
-            this.tableDataBind();
-            /*create table in to datatable*/
-            $('#tbdata').dataTable({
-              "searching": false,
-              "processing": true,
-              "destroy": true,
-              "responsive": true
-            });
-        }
-       
+      this.tableDataBind();
+      this.list = await this.mockTableData1(1,pageSize)
+    },
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.totalgt = '';
+      this.totallt = '';
+      this.duegt = '';
+      this.duelt = '';
+      this.data1 = []
+      this.list = []
+      this.searchdata();
     },
     async changeData() {
+      this.data1 = []
+      this.list = []
       console.log("Inside change data")
-      $('#tdata').remove();
-      $('thead').remove();
-      $('.preload').css("display","block")
-      this.resdata = await this.apiData();
-      console.log("_________________________________________", this.resdata)
-          console.log("UIULIUIUIIUYUYYTYTYRTCRER", this.resdata)
-          if (this.resdata.Err) {
-            console.log("Error")
-            var productHtml = ''
-            productHtml = '<tbody id="tdata"><tr><td colspan="7" style="text-align: center;">No data found</td></tr></tbody>'
-            $('table').append(productHtml)
-          }
-          else {
-            this.tableDataBind();
-            document.getElementById('tbdata').style = "white-space: nowrap;"
-            $('#tbdata').DataTable().clear().destroy();
-            $('#tbdata').dataTable({
-              "searching": false
-            })
-          }
-        
+      this.resdata = await this.changeApiData();
+      console.log("response------------------------>", this.resdata)
+      this.tableDataBind();
+      this.list = await this.mockTableData1(1,pageSize);
+
     },
-async getCustomerUrl(){
-  var res
-    var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": config.customerurl,
-    "method": "GET",
-    "headers": {
-      "cache-control": "no-cache"
-    }
-  }
-  await $.ajax(settings).done(function (response) {
-      res = response
-      console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
-    });
-      res.forEach (obj => {
-    var x = document.getElementById("selectCustomer");
-        var option = document.createElement("option");
-        option.text = obj.Name;
-        // console.log("&&&&&&&&&&",option.text)
-        x.add(option);
-  })
-},
-async apiData () {
-  var formData = $( 'form' ).serialize();
-  var element = formData.split('&');
-  var filter = '';
-  element.forEach (obj => {
-    var pair = obj.split('=');
-    console.log("+++++++++++++++++pair++++++++++++++++++++++=", pair)
-    filter += '&' + pair[0] + '=' + pair[1]
-  })
-  console.log("###filter",filter);
-  /*ajax call to get api data*/
- 
-    var settings = {
-      "async": true,
-      "crossDomain": true,
-      "url": config.invoiceurl + filter,
-      "method": "GET",
-      "headers": {
-        "cache-control": "no-cache"
+    async getCustomerUrl(){
+      console.log("inside getCustomerUrl " )
+      var res
+        var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": config.serviceUrl + 'contacts',
+        "method": "GET",
+        "headers": {
+          "cache-control": "no-cache"
+        }
       }
-    }
-  
-  var resp;
-  console.log("settings data", settings)
-    await $.ajax(settings).done(function (response) {
-      resp = response;
-      $('.gridsection').css("display","block")
-      $('.sorting').css("display","block")
-      $('.preload').css("display","none")
-    });
-    console.log("$$$$$$$$$$$$$$", resp)
-    return resp
-},
-tableDataBind(){
-      this.resp = this.resdata.data
-      // console.log("inside table data bind",this.resp)
-      let id = this.ids.split(',');
-      // console.log("TTTTTTTTTTTid", id)
-          this.hcols = id
-         // console.log("inside table", this.resp)
-      /*set length of table*/  
-          this.len = this.resp.length
+
+      console.log("settings", settings)
+      await $.ajax(settings).done(function (response) {
+          res = response
+          console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
+        });
+          res.forEach (obj => {
+        var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = obj.Name;
+            x.add(option);
+      })
+    },
+    async apiData () {
+      var resp;
+      console.log("TRTYYTYTT");
+      await axios.get(config.serviceUrl + 'invoice', {
+        params: {
+        }
+      })
+      .then(function (response) {
+        resp = response
+        console.log("response------>iuy",resp);
+        $('.preload').css("display","none")
+      })
+      .catch(function (error) {
+        console.log("error",error);
+      });
+      return resp
+
+    },
+    async changeApiData () {
+      var resp;
+      var params = {}
+      if(this.cname != ''){
+        params['Name'] = this.cname   
+      }
+
+      if(this.status != ''){ 
+        params['Status'] = this.status  
+      }
+
+      if(this.dategt != ''){
+        params['Date'] = this.dategt        
+      }
+      if(this.totalgt != ''){
+        params['Total'] = this.totalgt
+        
+      }
+      if(this.duegt != ''){ 
+        params['AmountDue'] =  this.duegt
+      }
+
       
-        console.log(this.len)
-        var productHtml = ''
-      /*create table*/
-            productHtml = '<tbody id="tdata">'
-            // console.log("before productHtml",productHtml)
-              for (var item=0; item<this.len; item++) {
-                productHtml += '<tr class="line-content">'
-              for(var arr1=0; arr1<this.hcols.length; arr1++) {
-                // console.log("cols............", this.hcols[arr1])
-                if (this.hcols[arr1] == "Name") {
-                  productHtml += '<td>'+ this.resp[item].data.Contact[this.hcols[arr1]] + '</td>'
-                }
-                else if (this.hcols[arr1] == "status") {
-                  productHtml += '<td>'+ this.resp[item][this.hcols[arr1]] + '</td>'
-                }
-                else{
-                  productHtml += '<td>'+ this.resp[item].data[this.hcols[arr1]] + '</td>'
-                }
-              }
-                productHtml += '</tr>'
+      console.log("params api data", params)
+
+      // this.cname = '';
+      // this.status = '';
+      // this.dategt = '';
+      // this.totalgt = '';
+      // this.duegt = '';
+      // var params =  {
+      //     Name: this.cname,
+      //     Status: this.status,
+      //     Total: this.totalgt,
+      //     AmountDue: this.duegt,
+      //     Date: this.dategt
+      //     // totalgt: this.totalgt,
+      //     // totallt: this.totallt,
+      //     // duegt: this.duegt,
+      //     // duelt: this.duelt,
+      //     // datelt: this.datelt,
+      //     // dategt: this.dategt
+      //   }
+      await axios.get(config.serviceUrl + 'invoice', {
+        params: params
+      })
+      .then(function (response) {
+        resp = response
+        console.log("response changePage------>",resp);
+        $('.preload').css("display","none")
+      })
+      .catch(function (error) {
+        console.log("error",error);
+      });
+      return resp
+
+    },
+    tableDataBind(){
+          var self = this
+          if(this.resdata.data.Err){
+            console.log("error in response",this.resdata.data.Err)
+          }else{
+            this.resp = this.resdata.data
+            console.log("inside table data bind",this.resp)
+            this.resp.forEach(result =>{
+              var myobj = {}
+              myobj.Name = result.Contact.Name
+              myobj.InvoiceID = result.InvoiceID
+              myobj.AmountDue = result.AmountDue
+              myobj.AmountPaid = result.AmountPaid
+              myobj.Date = result.Date
+              myobj.Total = result.Total
+              myobj.status = result.Status
+              self.data1.push(myobj)
+            })
             }
-        $('table').append(productHtml)  
-}
+          
+    },
+    performAction(index){
+      console.log("params", index)
+    }
      
   },
   mounted() {
+    // console.log("config main :: "+configurl.invoiceurl);
+    // console.log("config file ", config.apiConfig.apiUrl)
     let self = this;
     
-    this.ids = $('invoicetable').attr('keys');
-    console.log('ids:', this.ids);
      $('.maindiv').change(async function() {
-      $('#tdata').remove();
+      // $('#tdata').remove();
       await self.changeData();
-    });
+    }); 
     this.getCustomerUrl();
     this.searchdata();
   }

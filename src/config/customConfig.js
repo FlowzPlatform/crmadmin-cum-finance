@@ -1,4 +1,5 @@
 
+
 module.exports =  {
     default : {
         loginUrl : "http://auth.flowz.com/api/login",
@@ -14,5 +15,8 @@ module.exports =  {
         loginWithGoogleUrl :                            "http://auth.flowz.com/auth/Gplus",  
         serviceUrl :                                        "http://api.flowz.com/crm/"
     }
+
 }
+
+
 
