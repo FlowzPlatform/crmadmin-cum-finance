@@ -253,7 +253,7 @@ export default {
         var settings = {
         "async": true,
         "crossDomain": true,
-        "url": config.serviceUrl + 'contacts',
+        "url": config.default.serviceUrl + 'contacts',
         "method": "GET",
         "headers": {
           "cache-control": "no-cache"
@@ -275,7 +275,8 @@ export default {
     async apiData () {
       var resp;
       console.log("TRTYYTYTT");
-      await axios.get(config.serviceUrl + 'invoice', {
+      
+      await axios.get(config.default.serviceUrl + 'invoice', {
         params: {
         }
       })
@@ -333,7 +334,7 @@ export default {
       //     // datelt: this.datelt,
       //     // dategt: this.dategt
       //   }
-      await axios.get(config.serviceUrl + 'invoice', {
+      await axios.get(config.default.serviceUrl + 'invoice', {
         params: params
       })
       .then(function (response) {
