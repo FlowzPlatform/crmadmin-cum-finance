@@ -11,10 +11,10 @@ module.exports =  {
         facebookSuccessCallbackUrl :        "http://dashboard.flowz.com",
         loginWithFacebookUrl :                  "http://auth.flowz.com/auth/facebook",
         googleSuccessCallbackUrl :                  "http://dashboard.flowz.com",
-        loginWithGoogleUrl :                            "http://auth.flowz.com/auth/Gplus",    
+        loginWithGoogleUrl :                            "http://auth.flowz.com/auth/Gplus",
         // serviceUrl : process.env.serviceUrl
-        serviceUrl : "http://localhost:3030/"
+        serviceUrl : "http://localhost:3030/",
+        apiurl : "http://172.16.230.225:5000/api/xero/"
     }
-    
-}
 
+}

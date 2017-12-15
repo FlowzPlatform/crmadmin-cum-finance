@@ -99,7 +99,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div> <span class="panel" id="c17165"> <button class="form-control" id="create" @click="postdata">Create</button> <button class="form-control" id="createandcontinue">Create and Continue</button> </span>
+                    </div>
+                    <span class="panel" id="c17165">
+                      <button class="form-control" id="create" @click="postdata();show()">Create</button>
+                      <button class="form-control" id="createandcontinue">Create and Continue</button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -111,8 +115,8 @@ var priceinput;
 var price;
 var email;
 var phone;
-var apiurl = config.apiurl;
-var databaseurl = config.databaseurl;
+var apiurl = config.default.apiurl + "contacts";
+var databaseurl = config.default.serviceUrl + "crm-service";
 var result;
 var result1;
 var name;
@@ -122,7 +126,7 @@ var status;
 var assignee;
 var product_line;
 var contractdate;
-var databasepost = config.databasepost;
+var databasepost = config.default.serviceUrl + "crm-case";
 	export default {
     name: 'newcrm',
     data() {
@@ -141,7 +145,7 @@ var databasepost = config.databasepost;
 				},error: function(err) {
 					console.log("Error",err)
 				}
-			});	
+			});
 	        // console.log("resp data",result);
 	        result.forEach(item => {
 				var customer = item.Name;
@@ -157,7 +161,7 @@ var databasepost = config.databasepost;
 			        result1 = data.data;
 			    },error: function(err){
 			       console.log("error",err);
-			    } 
+			    }
 			});
 			// console.log("json data databaseurl",result1);
 			result1.forEach(function(item){
@@ -213,13 +217,16 @@ var databasepost = config.databasepost;
 					console.log("json data******123",result);
 			    },error: function(err){
 			       console.log("error",err);
-			    } 
+			    }
 			});
-    	}
+    },
+    show() {
+      this.$router.push('/edit-crm/'+index)
+    }
 
     },
     mounted() {
-    	//CKEDITOR.replace("editor1"),
+    	CKEDITOR.replace("editor1"),
     	this.calldata(),
     	this.dbdata()
 	}

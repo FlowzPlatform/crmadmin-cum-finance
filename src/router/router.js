@@ -62,7 +62,10 @@ export const otherRouter = {
         { path: 'shopping', title: '购物详情', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
-        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } }
+        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'editcrm',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve);},
+        
+        }
 
     ]
 };
@@ -90,7 +93,7 @@ export const appRouter = [
     //         { path: 'index', title: '权限测试页', name: 'accesstest_index', access: 0, component: resolve => { require(['@/views/access/access-test.vue'], resolve); } }
     //     ]
     // },
-    
+
     {
         path: '/customer',
         icon: 'person-stalker',
@@ -98,18 +101,18 @@ export const appRouter = [
         name: 'CUSTOMER',
         component: Main,
         children: [
-            { 
-                path: 'new-customer', 
+            {
+                path: 'new-customer',
                 title: 'new-customer',
                 icon: 'ios-plus-outline',
-                name: 'newcustomer', 
+                name: 'newcustomer',
                 component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
             },
-            { 
-                path: 'list-customer', 
+            {
+                path: 'list-customer',
                 title: 'list-customer',
                 icon: 'ios-list-outline',
-                name: 'listcustomer', 
+                name: 'listcustomer',
                 component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
             }
         ]
@@ -121,18 +124,18 @@ export const appRouter = [
         name: 'INVOICE',
         component: Main,
         children: [
-            { 
-                path: 'new-invoice', 
+            {
+                path: 'new-invoice',
                 title: 'new-invoice',
                 icon: 'ios-plus-outline',
-                name: 'new-invoice', 
+                name: 'new-invoice',
                 component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve);}
             },
-            { 
-                path: 'list-invoice', 
+            {
+                path: 'list-invoice',
                 title: 'list-invoice',
                 icon: 'ios-list-outline',
-                name: 'list-invoice', 
+                name: 'list-invoice',
                 component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
             }
         ]
@@ -144,18 +147,18 @@ export const appRouter = [
         name: 'CRM',
         component: Main,
         children: [
-            { 
-                path: 'new-crm', 
+            {
+                path: 'new-crm',
                 title: 'new-crm',
                 icon: 'ios-plus-outline',
-                name: 'newcrm', 
+                name: 'newcrm',
                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
             },
-            { 
-                path: 'list-crm', 
+            {
+                path: 'list-crm',
                 title: 'list-crm',
                 icon: 'ios-list-outline',
-                name: 'listcrm', 
+                name: 'listcrm',
                 component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
             }
         ]
@@ -294,7 +297,7 @@ export const appRouter = [
     //         { path: 'index', title: '错误页面', name: 'errorpage_index', component: resolve => { require(['@/views/error-page/error-page.vue'], resolve); } }
     //     ]
     // }
-    
+
 
 ];
 
