@@ -4,7 +4,7 @@
 
 <template>
     <div>
-    <Table :columns="columns8" :data="data7" size="small" stripe = true border = true ref="table"></Table>
+    <Table :columns="columns8" :data="data7" size="small" stripe = 1 border = 1 ref="table"></Table>
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
             <Page :total="100" :current="1" @on-change="changePage"></Page>
@@ -18,7 +18,10 @@
 </template>
 
 <script>
-let feathersUrl =  'http://localhost:3030/'
+let config = require("@/config/customConfig.js")
+console.log(config)
+let feathersUrl =  config.default.serviceUrl;
+var _ = require('lodash');
 import axios from 'axios'
 export default {
         name: 'list-customer',
@@ -59,44 +62,39 @@ export default {
                         "title": "Email",
                         "key": "EmailAddress",
                         "width": 150,
-                        "sortable": true,
-                        filters: [
-                            
-                            {
-                                label: 'find',
-                                value: 2
-                            }
-                        ],
-                        filterMultiple: false,
-                        filterMethod (value, row) {
-                             if (value === 2) {
-                                return row.EmailAddress == 'dweepp@officebrain.com';
-                            }
-                        }
+                        "sortable": true
                     },
                     {
                         "title": "Mobile",
-                        "key": "signin",
+                        "key": "Phones",
                         "width": 150,
-                        "sortable": true
+                        "sortable": true,
+                        render:(h,{row})=>{ return row.Phones[3].PhoneNumber }
                     },
                     {
                         "title": "Phone",
                         "key": "click",
                         "width": 150,
-                        "sortable": true
+                        "sortable": true,
+                        render:(h,{row})=>{ return row.Phones[1].PhoneNumber.PhoneCountryCode +" "+row.Phones[1].PhoneNumber }
                     },
                     {
                         "title": "Fax",
                         "key": "active",
                         "width": 150,
-                        "sortable": true
+                        "sortable": true,
+                        render:(h,{row})=>{ return row.Phones[2].PhoneNumber }
                     },
                     {
                         "title": "Address",
-                        "key": "Addresses.AddressLine1",
-                        "width": 150,
-                        "sortable": true
+                        "key": "Addresses",
+                        "width": 250,
+                        "sortable": false,
+                        render:(h,{row})=>{
+                            for (var index = 0; index < row.Addresses.length; index++) {
+                                return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+                            }
+                        }
                     },
                     {
                         "title": "isCustomer",
@@ -120,8 +118,8 @@ export default {
             
         })
         .then(function (response) {
-            console.log(response);
-            self.data7 = response.data;
+            console.log(response)
+            self.data7 = response.data; 
         })
         .catch(function (error) {
             console.log(error);

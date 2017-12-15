@@ -28,6 +28,7 @@
     "iview": "^2.7.4",
     "iview-area": "^1.5.12",
     "js-cookie": "^2.2.0",
+    "lodash": "^4.17.4",
     "psl": "^1.1.21",
     "rasterizehtml": "^1.2.4",
     "simplemde": "^1.11.2",
@@ -36,6 +37,7 @@
     "vue": "^2.5.9",
     "vue-particles": "^1.0.9",
     "vue-router": "^3.0.1",
+    "vue-widgets": "^1.0.9",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

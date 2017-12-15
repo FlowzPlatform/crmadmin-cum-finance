@@ -248,7 +248,7 @@ export default {
                 self.$message.warning("password field is required");
             } else {
                 self.saveFileLoadingLogin = true;
-                axios.post(this.selectedTabIndex == 1 ? config.loginUrl : config.ldapLoginUrl, {
+                axios.post(this.selectedTabIndex == 1 ? config.default.loginUrl : config.default.ldapLoginUrl, {
                         email: self.login.email.trim(),
                         password: self.login.password.trim()
                     })
@@ -290,7 +290,7 @@ export default {
                self.$message.warning("password is required");
            }else{
                self.saveFileLoading = true;
-               axios.post(config.signupUrl, {
+               axios.post(config.default.signupUrl, {
                 email: self.signup.email.trim(),
                 password: self.signup.password.trim(),
                 username: self.signup.username.trim()
@@ -339,7 +339,7 @@ export default {
                 self.$message.warning("Email is not valid");
             } else {
                 self.saveFileLoadingLogin = true;
-                axios.post(config.forgotPasswordUrl, {
+                axios.post(config.default.forgotPasswordUrl, {
                         email: self.login.email.trim(),
                         url: "http://google.com"
                     })
