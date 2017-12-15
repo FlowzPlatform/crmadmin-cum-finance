@@ -1,0 +1,21 @@
+export default{
+    loginUrl : "http://auth.flowz.com/api/login",
+    ldapLoginUrl : " http://auth.flowz.com/api/ldapauth",
+    registrationUrl : "http://api.flowz.com/serverapi/register",
+    signupUrl:          "http://ec2-54-88-11-110.compute-1.amazonaws.com/api/setup",
+    forgotPasswordUrl :     "http://ec2-54-88-11-110.compute-1.amazonaws.com/api/forgetpassword",
+    resetpassword :             "http://ec2-54-88-11-110.compute-1.amazonaws.com/api/resetpassword",
+    feathersServiceBaseUrl :        "http://api.flowz.com/serverapi/",
+    facebookSuccessCallbackUrl :        "http://dashboard.flowz.com",
+    loginWithFacebookUrl :                  "http://ec2-54-88-11-110.compute-1.amazonaws.com/auth/facebook",
+    googleSuccessCallbackUrl :                  "http://dashboard.flowz.com",
+    loginWithGoogleUrl :                            "http://ec2-54-88-11-110.compute-1.amazonaws.com/auth/Gplus",
+    serviceUrl : "http://localhost:3037/"
+    // apiurl : "http://172.16.230.225:5000/api/xero/contacts",
+    // databaseurl : "http://172.16.160.229:3030/crm-service",
+    // databasepost : "http://172.16.160.229:3030/crm-case/",
+    // invoiceurl: "http://172.16.230.202:3001/api/xero/invoice/filter?name=Krishna&app=Demo%20Company%20Global"
+}
+
+
+
