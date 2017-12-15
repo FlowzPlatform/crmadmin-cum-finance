@@ -36,4 +36,4 @@ RUN service apache2 restart
 
 
 # Ports
-EXPOSE 80
+EXPOSE 80  443
