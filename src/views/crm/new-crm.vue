@@ -33,9 +33,11 @@
                                 <div id="c16980">
                                     <p>
                                         <label class="col-xs-3" id="c16988">Customer</label>
-                                        <select class="form-control" id="customer">
+                                        <auto-complete v-model="value3":data="data3" :filter-method="filterMethod" placeholder="input here" clearable>
+          															</auto-complete>
+                                        <!-- <select class="form-control" id="customer">
                                             <option>Select</option>
-                                        </select>
+                                        </select> -->
                                     </p>
                                 </div>
                             </div>
@@ -130,7 +132,9 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	export default {
     name: 'newcrm',
     data() {
-        return { }
+      return {
+        data3:[] 
+      }
     },
     methods: {
     	async calldata() {
@@ -149,9 +153,8 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	        // console.log("resp data",result);
 	        result.forEach(item => {
 				var customer = item.Name;
-				cname = new Option(customer);
-		    $("#customer").append(cname);
-			})
+				this.data3.push(customer)
+				})
     	},
 
     	async dbdata() {
@@ -222,7 +225,10 @@ var databasepost = config.default.serviceUrl + "crm-case/";
     },
     show() {
       this.$router.push('/edit-crm/'+index)
-    }
+    },
+    filterMethod (value, option) {
+      return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+  	}
 
     },
     mounted() {
@@ -249,6 +255,9 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	    padding-bottom: 10px;
 	    padding-left: 10px;
 	    width: 100%;
+	}
+	.ivu-select {
+		width: 60% !important;
 	}
 	.crm{
 		margin-bottom: 10px;
