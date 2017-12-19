@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <span class="panel" id="c17165">
-                      <button class="form-control" id="create" @click="postdata();show()">Create</button>
+                      <button class="form-control" id="create" @click="postdata()">Create</button>
                       <button class="form-control" id="createandcontinue">Create and Continue</button>
                     </span>
                 </div>
@@ -115,8 +115,8 @@ var priceinput;
 var price;
 var email;
 var phone;
-var apiurl = config.default.apiurl + "contacts";
-var databaseurl = config.default.serviceUrl + "crm-service";
+var apiurl = config.default.apiurl + "contacts/";
+var databaseurl = config.default.serviceUrl + "crm-service/";
 var result;
 var result1;
 var name;
@@ -126,7 +126,7 @@ var status;
 var assignee;
 var product_line;
 var contractdate;
-var databasepost = config.default.serviceUrl + "crm-case";
+var databasepost = config.default.serviceUrl + "crm-case/";
 	export default {
     name: 'newcrm',
     data() {

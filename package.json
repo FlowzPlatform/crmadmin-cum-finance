@@ -29,6 +29,7 @@
     "iview-area": "^1.5.12",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "psl": "^1.1.21",
     "rasterizehtml": "^1.2.4",
     "simplemde": "^1.11.2",
