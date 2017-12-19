@@ -25,10 +25,14 @@
                         </Upload>
                         <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
                     </FormItem>
+                    <FormItem label="Set as default" prop="setAsDefault">
+                        <Checkbox size="large" v-model="isdefault"></Checkbox>
+                    </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="XerohandleSubmit('XeroformValidate')">Submit</Button>
+                        <Button type="primary" @click="XerohandleSubmit('XeroformValidate')" :loading ="loading">Submit</Button>
                         <Button type="ghost" @click="handleReset('XeroformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
+                    
                 </Form>
             </TabPane>
             <TabPane label="Quickbook">
@@ -47,7 +51,7 @@
                     </FormItem>
                     
                     <FormItem>
-                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')">Submit</Button>
+                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')"  >Submit</Button>
                         <Button type="ghost" @click="handleReset('QBformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
                 </Form>
@@ -67,6 +71,8 @@ import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
 import axios from "axios"
 const reader  = new FileReader();
+import Cookies from 'js-cookie';
+
 Vue.use(VueWidgets);
 
 
@@ -74,7 +80,9 @@ Vue.use(VueWidgets);
         data () {
             return {
                tabs: 1 ,
+               loading : false,
                file: null,
+               isdefault: false,
                 loadingStatus: false,
                XeroformValidate: {
                     useragent: '',
@@ -148,34 +156,62 @@ Vue.use(VueWidgets);
             
             async XerohandleSubmit (name) {
                 let self = this;
+
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
                         console.log(this.file)
                         if(self.file == null || self.file.type !== "application/x-x509-ca-cert"){
                             self.$Message.error(' Please, attach a .pem file!');
                         }else{
-                            self.$Message.success('Success!');
-                             
-                            let res = await this.createImage(self.file)
-                            alert(res)
-                            // let lastModified = this.file.lastModified +"-"+this.file.name+".pem";
-                            // console.log(lastModified)
-                            // axios.post(feathersUrl +'upload', {
-                            //     "uri" : res  ,
-                            //     "id" :  lastModified
+                            this.loading = true;
+                            var file    =this.file
+                            var reader  = new FileReader();
 
-                            // })
-                            // .then(function (response) {
-                            //     console.log(response)
-                            // })
-                            // .catch(function (error) {
-                            //     console.log(error);
-                            // });
-                            // console.log(this.$refs)
+                          reader.addEventListener("load", function () {
+                           
+                            let lastModified = self.file.lastModified +"-"+self.file.name;
+                            
+                            axios({
+                                method: 'post',
+                                url: feathersUrl +'settings',
+                                headers:{
+                                    Authorization : Cookies.get('auth_token')
+                                },
+                                data: {
+                                   "certificate" : reader.result  ,
+                                    "useragent" :  self.XeroformValidate.useragent,
+                                    "consumerKey" : self.XeroformValidate.consumerKey,
+                                    "consumerSecret" : self.XeroformValidate.consumerSecret,
+                                    "domain" : self.tabs == 1 ? 'xero' : 'qb',
+                                    "pem" : lastModified,
+                                    "isdefault" : self.isdefault,
+                                    "isActive" : true
+                                }
+                            })  
+                            .then(function (response) {
+                                console.log(response)
+                                 self.$Message.success('Success!');
+                                 self.loading = false;
+                            })
+                            .catch(function (error) {
+                                Cookies.remove('auth_token') 
+                                self.$Message.error('Auth Error!');
+                                self.loading = false;
+                                  self.$store.commit('logout', this); 
+                                   self.$router.push({
+                                    name: 'login'
+                                })
+                               
+                            });
+                          }, false);
+
+                          if (file) {
+                            reader.readAsDataURL(file);
+                          }
                         }
                     } else {
-                        self.$Message.error('Fail!');
-                        
+                        self.$Message.error('Something went wrong , please try again later!');
+                        self.loading = false;
                     }
                 })
             },

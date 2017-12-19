@@ -3,16 +3,33 @@
         <div class="settings_header">
             <Button @click="addNewConfig">Add New Configuration</Button>
         </div>
+
+        
+    <RadioGroup v-model="radio7" :on-change="defaultChanged()">
         <div  v-for="chunk in productChunks">
             <div  v-for="product in chunk" style="float:left;width:50%;padding:10px">
             <Widget>
                 <WidgetHeading :id="1" :Title="Configurations" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
                 <WidgetBody>
-                    {{product.name}}
+                    <h4>User : {{ product.user}}</h4>
+                    <h4>Domain : {{ product.domain}}</h4>
+                    <h4>Consumer key : {{ product.consumerKey}}</h4>
+                    <h4>Consumer secret : {{ product.consumerSecret}}</h4>
+                    <h4>User agent: {{ product.useragent}}</h4>
+                    
+                    
+                        <!-- <Radio  :label ="product.id">Make As Default</Radio> -->
+                        <div class="default_radio">
+                        <input  name="myfield" type="radio" v-bind:checked="product.isdefault==true"  v-bind:value="product.id" >
+                        <label>Set As Default</label>
+                        </div>
+                    
                 </WidgetBody>
             </Widget>
+            
             </div>
         </div>
+        </RadioGroup>
     </div>
 </template>
 
@@ -21,6 +38,10 @@ import _ from 'lodash'
 import Vue from 'vue'
 import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
+import axios from "axios"
+let config = require("@/config/customConfig.js")
+let feathersUrl =  config.default.serviceUrl;
+import Cookies from 'js-cookie';
 Vue.use(VueWidgets);
 
 
@@ -28,81 +49,32 @@ Vue.use(VueWidgets);
         data () {
             return {
                 radio7 : '',
+                comp: true,
+                Configurations: "Configurations",
                 columns7: [
                     {
-                        title: 'Name',
-                        key: 'name',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Icon', {
-                                    props: {
-                                        type: 'person'
-                                    }
-                                }),
-                                h('strong', params.row.name)
-                            ]);
-                        }
+                        title: 'User',
+                        key: 'user'
                     },
                     {
-                        title: 'Age',
-                        key: 'age'
+                        title: 'Domain',
+                        key: 'domain'
                     },
                     {
-                        title: 'Address',
-                        key: 'address'
+                        title: 'consumerKey',
+                        key: 'consumerKey'
                     },
                     {
-                        title: 'Action',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.show(params.index)
-                                        }
-                                    }
-                                }, 'View'),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.index)
-                                        }
-                                    }
-                                }, 'Delete')
-                            ]);
-                        }
+                        title: 'consumerSecret',
+                        key: 'consumerSecret'
+                    },
+                    {
+                        title: 'useragent',
+                        key: 'useragent'
                     }
                 ],
                 data6: [
-                    {
-                        name: 'John Brown',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park'
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'London No. 1 Lake Park'
-                    },
-                    {
-                        name: 'Joe Black',
-                        age: 30,
-                        address: 'Sydney No. 1 Lake Park'
-                    }
+                    
                 ]
             }
         },
@@ -120,12 +92,37 @@ Vue.use(VueWidgets);
                 this.$router.push({
                         name: 'newsettings'
                     });
+            },
+            defaultChanged(e){
+                
+                console.log(e)
             }
         },
         computed: {
         productChunks(){
             return _.chunk(this.data6, 2);
         }
+        },
+        mounted(){
+            axios({
+                    method:'get',
+                    url:feathersUrl +'settings',
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                })
+                .then(response => {
+                console.log(response)
+                this.data6 = response.data.data
+                })
+                .catch(error => {
+                        Cookies.remove('auth_token') 
+                        this.$Message.error('Auth Error!');
+                        this.$store.commit('logout', this); 
+                        this.$router.push({
+                        name: 'login'
+                    })
+                });
         }
     }
 </script>
@@ -137,5 +134,20 @@ Vue.use(VueWidgets);
     background: #cacaca;
     width:100%;
     margin:14px 2px;
+}
+
+.ivu-radio-group {
+    display: block !important;
+    font-size: 14px !important;
+    /* vertical-align: middle; */
+}
+
+.default_radio {
+    background: #cacaca;
+    max-width: 126px;
+    color: #5a5252;
+    padding: 12px 5px;
+    width: auto;
+    float: right;
 }
 </style>

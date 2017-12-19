@@ -145,6 +145,7 @@
                     });
                 } else if (name === 'loginout') {
                     // 退出登录
+                    Cookies.remove('auth_token') 
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
