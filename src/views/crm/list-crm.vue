@@ -1,5 +1,5 @@
 <template>
-	<Table border :columns="columns5" :data="data5"></Table>
+	<Table border stripe :columns="columns5" :data="data5"></Table>
 </template>
 <script>
 import config from '../../config/customConfig.js'
@@ -12,7 +12,9 @@ export default {
 									 {
 											 title: 'Id',
 											 key: 'id',
-											 sortable: false
+											 width: 257,
+											 align: 'center',
+											 sortable: true
 									 },
 									 {
 											 title: 'Project',
@@ -33,13 +35,6 @@ export default {
 											 sortable: true
 									 },
 									 {
-											 title: 'Price',
-											 align: 'center',
-											 key: 'priceinput',
-											 width: 100,
-											 sortable: true
-									 },
-									 {
 											 title: 'Email',
 											 align: 'center',
 											 key: 'email',
@@ -48,7 +43,7 @@ export default {
 									 {
 											 title: 'Status',
 											 align: 'center',
-											 width: 130,
+											 width: 120,
 											 key: 'status',
 											 sortable: true,
 											 filters: [
@@ -68,13 +63,10 @@ export default {
                         filterMultiple: false,
                         filterMethod (value, row) {
                             if (value === 1) {
-																console.log('@@@@@1111', row , value)
                                 return row.status == 'Waiting';
                             } else if (value === 2) {
-																console.log('@@@@@2222', row , value)
                                 return row.status == 'New';
                             } else if (value === 3) {
-																console.log('@@@@@3333', row , value)
                                 return row.status == 'In Process';
                             }
                         }

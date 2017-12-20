@@ -1,117 +1,129 @@
 <template>
 <div class="container-fluid">
-            <div class="form-group row">
-                <div class="panel col-sm-12" id="c16894">
-                    <label>New CRM case</label>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="col-sm-12">
-                            <div class="panel" id="c16913">
-                                <p id="c16917"><i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
-                                    <label
-                                    id="c16925">Basic attributes:</label>
-                                </p>
-                                <p>
-                                    <input class="form-control" type="text" id="name" placeholder="Name" />
-                                </p>
-                                <textarea name="editor1"></textarea>
-                                <p id="c16943">
-                                    <input id="c16947" name="myFile" type="file" />
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12">
-                            <div class="panel" id="c16961">
-                                <div>
-                                    <p id="c16969"><i class="fa fa-users" id="c16973" aria-hidden="true"></i>
-                                        <label id="c16977">Add Related Contact:</label>
-                                    </p>
-                                </div>
-                                <div id="c16980">
-                                    <p>
-                                        <label class="col-xs-3" id="c16988">Customer</label>
-                                        <auto-complete v-model="value3":data="data3" :filter-method="filterMethod" placeholder="input here" clearable>
-          															</auto-complete>
-                                        <!-- <select class="form-control" id="customer">
-                                            <option>Select</option>
-                                        </select> -->
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="panel" id="c17000">
-                                <div>
-                                    <p id="c17008"><i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
-                                        <label
-                                        id="c17016">Additional attributes:</label>
-                                    </p>
-                                </div>
-                                <div id="c17019">
-                                    <p>
-                                        <label class="col-xs-3" id="c17027">Project</label>
-                                        <select class="form-control" id="project">
-                                            <option>Select</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17043">Status</label>
-                                        <select class="form-control" id="status">
-                                            <option>Select</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17059">Assignee</label>
-                                        <select class="form-control" id="assignee">
-                                            <option>Select</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17075">Product line</label>
-                                        <select class="form-control" id="product_line">
-                                            <option>Select</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17091">Contract date</label>
-                                        <input class="form-control" type="date" id="contractdate"
-                                        />
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17104">Next Action</label>
-                                        <input class="form-control" type="date" id="nextdate"
-                                        />
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17117">Price</label>
-                                        <input class="form-control" type="text" id="priceinput" />
-                                        <select class="form-control" id="price">
-                                            <option>Select</option>
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17139">Email</label>
-                                        <input class="form-control" type="text" id="email" />
-                                    </p>
-                                    <p>
-                                        <label class="col-xs-3" id="c17152">Phone</label>
-                                        <input class="form-control" type="text" id="phone" />
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="panel" id="c17165">
-                      <button class="form-control" id="create" @click="postdata()">Create</button>
-                      <button class="form-control" id="createandcontinue">Create and Continue</button>
-                    </span>
-                </div>
-            </div>
-        </div>
+  <div class="form-group row">
+      <div class="panel col-sm-12" id="c16894">
+          <label>New CRM case</label>
+      </div>
+      <div class="row">
+          <div class="col-sm-6">
+              <div class="col-sm-12">
+                  <div class="panel" id="c16913">
+                      <p id="c16917"><i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
+                          <label
+                          id="c16925">Basic attributes:</label>
+                      </p>
+                      <p>
+                      	<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
+                          <!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
+                      </p>
+                      <textarea name="editor1"></textarea>
+                      <!-- <p id="c16943"> -->
+                      	<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/"
+                      	style="padding-top:15px">
+										        <div style="padding: 20px 0">
+										            <icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
+										            <p>Click or drag files here to upload</p>
+										        </div>
+										    </upload>
+                          <!-- <input id="c16947" name="myFile" type="file" /> -->
+                      <!-- </p> -->
+                  </div>
+              </div>
+          </div>
+          <div class="col-sm-6">
+              <div class="col-sm-12">
+                  <div class="panel" id="c16961">
+                      <div>
+                          <p id="c16969"><i class="fa fa-users" id="c16973" aria-hidden="true"></i>
+                              <label id="c16977">Add Related Contact:</label>
+                          </p>
+                      </div>
+                      <div id="c16980">
+                          <p>
+                              <label class="col-xs-3" id="c16988">Customer</label>
+                              <auto-complete :data="data" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable>
+															</auto-complete>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="panel" id="c17000">
+                      <div>
+                          <p id="c17008"><i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
+                              <label
+                              id="c17016">Additional attributes:</label>
+                          </p>
+                      </div>
+                      <div id="c17019">
+                          <p>
+                              <label class="col-xs-3" id="c17027">Project</label>
+                              <i-select v-model="finaldata.project" style="width:100px" filterable>
+													      <i-option v-for="item in momdata" :value="item.project" :key="item.project">{{ item.project }}</i-option>
+													    </i-select>
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17043">Status</label>
+                              <i-select v-model="finaldata.status" style="width:100px">
+													      <i-option v-for="item in crmdata" :value="item.status" :key="item.status">{{ item.status }}</i-option>
+													    </i-select>
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17059">Assignee</label>
+                              <i-select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
+													      <i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
+													    </i-select>
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17075">Product line</label>
+                              <i-select v-model="finaldata.product_line" style="width:100px">
+													      <i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
+													    </i-select>
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17091">Contract date</label>
+                              <!-- <form-item prop="date"> -->
+				                        <date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:60% !important"></date-picker>
+				                    	<!-- </form-item> -->
+                              <!-- <input class="form-control" type="date" id="contractdate"
+                              /> -->
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17104">Next Action</label>
+                              <date-picker type="date" placeholder="Select date" v-model="finaldata.nextdate" style="width:60% !important"></date-picker>
+                              <!-- <input class="form-control" type="date" id="nextdate"
+                              /> -->
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17117">Price</label>
+                              <Input v-model="finaldata.priceinput" placeholder="Enter Price..." style="width: 30%"></Input>
+                              <!-- <input class="form-control" type="text" id="priceinput" /> -->
+                              <i-select v-model="finaldata.price" style="width:30% !important">
+													      <i-option v-for="item in crmdata" :value="item.price" :key="item.price">{{ item.price }}</i-option>
+													    </i-select>                                    </p>
+                          <p>
+                              <label class="col-xs-3" id="c17139">Email</label>
+                              <Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%"></Input>
+                              <!-- <input class="form-control" type="text" id="email" /> -->
+                          </p>
+                          <p>
+                              <label class="col-xs-3" id="c17152">Phone</label>
+                              <Input v-model="finaldata.phone" placeholder="Enter Phone..." style="width: 60%"></Input>
+                              <!-- <input class="form-control" type="text" id="phone" /> -->
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <span class="panel" id="c17165">
+            <button class="form-control" id="create" @click="postdata()">Create</button>
+            <button class="form-control" id="createandcontinue">Create and Continue</button>
+          </span>
+      </div>
+  </div>
+</div>
 </template>
 <script>
 import config from '../../config/customConfig.js'
+import Cookies from 'js-cookie';
 var nextdate;
 var priceinput;
 var price;
@@ -128,12 +140,31 @@ var status;
 var assignee;
 var product_line;
 var contractdate;
+var momapi = config.default.momapi + "project"
 var databasepost = config.default.serviceUrl + "crm-case/";
+var assigneeapi = config.default.assigneeapi
 	export default {
     name: 'newcrm',
     data() {
       return {
-        data3:[] 
+        data:[],
+        crmdata: [],
+        finaldata: {
+        	name: '',
+        	cname: '',
+        	project: '',
+					status: '',
+					assignee: [],
+					product_line: '',
+					contractdate: '',
+					nextdate: '',
+					priceinput: '',
+					price: '',
+					email: '',
+					phone: '', 
+        },
+        momdata: [],
+        assigneedata: []
       }
     },
     methods: {
@@ -153,11 +184,12 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	        // console.log("resp data",result);
 	        result.forEach(item => {
 				var customer = item.Name;
-				this.data3.push(customer)
+				this.data.push(customer)
 				})
     	},
 
     	async dbdata() {
+    		var self = this
     		await $.ajax({
 			    url: databaseurl,
 			    success: function (data) {
@@ -168,66 +200,71 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 			});
 			// console.log("json data databaseurl",result1);
 			result1.forEach(function(item){
-				project = item.project_name;
+				// project = item.project_name;
 				status = item.project_status;
 				assignee = item.assignee;
 				price = item.price;
 				product_line = item.product_line;
-				$("#project").append('<option>'+ project +'</option>');
-				$("#status").append('<option>'+ status +'</option>');
-				$("#assignee").append('<option>'+ assignee +'</option>');
-				$("#price").append('<option>'+ price +'</option>');
-				$("#product_line").append('<option>'+ product_line +'</option>');
-				// console.log('!!!!!!!!!!!!', item);
+				self.crmdata.push({status:status,price:price,product_line:product_line})
 			})
     	},
 
     	async postdata() {
-    		name = $('#name').val()
-			cname = $('#customer').val()
-			project = $('#project').val()
-			status = $('#status').val()
-			assignee = $('#assignee').val()
-			product_line = $('#product_line').val()
-			contractdate = $('#contractdate').val()
-			nextdate = $('#nextdate').val()
-			priceinput = $('#priceinput').val()
-			price = $('#price').val()
-			email = $('#email').val()
-			phone = $('#phone').val()
-			var obj = {
-				name: name,
-				cname: cname,
-				project: project,
-				status: status,
-				assignee : assignee,
-				product_line: product_line,
-				contractdate : contractdate,
-			    nextdate : nextdate,
-			    priceinput : priceinput,
-			    price : price,
-			    email: email,
-			    phone: phone
-			}
-
-			console.log("obj", obj, databasepost)
-			await $.ajax({
-				type: 'POST',
-			    url: databasepost,
-			    data: obj,
-			    success: function (data1) {
-			        result = data1;
-					console.log("json data******123",result);
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-			});
+				console.log("obj", this.finaldata)
+				await $.ajax({
+					type: 'POST',
+				    url: databasepost,
+				    data: this.finaldata,
+				    success: function (data1) {
+				        result = data1;
+						console.log("json data******123",result);
+				    },error: function(err){
+				       console.log("error",err);
+				    }
+				});
     },
     show() {
       this.$router.push('/edit-crm/'+index)
     },
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+  	},
+
+  	async projectlist() {
+  		var self = this
+  		await $.ajax({
+			    url: momapi,
+			    success: function (data) {
+			        result1 = data;
+			    },error: function(err){
+			       console.log("error",err);
+			    }
+			});
+
+			result1.forEach(item => {
+				var project = item.project_name;
+				// this.data.push(customer)
+	      self.momdata.push({project: project})
+				})
+  	},
+
+  	async assigneelist() {
+  		var self = this
+  		await $.ajax({
+  				headers: {
+  					'Authorization': Cookies.get('auth_token')
+  				},
+			    url: assigneeapi,
+			    success: function (data) {
+			        result1 = data.data;
+			        console.log(result1);
+			        self.assigneedata = result1;
+			    },error: function(err){
+			       console.log("error",err);
+			    }
+			});
+
+			
   	}
 
     },
@@ -235,6 +272,8 @@ var databasepost = config.default.serviceUrl + "crm-case/";
     	CKEDITOR.replace("editor1"),
     	this.calldata(),
     	this.dbdata()
+    	this.projectlist()
+    	this.assigneelist()
 	}
 }
 
@@ -318,15 +357,6 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	    padding-right: 17px;
 	    padding-bottom: 10px;
 	    padding-left: 17px;
-	    background-image: initial;
-	    background-position-x: initial;
-	    background-position-y: initial;
-	    background-size: initial;
-	    background-repeat-x: initial;
-	    background-repeat-y: initial;
-	    background-attachment: initial;
-	    background-origin: initial;
-	    background-clip: initial;
 	    background-color: rgb(241, 241, 241);
 	    border-top-width: 1px;
 	    border-right-width: 1px;
@@ -340,11 +370,6 @@ var databasepost = config.default.serviceUrl + "crm-case/";
 	    border-right-color: rgb(230, 233, 237);
 	    border-bottom-color: rgb(230, 233, 237);
 	    border-left-color: rgb(230, 233, 237);
-	    border-image-source: initial;
-	    border-image-slice: initial;
-	    border-image-width: initial;
-	    border-image-outset: initial;
-	    border-image-repeat: initial;
 	}
 
 	#c16913 {
