@@ -1,35 +1,89 @@
 <template>
     <div>
+        
         <div class="settings_header">
             <Button @click="addNewConfig">Add New Configuration</Button>
         </div>
 
         
-    <RadioGroup v-model="radio7" :on-change="defaultChanged()">
+    <!-- <RadioGroup v-model="radio7" :on-change="defaultChanged()"> -->
         <div  v-for="chunk in productChunks">
             <div  v-for="product in chunk" style="float:left;width:50%;padding:10px">
             <Widget>
-                <WidgetHeading :id="1" :Title="Configurations" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
+                <WidgetHeading :id="1" :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
                 <WidgetBody>
-                    <h4>User : {{ product.user}}</h4>
-                    <h4>Domain : {{ product.domain}}</h4>
-                    <h4>Consumer key : {{ product.consumerKey}}</h4>
-                    <h4>Consumer secret : {{ product.consumerSecret}}</h4>
-                    <h4>User agent: {{ product.useragent}}</h4>
                     
+
+                    <table id="t01">
+                    <tr >
+                        <th colspan="2">{{product.configName}}</th>
+                    </tr>
+                    <tr>
+                        <td>User</td>
+                        <td>{{ product.user}}</td>
+                    </tr>
+                    <tr>
+                        <td>Domain</td>
+                        <td>{{ product.domain}}</td>
+                    </tr>
+
+                    <tr v-if="product.domain == 'xero'">
+                        <td >Consumer key </td>
+                        <td >{{ product.consumerKey}}</td>
+                    </tr>
+                    <tr v-else>
+                        <td >Client ID </td>
+                        <td >{{product.client_id}}</td>
+                    </tr>
+
+                    <tr v-if="product.domain == 'xero'">
+                        <td >Consumer secret </td>
+                        <td >{{ product.consumerSecret}}</td>
+                    </tr>
+                    <tr v-else>
+                        <td >Client secret </td>
+                        <td >{{product.client_secret}}</td>
+                    </tr>
+
+                    <tr v-if="product.domain == 'xero'">
+                        <td >User agent</td>
+                        <td >{{ product.useragent}}</td>
+                    </tr>
+                    <tr v-else>
+                        <td >realmId </td>
+                        <td >{{product.realmId}}</td>
+                    </tr>
+
+                    <tr v-if="product.domain == 'xero'">
+                        <td >Certificate </td>
+                        <td >{{ product.pem}}</td>
+                    </tr>
+                    <tr v-else>
+                        <td >Refresh Token: </td>
+                        <td >{{product.refresh_token}}</td>
+                    </tr>
+                    </table>
                     
-                        <!-- <Radio  :label ="product.id">Make As Default</Radio> -->
-                        <div class="default_radio">
-                        <input  name="myfield" type="radio" v-bind:checked="product.isdefault==true"  v-bind:value="product.id" >
-                        <label>Set As Default</label>
-                        </div>
-                    
+                    <div class="actionDiv">
+                    <Tooltip placement="top" content="Toggle active / inactive">
+                    <i-switch v-model="product.isActive" :disabled="disabled" @on-change="buttonClicked(product)"></i-switch>
+                    </Tooltip>
+                    <ButtonGroup>
+                        <Tooltip placement="top" content="Delete">
+                        <Button class="ButtonGroup" @click="deleteConfig(product)"   type="ghost" icon="trash-b"></Button>
+                        </Tooltip>
+                        <Tooltip placement="top" content="Edit">
+                        <Button class="ButtonGroup" @click="editConfig(product)" type="ghost" icon="edit"></Button>
+                        </Tooltip>
+                    </ButtonGroup>
+                    </div>
+                       
                 </WidgetBody>
             </Widget>
             
             </div>
         </div>
-        </RadioGroup>
+        <!-- </RadioGroup> -->
     </div>
 </template>
 
@@ -48,7 +102,8 @@ Vue.use(VueWidgets);
     export default {
         data () {
             return {
-                radio7 : '',
+                disabled:false,
+                switch1: false,
                 comp: true,
                 Configurations: "Configurations",
                 columns7: [
@@ -96,6 +151,68 @@ Vue.use(VueWidgets);
             defaultChanged(e){
                 
                 console.log(e)
+            },
+            change (status) {
+                
+            },
+            deleteConfig(data){
+                axios({
+                    method:'patch',
+                    url:feathersUrl +'settings/'+data.id,
+                    data:{isDeleated : true },
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                }).then(response => {
+                    if(response.status == 200){
+                        this.$Message.success("Configuaration deleated successfully")
+                        let deletedData =  this.data6.filter(function(el) {
+                            return el.id !== data.id;
+                        });
+                        this.data6 = deletedData, null, ' '
+                    }
+                    
+                })
+                .catch(error => {
+                        console.log(error)
+                        
+                        Cookies.remove('auth_token') 
+                        this.$Message.error('Auth Error!');
+                       this.$store.commit('logout', this); 
+                        this.$router.push({
+                        name: 'login'
+                    })
+                });
+                
+            },
+            editConfig(data){
+
+            },
+            buttonClicked(data){
+                this.disabled = true;
+                axios({
+                    method:'patch',
+                    url:feathersUrl +'settings/'+data.id,
+                    data:{isActive : data.isActive },
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                }).then(response => {
+                    if(response.status == 200){
+                        this.$Message.success("Configuaration updated successfully")
+                    }
+                    this.disabled = false;
+                })
+                .catch(error => {
+                        console.log(error)
+                        this.disabled = false;
+                        Cookies.remove('auth_token') 
+                        this.$Message.error('Auth Error!');
+                       this.$store.commit('logout', this); 
+                        this.$router.push({
+                        name: 'login'
+                    })
+                });
             }
         },
         computed: {
@@ -149,5 +266,37 @@ Vue.use(VueWidgets);
     padding: 12px 5px;
     width: auto;
     float: right;
+}
+
+table {
+    width:100%;
+}
+table, th, td {
+    border:  1px solid #d6d6d6;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+table#t01 tr:nth-child(even) {
+    background-color: #eee;
+}
+table#t01 tr:nth-child(odd) {
+   background-color:#fff;
+}
+table#t01 th {
+    background-color: #232038;
+    color: white;
+}
+.actionDiv{
+   padding: 6px;
+    text-align: -webkit-right;
+    background: #f3f3f3;
+    margin-top: 3px;
+}
+
+.ButtonGroup  {
+    margin-left : 10px
 }
 </style>

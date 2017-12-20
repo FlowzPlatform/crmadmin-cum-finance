@@ -6,6 +6,10 @@
         <Tabs type="card">
             <TabPane label="Xero">
                 <Form ref="XeroformValidate" :model="XeroformValidate" :rules="XeroruleValidate" :label-width="100">
+                    <FormItem label="Configuration Name" prop="configName">
+                        <Input v-model="XeroformValidate.configName" placeholder="Enter your Configuration Name"></Input>
+                    </FormItem>
+                    
                     <FormItem label="User Agent" prop="useragent">
                         <Input v-model="XeroformValidate.useragent" placeholder="Enter your useragent"></Input>
                     </FormItem>
@@ -25,8 +29,8 @@
                         </Upload>
                         <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
                     </FormItem>
-                    <FormItem label="Set as default" prop="setAsDefault">
-                        <Checkbox size="large" v-model="isdefault"></Checkbox>
+                    <FormItem label="Set as Active" prop="setAsDefault">
+                        <Checkbox size="large" v-model="isActive"></Checkbox>
                     </FormItem>
                     <FormItem>
                         <Button type="primary" @click="XerohandleSubmit('XeroformValidate')" :loading ="loading">Submit</Button>
@@ -37,6 +41,9 @@
             </TabPane>
             <TabPane label="Quickbook">
                 <Form ref="QBformValidate" :model="QBformValidate" :rules="QBruleValidate" :label-width="100">
+                    <FormItem label="Configuration Name" prop="configName">
+                        <Input v-model="QBformValidate.configName" placeholder="Enter your Configuration Name"></Input>
+                    </FormItem>
                     <FormItem label="Refresh Token" prop="refresh_token">
                         <Input v-model="QBformValidate.refresh_token" placeholder="Enter your refresh_token"></Input>
                     </FormItem>
@@ -49,9 +56,11 @@
                     <FormItem label="RealmId" prop="realmId">
                         <Input v-model="QBformValidate.realmId" placeholder="Enter your realmId"></Input>
                     </FormItem>
-                    
+                    <FormItem label="Set as Active" prop="setAsDefault">
+                        <Checkbox size="large" v-model="isActiveQb"></Checkbox>
+                    </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')"  >Submit</Button>
+                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')" :loading ="loading" >Submit</Button>
                         <Button type="ghost" @click="handleReset('QBformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
                 </Form>
@@ -82,9 +91,11 @@ Vue.use(VueWidgets);
                tabs: 1 ,
                loading : false,
                file: null,
-               isdefault: false,
+               isActive: false,
+               isActiveQb:false,
                 loadingStatus: false,
                XeroformValidate: {
+                    configName : '',
                     useragent: '',
                     consumerKey:'',
                     consumerSecret:'',
@@ -100,17 +111,21 @@ Vue.use(VueWidgets);
                     consumerSecret: [
                         { required: true, message: "Consumer Secret cannot be empty", trigger: 'blur' }
                     ],
-                    // privateKey: [
-                    //     { required: true, message: "Private Key cannot be empty", trigger: 'blur' }
-                    // ]
+                    configName: [
+                        { required: true, message: "config Name Key cannot be empty", trigger: 'blur' }
+                    ]
                 },
                 QBformValidate: {
+                    configName : '',
                     refresh_token: '',
                     client_id:'',
                     client_secret:'',
                     realmId: ''
                 },
                 QBruleValidate: {
+                    configName: [
+                        { required: true, message: "config Name Key cannot be empty", trigger: 'blur' }
+                    ],
                     refresh_token: [
                         { required: true, message: 'Refresh token cannot be empty', trigger: 'blur' }
                     ],
@@ -139,28 +154,15 @@ Vue.use(VueWidgets);
                 this.file = file
                 return false;
             },
-            async createImage(file) {
-            //return new Promise((resolve, reject) => {
-                var image = new Image();
-                var reader = new FileReader();
-                var vm = this;
-                console.log(reader)
-                 reader.onload = (e) => {
-                     console.log(reader)
-                    //vm.image = e.target.result;
-                };
-                // resolve(new1)
-                
-           // })
-            },
             
             async XerohandleSubmit (name) {
                 let self = this;
+                alert(self.tabs)
 
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
                         console.log(this.file)
-                        if(self.file == null || self.file.type !== "application/x-x509-ca-cert"){
+                        if( self.file == null || self.file.type !== "application/x-x509-ca-cert"){
                             self.$Message.error(' Please, attach a .pem file!');
                         }else{
                             this.loading = true;
@@ -171,22 +173,28 @@ Vue.use(VueWidgets);
                            
                             let lastModified = self.file.lastModified +"-"+self.file.name;
                             
+                            let  data = {
+                                    "configName": self.XeroformValidate.configName.trim(),
+                                    "certificate" : reader.result  ,
+                                    "useragent" :  self.XeroformValidate.useragent,
+                                    "consumerKey" : self.XeroformValidate.consumerKey,
+                                    "consumerSecret" : self.XeroformValidate.consumerSecret,
+                                    "domain" :  'xero' ,
+                                    "pem" : lastModified,
+                                    "isActive" : self.isActive,
+                                    "isDeleated" : false
+                                }
+                            
+                              
+                           
+                            
                             axios({
                                 method: 'post',
                                 url: feathersUrl +'settings',
                                 headers:{
                                     Authorization : Cookies.get('auth_token')
                                 },
-                                data: {
-                                   "certificate" : reader.result  ,
-                                    "useragent" :  self.XeroformValidate.useragent,
-                                    "consumerKey" : self.XeroformValidate.consumerKey,
-                                    "consumerSecret" : self.XeroformValidate.consumerSecret,
-                                    "domain" : self.tabs == 1 ? 'xero' : 'qb',
-                                    "pem" : lastModified,
-                                    "isdefault" : self.isdefault,
-                                    "isActive" : true
-                                }
+                                data: data
                             })  
                             .then(function (response) {
                                 console.log(response)
@@ -217,11 +225,45 @@ Vue.use(VueWidgets);
             },
 
             async QBhandleSubmit (name) {
+
                 let self = this;
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
+                        self.loading = true;
+                        let  data = {
+                                    "configName": self.QBformValidate.configName.trim(),
+                                    "refresh_token" :  self.QBformValidate.refresh_token,
+                                    "client_id" : self.QBformValidate.client_id,
+                                    "client_secret" : self.QBformValidate.client_secret,
+                                    "domain" : 'qb',
+                                    "realmId" : self.QBformValidate.realmId,
+                                    "isActive" : self.isActiveQb,
+                                    "isDeleated" : false
+                                }
+                        axios({
+                                method: 'post',
+                                url: feathersUrl +'settings',
+                                headers:{
+                                    Authorization : Cookies.get('auth_token')
+                                },
+                                data: data
+                            })  
+                            .then(function (response) {
+                                console.log(response)
+                                 self.$Message.success('Success!');
+                                 self.loading = false;
+                            })
+                            .catch(function (error) {
+                                Cookies.remove('auth_token') 
+                                self.$Message.error('Auth Error!');
+                                self.loading = false;
+                                  self.$store.commit('logout', this); 
+                                   self.$router.push({
+                                    name: 'login'
+                                })
+                               
+                            });
                         self.$Message.success('Success!');
-                        alert(self.QBformValidate.refresh_token + self.QBformValidate.client_id + self.QBformValidate.client_secret + self.QBformValidate.realmId)
                         self.handleReset('QBformValidate')
                     }
                     else {
