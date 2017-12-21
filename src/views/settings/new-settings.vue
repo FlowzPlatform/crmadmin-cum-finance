@@ -175,11 +175,11 @@ Vue.use(VueWidgets);
                             
                             let  data = {
                                     "configName": self.XeroformValidate.configName.trim(),
-                                    "certificate" : reader.result  ,
+                                    "certificate" : reader.result.substring( reader.result.indexOf(",")+1)  ,
                                     "useragent" :  self.XeroformValidate.useragent,
                                     "consumerKey" : self.XeroformValidate.consumerKey,
                                     "consumerSecret" : self.XeroformValidate.consumerSecret,
-                                    "domain" :  'xero' ,
+                                    "domain" :  'Xero' ,
                                     "pem" : lastModified,
                                     "isActive" : self.isActive,
                                     "isDeleated" : false
@@ -235,7 +235,7 @@ Vue.use(VueWidgets);
                                     "refresh_token" :  self.QBformValidate.refresh_token,
                                     "client_id" : self.QBformValidate.client_id,
                                     "client_secret" : self.QBformValidate.client_secret,
-                                    "domain" : 'qb',
+                                    "domain" : 'QB',
                                     "realmId" : self.QBformValidate.realmId,
                                     "isActive" : self.isActiveQb,
                                     "isDeleated" : false

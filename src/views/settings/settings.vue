@@ -7,17 +7,14 @@
 
         
     <!-- <RadioGroup v-model="radio7" :on-change="defaultChanged()"> -->
-        <div  v-for="chunk in productChunks">
-            <div  v-for="product in chunk" style="float:left;width:50%;padding:10px">
+        <div  v-for="(chunk , index) in productChunks">
+            <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px">
             <Widget>
-                <WidgetHeading :id="1" :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
+                <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
                 <WidgetBody>
                     
-
                     <table id="t01">
-                    <tr >
-                        <th colspan="2">{{product.configName}}</th>
-                    </tr>
+                   
                     <tr>
                         <td>User</td>
                         <td>{{ product.user}}</td>
@@ -27,25 +24,41 @@
                         <td>{{ product.domain}}</td>
                     </tr>
 
-                    <tr v-if="product.domain == 'xero'">
+                    <tr v-if="product.domain == 'Xero'">
                         <td >Consumer key </td>
-                        <td >{{ product.consumerKey}}</td>
+                        <td>
+                            <Input type="password" readonly :value='product.consumerKey'>
+                                <Button slot="append" icon="eye"></Button>
+                            </Input>                            
+                        </td>
                     </tr>
                     <tr v-else>
                         <td >Client ID </td>
-                        <td >{{product.client_id}}</td>
+                        <td>
+                             <Input type="password" readonly :value='product.client_id'>
+                                <Button slot="append" icon="eye"></Button>
+                            </Input>
+                        </td>
                     </tr>
 
-                    <tr v-if="product.domain == 'xero'">
+                    <tr v-if="product.domain == 'Xero'">
                         <td >Consumer secret </td>
-                        <td >{{ product.consumerSecret}}</td>
+                        <td>
+                            <Input type="password" readonly :value='product.consumerSecret'>
+                                <Button slot="append" icon="eye"></Button>
+                            </Input>
+                        </td>
                     </tr>
                     <tr v-else>
                         <td >Client secret </td>
-                        <td >{{product.client_secret}}</td>
+                        <td>
+                            <Input type="password" readonly :value='product.client_secret'>
+                                <Button slot="append" icon="eye"></Button>
+                            </Input>
+                        </td>
                     </tr>
 
-                    <tr v-if="product.domain == 'xero'">
+                    <tr v-if="product.domain == 'Xero'">
                         <td >User agent</td>
                         <td >{{ product.useragent}}</td>
                     </tr>
@@ -54,7 +67,7 @@
                         <td >{{product.realmId}}</td>
                     </tr>
 
-                    <tr v-if="product.domain == 'xero'">
+                    <tr v-if="product.domain == 'Xero'">
                         <td >Certificate </td>
                         <td >{{ product.pem}}</td>
                     </tr>
@@ -105,6 +118,7 @@ Vue.use(VueWidgets);
                 disabled:false,
                 switch1: false,
                 comp: true,
+                showPass: false,
                 Configurations: "Configurations",
                 columns7: [
                     {
@@ -298,5 +312,9 @@ table#t01 th {
 
 .ButtonGroup  {
     margin-left : 10px
+}
+.eyeIcon{
+    float:right;
+    font-size:16px 
 }
 </style>
