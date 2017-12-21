@@ -38,6 +38,7 @@
     "vue-particles": "^1.0.9",
     "vue-router": "^3.0.1",
     "vue-widgets": "^1.0.9",
+    "vuedraggable": "^2.15.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

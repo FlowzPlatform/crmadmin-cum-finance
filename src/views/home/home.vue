@@ -70,39 +70,38 @@
                 <Row :gutter="5">
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
-                            id-name="user_created_count"
-                            :end-val="count.createUser"
-                            iconType="android-person-add"
+                            id-name="total_count"
+                            :end-val="count.total"
+                            iconType="social-usd"
                             color="#2d8cf0"
-                            intro-text="今日新增用户"
+                            intro-text="Total Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
-                            id-name="visit_count"
-                            :end-val="count.visit"
-                            iconType="ios-eye"
+                            id-name="paid_count"
+                            :end-val="count.paid"
+                            iconType="social-usd"
                             color="#64d572"
-                            :iconSize="50"
-                            intro-text="今日浏览量"
+                            intro-text="Paid Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
-                            id-name="collection_count"
-                            :end-val="count.collection"
-                            iconType="upload"
+                            id-name="unpaid_count"
+                            :end-val="count.unpaid"
+                            iconType="social-usd"
                             color="#ffd572"
-                            intro-text="今日数据采集量"
+                            intro-text="Unpaid Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
                         <infor-card
-                            id-name="transfer_count"
-                            :end-val="count.transfer"
-                            iconType="shuffle"
+                            id-name="draft_count"
+                            :end-val="count.draft"
+                            iconType="social-usd"
                             color="#f25e43"
-                            intro-text="今日服务调用量"
+                            intro-text="Draft Amount"
                         ></infor-card>
                     </Col>
                 </Row>
@@ -127,50 +126,83 @@
             </Col>
         </Row>
         <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
-                <Card>
-                    <p slot="title" class="card-title">
-                        <Icon type="android-map"></Icon>
-                        上周每日来访量统计
-                    </p>
-                    <div class="data-source-row">
-                        <visite-volume></visite-volume>
-                    </div>
-                </Card>
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                <draggable :options="{group:'chart'}">
+                            
+                    <!-- BEGIN PORTLET-->
+                    <Widget>
+                    <WidgetHeading :id="4" :Title="'Bar Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetBody>                                    
+                        <div class="portlet-body">
+                            <div id="chart1_loading">
+                                <img src="" alt="loading.." /> 
+                            </div>
+                            <div id="chart1_content">
+                                <div id="barChart" style="height:400px;"></div>
+                            </div>
+                        </div>
+                    </WidgetBody>
+                    </Widget>
+                    <!-- END PORTLET-->
+                            
+                </draggable>
             </Col>
-            <Col :md="24" :lg="8" :style="{marginBottom: '10px'}">
-                <Card>
-                    <p slot="title" class="card-title">
-                        <Icon type="ios-pulse-strong"></Icon>
-                        数据来源统计
-                    </p>
-                    <div class="data-source-row">
-                        <data-source-pie></data-source-pie>
-                    </div>
-                </Card>
-            </Col>
-            <Col :md="24" :lg="8">
-                <Card>
-                    <p slot="title" class="card-title">
-                        <Icon type="android-wifi"></Icon>
-                        各类用户服务调用变化统计
-                    </p>
-                    <div class="data-source-row">
-                        <user-flow></user-flow>
-                    </div>
-                </Card>
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                    <draggable :options="{group:'chart'}">
+                        <!-- BEGIN PORTLET-->
+                        <Widget>
+                        <WidgetHeading :id="2" :Title="'Pie Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetBody>                                    
+                            <div class="portlet-body">
+                                <div id="chart2_loading">
+                                <img src="" alt="loading.." /> </div>
+                                <div id="chart2_content">
+                                    <div id="pieChart" style="height:400px;"></div>
+                                </div>
+                            </div>
+                        </WidgetBody>
+                        </Widget>
+                        <!-- END PORTLET-->
+                    </draggable>
             </Col>
         </Row>
-        <Row class="margin-top-10">
-            <Card>
-                <p slot="title" class="card-title">
-                    <Icon type="ios-shuffle-strong"></Icon>
-                    上周每日服务调用量(万)
-                </p>
-                <div class="line-chart-con">
-                    <service-requests></service-requests>
-                </div>
-            </Card>
+        <Row :gutter="10" class="margin-top-10">
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                <draggable :options="{group:'chart'}">
+                        <!-- BEGIN PORTLET-->
+                        <Widget>
+                        <WidgetHeading :id="3" :Title="'Line Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetBody>                                    
+                            <div class="portlet-body">
+                                <div id="chart3_loading">
+                                    <img src="" alt="loading.." /> </div>
+                                <div id="chart3_content">
+                                    <div id="lineChart" style="height:400px;"> </div>
+                                </div>
+                            </div>
+                        </WidgetBody>
+                        </Widget>
+                        <!-- END PORTLET-->
+                </draggable>
+            </Col>
+            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+                <draggable :options="{group:'chart'}">
+                    <!-- BEGIN PORTLET-->
+                    <Widget>
+                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetBody>                                    
+                        <div class="portlet-body">
+                            <div id="chart4_loading">
+                                <img src="" alt="loading.." /> </div>
+                            <div id="chart4_content">
+                                <div id="waterfall" style="height: 400px;"> </div>
+                            </div>
+                        </div>
+                    </WidgetBody>
+                    </Widget>
+                    <!-- END PORTLET-->
+                </draggable>
+            </Col>
         </Row>
     </div>
 </template>
@@ -186,6 +218,7 @@ import countUp from './components/countUp.vue';
 import inforCard from './components/inforCard.vue';
 import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
+import draggable from 'vuedraggable'
 
 export default {
     name: 'home',
@@ -198,7 +231,8 @@ export default {
         countUp,
         inforCard,
         mapDataTable,
-        toDoListItem
+        toDoListItem,
+        draggable
     },
     data () {
         return {
@@ -220,10 +254,10 @@ export default {
                 }
             ],
             count: {
-                createUser: 496,
-                visit: 3264,
-                collection: 24389305,
-                transfer: 39503498
+                total: 0,
+                paid: 0,
+                unpaid: 0,
+                draft: 0
             },
             cityData: cityData,
             showAddNewTodo: false,
@@ -255,7 +289,315 @@ export default {
         cancelAdd () {
             this.showAddNewTodo = false;
             this.newToDoItemValue = '';
-        }
+        },
+        async ChartFun() {
+            var chartdata;
+            await $.ajax({
+            type: 'GET',
+            url: "http://localhost:3037/invoice?domain=Xero&chart=bar&date1=2017-09-05&date2=2017-12-15",
+            async: true,
+            dataType: 'json',
+            success: function (data) {
+                chartdata = data;
+                console.log("chart data",data);
+            },error: function(err) {
+                console.log("Error",err)
+            }
+            })
+            return chartdata
+        },
+        // Bar chart
+        async barChartFun() {
+            // based on prepared DOM, initialize echarts instance
+            var barchart = echarts.init(document.getElementById('barChart'))
+            var chart_data = await this.ChartFun()
+            // specify chart configuration item and data
+            var option = {
+                tooltip: {},
+                legend: {
+                    bottom: 10,
+                    left: 'center',
+                    data: []
+                },
+                xAxis: {
+                    data: []
+                },
+                yAxis: {},
+                series: []
+            };
+
+            // console.log("chart_data",chart_data);
+            chart_data[0].data.forEach(function(invoice_data) {
+                option.xAxis.data.push(invoice_data.label)
+            })
+
+            chart_data.forEach(function(invoice) {
+                var series = {
+                name: invoice.name,
+                type: 'bar',
+                data: []
+                }
+                option.legend.data.push(invoice.name)
+                invoice.data.forEach(function(invoice_data) {
+                series.data.push(invoice_data.y)
+                })
+                option.series.push(series)
+            })
+
+            console.log("options",option)
+            // use configuration item and data specified to show chart
+            document.getElementById('chart1_loading').style = "display:none"
+            barchart.setOption(option)
+        },
+         //Pie Chart
+        async PieChartFun() {
+            var chartdata;
+            await $.ajax({
+                type: 'GET',
+                url: "http://localhost:3037/invoice?domain=Xero&chart=pie&date1=2017-09-05&date2=2017-12-15",
+                async: true,
+                dataType: 'json',
+                success: function (data) {
+                    chartdata = data;
+                    console.log("pie chart data",data);
+                },error: function(err) {
+                    console.log("Error",err)
+                }
+            });
+            return chartdata;
+        },
+        async pieChartFun() {
+            // based on prepared DOM, initialize echarts instance
+            var piechart = echarts.init(document.getElementById('pieChart'));
+            var chart_data = await this.PieChartFun();
+            // specify chart configuration item and data
+            var option = {
+            tooltip: {},
+            legend: {
+                bottom: 10,
+                left: 'center',
+                data: []
+            },
+            series: [{
+                name: 'Sales',
+                type: 'pie',
+                radius: '65%',
+                center: ['50%', '50%'],
+                selectedMode: 'single',
+                data: [ ]
+            }]
+            };
+            chart_data.forEach(function(piedata) {
+                // console.log("piedata",piedata);
+                option.legend.data.push(piedata.name);
+                option.series[0].data.push(piedata);
+            })
+            // use configuration item and data specified to show chart
+            document.getElementById('chart2_loading').style = "display:none"
+            piechart.setOption(option);
+        },
+        async lineChartFun() {
+            // based on prepared DOM, initialize echarts instance
+            var linechart = echarts.init(document.getElementById('lineChart'));
+            var chart_data = await this.ChartFun();
+            // specify chart configuration item and data
+            var option = {
+            tooltip: {
+                axisPointer: {
+                type: 'cross'
+                }
+            },
+            legend: {
+                bottom: 10,
+                left: 'center',
+                data: ['2017']
+            },
+            xAxis: [{
+                type: 'category',
+                axisTick: {
+                alignWithLabel: true
+                },
+                axisLine: {
+                onZero: false
+                },
+                data: [ ]
+            }],
+            yAxis: {},
+            series: []
+            };
+            chart_data[0].data.forEach(function(invoice_data) {
+            option.xAxis[0].data.push(invoice_data.label);
+            })
+            chart_data.forEach(function(invoice) {
+            var series = {
+                name: invoice.name,
+                type: 'line',
+                smooth: true,
+                data: []
+            }
+            option.legend.data.push(invoice.name);
+            invoice.data.forEach(function(invoice_data) {
+                series.data.push(invoice_data.y)
+            })
+            option.series.push(series);
+            })
+            // console.log("Inside line chart option",option)
+            // use configuration item and data specified to show chart
+            document.getElementById('chart3_loading').style = "display:none" 
+            linechart.setOption(option);
+        },
+        //Cashflow
+        async waterfall() {
+            var chartdata;
+            await $.ajax({
+            type: 'GET',
+            url: "http://localhost:3037/invoice?domain=Xero&chart=cashflow&date1=2017-09-05&date2=2017-12-15",
+            async: true,
+            dataType: 'json',
+            success: function (data) {
+                chartdata = data;
+                // console.log("waterfall chart data",data);
+            },error: function(err) {
+                console.log("Error",err)
+            }
+            });
+            return chartdata;
+        },
+
+        async waterfallFun() {
+            // based on prepared DOM, initialize echarts instance
+            var waterfallChart = echarts.init(document.getElementById('waterfall'));
+            var chart_data = await this.waterfall();
+
+            var data1 = [];
+            var data2 = [];
+            var data3 = [];
+            // specify chart configuration item and data
+            var option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer : {
+                    type : 'shadow'
+                },
+                formatter: function (params) {
+                    return params[0].value + params[1].value
+                }
+            },
+            legend: {
+                data: ['']
+            },
+            xAxis: [{
+                type: 'category',
+                splitLine: {show:false},
+                data: [ ]
+            }],
+            yAxis: {
+                type : 'value'
+            },
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'account',
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: 'rgba(0,0,0,0)',
+                            color: 'rgba(0,0,0,0)'
+                        },
+                        emphasis: {
+                            barBorderColor: 'rgba(0,0,0,0)',
+                            color: 'rgba(0,0,0,0)'
+                        }
+                    },
+                    data: data1
+                },
+                {
+                    type: 'bar',
+                    stack: 'account',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: data2
+                },
+                {
+                    type: 'bar',
+                    stack: 'account',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: data3
+                }
+            ]
+            };
+            var data_arr = [];
+            chart_data.forEach(function(chart_data1) {
+            option.xAxis[0].data.push(chart_data1.label);
+            data_arr.push(chart_data1.y);
+            })
+            // console.log("waterfall data_arr",data_arr);
+
+            for (var i = 0; i<data_arr.length; i++ ) {
+            var diff = data_arr[i] - data_arr[i-1];
+            if (i == 0) {
+                data1.push(0);
+                data2.push(data_arr[i]);
+                data3.push('-');
+            }
+            else if (diff > 0) {
+                data1.push(data_arr[i-1]);
+                data2.push(diff);
+                data3.push('-');
+            }
+            else if (diff < 0) {
+                data1.push(data_arr[i]);
+                data2.push('-');
+                data3.push(data_arr[i-1] - data_arr[i]);
+            }
+            else {
+                data1.push(data_arr[i]);
+                data2.push(diff);
+                data3.push('-');
+            }
+            }
+
+            // console.log("data1",data1);
+            // console.log("data2",data2);
+            // console.log("data3",data3);
+            document.getElementById('chart4_loading').style = "display:none" 
+            waterfallChart.setOption(option);
+        },
+
+        async totalAmt() {
+            var statsData;
+            await $.ajax({
+                type: 'GET',
+                url: "http://localhost:3037/invoice?domain=Xero&stats=true&date1=2017-09-05&date2=2017-12-15",
+                async: true,
+                dataType: 'json',
+                success: function (data) {
+                statsData = data;
+                console.log("statsData",data);
+                },error: function(err) {
+                console.log("Error",err)
+                }
+            });
+            this.count.total = statsData[0].value
+            this.count.paid = statsData[1].value
+            this.count.unpaid = statsData[2].value
+            this.count.draft = statsData[3].value
+        },
+    },
+    mounted() {
+        this.barChartFun(),
+        this.pieChartFun(),
+        this.lineChartFun(),
+        this.waterfallFun(),
+        this.totalAmt()
     }
 };
 </script>
