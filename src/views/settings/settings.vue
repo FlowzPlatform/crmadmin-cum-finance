@@ -27,15 +27,15 @@
                     <tr v-if="product.domain == 'Xero'">
                         <td >Consumer key </td>
                         <td>
-                            <Input type="password" readonly :value='product.consumerKey'>
-                                <Button slot="append" icon="eye"></Button>
+                            <Input :type="consumerKeyType" readonly :value='product.consumerKey'>
+                                <Button slot="append" icon="eye" @click="showSecret"></Button>
                             </Input>                            
                         </td>
                     </tr>
                     <tr v-else>
                         <td >Client ID </td>
                         <td>
-                             <Input type="password" readonly :value='product.client_id'>
+                             <Input :type="client_idType" readonly :value='product.client_id'>
                                 <Button slot="append" icon="eye"></Button>
                             </Input>
                         </td>
@@ -44,7 +44,7 @@
                     <tr v-if="product.domain == 'Xero'">
                         <td >Consumer secret </td>
                         <td>
-                            <Input type="password" readonly :value='product.consumerSecret'>
+                            <Input :type="consumerSecretType" readonly :value='product.consumerSecret'>
                                 <Button slot="append" icon="eye"></Button>
                             </Input>
                         </td>
@@ -52,7 +52,7 @@
                     <tr v-else>
                         <td >Client secret </td>
                         <td>
-                            <Input type="password" readonly :value='product.client_secret'>
+                            <Input :type="client_secretType" readonly :value='product.client_secret'>
                                 <Button slot="append" icon="eye"></Button>
                             </Input>
                         </td>
@@ -119,6 +119,10 @@ Vue.use(VueWidgets);
                 switch1: false,
                 comp: true,
                 showPass: false,
+                consumerKeyType:"password",
+                client_idType:"password",
+                consumerSecretType:"password",
+                client_secretType:"password",
                 Configurations: "Configurations",
                 columns7: [
                     {
