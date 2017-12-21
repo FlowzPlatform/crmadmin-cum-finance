@@ -255,19 +255,29 @@ export default {
                     .then(function(response) {
                         console.log(response);
                         self.saveFileLoadingLogin = false;
-                        Cookies.set('auth_token', response.data.logintoken);
-                        Cookies.set('user',  'iview_admin');
-                         Cookies.set('email', self.login.email);
-                        Cookies.set('password', '123456');
-                        self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                        if (self.form.email === 'iview_admin') {
-                            Cookies.set('access', 0);
-                        } else {
-                            Cookies.set('access', 1);
-                        }
-                        self.$router.push({
-                            name: 'home_index'
-                        });
+                        axios({
+                            method: 'post',
+                            url: config.default.userDetail,
+                            headers: {'Authorization': response.data.logintoken}
+                        })
+                        .then(function(result) {
+                            console.log(result)
+                             Cookies.set('user',  result.data.data.email);
+                              Cookies.set('auth_token', response.data.logintoken);
+                        
+                            Cookies.set('email', response.data.email);
+                            Cookies.set('password', '123456');
+                            self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                            if (self.form.email === 'iview_admin') {
+                                Cookies.set('access', 0);
+                            } else {
+                                Cookies.set('access', 1);
+                            }
+                            self.$router.push({
+                                name: 'home_index'
+                            });
+                        })
+                       
                     })
                     .catch(function(error) {
                         console.log("error-->", error)
