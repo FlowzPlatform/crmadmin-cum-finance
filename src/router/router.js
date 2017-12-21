@@ -111,7 +111,20 @@ export const appRouter = [
                 icon: 'ios-list-outline',
                 name: 'listcustomer', 
                 component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
-            }
+            },
+            {    path: 'new-relationship', 
+                 title: 'new-relationship',
+                 icon: 'ios-plus-outline',
+                 name: 'newcrm', 
+                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
+            },
+            { 
+                path: 'list-relationship', 
+                title: 'list-relationship',
+                icon: 'ios-list-outline',
+                name: 'listcrm', 
+                component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
+            }  
         ]
     },
     {
@@ -137,29 +150,29 @@ export const appRouter = [
             }
         ]
     },
-    {
-        path: '/crm',
-        icon: 'person-stalker',
-        title: 'CRM',
-        name: 'CRM',
-        component: Main,
-        children: [
-            { 
-                path: 'new-crm', 
-                title: 'new-crm',
-                icon: 'ios-plus-outline',
-                name: 'newcrm', 
-                component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
-            },
-            { 
-                path: 'list-crm', 
-                title: 'list-crm',
-                icon: 'ios-list-outline',
-                name: 'listcrm', 
-                component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
-            }
-        ]
-    },
+    // {
+    //     path: '/crm',
+    //     icon: 'person-stalker',
+    //     title: 'CRM',
+    //     name: 'CRM',
+    //     component: Main,
+    //     children: [
+    //         { 
+    //             path: 'new-crm', 
+    //             title: 'new-crm',
+    //             icon: 'ios-plus-outline',
+    //             name: 'newcrm', 
+    //             component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
+    //         },
+    //         { 
+    //             path: 'list-crm', 
+    //             title: 'list-crm',
+    //             icon: 'ios-list-outline',
+    //             name: 'listcrm', 
+    //             component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
+    //         }
+    //     ]
+    // },
     // {
     //     path: '/international',
     //     icon: 'earth',
