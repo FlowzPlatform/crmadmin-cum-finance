@@ -157,8 +157,7 @@ Vue.use(VueWidgets);
             
             async XerohandleSubmit (name) {
                 let self = this;
-                alert(self.tabs)
-
+                
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
                         console.log(this.file)
