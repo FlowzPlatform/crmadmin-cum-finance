@@ -16,7 +16,7 @@ module.exports =  {
         serviceUrl : "http://localhost:3037/",
         apiurl : "http://172.16.230.225:5000/api/xero/",
         momapi : "http://api.flowz.com/mom/",
-        assigneeapi: "http://api.flowz.com/user/alluserdetails"
+        assigneeapi: "http://api.flowz.com/user/alluserdetails/"
     }
 
 }

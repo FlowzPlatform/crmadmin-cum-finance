@@ -1,4 +1,3 @@
-
 <style scoped>
   .col-md-8 .chat .composeView {
     width: 96%;
@@ -46,7 +45,6 @@
     display: none;
   }
   .chat .message img {
-    /*display: block;*/
     order: 1;
     margin: 0 10px 0 0;
     height: 30px;
@@ -82,7 +80,9 @@
     border-radius: 3px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
-  .chat .message div .emailText {min-height: 33px;}
+  .chat .message div .emailText {
+    min-height: 33px;
+  }
   .chat .message.me div .emailText:before {    position: relative;
       float: right;
       content: "";
@@ -262,158 +262,211 @@
   }
 
   #c2611 {
-      background-color: rgb(0, 200, 169);
-      font-weight: bold;
-      margin-top: 10px;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      margin-left: 10px;
-      color: rgb(255, 255, 255);
-      width: auto !important;
+    background-color: rgb(0, 200, 169);
+    font-weight: bold;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    color: rgb(255, 255, 255);
+    width: auto !important;
   }
 </style> 
 
  
 <template>
-  <div class="chat">
-    <div id="block" style="text-align:right;width:100%">
-      <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="close()">Close</button>
-       <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
-      <button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
-    </div>
-    <textarea style="display:none" id="editor2" name="editor2" ></textarea>
-    <div style="margin-bottom: 10px;margin-right: 10px;">
-      <div class="message">
-        <Row>
-          <Col span="24" >
-          <!-- <div v-for="(item, index) in commentData"> -->
-          <div >
-        <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
-              <!-- <p class="emailText">{{item.Text}}</p> -->
-              <p class="emailText">I am here </p>
-              <span class="receivedDate">
-                <!-- <span>{{getDate(item.date)}}</span> -->
-                <span>1 day ago</span>
-              </span>
-            </div>
-          </Col>
-        </Row>
+   <div class="chat">
+      <div id="block" style="text-align:right;width:100%">
+         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
+         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
+         <button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
       </div>
-      <div class="message me" >
-        <Row>
-          <Col span="24" >    
-            <div v-for="(item, index) in commentData">
-              <img :src="src" />
-                <p class="emailText">{{item.Text}}</p>
-                <span class="sentDate">
-                <span style="color:blue;cursor:pointer" v-on:click="clicked(index)">Edit</span>|
-                 <!-- <span style="color:blue;cursor:pointer" v-on:click="save(index)">Save</span>| -->
-                 <span style="color:red;cursor:pointer">Delete</span>
-                  <span>{{getDate(item.date)}}</span>
-                </span>
-            </div>
-          </Col>
-        </Row>
+      <textarea style="display:none" id="editor2" name="editor2" ></textarea>
+      <div style="margin-bottom: 10px;margin-right: 10px;">
+         <div class="message">
+            <Row>
+               <Col span="24" >
+               <!-- <div v-for="(item, index) in commentData"> -->
+               <div >
+                  <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
+                  <!-- <p class="emailText">{{item.Text}}</p> -->
+                  <p class="emailText">I am here </p>
+                  <span class="receivedDate">
+                     <!-- <span>{{getDate(item.date)}}</span> -->
+                     <span>1 day ago</span>
+                  </span>
+               </div>
+               </Col>
+            </Row>
+         </div>
+         <div class="message me" >
+            <Row>
+               <Col span="24" >
+               <div v-for="(item, index) in commentData">
+                  <img :src="src" />
+                  <p class="emailText">{{item.comment}}</p>
+                  <span class="sentDate">
+                  <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span>|
+                  <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
+                  <span>{{getDate(item.created_at)}}</span>
+                  </span>
+               </div>
+               </Col>
+            </Row>
+         </div>
       </div>
-    </div>
-  </div>
-</template> 
+   </div>
+</template>
 
 <script>
   import gravatar from 'gravatar'
   import moment from 'moment'
   import axios from 'axios'
+  import config from '../../config/customConfig.js'
+  var relationshipcomments = config.default.serviceUrl
+
   export default {
     data() {
-        return { 
-          isActive:false,
-          src : '',
-          commentData: []
-        }
+      return { 
+        isActive:false,
+        src : '',
+        commentData: []
+      }
     },
     methods: {
-      close(){
+      close () {
         var editor = CKEDITOR.instances.editor2
         editor.destroy();
         this.isActive = !this.isActive
         document.getElementById("editor2").style.display = "none";
         document.getElementById("block").style.display = "inline";
       },
-      clicked (index) {
-        var comment = this.commentData[index].Text
+      deleteItem (item) {
+        var itemId = item.id
+        console.log('deleteItem', item)
+        let self = this
+        axios({
+          method:'delete',
+          url: relationshipcomments + 'relationshipcomments/' + itemId
+        })
+        .then(function(response) {
+          console.log("delete response.....",response)
+          for(let i=0;i<self.commentData.length;i++){
+            console.log("for..................",self.commentData[i])
+            if(response.data.id == self.commentData[i].id){
+              self.commentData.splice(i,1)
+            }
+          }
+        });
+      },
+      clicked (item, index) {
+        var itemId = item.id
+        var data1
+        var comment = this.commentData[index].comment
         let comment1
-        console.log("************",comment)
-       this.$Modal.confirm({
+        console.log("************",itemId)
+        this.$Modal.confirm({
           render: (h) => {
-              return h('Input', {
-                  props: {
-                      value: comment,
-                      autofocus: true,
-                      placeholder: 'Please enter your name...'
-                  },
-                  on: {
-                      input: (val) => {
-                        console.log('val', val)
-                          comment1 = val;
-                      }
-                  }
-              })
+            return h('Input', {
+              props: {
+                value: comment,
+                autofocus: true,
+                placeholder: 'Please enter your name...'
+              },
+              on: {
+                input: (val) => {
+                  console.log('val', val)
+                  comment1 = val;
+                }
+              }
+            })
           },
           onOk: () => {
-              console.log("comment....",comment)
-              this.$Message.info('Clicked ok');
-              this.commentData[index].Text = comment1
+            console.log("comment....",comment)
+            this.$Message.info('Clicked ok');
+            this.commentData[index].comment = comment1
+            data1 = {
+              "comment": comment1,
+              "created_at": new Date()
+            }
+            axios({
+              method:'put',
+              url: relationshipcomments + 'relationshipcomments/' + itemId,
+              data: data1
+            })
+            .then(function(response) {
+              console.log("update response.....",response)
+            });
           },
           onCancel: () => {
-              this.$Message.info('Clicked cancel');
+            this.$Message.info('Clicked cancel');
           }
-      })
+        })
       },
       getDate (date) {
         return moment(date).fromNow()
       },
       openEditor() {
-
         var editor = CKEDITOR.instances.editor2
         if (!this.isActive) {
-
           CKEDITOR.replace("editor2")
           this.isActive = !this.isActive
           document.getElementById("block").style.display = "inline-block";
-
-        }else{
+        } 
+        else {
+          var data1
+          var self = this
           console.log('else')
           var content = CKEDITOR.instances['editor2'].getData();
           var text = $(content).text();
           var date = new Date();
           console.log("text.....",text,"date.....",date)
-          this.commentData.push({Text: text, date: date})
           console.log("Save called", this.commentData)
-          var data1 = {
-            "comment": this.commentData[0].Text,
-            "created at": this.commentData[0].date
-           }
-           console.log('data1', data1)
+          // this.commentData.forEach(function(element) {
+            // console.log(element);
+            data1 = {
+              "comment": text,
+              "created_at": date
+            }
+          // });
+          console.log('data1', data1)
           axios({
             method:'post',
-            url:'http://localhost:3037/relationshipcomments',
+            url: relationshipcomments + 'relationshipcomments',
             data: data1
           })
-            .then(function(response) {
-             console.log("save response.....",response)
+          .then(function(response) {
+            self.commentData.push({comment: text, created_at: date, id: response.data.id})
+            console.log("save response.....",response)
+            console.log("this.commentData", self.commentData)
           });
           editor.destroy();
           this.isActive = !this.isActive
           document.getElementById("editor2").style.display = "none";
           document.getElementById("block").style.display = "inline";
         }
-
         console.log('outer',this.isActive)
+      },
+      getData () {
+        var self = this
+        axios({
+          method:'GET',
+          url: relationshipcomments + 'relationshipcomments',
+        })
+        .then(function(response) {
+          response.data.data.forEach(function(item,index){
+            self.commentData.push(item)
+          })          
+          
+          console.log("++++++++++++++",self.commentData)
+          console.log("save response.....",response.data.data)
+        });
       }
     },
     mounted() {
       this.src= gravatar.url('dweepp@officebrain.com', {s: '200', r: 'pg', d: '404'})
       console.log(this.src)
+      this.getData()
     }
   }
 </script>
