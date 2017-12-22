@@ -10,16 +10,16 @@
                     <Col :md="12" :lg="24" :style="{marginBottom: '10px'}">
                         <Card>
                             <Row type="flex" class="user-infor">
-                                <Col span="8">
+                                <Col span="8" style="padding-right:0px;">
                                     <Row class-name="made-child-con-middle" type="flex" align="middle">
                                         <img class="avator-img" :src="avatorPath" />
                                     </Row>
                                 </Col>
-                                <Col span="16" style="padding-left:6px;">
+                                <Col span="16" style="padding-left:0px;">
                                     <Row class-name="made-child-con-middle" type="flex" align="middle">
                                         <div>
-                                            <b class="card-user-infor-name">Admin</b>
-                                            <p>super admin</p>
+                                            <b class="card-user-infor-name" style="font-size: 18px;">{{name}}</b>
+                                            <p>Super Admin</p>
                                         </div>
                                     </Row>
                                 </Col>
@@ -35,35 +35,7 @@
                             </Row>
                         </Card>
                     </Col>
-                    <Col :md="12" :lg="24" :style="{marginBottom: '10px'}">
-                        <Card>
-                            <p slot="title" class="card-title">
-                                <Icon type="android-checkbox-outline"></Icon>
-                                待办事项
-                            </p>
-                            <a type="text" slot="extra" @click.prevent="addNewToDoItem">
-                                <Icon type="plus-round"></Icon>
-                            </a>
-                            <Modal
-                                v-model="showAddNewTodo"
-                                title="添加新的待办事项"
-                                @on-ok="addNew"
-                                @on-cancel="cancelAdd">
-                                <Row type="flex" justify="center">
-                                    <Input v-model="newToDoItemValue" icon="compose" placeholder="请输入..." style="width: 300px" />
-                                </Row>
-                                <Row slot="footer">
-                                    <Button type="text" @click="cancelAdd">取消</Button>
-                                    <Button type="primary" @click="addNew">确定</Button>
-                                </Row>
-                            </Modal>
-                            <div class="to-do-list-con">
-                                <div v-for="(item, index) in toDoList" :key="index" class="to-do-item">
-                                    <to-do-list-item :content="item.title"></to-do-list-item>
-                                </div>
-                            </div>
-                        </Card>
-                    </Col>
+                   
                 </Row>
             </Col>
             <Col :md="24" :lg="16">
@@ -104,24 +76,6 @@
                             intro-text="Draft Amount"
                         ></infor-card>
                     </Col>
-                </Row>
-                <Row>
-                    <Card :padding="0">
-                        <p slot="title" class="card-title">
-                            <Icon type="map"></Icon>
-                            今日服务调用地理分布
-                        </p>
-                        <div class="map-con">
-                            <Col span="10">
-                                <map-data-table :cityData="cityData" height="281" :style-obj="{margin: '12px 0 0 11px'}"></map-data-table>
-                            </Col>
-                            <Col span="14" class="map-incon">
-                                <Row type="flex" justify="center" align="middle">
-                                    <home-map :city-data="cityData"></home-map>
-                                </Row>
-                            </Col>
-                        </div>
-                    </Card>
                 </Row>
             </Col>
         </Row>
@@ -219,6 +173,7 @@ import inforCard from './components/inforCard.vue';
 import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
 import draggable from 'vuedraggable'
+import Cookies from 'js-cookie';
 
 export default {
     name: 'home',
@@ -236,6 +191,7 @@ export default {
     },
     data () {
         return {
+            name : '',
             toDoList: [
                 {
                     title: '去iView官网学习完整的iView组件'
@@ -294,7 +250,7 @@ export default {
             var chartdata;
             await $.ajax({
             type: 'GET',
-            url: "http://localhost:3037/invoice?domain=Xero&chart=bar&date1=2017-09-05&date2=2017-12-15",
+            url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=bar&date1=2017-09-05&date2=2017-12-15",
             async: true,
             dataType: 'json',
             success: function (data) {
@@ -354,7 +310,7 @@ export default {
             var chartdata;
             await $.ajax({
                 type: 'GET',
-                url: "http://localhost:3037/invoice?domain=Xero&chart=pie&date1=2017-09-05&date2=2017-12-15",
+                url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=pie&date1=2017-09-05&date2=2017-12-15",
                 async: true,
                 dataType: 'json',
                 success: function (data) {
@@ -451,7 +407,7 @@ export default {
             var chartdata;
             await $.ajax({
             type: 'GET',
-            url: "http://localhost:3037/invoice?domain=Xero&chart=cashflow&date1=2017-09-05&date2=2017-12-15",
+            url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=cashflow&date1=2017-09-05&date2=2017-12-15",
             async: true,
             dataType: 'json',
             success: function (data) {
@@ -576,7 +532,7 @@ export default {
             var statsData;
             await $.ajax({
                 type: 'GET',
-                url: "http://localhost:3037/invoice?domain=Xero&stats=true&date1=2017-09-05&date2=2017-12-15",
+                url: "http://localhost:3040/invoice?domain=Xero&stats=true&date1=2017-09-01&date2=2017-12-15",
                 async: true,
                 dataType: 'json',
                 success: function (data) {
@@ -591,13 +547,24 @@ export default {
             this.count.unpaid = statsData[2].value
             this.count.draft = statsData[3].value
         },
+
+        init() {
+            this.name = Cookies.get('user');
+        }
     },
     mounted() {
         this.barChartFun(),
         this.pieChartFun(),
         this.lineChartFun(),
         this.waterfallFun(),
-        this.totalAmt()
+        this.totalAmt(),
+        this.init()
     }
 };
 </script>
+
+<style>
+    .ivu-card-body {
+        padding: 5px;
+    }
+</style>
