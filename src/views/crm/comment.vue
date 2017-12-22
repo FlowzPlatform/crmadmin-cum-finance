@@ -385,6 +385,7 @@
             console.log("comment....",comment)
             this.$Message.info('Clicked ok');
             this.commentData[index].comment = comment1
+            this.commentData[index].created_at = new Date() 
             data1 = {
               "comment": comment1,
               "created_at": new Date()
