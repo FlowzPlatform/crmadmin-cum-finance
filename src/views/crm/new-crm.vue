@@ -57,13 +57,13 @@
                           <p>
                               <label class="col-xs-3" id="c17027">Project</label>
                               <i-select v-model="finaldata.project" style="width:100px" filterable>
-													      <i-option v-for="item in momdata" :value="item.project" :key="item.project">{{ item.project }}</i-option>
+													      <i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
 													    </i-select>
                           </p>
                           <p>
                               <label class="col-xs-3" id="c17043">Status</label>
                               <i-select v-model="finaldata.status" style="width:100px">
-													      <i-option v-for="item in crmdata" :value="item.status" :key="item.status">{{ item.status }}</i-option>
+													      <i-option v-for="item in crmdata" :value="item.project_status" :key="item.project_status">{{ item.project_status }}</i-option>
 													    </i-select>
                           </p>
                           <p>
@@ -98,7 +98,8 @@
                               <!-- <input class="form-control" type="text" id="priceinput" /> -->
                               <i-select v-model="finaldata.price" style="width:30% !important">
 													      <i-option v-for="item in crmdata" :value="item.price" :key="item.price">{{ item.price }}</i-option>
-													    </i-select>                                    </p>
+													    </i-select>                                    
+													</p>
                           <p>
                               <label class="col-xs-3" id="c17139">Email</label>
                               <Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%"></Input>
@@ -170,22 +171,22 @@ var assigneeapi = config.default.assigneeapi
     methods: {
     	async calldata() {
 	    	await $.ajax({
-				type: 'GET',
-				url: apiurl,
-				async: true,
-				dataType: 'json',
-				success: function (data) {
-					result = data.data.data
-					// console.log(data)
-				},error: function(err) {
-					console.log("Error",err)
-				}
-			});
+					type: 'GET',
+					url: apiurl,
+					async: true,
+					dataType: 'json',
+					success: function (data) {
+						result = data.data.data
+						// console.log(data)
+					},error: function(err) {
+						console.log("Error",err)
+					}
+				});
 	        // console.log("resp data",result);
 	        result.forEach(item => {
-				var customer = item.Name;
-				this.data.push(customer)
-				})
+						var customer = item.Name;
+						this.data.push(customer)
+					})
     	},
 
     	async dbdata() {
@@ -194,20 +195,12 @@ var assigneeapi = config.default.assigneeapi
 			    url: databaseurl,
 			    success: function (data) {
 			        result1 = data.data;
+			        self.crmdata = result1
 			    },error: function(err){
 			       console.log("error",err);
 			    }
-			});
-			// console.log("json data databaseurl",result1);
-			result1.forEach(function(item){
-				// project = item.project_name;
-				status = item.project_status;
-				assignee = item.assignee;
-				price = item.price;
-				product_line = item.product_line;
-				self.crmdata.push({status:status,price:price,product_line:product_line})
-			})
-    	},
+				});
+	    },
 
     	async postdata() {
 				console.log("obj", this.finaldata)
@@ -236,16 +229,11 @@ var assigneeapi = config.default.assigneeapi
 			    url: momapi,
 			    success: function (data) {
 			        result1 = data;
+			        self.momdata = result1;
 			    },error: function(err){
 			       console.log("error",err);
 			    }
 			});
-
-			result1.forEach(item => {
-				var project = item.project_name;
-				// this.data.push(customer)
-	      self.momdata.push({project: project})
-				})
   	},
 
   	async assigneelist() {
@@ -263,8 +251,6 @@ var assigneeapi = config.default.assigneeapi
 			       console.log("error",err);
 			    }
 			});
-
-			
   	}
 
     },
