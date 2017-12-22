@@ -62,8 +62,8 @@ export const otherRouter = {
         { path: 'shopping', title: '购物详情', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
-        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } }
-
+        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } }
     ]
 };
 

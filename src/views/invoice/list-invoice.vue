@@ -1,7 +1,7 @@
 <template>
 <div>
-  <invoicefilter style="padding: 10px; margin: 5px; display: block;">
-    <div class="container">
+  <div style="padding: 10px; margin: 5px; display: block;">
+    <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
             <div class="panel-heading">
@@ -90,19 +90,22 @@
             </div>
         </div>
     </div>
-</invoicefilter>
+</div>
 
 <div>
-    <invoicetable style="padding: 10px; margin: 5px; display: block;" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
-        <div class="container">
-         <Table border :columns="columns1" :data="list" id="tbdata"></Table>
+    <div style="" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
+        <div v-if="!spind">
+          <Spin size="large"></Spin>
+        </div>
+        <div v-else>
+         <Table border :columns="columns1" :data="list" id="tbdata" stripe></Table>
          <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="page" @on-change="changePage"></Page>
             </div>
         </div>
         </div>
-    </invoicetable>
+    </div>
 </div>
 </div>
 </template>
@@ -111,13 +114,16 @@
 
 <script>
 import config from '@/config/customConfig.js'
-// import configurl from '@/config/configurl.js'
 import axios from 'axios'
+import Handlebars from 'handlebars'
+import { mjml2html } from 'mjml'
+import Cookies from 'js-cookie';
 var pageSize = 10
 export default {
   name: 'hello',
   data () {
     return {
+      spind: false,
        columns1: [
           {
               title: 'InvoiceID',
@@ -157,34 +163,60 @@ export default {
           {
             title: 'Action',
             key: 'action',
-            width: 100,
             align: 'center',
             render: (h, params) => {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small',
-                    // text: 'action'
-                  },
-                  style: {
-                    // color: '#CC0000',
-                    // marginRight: '3px',
-                    // padding: '0px',
-                    // fontSize: '20px'
-                  },
-                  on: {
-                    click: () => {
-                      alert('111')
-                      // alert(this.tabPane)
-                      this.performAction(params)
+              if(params.row.status == 'AUTHORISED'){
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading 
+                      },
+                    style: {
+                    },
+                    on: {
+                      click: () => {   
+                        this.makepayment(params)
+                      }
                     }
-                  }
-                }, 'action')
-              ])
+                  }, 'Payment'),
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading1
+                    },
+                    style: {
+                      margin: '2px'
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(params)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }else{
+                return h('div', [
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading1
+                    },
+                    style: {
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(params)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }
             }
           }
-
       ],
       data1: [],
       page: 1,
@@ -194,7 +226,7 @@ export default {
       resp: '',
       ids: '',
       titles: '',
-      len: '',
+      len: 1,
       cname: '',
       status: '',
       dategt: '',
@@ -203,7 +235,6 @@ export default {
       totallt: '',
       duegt: '',
       duelt: ''
-
     }
   },
    methods: {
@@ -211,18 +242,19 @@ export default {
       this.len = this.data1.length
       console.log("this.data1",this.data1)
                 return this.data1.slice((p - 1) * size, p * size);
-            },
+    },
     async changePage (p) {
       
       this.page = p
       this.list = await this.mockTableData1(p,pageSize);
-            },
+    },
     async searchdata() {
       $('.preload').css("display","block")
       this.resdata = await this.apiData();
       console.log("response------------------------>", this.resdata)
       this.tableDataBind();
       this.list = await this.mockTableData1(1,pageSize)
+      this.spind = true
     },
     reset() {
       this.cname = '';
@@ -245,7 +277,6 @@ export default {
       console.log("response------------------------>", this.resdata)
       this.tableDataBind();
       this.list = await this.mockTableData1(1,pageSize);
-
     },
     async getCustomerUrl(){
       console.log("inside getCustomerUrl " )
@@ -259,7 +290,6 @@ export default {
           "cache-control": "no-cache"
         }
       }
-
       console.log("settings", settings)
       await $.ajax(settings).done(function (response) {
           res = response
@@ -275,9 +305,9 @@ export default {
     async apiData () {
       var resp;
       console.log("TRTYYTYTT");
-      
       await axios.get(config.default.serviceUrl + 'invoice', {
         params: {
+          domain : "Xero"
         }
       })
       .then(function (response) {
@@ -289,7 +319,6 @@ export default {
         console.log("error",error);
       });
       return resp
-
     },
     async changeApiData () {
       var resp;
@@ -297,11 +326,9 @@ export default {
       if(this.cname != ''){
         params['Name'] = this.cname   
       }
-
       if(this.status != ''){ 
         params['Status'] = this.status  
       }
-
       if(this.dategt != ''){
         params['Date'] = this.dategt        
       }
@@ -312,29 +339,9 @@ export default {
       if(this.duegt != ''){ 
         params['AmountDue'] =  this.duegt
       }
-
       
       console.log("params api data", params)
-
-      // this.cname = '';
-      // this.status = '';
-      // this.dategt = '';
-      // this.totalgt = '';
-      // this.duegt = '';
-      // var params =  {
-      //     Name: this.cname,
-      //     Status: this.status,
-      //     Total: this.totalgt,
-      //     AmountDue: this.duegt,
-      //     Date: this.dategt
-      //     // totalgt: this.totalgt,
-      //     // totallt: this.totallt,
-      //     // duegt: this.duegt,
-      //     // duelt: this.duelt,
-      //     // datelt: this.datelt,
-      //     // dategt: this.dategt
-      //   }
-      await axios.get(config.default.serviceUrl + 'invoice', {
+      await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
         params: params
       })
       .then(function (response) {
@@ -346,7 +353,6 @@ export default {
         console.log("error",error);
       });
       return resp
-
     },
     tableDataBind(){
           var self = this
@@ -364,23 +370,75 @@ export default {
               myobj.Date = result.Date
               myobj.Total = result.Total
               myobj.status = result.Status
+              myobj.loading = false
+              myobj.loading1 = false
               self.data1.push(myobj)
             })
             }
           
     },
-    performAction(index){
-      console.log("params", index)
+    async makepayment(params){
+      this.$router.push('/checkout/' + params.row.InvoiceID)
+    },
+    async sendemail(params){
+      var self = this
+      this.list[params.index].loading1 = true
+      console.log("inside send mail", params)
+      var responseData
+        await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+          params: {
+            Invoiceid:params.row.InvoiceID
+          }
+        })
+        .then(function (response) {
+          console.log("response data", response)
+          responseData = response.data
+        })
+        .catch(function (error) {
+          console.log("error",error);
+        });
+      console.log("send mail responsedata", responseData)
+      var MjmlTemplate
+      await $.get( "mailtemplate.txt", function( data ) {
+        MjmlTemplate = data
+      });
+      
+      var template = Handlebars.compile(MjmlTemplate); 
+      console.log("template", template)
+       var context = {
+          invoice : responseData
+        }
+      const mjml = template(context);
+      const html1 = mjml2html(mjml);
+       let myData = {
+            "to": "npaul@officebrain.com",
+            "from": "kdalsania@officebrain.com",
+            "subject": "email invoice",
+            "body": html1.html
+          }
+          myData = JSON.stringify(myData)
+          axios({
+            method: 'post',
+            url:  'http://api.flowz.com/vmailmicro/sendEmail',
+            data: myData,
+            headers: {
+              'authorization':  Cookies.get('auth_token')
+            }
+            }).then(function (response) {
+              console.log(response);
+              self.$Message.success(response.data.success);
+              self.list[params.index].loading1 = false
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
     }
      
   },
   mounted() {
-    // console.log("config main :: "+configurl.invoiceurl);
-    // console.log("config file ", config.apiConfig.apiUrl)
     let self = this;
     
      $('.maindiv').change(async function() {
-      // $('#tdata').remove();
       await self.changeData();
     }); 
     this.getCustomerUrl();
@@ -390,11 +448,24 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .panel {
   margin-bottom: 7px;
 }
 .panel-heading{
   padding: 4px 8px;
+}
+.ivu-table table {
+  font-size: 14px;
+}
+.ivu-table th{
+  background-color: #d9edf7;
+}
+.ivu-table-border th {
+    border-right: 1px solid #ddd;
+}
+.ivu-spin-main {
+    width: 100%;
+    text-align: -webkit-center;
 }
 </style>
