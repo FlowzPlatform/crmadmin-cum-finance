@@ -240,7 +240,7 @@ export default {
    methods: {
     async mockTableData1 (p,size) {
       this.len = this.data1.length
-      console.log("this.data1",this.data1)
+      console.log("this.data111",this.data1)
                 return this.data1.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
@@ -306,9 +306,9 @@ export default {
       var resp;
       console.log("TRTYYTYTT");
       await axios.get(config.default.serviceUrl + 'invoice', {
-        params: {
-          domain : "Xero"
-        }
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
       })
       .then(function (response) {
         resp = response
@@ -362,17 +362,21 @@ export default {
             this.resp = this.resdata.data
             console.log("inside table data bind",this.resp)
             this.resp.forEach(result =>{
-              var myobj = {}
-              myobj.Name = result.Contact.Name
-              myobj.InvoiceID = result.InvoiceID
-              myobj.AmountDue = result.AmountDue
-              myobj.AmountPaid = result.AmountPaid
-              myobj.Date = result.Date
-              myobj.Total = result.Total
-              myobj.status = result.Status
+              console.log(result)
+              result.data.forEach(result2 =>{
+                var myobj = {}
+              myobj.Name = result2.Contact.Name
+              myobj.InvoiceID = result2.InvoiceID
+              myobj.AmountDue = result2.AmountDue
+              myobj.AmountPaid = result2.AmountPaid
+              myobj.Date = result2.Date
+              myobj.Total = result2.Total
+              myobj.status = result2.Status
               myobj.loading = false
               myobj.loading1 = false
               self.data1.push(myobj)
+              })
+              
             })
             }
           
