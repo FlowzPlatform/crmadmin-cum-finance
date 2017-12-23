@@ -28,7 +28,7 @@
                         <td >Consumer key </td>
                         <td>
                             <Input :type="consumerKeyType" readonly :value='product.consumerKey'>
-                                <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret(product)"></Button>
                             </Input>                            
                         </td>
                     </tr>
@@ -36,7 +36,7 @@
                         <td >Client ID </td>
                         <td>
                              <Input :type="client_idType" readonly :value='product.client_id'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret" ></Button>
                             </Input>
                         </td>
                     </tr>
@@ -45,7 +45,7 @@
                         <td >Consumer secret </td>
                         <td>
                             <Input :type="consumerSecretType" readonly :value='product.consumerSecret'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret"></Button>
                             </Input>
                         </td>
                     </tr>
@@ -53,7 +53,7 @@
                         <td >Client secret </td>
                         <td>
                             <Input :type="client_secretType" readonly :value='product.client_secret'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret"></Button>
                             </Input>
                         </td>
                     </tr>
@@ -118,7 +118,6 @@ Vue.use(VueWidgets);
                 disabled:false,
                 switch1: false,
                 comp: true,
-                showPass: false,
                 consumerKeyType:"password",
                 client_idType:"password",
                 consumerSecretType:"password",
@@ -206,6 +205,41 @@ Vue.use(VueWidgets);
             editConfig(data){
 
             },
+            showSecret(data){
+                console.log(this)
+                
+               alert(data.id)
+                 
+                       
+                //if(data == show[0].id){
+                
+                if(this.client_idType == "password" ){
+                    this.client_idType = "text"
+                }else{
+                    this.client_idType = "password"
+                }
+
+                if(this.client_secretType == "password"){
+                    this.client_secretType = "text"
+                }else{
+                    this.client_secretType = "password"
+                }
+
+                if(this.consumerKeyType == "password"){
+                    this.consumerKeyType = "text"
+                }else{
+                    this.consumerKeyType = "password"
+                }
+
+                if(this.consumerSecretType == "password"){
+                    this.consumerSecretType = "text"
+                }else{
+                    this.consumerSecretType = "password"
+                }
+                //}
+                
+                
+            },
             buttonClicked(data){
                 this.disabled = true;
                 axios({
@@ -226,7 +260,7 @@ Vue.use(VueWidgets);
                         this.disabled = false;
                         Cookies.remove('auth_token') 
                         this.$Message.error('Auth Error!');
-                       this.$store.commit('logout', this); 
+                        this.$store.commit('logout', this); 
                         this.$router.push({
                         name: 'login'
                     })
@@ -239,6 +273,7 @@ Vue.use(VueWidgets);
         }
         },
         mounted(){
+            console.log(this.$store);
             axios({
                     method:'get',
                     url:feathersUrl +'settings',
