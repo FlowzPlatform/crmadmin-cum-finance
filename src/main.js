@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import iView from 'iview';
+import locale from 'iview/dist/locale/en-US';
 import {router} from './router/index';
 import {appRouter} from './router/router';
 import store from './store';
@@ -14,7 +15,9 @@ import 'vue-widgets/dist/styles/vue-widgets.css'
 
 
 Vue.use(VueI18n);
-Vue.use(iView);
+Vue.use(iView , { locale });
+
+
 
 Vue.use(VueWidgets)
 

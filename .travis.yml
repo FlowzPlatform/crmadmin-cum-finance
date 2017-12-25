@@ -1,0 +1,45 @@
+sudo: required
+
+language: node
+
+services:
+  - docker
+
+branches:
+  only:
+  - master
+  - demo
+
+jobs:
+  include:
+    - stage: Crmadmin-Frontend-Flowz
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -t crmadmin_frontend_flowz:$TRAVIS_BRANCH .
+      - docker images
+      - docker tag crmadmin_frontend_flowz:$TRAVIS_BRANCH $DOCKER_USERNAME/crmadmin_frontend_flowz:$TRAVIS_BRANCH
+      - docker push $DOCKER_USERNAME/crmadmin_frontend_flowz:$TRAVIS_BRANCH
+    - stage: Upgrade Rancher Service
+      script:
+      - 'if [ ${TRAVIS_BRANCH} = "demo" ]; then
+            bash ./upgrade_demo.sh;
+         else
+            bash ./upgrade.sh;
+         fi'
+    - stage: Finish Rancher Service
+      script:
+      - 'if [ ${TRAVIS_BRANCH} = "demo" ]; then
+            bash ./finish_demo.sh;
+         else
+            bash ./finish.sh;
+         fi'
+
+notifications:
+  email:
+    recipients:
+      - arpitap@officebeacon.com
+      - kaushalm@officebrain.com
+      - anuj@officebrain.com
+      - naveeng@officebrain.com
+    on_success: always
+    on_failure: always
