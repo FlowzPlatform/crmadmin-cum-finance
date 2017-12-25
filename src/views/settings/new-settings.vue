@@ -280,6 +280,10 @@ Vue.use(VueWidgets);
         productChunks(){
             return _.chunk(this.data6, 2);
         }
+        },
+        mounted() {
+            console.log(this.$store.state.settingData)
+            //console.log()
         }
     }
 </script>

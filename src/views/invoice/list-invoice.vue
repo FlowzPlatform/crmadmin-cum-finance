@@ -1,7 +1,8 @@
 <template>
 <div>
-  <invoicefilter style="padding: 10px; margin: 5px; display: block;">
-    <div class="container">
+  
+  <div style="padding: 10px; margin: 5px; display: block;">
+    <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
             <div class="panel-heading">
@@ -90,20 +91,43 @@
             </div>
         </div>
     </div>
-</invoicefilter>
+</div>
 
 <div>
-    <invoicetable style="padding: 10px; margin: 5px; display: block;" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
-        <div class="container">
-         <Table border :columns="columns1" :data="list" id="tbdata"></Table>
-         <div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-                <Page :total="len" :current="page" @on-change="changePage"></Page>
-            </div>
-        </div>
-        </div>
-    </invoicetable>
+  
+  <div v-if="spinShow">
+                <Spin size="large"></Spin>
+  </div>
+  <div v-else>
+     <Tabs>
+        <TabPane v-for="tabPane in tabPanes" :label="tabPane.configName">
+          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="tabPane.data" border size="small" ref="table" stripe></Table>
+          <Table v-else :columns="columns2" :data="tabPane.data" border size="small" ref="table" stripe></Table>
+          <!-- <div style="margin: 10px;overflow: hidden">
+                  <div style="float: right;">
+                  <Page total="tabPane.data.length" current="10" ></Page>
+              </div>
+          </div> -->
+      </TabPane>
+    </Tabs>  
+  </div>  
+
+    <!-- <div style="" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
+              <div v-if="!spind">
+                <Spin size="large"></Spin>
+              </div>
+              <div v-else>
+              <Table border :columns="columns1" :data="list" id="tbdata" stripe></Table>
+              <div style="margin: 10px;overflow: hidden">
+                  <div style="float: right;">
+                      <Page :total="len" :current="page" @on-change="changePage"></Page>
+                  </div>
+              </div>
+              </div>
+          </div> -->
+
 </div>
+
 </div>
 </template>
 
@@ -111,13 +135,121 @@
 
 <script>
 import config from '@/config/customConfig.js'
-// import configurl from '@/config/configurl.js'
 import axios from 'axios'
+import Handlebars from 'handlebars'
+import { mjml2html } from 'mjml'
+import Cookies from 'js-cookie';
 var pageSize = 10
 export default {
   name: 'hello',
   data () {
     return {
+      tabPanes : [],
+      spinShow: true,
+      columns2: [
+          {
+              title: 'InvoiceID',
+              key: 'Id',
+              sortable: true
+          },
+          {
+              title: 'Name',
+              key: 'CustomerRef',
+              sortable: true,
+              render : (h , {row}) => { return row.CustomerRef.name}
+          },
+          {
+              title: 'Due Date',
+              key: 'DueDate',
+              sortable: true,
+
+          },
+          {
+              title: 'Amount Paid',
+              sortable: true,
+              render : (h , {row}) => { return row.TotalAmt-row.Balance}
+          },
+          {
+              title: 'Amount Due',
+              key: 'Balance',
+              sortable: true,
+             
+          },
+          {
+              title: 'Total Amount',
+              key: 'TotalAmt',
+              sortable: true,
+              
+          },
+          {
+              title: 'Status',
+              sortable: true,
+              render : (h , {row}) => {
+                 if(row.TotalAmt-row.Balance == 0){
+                   return "PAID"
+                 }else{
+                   return "AUTHORISED"
+                 }
+              }
+          },
+          {
+            title: 'Action',
+            key: 'Status',
+            align: 'center',
+            render: (h, {row}) => {
+              if(row.TotalAmt-row.Balance != 0){
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading 
+                      },
+                    style: {
+                    },
+                    on: {
+                      click: () => {   
+                        this.makepayment(row.Id)
+                      }
+                    }
+                  }, 'Payment'),
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading1
+                    },
+                    style: {
+                      margin: '2px'
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(row)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }else{
+                return h('div', [
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading1
+                    },
+                    style: {
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(row)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }
+            }
+          }
+      ],
        columns1: [
           {
               title: 'InvoiceID',
@@ -126,8 +258,9 @@ export default {
           },
           {
               title: 'Name',
-              key: 'Name',
-              sortable: true
+              key: 'Contact',
+              sortable: true,
+               render:(h,{row})=>{ return row.Contact.Name }
           },
           {
               title: 'Date',
@@ -151,40 +284,66 @@ export default {
           },
           {
               title: 'status',
-              key: 'status',
+              key: 'Status',
               sortable: true
           },
           {
             title: 'Action',
-            key: 'action',
-            width: 100,
+            key: 'Status',
             align: 'center',
             render: (h, params) => {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small',
-                    // text: 'action'
-                  },
-                  style: {
-                    // color: '#CC0000',
-                    // marginRight: '3px',
-                    // padding: '0px',
-                    // fontSize: '20px'
-                  },
-                  on: {
-                    click: () => {
-                      alert('111')
-                      // alert(this.tabPane)
-                      this.performAction(params)
+              if(params.row.Status == 'AUTHORISED'){
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading 
+                      },
+                    style: {
+                    },
+                    on: {
+                      click: () => {   
+                        this.makepayment(params.row.InvoiceID)
+                      }
                     }
-                  }
-                }, 'action')
-              ])
+                  }, 'Payment'),
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading1
+                    },
+                    style: {
+                      margin: '2px'
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(params)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }else{
+                return h('div', [
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      loading: params.row.loading1
+                    },
+                    style: {
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(params)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }
             }
           }
-
       ],
       data1: [],
       page: 1,
@@ -194,7 +353,7 @@ export default {
       resp: '',
       ids: '',
       titles: '',
-      len: '',
+      len: 1,
       cname: '',
       status: '',
       dategt: '',
@@ -203,198 +362,268 @@ export default {
       totallt: '',
       duegt: '',
       duelt: ''
-
     }
   },
    methods: {
-    async mockTableData1 (p,size) {
-      this.len = this.data1.length
-      console.log("this.data1",this.data1)
-                return this.data1.slice((p - 1) * size, p * size);
-            },
-    async changePage (p) {
+    // async mockTableData1 (p,size) {
+    //   this.len = this.data1.length
+    //   console.log("this.data111",this.data1)
+    //             return this.data1.slice((p - 1) * size, p * size);
+    // },
+    // async changePage (p) {
       
-      this.page = p
-      this.list = await this.mockTableData1(p,pageSize);
-            },
-    async searchdata() {
-      $('.preload').css("display","block")
-      this.resdata = await this.apiData();
-      console.log("response------------------------>", this.resdata)
-      this.tableDataBind();
-      this.list = await this.mockTableData1(1,pageSize)
-    },
-    reset() {
-      this.cname = '';
-      this.status = '';
-      this.dategt = '';
-      this.datelt = '';
-      this.totalgt = '';
-      this.totallt = '';
-      this.duegt = '';
-      this.duelt = '';
-      this.data1 = []
-      this.list = []
-      this.searchdata();
-    },
-    async changeData() {
-      this.data1 = []
-      this.list = []
-      console.log("Inside change data")
-      this.resdata = await this.changeApiData();
-      console.log("response------------------------>", this.resdata)
-      this.tableDataBind();
-      this.list = await this.mockTableData1(1,pageSize);
-
-    },
-    async getCustomerUrl(){
-      console.log("inside getCustomerUrl " )
-      var res
-        var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": config.default.serviceUrl + 'contacts',
-        "method": "GET",
-        "headers": {
-          "cache-control": "no-cache"
-        }
-      }
-
-      console.log("settings", settings)
-      await $.ajax(settings).done(function (response) {
-          res = response
-          console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
-        });
-          res.forEach (obj => {
-        var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.Name;
-            x.add(option);
-      })
-    },
-    async apiData () {
-      var resp;
-      console.log("TRTYYTYTT");
-      
-      await axios.get(config.default.serviceUrl + 'invoice', {
-        params: {
-        }
-      })
-      .then(function (response) {
-        resp = response
-        console.log("response------>iuy",resp);
-        $('.preload').css("display","none")
-      })
-      .catch(function (error) {
-        console.log("error",error);
-      });
-      return resp
-
-    },
-    async changeApiData () {
-      var resp;
-      var params = {}
-      if(this.cname != ''){
-        params['Name'] = this.cname   
-      }
-
-      if(this.status != ''){ 
-        params['Status'] = this.status  
-      }
-
-      if(this.dategt != ''){
-        params['Date'] = this.dategt        
-      }
-      if(this.totalgt != ''){
-        params['Total'] = this.totalgt
+    //   this.page = p
+    //   this.list = await this.mockTableData1(p,pageSize);
+    // },
+    // async searchdata() {
+    //   $('.preload').css("display","block")
+    //   this.resdata = await this.apiData();
+    //   console.log("response------------------------>", this.resdata)
+    //   this.tableDataBind();
+    //   this.list = await this.mockTableData1(1,pageSize)
+    //   this.spind = true
+    // },
+    // reset() {
+    //   this.cname = '';
+    //   this.status = '';
+    //   this.dategt = '';
+    //   this.datelt = '';
+    //   this.totalgt = '';
+    //   this.totallt = '';
+    //   this.duegt = '';
+    //   this.duelt = '';
+    //   this.data1 = []
+    //   this.list = []
+    //   this.searchdata();
+    // },
+    // async changeData() {
+    //   this.data1 = []
+    //   this.list = []
+    //   console.log("Inside change data")
+    //   this.resdata = await this.changeApiData();
+    //   console.log("response------------------------>", this.resdata)
+    //   this.tableDataBind();
+    //   this.list = await this.mockTableData1(1,pageSize);
+    // },
+    // async getCustomerUrl(){
+    //   console.log("inside getCustomerUrl " )
+    //   var res
+    //     var settings = {
+    //     "async": true,
+    //     "crossDomain": true,
+    //     "url": config.default.serviceUrl + 'contacts',
+    //     "method": "GET",
+    //     "headers": {
+    //       "cache-control": "no-cache"
+    //     }
+    //   }
+    //   console.log("settings", settings)
+    //   await $.ajax(settings).done(function (response) {
+    //       res = response
+    //       console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
+    //     });
+    //       res.forEach (obj => {
+    //     var x = document.getElementById("selectCustomer");
+    //         var option = document.createElement("option");
+    //         option.text = obj.Name;
+    //         x.add(option);
+    //   })
+    // },
+    // async apiData () {
+    //   var resp;
+    //   let self=this;
+    //   console.log("TRTYYTYTT");
+    //   await axios.get(config.default.serviceUrl + 'invoice', {
+    //     headers:{
+    //         Authorization : Cookies.get('auth_token')
+    //     },
+    //   })
+    //   .then(function (response) {
+    //     resp = response
+    //     console.log("response------>iuy",resp);
+    //     self.tabPanes = response.data
+    //     $('.preload').css("display","none")
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //   });
+    //   return resp
+    // },
+    // async changeApiData () {
+    //   var resp;
+    //   var params = {};
+    //   let self = this;
+    //   if(this.cname != ''){
+    //     params['Name'] = this.cname   
+    //   }
+    //   if(this.status != ''){ 
+    //     params['Status'] = this.status  
+    //   }
+    //   if(this.dategt != ''){
+    //     params['Date'] = this.dategt        
+    //   }
+    //   if(this.totalgt != ''){
+    //     params['Total'] = this.totalgt
         
-      }
-      if(this.duegt != ''){ 
-        params['AmountDue'] =  this.duegt
-      }
-
+    //   }
+    //   if(this.duegt != ''){ 
+    //     params['AmountDue'] =  this.duegt
+    //   }
       
-      console.log("params api data", params)
-
-      // this.cname = '';
-      // this.status = '';
-      // this.dategt = '';
-      // this.totalgt = '';
-      // this.duegt = '';
-      // var params =  {
-      //     Name: this.cname,
-      //     Status: this.status,
-      //     Total: this.totalgt,
-      //     AmountDue: this.duegt,
-      //     Date: this.dategt
-      //     // totalgt: this.totalgt,
-      //     // totallt: this.totallt,
-      //     // duegt: this.duegt,
-      //     // duelt: this.duelt,
-      //     // datelt: this.datelt,
-      //     // dategt: this.dategt
-      //   }
-      await axios.get(config.default.serviceUrl + 'invoice', {
-        params: params
+    //   console.log("params api data", params)
+    //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+    //     params: params
+    //   })
+    //   .then(function (response) {
+    //     resp = response
+    //     console.log("response changePage------>",resp);
+        
+    //     $('.preload').css("display","none")
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //   });
+    //   return resp
+    // },
+    // tableDataBind(){
+    //       var self = this
+    //       if(this.resdata.data.Err){
+    //         console.log("error in response",this.resdata.data.Err)
+    //       }else{
+    //         this.resp = this.resdata.data
+    //         console.log("inside table data bind",this.resp)
+    //         this.resp.forEach(result =>{
+    //           //console.log(result)
+    //           result.data.forEach(result2 =>{
+    //             var myobj = {}
+    //           myobj.Name = result2.Contact.Name
+    //           myobj.InvoiceID = result2.InvoiceID
+    //           myobj.AmountDue = result2.AmountDue
+    //           myobj.AmountPaid = result2.AmountPaid
+    //           myobj.Date = result2.Date
+    //           myobj.Total = result2.Total
+    //           myobj.status = result2.Status
+    //           myobj.loading = false
+    //           myobj.loading1 = false
+    //           self.data1.push(myobj)
+    //           })
+              
+    //         })
+    //         }
+          
+    // },
+    async makepayment(params){
+      console.log(params)
+      this.$router.push('/checkout/' + params)
+    },
+    async sendemail(params){
+      var self = this
+      this.list[params.index].loading1 = true
+      console.log("inside send mail", params)
+      var responseData
+        await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+          params: {
+            Invoiceid:params.row.InvoiceID
+          }
+        })
+        .then(function (response) {
+          console.log("response data", response)
+          responseData = response.data
+        })
+        .catch(function (error) {
+          console.log("error",error);
+        });
+      console.log("send mail responsedata", responseData)
+      var MjmlTemplate
+      await $.get( "mailtemplate.txt", function( data ) {
+        MjmlTemplate = data
+      });
+      
+      var template = Handlebars.compile(MjmlTemplate); 
+      console.log("template", template)
+       var context = {
+          invoice : responseData
+        }
+      const mjml = template(context);
+      const html1 = mjml2html(mjml);
+       let myData = {
+            "to": "npaul@officebrain.com",
+            "from": "kdalsania@officebrain.com",
+            "subject": "email invoice",
+            "body": html1.html
+          }
+          myData = JSON.stringify(myData)
+          axios({
+            method: 'post',
+            url:  'http://api.flowz.com/vmailmicro/sendEmail',
+            data: myData,
+            headers: {
+              'authorization':  Cookies.get('auth_token')
+            }
+            }).then(function (response) {
+              console.log(response);
+              self.$Message.success(response.data.success);
+              self.list[params.index].loading1 = false
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+    },
+    async getAllInvoice(){
+      let self = this;
+      
+      axios.get(config.default.serviceUrl + 'invoice', {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
       })
       .then(function (response) {
-        resp = response
-        console.log("response changePage------>",resp);
+        
+        console.log("response------>iuy",response);
+        self.spinShow = false;
+        self.tabPanes = response.data;
         $('.preload').css("display","none")
+        
       })
       .catch(function (error) {
         console.log("error",error);
+        self.spinShow = false;
       });
-      return resp
-
-    },
-    tableDataBind(){
-          var self = this
-          if(this.resdata.data.Err){
-            console.log("error in response",this.resdata.data.Err)
-          }else{
-            this.resp = this.resdata.data
-            console.log("inside table data bind",this.resp)
-            this.resp.forEach(result =>{
-              var myobj = {}
-              myobj.Name = result.Contact.Name
-              myobj.InvoiceID = result.InvoiceID
-              myobj.AmountDue = result.AmountDue
-              myobj.AmountPaid = result.AmountPaid
-              myobj.Date = result.Date
-              myobj.Total = result.Total
-              myobj.status = result.Status
-              self.data1.push(myobj)
-            })
-            }
-          
-    },
-    performAction(index){
-      console.log("params", index)
     }
      
   },
   mounted() {
-    // console.log("config main :: "+configurl.invoiceurl);
-    // console.log("config file ", config.apiConfig.apiUrl)
     let self = this;
     
-     $('.maindiv').change(async function() {
-      // $('#tdata').remove();
-      await self.changeData();
-    }); 
-    this.getCustomerUrl();
-    this.searchdata();
+    //  $('.maindiv').change(async function() {
+    //   await self.changeData();
+    // }); 
+    //this.getCustomerUrl();
+    //this.searchdata();
+    this.getAllInvoice()
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 .panel {
   margin-bottom: 7px;
 }
 .panel-heading{
   padding: 4px 8px;
+}
+.ivu-table table {
+  font-size: 14px;
+}
+.ivu-table th{
+  background-color: #d9edf7;
+}
+.ivu-table-border th {
+    border-right: 1px solid #ddd;
+}
+.ivu-spin-main {
+    width: 100%;
+    text-align: -webkit-center;
 }
 </style>

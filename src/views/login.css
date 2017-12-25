@@ -90,8 +90,8 @@
 
 .login,
 .signup {
-    padding: 11px 17px;
-    text-align: center
+    padding: 0px 17px;
+    /* text-align: center */
 }
 
 .login h2,
