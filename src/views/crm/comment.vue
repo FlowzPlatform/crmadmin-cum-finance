@@ -421,13 +421,16 @@
           var content = CKEDITOR.instances['editor2'].getData();
           var text = $(content).text();
           var date = new Date();
+          var crm_id = self.$route.params.id
+
           console.log("text.....",text,"date.....",date)
           console.log("Save called", this.commentData)
           // this.commentData.forEach(function(element) {
             // console.log(element);
             data1 = {
               "comment": text,
-              "created_at": date
+              "created_at": date,
+              "crm_id": crm_id
             }
           // });
           console.log('data1', data1)
@@ -450,13 +453,16 @@
       },
       getData () {
         var self = this
+        var crm_id = self.$route.params.id
         axios({
           method:'GET',
           url: relationshipcomments + 'relationshipcomments',
         })
         .then(function(response) {
           response.data.data.forEach(function(item,index){
-            self.commentData.push(item)
+            if (item.crm_id == crm_id){
+              self.commentData.push(item)
+            }
           })          
           
           console.log("++++++++++++++",self.commentData)
@@ -466,7 +472,6 @@
     },
     mounted() {
       this.src= gravatar.url('dweepp@officebrain.com', {s: '200', r: 'pg', d: '404'})
-      console.log(this.src)
       this.getData()
     }
   }
