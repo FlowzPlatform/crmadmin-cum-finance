@@ -1,5 +1,6 @@
 <template>
 <div>
+  
   <div style="padding: 10px; margin: 5px; display: block;">
     <div>
         <h1>Invoice List </h1>
@@ -93,20 +94,40 @@
 </div>
 
 <div>
-    <div style="" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
-        <div v-if="!spind">
-          <Spin size="large"></Spin>
-        </div>
-        <div v-else>
-         <Table border :columns="columns1" :data="list" id="tbdata" stripe></Table>
-         <div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-                <Page :total="len" :current="page" @on-change="changePage"></Page>
-            </div>
-        </div>
-        </div>
-    </div>
+  
+  <div v-if="spinShow">
+                <Spin size="large"></Spin>
+  </div>
+  <div v-else>
+     <Tabs>
+        <TabPane v-for="tabPane in tabPanes" :label="tabPane.configName">
+          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="tabPane.data" border size="small" ref="table" stripe></Table>
+          <Table v-else :columns="columns2" :data="tabPane.data" border size="small" ref="table" stripe></Table>
+          <!-- <div style="margin: 10px;overflow: hidden">
+                  <div style="float: right;">
+                  <Page total="tabPane.data.length" current="10" ></Page>
+              </div>
+          </div> -->
+      </TabPane>
+    </Tabs>  
+  </div>  
+
+    <!-- <div style="" keys="InvoiceID,Name,Total,Date,AmountPaid,AmountDue,status,action">
+              <div v-if="!spind">
+                <Spin size="large"></Spin>
+              </div>
+              <div v-else>
+              <Table border :columns="columns1" :data="list" id="tbdata" stripe></Table>
+              <div style="margin: 10px;overflow: hidden">
+                  <div style="float: right;">
+                      <Page :total="len" :current="page" @on-change="changePage"></Page>
+                  </div>
+              </div>
+              </div>
+          </div> -->
+
 </div>
+
 </div>
 </template>
 
@@ -123,7 +144,112 @@ export default {
   name: 'hello',
   data () {
     return {
-      spind: false,
+      tabPanes : [],
+      spinShow: true,
+      columns2: [
+          {
+              title: 'InvoiceID',
+              key: 'Id',
+              sortable: true
+          },
+          {
+              title: 'Name',
+              key: 'CustomerRef',
+              sortable: true,
+              render : (h , {row}) => { return row.CustomerRef.name}
+          },
+          {
+              title: 'Due Date',
+              key: 'DueDate',
+              sortable: true,
+
+          },
+          {
+              title: 'Amount Paid',
+              sortable: true,
+              render : (h , {row}) => { return row.TotalAmt-row.Balance}
+          },
+          {
+              title: 'Amount Due',
+              key: 'Balance',
+              sortable: true,
+             
+          },
+          {
+              title: 'Total Amount',
+              key: 'TotalAmt',
+              sortable: true,
+              
+          },
+          {
+              title: 'Status',
+              sortable: true,
+              render : (h , {row}) => {
+                 if(row.TotalAmt-row.Balance == 0){
+                   return "PAID"
+                 }else{
+                   return "AUTHORISED"
+                 }
+              }
+          },
+          {
+            title: 'Action',
+            key: 'Status',
+            align: 'center',
+            render: (h, {row}) => {
+              if(row.TotalAmt-row.Balance != 0){
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading 
+                      },
+                    style: {
+                    },
+                    on: {
+                      click: () => {   
+                        this.makepayment(row.Id)
+                      }
+                    }
+                  }, 'Payment'),
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading1
+                    },
+                    style: {
+                      margin: '2px'
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(row)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }else{
+                return h('div', [
+                   h('Button', {
+                   props: {
+                      type: 'primary',
+                      size: 'small',
+                      //loading: params.row.loading1
+                    },
+                    style: {
+                    },
+                    on: {
+                      click: () => {
+                        this.sendemail(row)
+                      }
+                    }
+                  }, 'Email')
+                ])
+              }
+            }
+          }
+      ],
        columns1: [
           {
               title: 'InvoiceID',
@@ -132,8 +258,9 @@ export default {
           },
           {
               title: 'Name',
-              key: 'Name',
-              sortable: true
+              key: 'Contact',
+              sortable: true,
+               render:(h,{row})=>{ return row.Contact.Name }
           },
           {
               title: 'Date',
@@ -157,15 +284,15 @@ export default {
           },
           {
               title: 'status',
-              key: 'status',
+              key: 'Status',
               sortable: true
           },
           {
             title: 'Action',
-            key: 'action',
+            key: 'Status',
             align: 'center',
             render: (h, params) => {
-              if(params.row.status == 'AUTHORISED'){
+              if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
                   h('Button', {
                     props: {
@@ -177,7 +304,7 @@ export default {
                     },
                     on: {
                       click: () => {   
-                        this.makepayment(params)
+                        this.makepayment(params.row.InvoiceID)
                       }
                     }
                   }, 'Payment'),
@@ -238,151 +365,156 @@ export default {
     }
   },
    methods: {
-    async mockTableData1 (p,size) {
-      this.len = this.data1.length
-      console.log("this.data111",this.data1)
-                return this.data1.slice((p - 1) * size, p * size);
-    },
-    async changePage (p) {
+    // async mockTableData1 (p,size) {
+    //   this.len = this.data1.length
+    //   console.log("this.data111",this.data1)
+    //             return this.data1.slice((p - 1) * size, p * size);
+    // },
+    // async changePage (p) {
       
-      this.page = p
-      this.list = await this.mockTableData1(p,pageSize);
-    },
-    async searchdata() {
-      $('.preload').css("display","block")
-      this.resdata = await this.apiData();
-      console.log("response------------------------>", this.resdata)
-      this.tableDataBind();
-      this.list = await this.mockTableData1(1,pageSize)
-      this.spind = true
-    },
-    reset() {
-      this.cname = '';
-      this.status = '';
-      this.dategt = '';
-      this.datelt = '';
-      this.totalgt = '';
-      this.totallt = '';
-      this.duegt = '';
-      this.duelt = '';
-      this.data1 = []
-      this.list = []
-      this.searchdata();
-    },
-    async changeData() {
-      this.data1 = []
-      this.list = []
-      console.log("Inside change data")
-      this.resdata = await this.changeApiData();
-      console.log("response------------------------>", this.resdata)
-      this.tableDataBind();
-      this.list = await this.mockTableData1(1,pageSize);
-    },
-    async getCustomerUrl(){
-      console.log("inside getCustomerUrl " )
-      var res
-        var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": config.default.serviceUrl + 'contacts',
-        "method": "GET",
-        "headers": {
-          "cache-control": "no-cache"
-        }
-      }
-      console.log("settings", settings)
-      await $.ajax(settings).done(function (response) {
-          res = response
-          console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
-        });
-          res.forEach (obj => {
-        var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.Name;
-            x.add(option);
-      })
-    },
-    async apiData () {
-      var resp;
-      console.log("TRTYYTYTT");
-      await axios.get(config.default.serviceUrl + 'invoice', {
-        headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-      })
-      .then(function (response) {
-        resp = response
-        console.log("response------>iuy",resp);
-        $('.preload').css("display","none")
-      })
-      .catch(function (error) {
-        console.log("error",error);
-      });
-      return resp
-    },
-    async changeApiData () {
-      var resp;
-      var params = {}
-      if(this.cname != ''){
-        params['Name'] = this.cname   
-      }
-      if(this.status != ''){ 
-        params['Status'] = this.status  
-      }
-      if(this.dategt != ''){
-        params['Date'] = this.dategt        
-      }
-      if(this.totalgt != ''){
-        params['Total'] = this.totalgt
+    //   this.page = p
+    //   this.list = await this.mockTableData1(p,pageSize);
+    // },
+    // async searchdata() {
+    //   $('.preload').css("display","block")
+    //   this.resdata = await this.apiData();
+    //   console.log("response------------------------>", this.resdata)
+    //   this.tableDataBind();
+    //   this.list = await this.mockTableData1(1,pageSize)
+    //   this.spind = true
+    // },
+    // reset() {
+    //   this.cname = '';
+    //   this.status = '';
+    //   this.dategt = '';
+    //   this.datelt = '';
+    //   this.totalgt = '';
+    //   this.totallt = '';
+    //   this.duegt = '';
+    //   this.duelt = '';
+    //   this.data1 = []
+    //   this.list = []
+    //   this.searchdata();
+    // },
+    // async changeData() {
+    //   this.data1 = []
+    //   this.list = []
+    //   console.log("Inside change data")
+    //   this.resdata = await this.changeApiData();
+    //   console.log("response------------------------>", this.resdata)
+    //   this.tableDataBind();
+    //   this.list = await this.mockTableData1(1,pageSize);
+    // },
+    // async getCustomerUrl(){
+    //   console.log("inside getCustomerUrl " )
+    //   var res
+    //     var settings = {
+    //     "async": true,
+    //     "crossDomain": true,
+    //     "url": config.default.serviceUrl + 'contacts',
+    //     "method": "GET",
+    //     "headers": {
+    //       "cache-control": "no-cache"
+    //     }
+    //   }
+    //   console.log("settings", settings)
+    //   await $.ajax(settings).done(function (response) {
+    //       res = response
+    //       console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
+    //     });
+    //       res.forEach (obj => {
+    //     var x = document.getElementById("selectCustomer");
+    //         var option = document.createElement("option");
+    //         option.text = obj.Name;
+    //         x.add(option);
+    //   })
+    // },
+    // async apiData () {
+    //   var resp;
+    //   let self=this;
+    //   console.log("TRTYYTYTT");
+    //   await axios.get(config.default.serviceUrl + 'invoice', {
+    //     headers:{
+    //         Authorization : Cookies.get('auth_token')
+    //     },
+    //   })
+    //   .then(function (response) {
+    //     resp = response
+    //     console.log("response------>iuy",resp);
+    //     self.tabPanes = response.data
+    //     $('.preload').css("display","none")
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //   });
+    //   return resp
+    // },
+    // async changeApiData () {
+    //   var resp;
+    //   var params = {};
+    //   let self = this;
+    //   if(this.cname != ''){
+    //     params['Name'] = this.cname   
+    //   }
+    //   if(this.status != ''){ 
+    //     params['Status'] = this.status  
+    //   }
+    //   if(this.dategt != ''){
+    //     params['Date'] = this.dategt        
+    //   }
+    //   if(this.totalgt != ''){
+    //     params['Total'] = this.totalgt
         
-      }
-      if(this.duegt != ''){ 
-        params['AmountDue'] =  this.duegt
-      }
+    //   }
+    //   if(this.duegt != ''){ 
+    //     params['AmountDue'] =  this.duegt
+    //   }
       
-      console.log("params api data", params)
-      await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-        params: params
-      })
-      .then(function (response) {
-        resp = response
-        console.log("response changePage------>",resp);
-        $('.preload').css("display","none")
-      })
-      .catch(function (error) {
-        console.log("error",error);
-      });
-      return resp
-    },
-    tableDataBind(){
-          var self = this
-          if(this.resdata.data.Err){
-            console.log("error in response",this.resdata.data.Err)
-          }else{
-            this.resp = this.resdata.data
-            console.log("inside table data bind",this.resp)
-            this.resp.forEach(result =>{
-              console.log(result)
-              result.data.forEach(result2 =>{
-                var myobj = {}
-              myobj.Name = result2.Contact.Name
-              myobj.InvoiceID = result2.InvoiceID
-              myobj.AmountDue = result2.AmountDue
-              myobj.AmountPaid = result2.AmountPaid
-              myobj.Date = result2.Date
-              myobj.Total = result2.Total
-              myobj.status = result2.Status
-              myobj.loading = false
-              myobj.loading1 = false
-              self.data1.push(myobj)
-              })
+    //   console.log("params api data", params)
+    //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+    //     params: params
+    //   })
+    //   .then(function (response) {
+    //     resp = response
+    //     console.log("response changePage------>",resp);
+        
+    //     $('.preload').css("display","none")
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //   });
+    //   return resp
+    // },
+    // tableDataBind(){
+    //       var self = this
+    //       if(this.resdata.data.Err){
+    //         console.log("error in response",this.resdata.data.Err)
+    //       }else{
+    //         this.resp = this.resdata.data
+    //         console.log("inside table data bind",this.resp)
+    //         this.resp.forEach(result =>{
+    //           //console.log(result)
+    //           result.data.forEach(result2 =>{
+    //             var myobj = {}
+    //           myobj.Name = result2.Contact.Name
+    //           myobj.InvoiceID = result2.InvoiceID
+    //           myobj.AmountDue = result2.AmountDue
+    //           myobj.AmountPaid = result2.AmountPaid
+    //           myobj.Date = result2.Date
+    //           myobj.Total = result2.Total
+    //           myobj.status = result2.Status
+    //           myobj.loading = false
+    //           myobj.loading1 = false
+    //           self.data1.push(myobj)
+    //           })
               
-            })
-            }
+    //         })
+    //         }
           
-    },
+    // },
     async makepayment(params){
-      this.$router.push('/checkout/' + params.row.InvoiceID)
+      console.log(params)
+      this.$router.push('/checkout/' + params)
     },
     async sendemail(params){
       var self = this
@@ -436,17 +568,39 @@ export default {
             .catch(function (error) {
               console.log(error);
             });
+    },
+    async getAllInvoice(){
+      let self = this;
+      
+      axios.get(config.default.serviceUrl + 'invoice', {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+      })
+      .then(function (response) {
+        
+        console.log("response------>iuy",response);
+        self.spinShow = false;
+        self.tabPanes = response.data;
+        $('.preload').css("display","none")
+        
+      })
+      .catch(function (error) {
+        console.log("error",error);
+        self.spinShow = false;
+      });
     }
      
   },
   mounted() {
     let self = this;
     
-     $('.maindiv').change(async function() {
-      await self.changeData();
-    }); 
-    this.getCustomerUrl();
-    this.searchdata();
+    //  $('.maindiv').change(async function() {
+    //   await self.changeData();
+    // }); 
+    //this.getCustomerUrl();
+    //this.searchdata();
+    this.getAllInvoice()
   }
 }
 </script>

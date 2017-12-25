@@ -16,6 +16,8 @@ import util from '@/libs/util';
 Vue.use(VueI18n);
 Vue.use(iView , { locale });
 
+
+
 new Vue({
     el: '#app',
     router: router,
