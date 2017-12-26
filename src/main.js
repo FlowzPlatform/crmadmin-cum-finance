@@ -9,13 +9,14 @@ import '@/locale';
 import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import util from '@/libs/util';
-
+import VueWidgets from 'vue-widgets'
+import 'vue-widgets/dist/styles/vue-widgets.css'
 
 
 
 Vue.use(VueI18n);
 Vue.use(iView , { locale });
-
+Vue.use(VueWidgets);
 
 
 new Vue({

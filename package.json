@@ -31,6 +31,7 @@
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
     "mjml": "^3.3.5",
+    "moment": "^2.20.1",
     "psl": "^1.1.21",
     "rasterizehtml": "^1.2.4",
     "simplemde": "^1.11.2",
@@ -40,6 +41,7 @@
     "vue-particles": "^1.0.9",
     "vue-router": "^3.0.1",
     "vue-widgets": "^1.0.9",
+    "vuedraggable": "^2.15.0",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
