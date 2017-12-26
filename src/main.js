@@ -19,6 +19,8 @@ Vue.use(iView , { locale });
 Vue.use(VueWidgets);
 
 
+Vue.use(VueWidgets)
+
 new Vue({
     el: '#app',
     router: router,
