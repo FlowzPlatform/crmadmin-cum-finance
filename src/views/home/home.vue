@@ -5,77 +5,66 @@
 <template>
     <div class="home-main">
         <Row :gutter="10">
-            <Col :md="24" :lg="8">
-                <Row class-name="home-page-row1" :gutter="10">
-                    <Col :md="12" :lg="24" :style="{marginBottom: '10px'}">
-                        <Card>
-                            <Row type="flex" class="user-infor">
-                                <Col span="8" style="padding-right:0px;">
-                                    <Row class-name="made-child-con-middle" type="flex" align="middle">
-                                        <img class="avator-img" :src="avatorPath" />
-                                    </Row>
-                                </Col>
-                                <Col span="16" style="padding-left:0px;">
-                                    <Row class-name="made-child-con-middle" type="flex" align="middle">
-                                        <div>
-                                            <b class="card-user-infor-name" style="font-size: 18px;">{{name}}</b>
-                                            <p>Super Admin</p>
-                                        </div>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <div class="line-gray"></div>
-                            <Row class="margin-top-8">
-                                <Col span="8"><p class="notwrap">上次登录时间:</p></Col>
-                                <Col span="16" class="padding-left-8">2017.09.12-13:32:20</Col>
-                            </Row>
-                            <Row class="margin-top-8">
-                                <Col span="8"><p class="notwrap">上次登录地点:</p></Col>
-                                <Col span="16" class="padding-left-8">北京</Col>
-                            </Row>
-                        </Card>
-                    </Col>
-                   
-                </Row>
-            </Col>
-            <Col :md="24" :lg="16">
+            <Col :md="24" :lg="24" :sm="12">
                 <Row :gutter="5">
-                    <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
+                    <Col :xs="24" :sm="12" :md="4" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="totalInv_count"
+                            :end-val="count.totalInv"
+                            iconType="ios-calendar-outline"
+                            color="#E7A6C9"
+                            intro-text="Total Invoice"
+                        ></infor-card>
+                    </Col>
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="total_count"
                             :end-val="count.total"
                             iconType="social-usd"
                             color="#2d8cf0"
-                            intro-text="Total Amount"
+                            intro-text="Invoice Total Amount"
                         ></infor-card>
                     </Col>
-                    <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="paid_count"
                             :end-val="count.paid"
                             iconType="social-usd"
                             color="#64d572"
-                            intro-text="Paid Amount"
+                            intro-text="Invoice Paid Amount"
                         ></infor-card>
                     </Col>
-                    <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="unpaid_count"
                             :end-val="count.unpaid"
                             iconType="social-usd"
                             color="#ffd572"
-                            intro-text="Unpaid Amount"
+                            intro-text="Invoice Unpaid Amount"
                         ></infor-card>
                     </Col>
-                    <Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="draft_count"
                             :end-val="count.draft"
                             iconType="social-usd"
                             color="#f25e43"
-                            intro-text="Draft Amount"
+                            intro-text="Invoice Draft Amount"
                         ></infor-card>
                     </Col>
+                </Row>
+                <Row>
+                    
+                    <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
+                        <Select v-model="config" clearable style="width:200px" placeholder="Select Config" on-change="selectChange">
+                            <Option v-for="item in mData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
+                        <Button type="primary" @click="selectChange">Apply</Button>
+                    </col>
+                    <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
+                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd" placement="bottom-end left-start" placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
+                        <Button type="primary" @click="dateval">Apply</Button>
+                    </col>
                 </Row>
             </Col>
         </Row>
@@ -174,6 +163,9 @@ import mapDataTable from './components/mapDataTable.vue';
 import toDoListItem from './components/toDoListItem.vue';
 import draggable from 'vuedraggable'
 import Cookies from 'js-cookie';
+import moment from 'moment';
+import axios from 'axios';
+const _ = require('lodash');
 
 export default {
     name: 'home',
@@ -192,32 +184,49 @@ export default {
     data () {
         return {
             name : '',
-            toDoList: [
-                {
-                    title: '去iView官网学习完整的iView组件'
-                },
-                {
-                    title: '去iView官网学习完整的iView组件'
-                },
-                {
-                    title: '去iView官网学习完整的iView组件'
-                },
-                {
-                    title: '去iView官网学习完整的iView组件'
-                },
-                {
-                    title: '去iView官网学习完整的iView组件'
-                }
-            ],
+            daterange1 : '',
+            config : '',
+            configList: [],
             count: {
                 total: 0,
                 paid: 0,
                 unpaid: 0,
-                draft: 0
+                draft: 0,
+                totalInv: 0
             },
-            cityData: cityData,
-            showAddNewTodo: false,
-            newToDoItemValue: ''
+            mData: [],
+            dateoptions: {
+                shortcuts: [
+                    {
+                        text: 'A month',
+                        value () {
+                            const end = new Date();
+                            const start = new Date();
+                            var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            this.daterange1 = s
+                            return [start, end];
+                        }
+                    },
+                    {
+                        text: '3 month',
+                        value () {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            return [start, end];
+                        }
+                    },
+                    {
+                        text: '6 month',
+                        value () {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
+                            return [start, end];
+                        }
+                    }
+                ]
+            }
         };
     },
     computed: {
@@ -246,27 +255,34 @@ export default {
             this.showAddNewTodo = false;
             this.newToDoItemValue = '';
         },
-        async ChartFun() {
+        async ChartFun(chart,date1,date2,settingId) {
             var chartdata;
-            await $.ajax({
-            type: 'GET',
-            url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=bar&date1=2017-09-05&date2=2017-12-15",
-            async: true,
-            dataType: 'json',
-            success: function (data) {
-                chartdata = data;
-                console.log("chart data",data);
-            },error: function(err) {
-                console.log("Error",err)
-            }
+            await axios.get("http://localhost:3037/invoice", {
+                params: {
+                    chart : chart,
+                    date1 : date1,
+                    date2 : date2,
+                    settingId : settingId
+                },
+                headers: {
+                    Authorization : Cookies.get('auth_token')
+                }
             })
+            .then(function (response) {
+                chartdata = response.data[0].data;
+                // chartdata.reverse();
+                console.log("chart data",chartdata)
+            })
+            .catch(function (error) {
+                console.log("error",error);
+            });
             return chartdata
         },
         // Bar chart
-        async barChartFun() {
+        async barChartFun(date1,date2,settingId) {
             // based on prepared DOM, initialize echarts instance
             var barchart = echarts.init(document.getElementById('barChart'))
-            var chart_data = await this.ChartFun()
+            var chart_data = await this.ChartFun("bar",date1,date2,settingId)
             // specify chart configuration item and data
             var option = {
                 tooltip: {},
@@ -306,26 +322,33 @@ export default {
             barchart.setOption(option)
         },
          //Pie Chart
-        async PieChartFun() {
+        async PieChartFun(date1,date2,settingId) {
             var chartdata;
-            await $.ajax({
-                type: 'GET',
-                url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=pie&date1=2017-09-05&date2=2017-12-15",
-                async: true,
-                dataType: 'json',
-                success: function (data) {
-                    chartdata = data;
-                    console.log("pie chart data",data);
-                },error: function(err) {
-                    console.log("Error",err)
+            await axios.get("http://localhost:3037/invoice", {
+                params: {
+                    chart : 'pie',
+                    date1 : date1,
+                    date2 : date2,
+                    settingId : settingId
+                },
+                headers: {
+                    Authorization : Cookies.get('auth_token')
                 }
+            })
+            .then(function (response) {
+                chartdata = response.data[0].data;
+                // chartdata.reverse();
+                console.log("pie chart data",chartdata)
+            })
+            .catch(function (error) {
+                console.log("error",error);
             });
             return chartdata;
         },
-        async pieChartFun() {
+        async pieChartFun(date1,date2,settingId) {
             // based on prepared DOM, initialize echarts instance
             var piechart = echarts.init(document.getElementById('pieChart'));
-            var chart_data = await this.PieChartFun();
+            var chart_data = await this.PieChartFun(date1,date2,settingId);
             // specify chart configuration item and data
             var option = {
             tooltip: {},
@@ -352,10 +375,10 @@ export default {
             document.getElementById('chart2_loading').style = "display:none"
             piechart.setOption(option);
         },
-        async lineChartFun() {
+        async lineChartFun(date1,date2,settingId) {
             // based on prepared DOM, initialize echarts instance
             var linechart = echarts.init(document.getElementById('lineChart'));
-            var chart_data = await this.ChartFun();
+            var chart_data = await this.ChartFun("line",date1,date2,settingId);
             // specify chart configuration item and data
             var option = {
             tooltip: {
@@ -403,27 +426,34 @@ export default {
             linechart.setOption(option);
         },
         //Cashflow
-        async waterfall() {
+        async waterfall(date1,date2,settingId) {
             var chartdata;
-            await $.ajax({
-            type: 'GET',
-            url: "http://api.flowz.com/crm/invoice?domain=Xero&chart=cashflow&date1=2017-09-05&date2=2017-12-15",
-            async: true,
-            dataType: 'json',
-            success: function (data) {
-                chartdata = data;
-                // console.log("waterfall chart data",data);
-            },error: function(err) {
-                console.log("Error",err)
-            }
+            await axios.get("http://localhost:3037/invoice", {
+                params: {
+                    chart : 'cashflow',
+                    date1 : date1,
+                    date2 : date2,
+                    settingId : settingId
+                },
+                headers: {
+                    Authorization : Cookies.get('auth_token')
+                }
+            })
+            .then(function (response) {
+                chartdata = response.data[0].data;
+                // chartdata.reverse();
+                console.log("waterfall chart data",chartdata)
+            })
+            .catch(function (error) {
+                console.log("error",error);
             });
             return chartdata;
         },
 
-        async waterfallFun() {
+        async waterfallFun(date1,date2,settingId) {
             // based on prepared DOM, initialize echarts instance
             var waterfallChart = echarts.init(document.getElementById('waterfall'));
-            var chart_data = await this.waterfall();
+            var chart_data = await this.waterfall(date1,date2,settingId);
 
             var data1 = [];
             var data2 = [];
@@ -492,33 +522,33 @@ export default {
             };
             var data_arr = [];
             chart_data.forEach(function(chart_data1) {
-            option.xAxis[0].data.push(chart_data1.label);
-            data_arr.push(chart_data1.y);
+                option.xAxis[0].data.push(chart_data1.label);
+                data_arr.push(chart_data1.y);
             })
             // console.log("waterfall data_arr",data_arr);
 
             for (var i = 0; i<data_arr.length; i++ ) {
-            var diff = data_arr[i] - data_arr[i-1];
-            if (i == 0) {
-                data1.push(0);
-                data2.push(data_arr[i]);
-                data3.push('-');
-            }
-            else if (diff > 0) {
-                data1.push(data_arr[i-1]);
-                data2.push(diff);
-                data3.push('-');
-            }
-            else if (diff < 0) {
-                data1.push(data_arr[i]);
-                data2.push('-');
-                data3.push(data_arr[i-1] - data_arr[i]);
-            }
-            else {
-                data1.push(data_arr[i]);
-                data2.push(diff);
-                data3.push('-');
-            }
+                var diff = data_arr[i] - data_arr[i-1];
+                if (i == 0) {
+                    data1.push(0);
+                    data2.push(data_arr[i]);
+                    data3.push('-');
+                }
+                else if (diff > 0) {
+                    data1.push(data_arr[i-1]);
+                    data2.push(diff);
+                    data3.push('-');
+                }
+                else if (diff < 0) {
+                    data1.push(data_arr[i]);
+                    data2.push('-');
+                    data3.push(data_arr[i-1] - data_arr[i]);
+                }
+                else {
+                    data1.push(data_arr[i]);
+                    data2.push(diff);
+                    data3.push('-');
+                }
             }
 
             // console.log("data1",data1);
@@ -528,43 +558,110 @@ export default {
             waterfallChart.setOption(option);
         },
 
-        async totalAmt() {
+        async totalAmt(date1,date2,settingId) {
             var statsData;
-            await $.ajax({
-                type: 'GET',
-                url: "http://localhost:3040/invoice?domain=Xero&stats=true&date1=2017-09-01&date2=2017-12-15",
-                async: true,
-                dataType: 'json',
-                success: function (data) {
-                statsData = data;
-                console.log("statsData",data);
-                },error: function(err) {
-                console.log("Error",err)
+            await axios.get("http://localhost:3037/invoice", {
+                params: {
+                    stats : true,
+                    date1 : date1,
+                    date2 : date2,
+                    settingId : settingId
+                },
+                headers: {
+                    Authorization : Cookies.get('auth_token')
                 }
+            })
+            .then(function (response) {
+                statsData = response.data[0].data;
+                // statsdata.reverse();
+                console.log("statsData",statsData)
+            })
+            .catch(function (error) {
+                console.log("error",error);
             });
             this.count.total = statsData[0].value
             this.count.paid = statsData[1].value
             this.count.unpaid = statsData[2].value
             this.count.draft = statsData[3].value
+            this.count.totalInv = statsData[4].value
         },
 
-        init() {
+        async init(settingId) {
             this.name = Cookies.get('user');
-        }
+            var resp;
+            await axios.get("http://localhost:3037/settings", {
+                params: {
+                    isActive : true,
+                    settingId : settingId
+                },
+                headers: {
+                    Authorization : Cookies.get('auth_token')
+                }
+            })
+            .then(function (response) {
+               resp = response.data.data;
+               console.log("config data list",resp)
+            })
+            .catch(function (error) {
+                console.log("error",error);
+            });
+            this.configList = resp
+            this.mData = _.map(resp, (d) => {
+                return {label: d.configName, value: d.id}
+            })
+        },
+
+        dateval() {
+            // console.log("daterange",this.daterange1, typeof this.daterange1)
+            // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
+            // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
+            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
+            // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
+        }, 
+
+        selectChange() {
+            console.log("select change")
+            alert(this.config)
+            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
+        },
+
+        async getDate(days) {
+          	const end = new Date();
+            const start = new Date();
+            await start.setTime(start.getTime() - 3600 * 1000 * 24 * days);
+            console.log("!!!!!!!!!!!!",[start, end])
+            return [start, end];
+          }
+
     },
-    mounted() {
-        this.barChartFun(),
-        this.pieChartFun(),
-        this.lineChartFun(),
-        this.waterfallFun(),
-        this.totalAmt(),
+    async mounted() {
+        
+        this.daterange1 = await this.getDate(91);
+        console.log("daterange1",this.daterange1)
+        console.log("daterange1",this.daterange1[0])
+        // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
+        // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
+        this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+        this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+        this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+        this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
+        this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
         this.init()
     }
+
 };
 </script>
 
 <style>
     .ivu-card-body {
-        padding: 5px;
+        padding: 3px;
     }
 </style>
