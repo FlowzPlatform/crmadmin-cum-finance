@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <div style="padding: 10px; margin: 5px; display: block;">
+  <!-- <div style="padding: 10px; margin: 5px; display: block;">
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div>
   
@@ -138,8 +138,8 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
-import Handlebars from 'handlebars'
-import { mjml2html } from 'mjml'
+// import Handlebars from 'handlebars'
+//import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
 var pageSize = 10
 export default {
@@ -226,7 +226,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.sendemail(row)
+                       // this.sendemail(row)
                       }
                     }
                   }, 'Email')
@@ -243,7 +243,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.sendemail(row)
+                       // this.sendemail(row)
                       }
                     }
                   }, 'Email')
@@ -321,7 +321,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.sendemail(params)
+                        //this.sendemail(params)
                       }
                     }
                   }, 'Email')
@@ -338,7 +338,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.sendemail(params)
+                        //this.sendemail(params)
                       }
                     }
                   }, 'Email')
