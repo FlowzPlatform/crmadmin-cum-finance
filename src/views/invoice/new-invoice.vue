@@ -20,7 +20,7 @@
         </FormItem>
         <FormItem label="Contact Name" prop="name">
              <Select v-model="formItem.name" style="width:100%">
-               <Option v-for="item in data2" :value="item" :key="item">{{ item }}</Option>
+               <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
         </FormItem>
         <FormItem label="Project">
@@ -210,19 +210,20 @@ export default {
               console.log(error);
             });
       console.log("response------>iuy",resp);
-      resp.forEach(obj =>{
-        self.data2.push(obj.Name)
-      })
+      // resp.forEach(obj =>{
+      //   console.log(obj[0].data)
+        self.data2 = resp[0].data
+      //})
     },
     async formData (name) {
       console.log(name)
       this.$refs[name].validate((valid) => {
-        if (valid) {
+        //if (valid) {
           this.newInvoice();
-        } else {
+        // } else {
          
-          this.$Message.error('Data not valid!!!');
-        }
+        //   this.$Message.error('Data not valid!!!');
+        // }
       })
     },
     async newInvoice () {
