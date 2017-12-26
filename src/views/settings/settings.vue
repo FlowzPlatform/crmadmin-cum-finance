@@ -28,7 +28,7 @@
                         <td >Consumer key </td>
                         <td>
                             <Input :type="consumerKeyType" readonly :value='product.consumerKey'>
-                                <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret(product)"></Button>
                             </Input>                            
                         </td>
                     </tr>
@@ -36,7 +36,7 @@
                         <td >Client ID </td>
                         <td>
                              <Input :type="client_idType" readonly :value='product.client_id'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret" ></Button>
                             </Input>
                         </td>
                     </tr>
@@ -45,7 +45,7 @@
                         <td >Consumer secret </td>
                         <td>
                             <Input :type="consumerSecretType" readonly :value='product.consumerSecret'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret"></Button>
                             </Input>
                         </td>
                     </tr>
@@ -53,7 +53,7 @@
                         <td >Client secret </td>
                         <td>
                             <Input :type="client_secretType" readonly :value='product.client_secret'>
-                                <Button slot="append" icon="eye"></Button>
+                                <Button slot="append" icon="eye" @click="showSecret"></Button>
                             </Input>
                         </td>
                     </tr>
@@ -90,13 +90,66 @@
                         </Tooltip>
                     </ButtonGroup>
                     </div>
-                       
                 </WidgetBody>
             </Widget>
+            <Modal
+            v-model="modal1"
+            title="Edit Configuration"
+            ok-text="Save"
+            cancel-text="Cancel"
+            @on-ok="ok"
+            @on-cancel="cancel">
+                
+                <Form :model="editFormItemXero" :label-width="60" v-if='editFormType == "Xero"'>
+                    <FormItem label="Config Name">
+                        <Input v-model="editData.configName" placeholder="Enter something for QB..."></Input>
+                    </FormItem>
+                    <FormItem label="User Agent">
+                        <Input v-model="editData.useragent"  placeholder="User Agent"></Input>
+                    </FormItem>
+                    <FormItem label="Consumer Key">
+                        <Input v-model="editData.consumerKey"  placeholder="Consumer Key"></Input>
+                    </FormItem>
+                    <FormItem label="Consumer Secret">
+                        <Input v-model="editData.consumerSecret"  placeholder="Consumer Secret"></Input>
+                    </FormItem>
+                    <FormItem label="Private Key" >
+                        <!-- <Input v-model="XeroformValidate.privateKey" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+                         -->
+                         <Upload v-model="editData.privateKey"
+                            :before-upload="handleUpload"
+                            action="">
+                            <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+                        </Upload>
+                        <div v-if="file !== ''">Uploaded file: {{ file.name }} </div>
+                        <div v-else>Uploaded file: {{ editData.pem }} </div>
+                    </FormItem>
+                </Form>
+                <Form :model="editFormItemQB" :label-width="60" v-else>
+                    <FormItem label="Config Name">
+                        <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                    </FormItem>
+                    <FormItem label="Client ID">
+                        <Input v-model="editData.client_id" placeholder="Client ID"></Input>
+                    </FormItem>
+                    <FormItem label="Client Secret">
+                        <Input v-model="editData.client_secret" placeholder="Client Secret"></Input>
+                    </FormItem>
+                    <FormItem label="Realm ID">
+                        <Input v-model="editData.realmId" placeholder="Realm ID"></Input>
+                    </FormItem>
+                    <FormItem label="Refresh Token">
+                        <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
+                    </FormItem>
+                </Form>
             
+            
+        </Modal>
             </div>
         </div>
         <!-- </RadioGroup> -->
+
+        
     </div>
 </template>
 
@@ -115,10 +168,19 @@ Vue.use(VueWidgets);
     export default {
         data () {
             return {
+                editFormItemXero: {
+                    input: ''
+                },
+                editFormItemQB: {
+                    input: ''
+                },
+                file:'',
+                editData : {},
+                editFormType : "",
+                modal1: false,
                 disabled:false,
                 switch1: false,
                 comp: true,
-                showPass: false,
                 consumerKeyType:"password",
                 client_idType:"password",
                 consumerSecretType:"password",
@@ -162,6 +224,7 @@ Vue.use(VueWidgets);
                 this.data6.splice(index, 1);
             },
             addNewConfig(){
+                 this.$store.state.settingData = ""
                 this.$router.push({
                         name: 'newsettings'
                     });
@@ -204,7 +267,104 @@ Vue.use(VueWidgets);
                 
             },
             editConfig(data){
+                this.editData = data;
+                this.editFormType = data.domain;
+                this.modal1 = true;
 
+            },
+            async ok () {
+                let self = this
+                
+                let EditModifiedData = await this.editedData() 
+                
+                
+                        console.log(EditModifiedData)
+                axios({
+                    method:'patch',
+                    url:feathersUrl +'settings/'+this.editData.id,
+                    data: EditModifiedData,
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                }).then(response => {
+                    if(response.status == 200){
+                        this.$Message.success("Configuaration updated successfully")
+                    }
+                    this.disabled = false;
+                })
+                .catch(error => {
+                        console.log(error)
+                        this.disabled = false;
+                        Cookies.remove('auth_token') 
+                        this.$Message.error('Auth Error!');
+                        this.$store.commit('logout', this); 
+                        this.$router.push({
+                        name: 'login'
+                    })
+                });
+            },
+            async editedData (){
+                let self= this;
+                let reader  = new FileReader();
+                return new Promise ((resolve , reject) =>{
+                    if (this.file && this.editData.domain == "Xero") {
+                        console.log("Is file uploaded = yes")
+                            reader.readAsDataURL(this.file);
+                            
+                             reader.addEventListener("load", function () {
+                                let lastModified = self.file.lastModified +"-"+self.file.name;
+                                self.editData.certificate = reader.result.substring( reader.result.indexOf(",")+1),
+                                self.editData.pem = lastModified;
+                                
+                                resolve(self.editData)
+                            })
+                          }else {
+                            
+                            resolve(self.editData)
+                        }
+                })
+            },
+            cancel () {
+                //this.$Message.info('Clicked cancel');
+            },
+            handleUpload(file){
+                this.file = file
+                return false;
+            },
+            showSecret(data){
+                console.log(this)
+                
+              
+                 
+                       
+                //if(data == show[0].id){
+                
+                if(this.client_idType == "password" ){
+                    this.client_idType = "text"
+                }else{
+                    this.client_idType = "password"
+                }
+
+                if(this.client_secretType == "password"){
+                    this.client_secretType = "text"
+                }else{
+                    this.client_secretType = "password"
+                }
+
+                if(this.consumerKeyType == "password"){
+                    this.consumerKeyType = "text"
+                }else{
+                    this.consumerKeyType = "password"
+                }
+
+                if(this.consumerSecretType == "password"){
+                    this.consumerSecretType = "text"
+                }else{
+                    this.consumerSecretType = "password"
+                }
+                //}
+                
+                
             },
             buttonClicked(data){
                 this.disabled = true;
@@ -226,7 +386,7 @@ Vue.use(VueWidgets);
                         this.disabled = false;
                         Cookies.remove('auth_token') 
                         this.$Message.error('Auth Error!');
-                       this.$store.commit('logout', this); 
+                        this.$store.commit('logout', this); 
                         this.$router.push({
                         name: 'login'
                     })
@@ -239,6 +399,7 @@ Vue.use(VueWidgets);
         }
         },
         mounted(){
+            
             axios({
                     method:'get',
                     url:feathersUrl +'settings',

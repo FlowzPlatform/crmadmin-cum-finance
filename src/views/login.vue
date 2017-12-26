@@ -7,6 +7,7 @@
       <div class="mainBody">
       
       <div class="loginContainer">
+          
          <div class="success">
             <p id="text_mess" v-if="errmsg!=''">{{errmsg}}</p>
          </div>
@@ -83,7 +84,7 @@
                   </div>
                   <button type="submit" style="display:none"></button>
                </form>
-               <div class="social">
+               <!-- <div class="social">
                   <span @click="facebookLogin()">
                   <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
                   </span>
@@ -96,7 +97,7 @@
                   <span @click="githubLogin()">
                   <i class="fa fa-github-square fa-2x" aria-hidden="true"></i>
                   </span>
-               </div>
+               </div> -->
             </div>
             <div class="signup hide">
                <h2>SIGN UP</h2>
@@ -133,6 +134,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import config from '../config/customConfig'
 import 'element-ui/lib/theme-chalk/index.css'
+
 Vue.use(ElementUI)
 var $loginMsg = $('.loginMsg'),
             $login = $('.login'),

@@ -1,0 +1,203 @@
+<mjml>
+  <mj-body>
+    <mj-container>
+
+      <mj-section background-color="#f0f0f0" border="1px solid #ddd">
+
+          <mj-section padding="0">
+            <mj-column width="30%">
+              <mj-image padding-top="0" height="100px" src="{{image.url}}" />
+            </mj-column>
+
+            <mj-column width="40%">
+              <mj-image padding-top="50px" height="20px" padding-right="10px" src="https://i.imgur.com/rvEtDj1.png" align="right"></mj-image>
+            </mj-column>
+
+            <mj-column width="30%"><mj-text align="left"  padding-top="50px" font-weight="bold" padding-left="0">+800-353-2468</mj-text></mj-column>
+          <mj-divider border-width="2px"  border-color="#012d6b" />
+          </mj-section>
+
+          <mj-section padding="10px 20px 0">
+            <mj-column>
+              <mj-text font-size="20px" color="#F45E43" font-family="helvetica" padding="5">Order Confirmation</mj-text>
+              <mj-text font-size="15px" font-family="helvetica" padding="5">Thank you for your order! Below is a summary for your records.</mj-text>
+            </mj-column>
+          </mj-section>
+
+          <mj-section padding-bottom="0" padding-left="20px" padding-right="20px">
+            <mj-column background-color="#fff" border-top="2px solid red" border="1px solid #ddd">
+              <mj-text font-weight="bold" font-size="15px">Billing Address</mj-text>
+            </mj-column>
+          </mj-section>
+
+
+          <mj-section padding="0" padding-left="20px" padding-right="20px">
+            <mj-group background-color="#fff" border="1px solid #333">
+              <mj-column>
+                <mj-text>{{invoice.data.Contact.Name}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].AddressLine1}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].AddressLine2}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].City}} {{invoice.Contact.Addresses.[1].Region}} {{invoice.Contact.Addresses.[1].PostalCode}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].Country}}</mj-text>
+              </mj-column>
+              <mj-column>
+                <mj-text>Po Number.:</mj-text>
+                <mj-text padding-top="0">{{invoice.Contact.Phones.[0].PhoneNumber}} {{invoice.Contact.Phones.[1].PhoneNumber}} {{invoice.Contact.Phones.[2].PhoneNumber}} {{invoice.Contact.Phones.[3].PhoneNumber}}</mj-text>
+                <mj-text padding-top="0">{{invoice.Contact.EmailAddress}}</mj-text>
+              </mj-column>
+            </mj-group>
+          </mj-section>
+
+          {{#each invoice.data.LineItems}}
+              <mj-section padding="0" padding-left="20px" padding-right="20px">
+                <mj-column background-color="#fff" border-top="2px solid red"  border="1px solid #ddd">
+                  <mj-text font-weight="bold" font-size="15px">Product Summary</mj-text>
+                </mj-column>
+              </mj-section>
+
+              <mj-section padding="0" padding-left="20px" padding-right="20px">
+                <mj-column background-color="#fff" width="20%" border="1px solid #ddd">
+                  <mj-text>Image</mj-text>
+                </mj-column>
+                <mj-column background-color="#fff" width="30%" border="1px solid #ddd">
+                  <mj-text>Name</mj-text>
+                </mj-column>
+                <mj-column background-color="#fff" width="15%" border="1px solid #ddd">
+                  <mj-text>Qty</mj-text>
+                </mj-column>
+                <mj-column background-color="#fff" width="18%" border="1px solid #ddd">
+                  <mj-text>Amount</mj-text>
+                </mj-column>
+                <mj-column background-color="#fff" width="17%" border="1px solid #ddd">
+                  <mj-text>Tax</mj-text>
+                </mj-column>
+              </mj-section>
+
+              <mj-section padding="0" padding-left="20px" padding-right="20px">
+                  <mj-column background-color="#fff" width="20%" border="1px solid #ddd">
+                    <mj-image height="22px" src="./image/product.jpg" alt=""></mj-image>
+                  </mj-column>
+                  <mj-column background-color="#fff" width="30%" border="1px solid #ddd" border-right="1px solid #ddd">
+                    <mj-text>{{this.Description}}</mj-text>
+                  </mj-column>
+                  <mj-column background-color="#fff" width="15%" border="1px solid #ddd" border-right="1px solid #ddd">
+                    <mj-text>{{this.Quantity}}</mj-text>
+                  </mj-column>
+                  <mj-column background-color="#fff" width="18%" border="1px solid #ddd" border-right="1px solid #ddd">
+                    <mj-text>{{this.UnitAmount}}</mj-text>
+                  </mj-column>
+                  <mj-column background-color="#fff" width="17%" border="1px solid #ddd" border-right="1px solid #ddd">
+                    <mj-text>{{this.TaxAmount}}</mj-text>
+                  </mj-column>
+              </mj-section>
+
+              <mj-section padding="0" padding-left="20px" padding-right="20px">
+                 <mj-column background-color="#fff" border="1px solid #ddd">
+                   <mj-text align="right">Total: {{this.Total}}</mj-text>
+                 </mj-column>
+              </mj-section>
+
+              <mj-section padding="0" padding-left="20px" padding-right="20px">
+                <mj-column background-color="#fff" border="1px solid #ddd" border-bottom="1px solid red">
+
+                  <mj-text padding-left="35px" padding-top="10" padding="0" font-size="15px">Product Description</mj-text>
+                  <mj-text padding-left="35px" padding="0" color="#666">Imprint Method:</mj-text>
+                  <mj-text padding-left="35px" padding="0" color="#666">Color:</mj-text>
+                  <mj-text padding-left="35px" padding="0" color="#666">Uploaded Logo :</mj-text>
+                  <mj-text padding-left="35px" padding="0" color="#666">Text 1 :</mj-text>
+                  <mj-text padding-left="35px" padding="0" color="#666">Instructions :</mj-text>
+
+                  <mj-text padding-left="35px" padding-bottom="0" font-size="15px">Special Instructions</mj-text>
+
+                  <mj-text padding-left="35px" padding-top="0">Some Instructions</mj-text>
+                </mj-column>
+              </mj-section>
+          {{/each}}
+
+          <mj-section padding="0"  padding-left="20px" padding-right="20px">
+            <mj-group background-color="#fff">
+              <mj-column>
+              </mj-column>
+              <mj-column>
+                <mj-text padding-bottom="0" align="right">Amount:</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right">Charges:</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right">Shipping Charges:</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right">Tax:</mj-text>
+              </mj-column>
+              <mj-column>
+                <mj-text padding-bottom="0" align="right"> {{invoice.SubTotal}}</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right">0</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right">0</mj-text>
+                <mj-text padding-top="0" padding-bottom="0" align="right"> {{invoice.TotalTax}}</mj-text>
+              </mj-column>
+            </mj-group>
+          </mj-section>
+
+          <mj-section padding="0"  padding-left="20px" padding-right="20px">
+            <mj-group background-color="#fff">
+              <mj-column border-top="1px solid red">
+                <mj-text font-weight="bold" font-size="15px">Shipping Address</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].AddressLine1}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].AddressLine2}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].City}} {{invoice.Contact.Addresses.[1].Region}} {{invoice.Contact.Addresses.[1].PostalCode}}</mj-text>
+                <mj-text>{{invoice.Contact.Addresses.[1].Country}}</mj-text>
+              </mj-column>
+              <mj-column border-top="1px solid red">
+                <mj-text font-weight="bold" font-size="15px">Shipping</mj-text>
+                <mj-text padding-top="0">Shipping Carrier:</mj-text>
+                <mj-text padding-top="0">Method:</mj-text>
+                <mj-text padding-top="0">Ship Date:</mj-text>
+                <mj-text padding-top="0">In Hand Date:</mj-text>
+              </mj-column>
+            </mj-group>
+          </mj-section>
+
+          <mj-section padding="20px" padding-bottom="0">
+            <mj-text>
+              All Prices are subject to change. Orders are subject to additional charges, such as Rush, Art, Shipping, or other charges. If the price is different from what is shown at checkout you will be notified by our order entry team before processing your order.
+            </mj-text>
+          </mj-section>
+
+          <mj-section>
+            <mj-column width="10%">
+              <mj-text padding-bottom="0" padding-top="0" color="red">Note:</mj-text>
+            </mj-column>
+            <mj-column  width="90%">
+               <mj-text padding-bottom="0" padding-top="0" align="left">We will contact you shortly with your total shipping cost</mj-text>
+            </mj-column>
+          </mj-section>
+
+          <mj-section padding="20px" padding-top="0">
+            <mj-column background-color="red">
+              <mj-text align="right" color="#fff" font-size="15px">Grand Total : {{invoice.Total}}</mj-text>
+            </mj-column>
+          </mj-section>
+
+          <mj-section padding="50px" padding-top="0" padding-bottom="15px">
+            <mj-text>You can expect a member of our Customers Services team to be in touch within 24 hours to confirm the finer details of your order. If you have any questions, please mail us at info@quinnflags.com</mj-text>
+
+            <mj-spacer height="10px" />
+
+            <mj-text>We hope to see you on our site again soon!</mj-text>
+
+            <mj-spacer height="10px" />
+
+            <mj-text>Kind regards,</mj-text>
+
+            <mj-spacer height="10px" />
+
+            <mj-text>OB</mj-text>
+
+          </mj-section>
+
+          <mj-section padding="20px" padding-top="0">
+            <mj-column background-color="#ddd">
+              <mj-text align="center">This is an automatically generated e-mail from OB</mj-text>
+            </mj-column>
+          </mj-section>
+
+      </mj-section>
+
+    </mj-container>
+  </mj-body>
+</mjml>

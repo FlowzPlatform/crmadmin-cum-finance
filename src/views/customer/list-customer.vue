@@ -3,151 +3,342 @@
 </style>
 
 <template>
-    <div>
-    <Table :columns="columns8" :data="data7" size="small" stripe = 1 border = 1 ref="table"></Table>
+  <div>
+    <!-- <Table :columns="columns8" :data="listData" stripe border ref="table"></Table>
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
-            <Page :total="100" :current="1" @on-change="changePage"></Page>
+            <Page :total="len" :current="1" @on-change="changePage"></Page>
         </div>
     </div>
-    <br>
-    <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
-    <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
-    <Button type="primary" size="large" @click="exportData(3)"><Icon type="ios-download-outline"></Icon> Export custom data</Button>
+    <br> -->
+    <div v-if="spinShow">
+        <Spin size="large"></Spin>
     </div>
+    <div v-else>
+        <Tabs  @on-click="tabClicked">
+            <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
+            <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+            <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+            
+            <div style="margin: 10px;overflow: hidden">
+                    <div style="float: right;">
+                    <Page :total="len" :current="1" @on-change="changePage"></Page>
+                </div>
+            </div>
+        </TabPane>
+        </Tabs>  
+    </div>
+  </div>
 </template>
 
 <script>
 let config = require("@/config/customConfig.js")
+import Cookies from 'js-cookie';
 console.log(config)
 let feathersUrl =  config.default.serviceUrl;
 var _ = require('lodash');
+var pageSize = 10
 import axios from 'axios'
 export default {
         name: 'list-customer',
         data () {
-            return {
-                columns8: [
-                    {
-                        "title": "Name",
-                        "key": "Name",
-                        "fixed": "left",
-                        "width": 200
-                    },
-                    {
-                        "title": "Status",
-                        "key": "ContactStatus",
-                        "width": 150,
-                        "sortable": true,
-                        filters: [
-                            {
-                                label: 'ACTIVE',
-                                value: 1
-                            },
-                            {
-                                label: 'INACTIVE',
-                                value: 2
-                            }
-                        ],
-                        filterMultiple: false,
-                        filterMethod (value, row) {
-                            if (value === 1) {
-                                return row.ContactStatus ==  'ACTIVE';
-                            } else if (value === 2) {
-                                return row.ContactStatus == 'INACTIVE';
-                            }
-                        }
-                    },
-                    {
-                        "title": "Email",
-                        "key": "EmailAddress",
-                        "width": 150,
-                        "sortable": true
-                    },
-                    {
-                        "title": "Mobile",
-                        "key": "Phones",
-                        "width": 150,
-                        "sortable": true,
-                        render:(h,{row})=>{ return row.Phones[3].PhoneNumber }
-                    },
-                    {
-                        "title": "Phone",
-                        "key": "click",
-                        "width": 150,
-                        "sortable": true,
-                        render:(h,{row})=>{ return row.Phones[1].PhoneNumber.PhoneCountryCode +" "+row.Phones[1].PhoneNumber }
-                    },
-                    {
-                        "title": "Fax",
-                        "key": "active",
-                        "width": 150,
-                        "sortable": true,
-                        render:(h,{row})=>{ return row.Phones[2].PhoneNumber }
-                    },
-                    {
-                        "title": "Address",
-                        "key": "Addresses",
-                        "width": 250,
-                        "sortable": false,
-                        render:(h,{row})=>{
-                            for (var index = 0; index < row.Addresses.length; index++) {
-                                return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
-                            }
-                        }
-                    },
-                    {
-                        "title": "isCustomer",
-                        "key": "IsCustomer",
-                        "width": 150,
-                        "sortable": true
-                    },
-                    {
-                        "title": "isSupplier",
-                        "key": "IsSupplier",
-                        "width": 150,
-                        "sortable": true
-                    }
+          return {
+            tabPanes : [],
+            spinShow: true,
+            page: 1,
+            len: 1,
+            list: [],
+            pageSize: pageSize,
+            columns1: [
+              {
+                "title": "Name",
+                "key": "Name",
+              },
+              {
+                "title": "Status",
+                "key": "ContactStatus",
+                "sortable": true,
+                filters: [
+                  {
+                    label: 'ACTIVE',
+                    value: 1
+                  },
+                  {
+                    label: 'INACTIVE',
+                    value: 2
+                  }
                 ],
-                data7: []
-            }
-        },
-        mounted(){
-            let self= this;
-            axios.get(feathersUrl +'contacts', {
-            
-        })
-        .then(function (response) {
-            console.log(response)
-            self.data7 = response.data; 
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+                filterMultiple: false,
+                filterMethod (value, row) {
+                  if (value === 1) {
+                    return row.ContactStatus ==  'ACTIVE';
+                  } else if (value === 2) {
+                    return row.ContactStatus == 'INACTIVE';
+                  }
+                }
+              },
+              {
+                "title": "Email",
+                "key": "EmailAddress",
+                "sortable": true,
+                render:(h,{row})=>{
+                  if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
+                    {
+                      return "Not available"
+                    } 
+                    else {
+                      return row.EmailAddress
+                    }
+                  }
+              },
+              {
+                "title": "Mobile",
+                "key": "Phones",
+                "sortable": true,
+                render:(h,{row})=>{
+                  if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
+                    {
+                      return "Not available"
+                    } 
+                    else {
+                      return row.Phones[3].PhoneNumber
+                    }
+                  }
+              },
+              {
+                "title": "Phone",
+                "key": "click",
+                "sortable": true,
+                render:(h,{row})=>{ 
+                  if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+                    {
+                      return "Not available"
+                    }
+                    else{
+                      return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+                    }
+                  }
+              },
+              {
+                "title": "Fax",
+                "key": "active",
+                "sortable": true,
+                render:(h,{row})=>{ 
+                  if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
+                    {
+                      return "Not available"
+                    } 
+                  else
+                    {
+                      return row.Phones[2].PhoneNumber
+                    }
+                  }
+              },
+              {
+                "title": "Address",
+                "key": "Addresses",
+                "sortable": false,
+                render:(h,{row})=>{
+                  
+                      return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+                  
+                }
+              },
+              {
+                "title": "isCustomer",
+                "key": "IsCustomer",
+                "sortable": true
+              },
+              {
+                "title": "isSupplier",
+                "key": "IsSupplier",
+                "sortable": true
+              }
+            ],
+            columns2: [
+              {
+                "title": "Name",
+                "key": "Name",
+              },
+              {
+                "title": "Status",
+                "key": "ContactStatus",
+                "sortable": true,
+                filters: [
+                  {
+                    label: 'ACTIVE',
+                    value: 1
+                  },
+                  {
+                    label: 'INACTIVE',
+                    value: 2
+                  }
+                ],
+                filterMultiple: false,
+                filterMethod (value, row) {
+                  if (value === 1) {
+                    return row.ContactStatus ==  'ACTIVE';
+                  } else if (value === 2) {
+                    return row.ContactStatus == 'INACTIVE';
+                  }
+                }
+              },
+              {
+                "title": "Email",
+                "key": "EmailAddress",
+                "sortable": true,
+                render:(h,{row})=>{
+                  if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
+                    {
+                      return "Not available"
+                    } 
+                    else {
+                      return row.EmailAddress
+                    }
+                  }
+              },
+              {
+                "title": "Mobile",
+                "key": "Phones",
+                "sortable": true,
+                render:(h,{row})=>{
+                  if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
+                    {
+                      return "Not available"
+                    } 
+                    else {
+                      return row.Phones[3].PhoneNumber
+                    }
+                  }
+              },
+              {
+                "title": "Phone",
+                "key": "click",
+                "sortable": true,
+                render:(h,{row})=>{ 
+                  if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+                    {
+                      return "Not available"
+                    }
+                    else{
+                      return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+                    }
+                  }
+              },
+              {
+                "title": "Fax",
+                "key": "active",
+                "sortable": true,
+                render:(h,{row})=>{ 
+                  if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
+                    {
+                      return "Not available"
+                    } 
+                  else
+                    {
+                      return row.Phones[2].PhoneNumber
+                    }
+                  }
+              },
+              {
+                "title": "Address",
+                "key": "Addresses",
+                "sortable": false,
+                render:(h,{row})=>{
+                  
+                      return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+                  
+                }
+              },
+              {
+                "title": "isCustomer",
+                "key": "IsCustomer",
+                "sortable": true
+              },
+              {
+                "title": "isSupplier",
+                "key": "IsSupplier",
+                "sortable": true
+              }
+            ],
+            data6: [],
+            listData: []
+          }
         },
         methods: {
-            exportData (type) {
-                if (type === 1) {
-                    this.$refs.table.exportCsv({
-                        filename: 'The original data'
-                    });
-                } else if (type === 2) {
-                    this.$refs.table.exportCsv({
-                        filename: 'Sorting and filtering data',
-                        original: false
-                    });
-                } else if (type === 3) {
-                    this.$refs.table.exportCsv({
-                        filename: 'Custom data',
-                        columns: this.columns8.filter((col, index) => index < 4),
-                        data: this.data7.filter((data, index) => index < 4)
-                    });
+            async mockTableData1 (p,size) {
+              this.len = this.data6.length
+              return this.data6.slice((p - 1) * size, p * size);
+            },
+            async changePage (p) {
+                    this.page = p
+                    this.list = await this.mockTableData1(p,pageSize);
+            },
+            async tabClicked(data){
+                console.log(data)
+                let settingId = this.tabPanes[data].id
+                this.getContactBySettingId(settingId)
+            },
+            async getContactBySettingId(settingId){
+                this.$Loading.start();
+                this.data6 = [];
+                let self = this;
+                self.list = [];
+                await axios.get(feathersUrl +'contacts', {
+                   headers:{
+                    Authorization : Cookies.get('auth_token')
+                },
+                params : {
+                settingId : settingId
                 }
-            } ,
-            changePage(){
-
-            }     
+                }).then(async function (response) {
+                  self.data6 = response.data[0].data;
+                    self.$Loading.finish();
+                    $('.preload').css("display","none")
+                    self.list = await self.mockTableData1(1,pageSize)
+                }).catch(function (error) {
+                  console.log("error",error);
+                    self.$Loading.error();
+              });
+               
+            },
+            
+            async getAllSettings(){
+                let self = this;
+                axios.get(config.default.serviceUrl + 'settings?isActive=true', {
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                })
+                .then(function (response) {
+                    console.log("response------>iuy",response);
+                    self.spinShow = false;
+                    self.tabPanes = response.data.data;
+                    $('.preload').css("display","none")
+                    let settingId = self.tabPanes[0].id
+                    self.getContactBySettingId(settingId)
+                })
+                .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                });
+            } 
+        },
+        mounted(){
+          //this.getData();
+          this.getAllSettings();
         }
     }
 </script>
 
+<style>
+.ivu-table table {
+  font-size: 14px;
+}
+.ivu-table th{
+  background-color: #d9edf7;
+}
+.ivu-table-border th {
+    border-right: 1px solid #ddd;
+}
+</style>
