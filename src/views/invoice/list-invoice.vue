@@ -99,15 +99,17 @@
                 <Spin size="large"></Spin>
   </div>
   <div v-else>
-     <Tabs>
-        <TabPane v-for="tabPane in tabPanes" :label="tabPane.configName">
-          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="tabPane.data" border size="small" ref="table" stripe></Table>
-          <Table v-else :columns="columns2" :data="tabPane.data" border size="small" ref="table" stripe></Table>
-          <!-- <div style="margin: 10px;overflow: hidden">
+    
+     <Tabs  @on-click="tabClicked">
+        <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
+          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+          <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+          
+          <div style="margin: 10px;overflow: hidden">
                   <div style="float: right;">
-                  <Page total="tabPane.data.length" current="10" ></Page>
+                  <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
-          </div> -->
+          </div>
       </TabPane>
     </Tabs>  
   </div>  
@@ -345,7 +347,7 @@ export default {
             }
           }
       ],
-      data1: [],
+      data6: [],
       page: 1,
       pageSize: pageSize,
       list: [],
@@ -512,6 +514,14 @@ export default {
     //         }
           
     // },
+    async mockTableData1 (p,size) {
+              this.len = this.data6.length
+              return this.data6.slice((p - 1) * size, p * size);
+    },
+    async changePage (p) {
+              this.page = p
+              this.list = await this.mockTableData1(p,pageSize);
+    },
     async makepayment(params){
       console.log(params)
       this.$router.push('/checkout/' + params)
@@ -569,21 +579,74 @@ export default {
               console.log(error);
             });
     },
-    async getAllInvoice(){
+    async tabClicked(data){
+      console.log(data)
+      let settingId = this.tabPanes[data].id
+      this.getInvoiceBySettingId(settingId)
+    },
+    async getInvoiceBySettingId(settingId){
+      this.$Loading.start();
+      this.data6 = [];
       let self = this;
-      
+      self.list = [];
       axios.get(config.default.serviceUrl + 'invoice', {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+        params : {
+          settingId : settingId
+        }
+      })
+      .then(async function (response) {
+        console.log("response------>iuy",response);
+        
+        self.data6 = response.data[0].data;
+        self.$Loading.finish();
+        $('.preload').css("display","none")
+        self.list = await self.mockTableData1(1,pageSize)
+      })
+      .catch(function (error) {
+        console.log("error",error);
+        self.$Loading.error();
+        
+      });
+      
+    },
+    // async getAllInvoice(){
+    //   let self = this;
+      
+    //   axios.get(config.default.serviceUrl + 'invoice', {
+    //     headers:{
+    //         Authorization : Cookies.get('auth_token')
+    //     },
+    //   })
+    //   .then(function (response) {
+        
+    //     console.log("response------>iuy",response);
+    //     self.spinShow = false;
+    //     self.tabPanes = response.data;
+    //     $('.preload').css("display","none")
+        
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //     self.spinShow = false;
+    //   });
+    // },
+    async getAllSettings(){
+      let self = this;
+      axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
             Authorization : Cookies.get('auth_token')
         },
       })
       .then(function (response) {
-        
         console.log("response------>iuy",response);
         self.spinShow = false;
-        self.tabPanes = response.data;
+        self.tabPanes = response.data.data;
         $('.preload').css("display","none")
-        
+        let settingId = self.tabPanes[0].id
+        self.getInvoiceBySettingId(settingId)
       })
       .catch(function (error) {
         console.log("error",error);
@@ -600,7 +663,9 @@ export default {
     // }); 
     //this.getCustomerUrl();
     //this.searchdata();
-    this.getAllInvoice()
+    //this.getAllInvoice()
+    this.getAllSettings()
+    
   }
 }
 </script>
