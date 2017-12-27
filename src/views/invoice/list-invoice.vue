@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <div style="padding: 10px; margin: 5px; display: block;">
+  <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -11,7 +11,7 @@
             <div class="panel-collapse collapse" id="collapseTwo">
                 <div class="panel-body">
                     <form>
-                        <div class="collapse-maindiv maindiv">
+                        <div class="collapse-maindiv maindiv" >
                             <div class="panel panel-default">
                                 <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                     <label>Customer Name</label>
@@ -99,15 +99,17 @@
                 <Spin size="large"></Spin>
   </div>
   <div v-else>
-     <Tabs>
-        <TabPane v-for="tabPane in tabPanes" :label="tabPane.configName">
-          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="tabPane.data" border size="small" ref="table" stripe></Table>
-          <Table v-else :columns="columns2" :data="tabPane.data" border size="small" ref="table" stripe></Table>
-          <!-- <div style="margin: 10px;overflow: hidden">
+    
+     <Tabs  @on-click="tabClicked">
+        <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
+          <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+          <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+          
+          <div style="margin: 10px;overflow: hidden">
                   <div style="float: right;">
-                  <Page total="tabPane.data.length" current="10" ></Page>
+                  <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
-          </div> -->
+          </div>
       </TabPane>
     </Tabs>  
   </div>  
@@ -128,6 +130,108 @@
 
 </div>
 
+
+<div>
+  
+  <div v-if="emailData != ''" ref="foo2" style="display:none">
+ <div class="row" >
+        <div class="col-xs-6">
+          <h1>
+            <a href="#">
+            <img src="http://container-solutions.com/content/uploads/2016/04/mesos-logo.png">
+            </a>
+          </h1>
+        </div>
+        <div class="col-xs-6 text-right">
+          <h1>INVOICE</h1>
+          <h1><small>Invoice #{{emailData.row.InvoiceNumber}}</small></h1>
+          <h1><small>Invoice Id #{{emailData.row.InvoiceID}}</small></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-5">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>From: 1707 Orlando Central Pkwy Ste 100</h4>
+            </div>
+            <div class="panel-body">
+              <p>
+                1329 40th St Apt A <br>
+                Orlando, FL  <br>
+              
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-5 col-xs-offset-2 text-right">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>To : {{emailData.row.Contact.Name}}</h4>
+            </div>
+            <div class="panel-body">
+              <p>
+                4800 Dacey Ct <br>
+                Orlando, FL <br>
+              
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- / end client details section -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+          <th></th>
+            <th>
+              <h4>Service</h4>
+            </th>
+            <th>
+              <h4>Due Date</h4>
+            </th>
+            <th>
+              <h4>Due Amount</h4>
+            </th>
+            <th>
+              <h4>Paid Amount</h4>
+            </th>
+            <th>
+              <h4>Sub Total</h4>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr >
+            <td><button class="btn btn-danger">-</button></td>
+            <td>XYZ Service</td>
+            <td>{{emailData.row.DueDate}}</td>
+            <td class="text-right">{{emailData.row.AmountDue}}</td>
+            <td class="text-right">${{emailData.row.AmountPaid}}</td>
+            <td class="text-right">${{emailData.row.SubTotal}}</td>
+          </tr>
+          
+        </tbody>
+      </table>
+      <div class="row text-right">
+        <div class="col-xs-2 col-xs-offset-8">
+          <p>
+            <strong>
+            Sub Total : <br>
+            TAX : <br>
+            Total : <br>
+            </strong>
+          </p>
+        </div>
+        <div class="col-xs-2">
+          <strong>
+          ${{emailData.row.SubTotal}}<br>
+          {{emailData.row.TotalTax * 100}}%  <br>
+          ${{emailData.row.Total }} <br>
+          </strong>
+        </div>
+      </div>
+</div>
+</div>
 </div>
 </template>
 
@@ -146,6 +250,7 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
+      emailData : '',
       columns2: [
           {
               title: 'InvoiceID',
@@ -209,7 +314,7 @@ export default {
                     },
                     on: {
                       click: () => {   
-                        this.makepayment(row.Id)
+                        this.makepayment(row)
                       }
                     }
                   }, 'Payment'),
@@ -304,7 +409,7 @@ export default {
                     },
                     on: {
                       click: () => {   
-                        this.makepayment(params.row.InvoiceID)
+                        this.makepayment(params.row)
                       }
                     }
                   }, 'Payment'),
@@ -345,7 +450,9 @@ export default {
             }
           }
       ],
-      data1: [],
+      settingIdForPayment : '',
+      data6: [],
+      emailIdTobeSent : '',
       page: 1,
       pageSize: pageSize,
       list: [],
@@ -512,78 +619,171 @@ export default {
     //         }
           
     // },
+    async mockTableData1 (p,size) {
+              this.len = this.data6.length
+              return this.data6.slice((p - 1) * size, p * size);
+    },
+    async changePage (p) {
+              this.page = p
+              this.list = await this.mockTableData1(p,pageSize);
+    },
     async makepayment(params){
-      console.log(params)
-      this.$router.push('/checkout/' + params)
+      
+      this.$store.state.invoiceData = params;
+      this.$store.state.settingId = this.settingIdForPayment
+      console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+       this.$router.push('/checkout/' + params.InvoiceID)
     },
     async sendemail(params){
-      var self = this
-      this.list[params.index].loading1 = true
-      console.log("inside send mail", params)
-      var responseData
-        await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-          params: {
-            Invoiceid:params.row.InvoiceID
-          }
-        })
-        .then(function (response) {
-          console.log("response data", response)
-          responseData = response.data
-        })
-        .catch(function (error) {
-          console.log("error",error);
-        });
-      console.log("send mail responsedata", responseData)
-      var MjmlTemplate
-      await $.get( "mailtemplate.txt", function( data ) {
-        MjmlTemplate = data
+      this.$Loading.start();
+      this.emailData = params;
+       var self = this;
+       this.$Modal.confirm({
+                    okText: 'OK',
+                    cancelText: 'Cancel',
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: this.value,
+                                autofocus: true,
+                                
+                                placeholder: 'Please enter email Id...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    
+                                    this.emailIdTobeSent = val;
+                                }
+                            }
+                        })
+                    },
+                    onOk: ()=>{
+                               console.log(self.$refs.foo2.innerHTML)
+                                    
+                                    let myData = {
+                                          "to": self.emailIdTobeSent,
+                                          "from": "obsoftcare@gmail.com",
+                                          "subject": "email invoice",
+                                          "body": self.$refs.foo2.innerHTML
+                                        }
+                                        myData = JSON.stringify(myData)
+                                        axios({
+                                          method: 'post',
+                                          url:  'http://api.flowz.com/vmailmicro/sendEmail',
+                                          data: myData,
+                                          headers: {
+                                            'authorization':  Cookies.get('auth_token')
+                                          }
+                                          }).then(function (response) {
+                                            console.log(response);
+                                            self.$Message.success(response.data.success);
+                                            self.list[params.index].loading1 = false
+                                          })
+                                          .catch(function (error) {
+                                            console.log(error);
+                                          });
+                    }
+                })
+      // this.list[params.index].loading1 = true
+      // console.log("inside send mail", params)
+      // var responseData
+      //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+      //     params: {
+      //       Invoiceid:params.row.InvoiceID
+      //     }
+      //   })
+      //   .then(function (response) {
+      //     console.log("response data", response)
+      //     responseData = response.data
+      //   })
+      //   .catch(function (error) {
+      //     console.log("error",error);
+      //   });
+      // console.log("send mail responsedata", responseData)
+      // var MjmlTemplate
+      // await $.get( "mailtemplate.txt", function( data ) {
+      //   MjmlTemplate = data
+      // });
+      
+      // var template = Handlebars.compile(MjmlTemplate); 
+      // console.log("template", template)
+      //  var context = {
+      //     invoice : responseData
+      //   }
+      // const mjml = template(context);
+      // const html1 = mjml2html(mjml);
+      
+    },
+    async tabClicked(data){
+      console.log(data)
+      let settingId = this.tabPanes[data].id
+      this.settingIdForPayment = settingId;
+      this.getInvoiceBySettingId(settingId)
+    },
+    async getInvoiceBySettingId(settingId){
+      this.$Loading.start();
+      this.data6 = [];
+      let self = this;
+      self.list = [];
+      axios.get(config.default.serviceUrl + 'invoice', {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+        params : {
+          settingId : settingId
+        }
+      })
+      .then(async function (response) {
+        console.log("response------>iuy",response);
+        
+        self.data6 = response.data[0].data;
+        self.$Loading.finish();
+        $('.preload').css("display","none")
+        self.list = await self.mockTableData1(1,pageSize)
+      })
+      .catch(function (error) {
+        console.log("error",error);
+        self.$Loading.error();
+        
       });
       
-      var template = Handlebars.compile(MjmlTemplate); 
-      console.log("template", template)
-       var context = {
-          invoice : responseData
-        }
-      const mjml = template(context);
-      const html1 = mjml2html(mjml);
-       let myData = {
-            "to": "npaul@officebrain.com",
-            "from": "kdalsania@officebrain.com",
-            "subject": "email invoice",
-            "body": html1.html
-          }
-          myData = JSON.stringify(myData)
-          axios({
-            method: 'post',
-            url:  'http://api.flowz.com/vmailmicro/sendEmail',
-            data: myData,
-            headers: {
-              'authorization':  Cookies.get('auth_token')
-            }
-            }).then(function (response) {
-              console.log(response);
-              self.$Message.success(response.data.success);
-              self.list[params.index].loading1 = false
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
     },
-    async getAllInvoice(){
-      let self = this;
+    // async getAllInvoice(){
+    //   let self = this;
       
-      axios.get(config.default.serviceUrl + 'invoice', {
+    //   axios.get(config.default.serviceUrl + 'invoice', {
+    //     headers:{
+    //         Authorization : Cookies.get('auth_token')
+    //     },
+    //   })
+    //   .then(function (response) {
+        
+    //     console.log("response------>iuy",response);
+    //     self.spinShow = false;
+    //     self.tabPanes = response.data;
+    //     $('.preload').css("display","none")
+        
+    //   })
+    //   .catch(function (error) {
+    //     console.log("error",error);
+    //     self.spinShow = false;
+    //   });
+    // },
+    async getAllSettings(){
+      let self = this;
+      axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
             Authorization : Cookies.get('auth_token')
         },
       })
       .then(function (response) {
-        
         console.log("response------>iuy",response);
         self.spinShow = false;
-        self.tabPanes = response.data;
+        self.tabPanes = response.data.data;
         $('.preload').css("display","none")
-        
+        let settingId = self.tabPanes[0].id;
+        self.settingIdForPayment = self.tabPanes[0].id;
+        self.getInvoiceBySettingId(settingId)
       })
       .catch(function (error) {
         console.log("error",error);
@@ -600,7 +800,9 @@ export default {
     // }); 
     //this.getCustomerUrl();
     //this.searchdata();
-    this.getAllInvoice()
+    //this.getAllInvoice()
+    this.getAllSettings()
+    
   }
 }
 </script>

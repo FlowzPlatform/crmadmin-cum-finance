@@ -16,7 +16,7 @@ import 'vue-widgets/dist/styles/vue-widgets.css'
 
 Vue.use(VueI18n);
 Vue.use(iView , { locale });
-
+Vue.use(VueWidgets);
 
 
 Vue.use(VueWidgets)
