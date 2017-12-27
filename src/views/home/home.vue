@@ -201,30 +201,30 @@ export default {
             dateoptions: {
                 shortcuts: [
                     {
-                        text: 'A month',
+                        text: 'Last month',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
                             this.daterange1 = s
                             return [start, end];
                         }
                     },
                     {
-                        text: '3 month',
+                        text: 'Last 3 months',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 91);
                             return [start, end];
                         }
                     },
                     {
-                        text: '6 month',
+                        text: 'Last 6 months',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 184);
                             return [start, end];
                         }
                     }
