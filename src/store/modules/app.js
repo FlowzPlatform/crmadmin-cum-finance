@@ -12,14 +12,14 @@ const app = {
         menuTheme: 'dark', // 主题
         themeColor: '',
         pageOpenedList: [{
-            title: '首页',
+            title: 'Home',
             path: '',
             name: 'home_index'
         }],
         currentPageName: '',
         currentPath: [
             {
-                title: '首页',
+                title: 'Home',
                 path: '',
                 name: 'home_index'
             }

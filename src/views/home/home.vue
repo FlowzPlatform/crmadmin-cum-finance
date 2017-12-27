@@ -56,7 +56,7 @@
                 <Row>
                     
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <Select v-model="config" clearable style="width:200px" placeholder="Select Config" on-change="selectChange">
+                        <Select v-model="config" clearable style="width:200px" placeholder="Select Config" @on-change="selectChange">
                             <Option v-for="item in mData" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <Button type="primary" @click="selectChange">Apply</Button>
