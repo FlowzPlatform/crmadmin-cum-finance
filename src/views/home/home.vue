@@ -167,6 +167,9 @@ import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
 
+import config from '@/config/customConfig.js';
+let serviceUrl = config.default.serviceUrl;
+
 export default {
     name: 'home',
     components: {
@@ -257,7 +260,7 @@ export default {
         },
         async ChartFun(chart,date1,date2,settingId) {
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : chart,
                     date1 : date1,
@@ -324,7 +327,7 @@ export default {
          //Pie Chart
         async PieChartFun(date1,date2,settingId) {
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'pie',
                     date1 : date1,
@@ -428,7 +431,7 @@ export default {
         //Cashflow
         async waterfall(date1,date2,settingId) {
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'cashflow',
                     date1 : date1,
@@ -560,7 +563,7 @@ export default {
 
         async totalAmt(date1,date2,settingId) {
             var statsData;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     stats : true,
                     date1 : date1,
@@ -589,7 +592,7 @@ export default {
         async init(settingId) {
             this.name = Cookies.get('user');
             var resp;
-            await axios.get("http://localhost:3037/settings", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     isActive : true,
                     settingId : settingId
@@ -615,11 +618,11 @@ export default {
             // console.log("daterange",this.daterange1, typeof this.daterange1)
             // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
-            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
+            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
             // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
         }, 
 

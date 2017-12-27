@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <div style="padding: 10px; margin: 5px; display: block;" >
+  <!-- <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div>
   
