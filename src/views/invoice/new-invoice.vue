@@ -14,8 +14,8 @@
             </Select>
         </FormItem> -->
         <FormItem label="Configuration Name" prop="configuration">
-             <Select v-model="formItem.configuration" style="width:100%">
-               <Option v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+             <Select v-model="formItem.configuration" style="width:100%" @on-change="configChange">
+               <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
         <FormItem label="Contact Name" prop="name">
@@ -72,8 +72,8 @@ export default {
   name: 'newinvoice',
   data () {
     const validateNum = async(rule, value, callback) => {
-      var patt = new RegExp('^[0-9]+$')
-      var _res = patt.test(value)
+      let patt = new RegExp('^[0-9]+$')
+      let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
       } else {
@@ -101,7 +101,6 @@ export default {
         label: '$'
       }],
       rulesValidation: {
-
           configuration : [
               {required: true, message: 'Please select the Configuration account', trigger: 'change'}
           ],
@@ -134,7 +133,7 @@ export default {
     },
     // async configData () {
     //   console.log("config data call")
-    //   var resp
+    //   let resp
     //    await axios({
     //         method: 'get',
     //         url: config.default.settingsUrl + 'settings',
@@ -155,8 +154,8 @@ export default {
     //         })
     // },
     async projectData () {
-      var resp
-      var self = this
+      let resp
+      let self = this
       await axios.get(config.default.projecturl + 'project', {
         params: {
         }
@@ -172,10 +171,13 @@ export default {
         self.data3.push(obj.project_name)
       })
     },
-
+    configChange(data){
+      console.log(data)
+      this.customerData(data);
+    },
     async settingData () {
       
-      var self = this
+      let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
                    Authorization : Cookies.get('auth_token')
@@ -191,15 +193,17 @@ export default {
       });
       
     },
-    async customerData () {
-      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRR")
-      var resp
-      var self = this
+    async customerData (settingId) {
+      
+      let resp
+      let self = this
       await axios({
             method: 'get',
             url: config.default.serviceUrl + 'contacts',
-            params: {},
-             headers:{
+            params: {
+              settingId : settingId
+            },
+            headers:{
             Authorization : Cookies.get('auth_token')
         },
             }).then(function (response) {
@@ -212,6 +216,7 @@ export default {
       console.log("response------>iuy",resp);
       // resp.forEach(obj =>{
       //   console.log(obj[0].data)
+     // alert(self.formItem.configuration)
         self.data2 = resp[0].data
       //})
     },
@@ -227,10 +232,9 @@ export default {
       })
     },
     async newInvoice () {
-      var self = this
+      let self = this
       this.formItem.amount = parseInt(this.formItem.amount)
-
-      var postData = {
+      let postData = {
         // domain: this.formItem.domain,
         settingId : this.formItem.configuration,
         name: this.formItem.name,
@@ -263,7 +267,7 @@ export default {
   },
   mounted() {
    this.projectData();
-   this.customerData();
+   
    this.settingData ();
   }
 }

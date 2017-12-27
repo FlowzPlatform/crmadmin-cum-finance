@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <!-- <div style="padding: 10px; margin: 5px; display: block;">
+  <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -11,7 +11,7 @@
             <div class="panel-collapse collapse" id="collapseTwo">
                 <div class="panel-body">
                     <form>
-                        <div class="collapse-maindiv maindiv">
+                        <div class="collapse-maindiv maindiv" >
                             <div class="panel panel-default">
                                 <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                     <label>Customer Name</label>
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <div>
   
@@ -130,6 +130,108 @@
 
 </div>
 
+
+<div>
+  
+  <div v-if="emailData != ''" ref="foo2" style="display:none">
+ <div class="row" >
+        <div class="col-xs-6">
+          <h1>
+            <a href="#">
+            <img src="http://container-solutions.com/content/uploads/2016/04/mesos-logo.png">
+            </a>
+          </h1>
+        </div>
+        <div class="col-xs-6 text-right">
+          <h1>INVOICE</h1>
+          <h1><small>Invoice #{{emailData.row.InvoiceNumber}}</small></h1>
+          <h1><small>Invoice Id #{{emailData.row.InvoiceID}}</small></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-5">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>From: 1707 Orlando Central Pkwy Ste 100</h4>
+            </div>
+            <div class="panel-body">
+              <p>
+                1329 40th St Apt A <br>
+                Orlando, FL  <br>
+              
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-5 col-xs-offset-2 text-right">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>To : {{emailData.row.Contact.Name}}</h4>
+            </div>
+            <div class="panel-body">
+              <p>
+                4800 Dacey Ct <br>
+                Orlando, FL <br>
+              
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- / end client details section -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+          <th></th>
+            <th>
+              <h4>Service</h4>
+            </th>
+            <th>
+              <h4>Due Date</h4>
+            </th>
+            <th>
+              <h4>Due Amount</h4>
+            </th>
+            <th>
+              <h4>Paid Amount</h4>
+            </th>
+            <th>
+              <h4>Sub Total</h4>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr >
+            <td><button class="btn btn-danger">-</button></td>
+            <td>XYZ Service</td>
+            <td>{{emailData.row.DueDate}}</td>
+            <td class="text-right">{{emailData.row.AmountDue}}</td>
+            <td class="text-right">${{emailData.row.AmountPaid}}</td>
+            <td class="text-right">${{emailData.row.SubTotal}}</td>
+          </tr>
+          
+        </tbody>
+      </table>
+      <div class="row text-right">
+        <div class="col-xs-2 col-xs-offset-8">
+          <p>
+            <strong>
+            Sub Total : <br>
+            TAX : <br>
+            Total : <br>
+            </strong>
+          </p>
+        </div>
+        <div class="col-xs-2">
+          <strong>
+          ${{emailData.row.SubTotal}}<br>
+          {{emailData.row.TotalTax * 100}}%  <br>
+          ${{emailData.row.Total }} <br>
+          </strong>
+        </div>
+      </div>
+</div>
+</div>
 </div>
 </template>
 
@@ -138,8 +240,8 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
-// import Handlebars from 'handlebars'
-//import { mjml2html } from 'mjml'
+import Handlebars from 'handlebars'
+import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
 var pageSize = 10
 export default {
@@ -148,6 +250,7 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
+      emailData : '',
       columns2: [
           {
               title: 'InvoiceID',
@@ -164,7 +267,6 @@ export default {
               title: 'Due Date',
               key: 'DueDate',
               sortable: true,
-
           },
           {
               title: 'Amount Paid',
@@ -211,7 +313,7 @@ export default {
                     },
                     on: {
                       click: () => {   
-                        this.makepayment(row.Id)
+                        this.makepayment(row)
                       }
                     }
                   }, 'Payment'),
@@ -226,7 +328,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                       // this.sendemail(row)
+                        this.sendemail(row)
                       }
                     }
                   }, 'Email')
@@ -243,7 +345,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                       // this.sendemail(row)
+                        this.sendemail(row)
                       }
                     }
                   }, 'Email')
@@ -306,7 +408,7 @@ export default {
                     },
                     on: {
                       click: () => {   
-                        this.makepayment(params.row.InvoiceID)
+                        this.makepayment(params.row)
                       }
                     }
                   }, 'Payment'),
@@ -321,7 +423,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        //this.sendemail(params)
+                        this.sendemail(params)
                       }
                     }
                   }, 'Email')
@@ -338,7 +440,7 @@ export default {
                     },
                     on: {
                       click: () => {
-                        //this.sendemail(params)
+                        this.sendemail(params)
                       }
                     }
                   }, 'Email')
@@ -347,7 +449,9 @@ export default {
             }
           }
       ],
+      settingIdForPayment : '',
       data6: [],
+      emailIdTobeSent : '',
       page: 1,
       pageSize: pageSize,
       list: [],
@@ -523,65 +627,96 @@ export default {
               this.list = await this.mockTableData1(p,pageSize);
     },
     async makepayment(params){
-      console.log(params)
-      this.$router.push('/checkout/' + params)
+      
+      this.$store.state.invoiceData = params;
+      this.$store.state.settingId = this.settingIdForPayment
+      console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+       this.$router.push('/checkout/' + params.InvoiceID)
     },
     async sendemail(params){
-      var self = this
-      this.list[params.index].loading1 = true
-      console.log("inside send mail", params)
-      var responseData
-        await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-          params: {
-            Invoiceid:params.row.InvoiceID
-          }
-        })
-        .then(function (response) {
-          console.log("response data", response)
-          responseData = response.data
-        })
-        .catch(function (error) {
-          console.log("error",error);
-        });
-      console.log("send mail responsedata", responseData)
-      var MjmlTemplate
-      await $.get( "mailtemplate.txt", function( data ) {
-        MjmlTemplate = data
-      });
+      this.$Loading.start();
+      this.emailData = params;
+       var self = this;
+       this.$Modal.confirm({
+                    okText: 'OK',
+                    cancelText: 'Cancel',
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: this.value,
+                                autofocus: true,
+                                
+                                placeholder: 'Please enter email Id...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    
+                                    this.emailIdTobeSent = val;
+                                }
+                            }
+                        })
+                    },
+                    onOk: ()=>{
+                               console.log(self.$refs.foo2.innerHTML)
+                                    
+                                    let myData = {
+                                          "to": self.emailIdTobeSent,
+                                          "from": "obsoftcare@gmail.com",
+                                          "subject": "email invoice",
+                                          "body": self.$refs.foo2.innerHTML
+                                        }
+                                        myData = JSON.stringify(myData)
+                                        axios({
+                                          method: 'post',
+                                          url:  'http://api.flowz.com/vmailmicro/sendEmail',
+                                          data: myData,
+                                          headers: {
+                                            'authorization':  Cookies.get('auth_token')
+                                          }
+                                          }).then(function (response) {
+                                            console.log(response);
+                                            self.$Message.success(response.data.success);
+                                            self.list[params.index].loading1 = false
+                                          })
+                                          .catch(function (error) {
+                                            console.log(error);
+                                          });
+                    }
+                })
+      // this.list[params.index].loading1 = true
+      // console.log("inside send mail", params)
+      // var responseData
+      //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+      //     params: {
+      //       Invoiceid:params.row.InvoiceID
+      //     }
+      //   })
+      //   .then(function (response) {
+      //     console.log("response data", response)
+      //     responseData = response.data
+      //   })
+      //   .catch(function (error) {
+      //     console.log("error",error);
+      //   });
+      // console.log("send mail responsedata", responseData)
+      // var MjmlTemplate
+      // await $.get( "mailtemplate.txt", function( data ) {
+      //   MjmlTemplate = data
+      // });
       
-      var template = Handlebars.compile(MjmlTemplate); 
-      console.log("template", template)
-       var context = {
-          invoice : responseData
-        }
-      const mjml = template(context);
-      const html1 = mjml2html(mjml);
-       let myData = {
-            "to": "npaul@officebrain.com",
-            "from": "kdalsania@officebrain.com",
-            "subject": "email invoice",
-            "body": html1.html
-          }
-          myData = JSON.stringify(myData)
-          axios({
-            method: 'post',
-            url:  'http://api.flowz.com/vmailmicro/sendEmail',
-            data: myData,
-            headers: {
-              'authorization':  Cookies.get('auth_token')
-            }
-            }).then(function (response) {
-              console.log(response);
-              self.$Message.success(response.data.success);
-              self.list[params.index].loading1 = false
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      // var template = Handlebars.compile(MjmlTemplate); 
+      // console.log("template", template)
+      //  var context = {
+      //     invoice : responseData
+      //   }
+      // const mjml = template(context);
+      // const html1 = mjml2html(mjml);
+      
     },
     async tabClicked(data){
       console.log(data)
       let settingId = this.tabPanes[data].id
+      this.settingIdForPayment = settingId;
       this.getInvoiceBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
@@ -645,7 +780,8 @@ export default {
         self.spinShow = false;
         self.tabPanes = response.data.data;
         $('.preload').css("display","none")
-        let settingId = self.tabPanes[0].id
+        let settingId = self.tabPanes[0].id;
+        self.settingIdForPayment = self.tabPanes[0].id;
         self.getInvoiceBySettingId(settingId)
       })
       .catch(function (error) {
