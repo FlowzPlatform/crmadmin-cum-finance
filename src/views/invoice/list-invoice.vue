@@ -240,8 +240,8 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
-import Handlebars from 'handlebars'
-import { mjml2html } from 'mjml'
+//import Handlebars from 'handlebars'
+//import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
 var pageSize = 10
 export default {
