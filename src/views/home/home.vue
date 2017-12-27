@@ -56,10 +56,10 @@
                 <Row>
                     
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <Select v-model="config" clearable style="width:200px" placeholder="Select Config" @on-change="selectChange">
-                            <Option v-for="item in mData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        <Select v-model="config" clearable style="width:200px;float: right;" placeholder="Select Config" >
+                            <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                         </Select>
-                        <Button type="primary" @click="selectChange">Apply</Button>
+                        <!-- <Button type="primary" @click="selectChange">Apply</Button> -->
                     </col>
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
                         <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd" placement="bottom-end left-start" placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
@@ -167,8 +167,8 @@ import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
 
-import config from '@/config/customConfig.js';
-let serviceUrl = config.default.serviceUrl;
+import configService from '@/config/customConfig.js';
+let serviceUrl = configService.default.serviceUrl;
 
 export default {
     name: 'home',
@@ -259,6 +259,8 @@ export default {
             this.newToDoItemValue = '';
         },
         async ChartFun(chart,date1,date2,settingId) {
+            this.$Loading.start()
+            let self = this;
             var chartdata;
             await axios.get(serviceUrl+"invoice", {
                 params: {
@@ -274,10 +276,12 @@ export default {
             .then(function (response) {
                 chartdata = response.data[0].data;
                 // chartdata.reverse();
+                self.$Loading.finish()
                 console.log("chart data",chartdata)
             })
             .catch(function (error) {
                 console.log("error",error);
+                self.$Loading.error()
             });
             return chartdata
         },
@@ -589,29 +593,36 @@ export default {
             this.count.totalInv = statsData[4].value
         },
 
-        async init(settingId) {
+         init(settingId) {
+            let self = this;
             this.name = Cookies.get('user');
             var resp;
-            await axios.get(serviceUrl+"invoice", {
+         axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
-                    settingId : settingId
+                    
                 },
                 headers: {
                     Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
-               resp = response.data.data;
                console.log("config data list",resp)
+               self.mData = response.data.data;
+               self.config = self.mData[0].id;
             })
             .catch(function (error) {
-                console.log("error",error);
+                console.log(error)
+                        this.disabled = false;
+                        Cookies.remove('auth_token') 
+                        this.$Message.error('Auth Error!');
+                        this.$store.commit('logout', this); 
+                        this.$router.push({
+                        name: 'login'
+                    })
             });
-            this.configList = resp
-            this.mData = _.map(resp, (d) => {
-                return {label: d.configName, value: d.id}
-            })
+            
+            
         },
 
         dateval() {
@@ -626,15 +637,15 @@ export default {
             // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
         }, 
 
-        selectChange() {
-            console.log("select change")
-            alert(this.config)
-            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
-        },
+        // selectChange() {
+        //     console.log("select change")
+        //     alert(this.config)
+        //     this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
+        // },
 
         async getDate(days) {
           	const end = new Date();
