@@ -284,12 +284,12 @@ export default {
                 self.$Loading.error()
 
                     
-                    Cookies.remove('auth_token') 
-                    self.$Message.error('Auth Error!');
-                    self.$store.commit('logout', self); 
-                    self.$router.push({
-                    name: 'login'
-                })
+                //     Cookies.remove('auth_token') 
+                //     self.$Message.error('Auth Error!');
+                //     self.$store.commit('logout', self); 
+                //     self.$router.push({
+                //     name: 'login'
+                // })
             });
             return chartdata
         },
@@ -621,13 +621,13 @@ export default {
             })
             .catch(function (error) {
                 console.log(error)
-                        this.disabled = false;
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                    //     this.disabled = false;
+                    //     Cookies.remove('auth_token') 
+                    //     this.$Message.error('Auth Error!');
+                    //     this.$store.commit('logout', this); 
+                    //     this.$router.push({
+                    //     name: 'login'
+                    // })
             });
             
             
