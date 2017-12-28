@@ -41,7 +41,7 @@
                       <div id="c16980">
                           <p>
                               <label class="col-xs-3 autoCompleteDropdown" id="c16988">Customer</label>
-                              <auto-complete :data="data" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable>
+                              <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable>
 							 </auto-complete>
 								<!-- <i-select v-model="finaldata.cname" style="width:100px">
 								<i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option>
@@ -155,7 +155,7 @@ var assigneeapi = config.default.assigneeapi;
     name: 'newcrm',
     data() {
       return {
-        data:[],
+        customerData:[],
         crmdata: [],
         finaldata: {
         	name: '',
@@ -178,6 +178,7 @@ var assigneeapi = config.default.assigneeapi;
     },
     methods: {
     	async calldata() {
+			let self=this;
 	    	await $.ajax({
 					type: 'GET',
 					url: serviceUrl +"contacts",
@@ -188,7 +189,14 @@ var assigneeapi = config.default.assigneeapi;
 					},
 					success: function (data) {
 						console.log("data>>>>>>>>>>>>>> " , data)
-						result = data
+						data.forEach(function(contacts) {
+							var cnt = contacts.data
+							console.log("%%%%%%%%%%",cnt.length)
+							for (var i=0; i<cnt.length; i++) {
+								self.customerData.push(cnt[i].Name)
+							}
+						})
+
 						// console.log(data)
 					},error: function(err) {
 						console.log("Error",err)

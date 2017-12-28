@@ -135,77 +135,132 @@
   
   <div v-if="emailData != ''" ref="email1" style="display:none">
  
-  <div style="margin: auto; width: 60%; border: 3px solid #73AD21;padding: 10px; font-family: 'Roboto regular', sans-serif; color:#404040 ;font-size:13px;">
-   <div style=" background:#404040;height:20px;color:#fff; line-height:20px;text-align:center;padding:10px">INVOICE</div>
-   <div>
-      <div style="display:flow-root;padding:10px">
-         <div style="padding:10px;float:left;background: #20619d;color:#fff">
-            <div class="panel-heading">
-               <h4>From: 1707 Orlando</h4>
-            </div>
-            <div class="panel-body">
-               <p>
-                  1329 40th St Apt A <br>
-                  Orlando, FL  <br>
-               </p>
-            </div>
-         </div>
-         <div style ="padding:10px;float:right;background: #20619d;color:#fff">
-            <div class="panel-heading">
-               <h4>To :{{emailData.row.Contact.Name}}</h4>
-            </div>
-            <div class="panel-body">
-               <p>
-                  4800 Dacey Ct <br>
-                  Orlando, FL <br>
-               </p>
-            </div>
-         </div>
-      </div>
-   </div>
-   <div style="display:flow-root;padding:10px">
-      <div style="padding:10px;float:left;border:1px solid #eae8e8;">
-         <div class="panel-heading">
-            <p>Invoice :  #{{emailData.row.InvoiceNumber}}</p>
-            <p>Amount  :  ${{emailData.row.Total }}</p>
-         </div>
-      </div>
-   </div>
-   <table style="font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 100%;">
-      <tr>
-         <th style="border:1px solid #8f7777">Service</th>
-         <th style="border:1px solid #8f7777"> Due Date</th>
-         <th style="border:1px solid #8f7777">Billing Date</th>
-         <th style="border:1px solid #8f7777">Due Amount</th>
-         <th style="border:1px solid #8f7777">Paid Amount</th>
-      </tr>
-      <tr style="background-color: #dddddd;">
-         <td align="middle" style="border:1px solid #8f7777">XYZ Service</td>
-         <td align="middle" style="border:1px solid #8f7777">{{emailData.row.DueDate}}</td>
-         <td align="middle" style="border:1px solid #8f7777">{{emailData.row.Date}}</td>
-         <td align="middle" style="border:1px solid #8f7777">${{emailData.row.AmountDue}}</td>
-         <td align="middle" style="border:1px solid #8f7777">${{emailData.row.AmountPaid}}</td>
-      </tr>
-   </table>
-   <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr>
-         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px;"  class="border" >Sub Total :</td>
-         <td  colspan="1"  style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px"  class="border">{{emailData.row.SubTotal}} </td>
-      </tr>
-      <tr>
-         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px;"  class="border">TAX :</td>
-         <td  colspan="1"  class="border" style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px">{{emailData.row.TotalTax * 100}}% </td>
-      </tr>
-      <tr>
-         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px; border-bottom:1px solid #aaaaaa;" class="border">Total : </td>
-         <td  colspan="1" class="border"  style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px;  border-bottom:1px solid #aaaaaa;"> {{emailData.row.Total }} </td>
-      </tr>
-   </table>
-</div>
+ <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+        <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+            <tbody><tr class="top">
+                <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
+                                <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
+                            </td>
+                            
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                                Invoice #: {{emailData.row.InvoiceNumber}}<br>
+                                Created: {{emailData.row.Date}}<br>
+                                Due: {{emailData.row.DueDate}}
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            
+            <tr>
+            <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                <b>To :</b><br>
+                                {{emailData.row.Contact.Name}}<br>
+                                Sparksuite, Inc.<br>
+                                12345 Sunny Road<br>
+                                Sunnyville, CA 12345
+                            </td>
+                            
+                            <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
+                                <b>From :</b><br>
+                                Acme Corp.<br>
+                                John Doe<br>
+                                john@example.com
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;">
+                    Payment Method
+                </td>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;"></td>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align: right;">
+                    Check 
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="padding: 5px;vertical-align: top;padding-bottom: 20px;">
+                    Stripe
+                </td>
+                <td></td>
+                <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                    1000
+                </td>
+            </tr>
+
+             <tr>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Item
+                </td>
+                
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Paid Amount
+                </td>
+
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Due Amount
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    Website design
+                </td>
+                
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    ${{emailData.row.AmountPaid}}
+                </td>
+                <td style="border-bottom: 1px solid #eee;text-align:center;padding: 5px;vertical-align: top;">
+                    ${{emailData.row.AmountDue}}
+                </td>
+            </tr>
+            
+            
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Sub Total: ${{emailData.row.SubTotal}}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Tax: ${{emailData.row.TotalTax * 100}}%
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Total: ${{emailData.row.Total}}
+                </td>
+            </tr>
+            
+           
+        </tbody></table>
+    </div>
 
 </div>
+<div id="editor"></div>
 </div>
 </div>
 </template>
@@ -215,6 +270,7 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
+import jsPDF from 'jspdf'
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
@@ -278,56 +334,192 @@ export default {
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading 
-                      },
-                    style: {
-                    },
-                    on: {
-                      click: () => {   
-                        this.makepayment(row)
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make Payment'
                       }
-                    }
-                  }, 'Payment'),
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading1
-                    },
-                    style: {
-                      margin: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(row)
+                    }, [
+                      h('Button', {
+                        props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'cash'
+                          },
+                        style: {
+                          color: '#115fd6',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.makepayment(row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                       h('Button', {
+                        props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'ios-download'
+                          },
+                        style: {
+                          color: '#d67611',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.createPDF(row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send mail'
+                      }
+                    }, [
+                       h('Button', {
+                         props: {
+                            type: 'text',
+                            size: 'large',
+                            icon: 'email'
+                            //loading: params.row.loading1
+                          },
+                          style: {
+                           color: '#d60606',
+                           fontSize: '36px',
+                           padding: '0px'
+                          },
+                          on: {
+                            click: () => {
+                              this.sendemail(row)
+                            }
+                          }
+                        }, '')
+                    ])  
                 ])
               }else{
                 return h('div', [
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading1
-                    },
-                    style: {
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(row)
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('Button', {
+                       props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'email'
+                          //loading: params.row.loading1
+                        },
+                        style: {
+                          color: '#d60606',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      }
+                    }, [
+                    h('Button', {
+                      props: {
+                        type: 'text',
+                        size: 'large',
+                        icon: 'ios-download'
+                        },
+                      style: {
+                        color: '#d67611',
+                        fontSize: '36px',
+                        padding: '0px'
+                      },
+                      on: {
+                        click: () => {   
+                          this.createPDF(row)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }
             }
           }
+          // {
+          //   title: 'Action',
+          //   key: 'Status',
+          //   align: 'center',
+          //   render: (h, {row}) => {
+          //     if(row.TotalAmt-row.Balance != 0){
+          //       return h('div', [
+          //         h('Button', {
+          //           props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             //loading: params.row.loading 
+          //             },
+          //           style: {
+          //           },
+          //           on: {
+          //             click: () => {   
+          //               this.makepayment(row)
+          //             }
+          //           }
+          //         }, 'Payment'),
+          //          h('Button', {
+          //          props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             //loading: params.row.loading1
+          //           },
+          //           style: {
+          //             margin: '2px'
+          //           },
+          //           on: {
+          //             click: () => {
+          //               this.sendemail(row)
+          //             }
+          //           }
+          //         }, 'Email')
+          //       ])
+          //     }else{
+          //       return h('div', [
+          //          h('Button', {
+          //          props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             //loading: params.row.loading1
+          //           },
+          //           style: {
+          //           },
+          //           on: {
+          //             click: () => {
+          //               this.sendemail(row)
+          //             }
+          //           }
+          //         }, 'Email')
+          //       ])
+          //     }
+          //   }
+          // }
       ],
        columns1: [
           {
@@ -373,56 +565,193 @@ export default {
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading 
-                      },
-                    style: {
-                    },
-                    on: {
-                      click: () => {   
-                        this.makepayment(params.row)
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make Payment'
                       }
-                    }
-                  }, 'Payment'),
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading1
-                    },
-                    style: {
-                      margin: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(params)
+                    }, [
+                        h('Button', {
+                        props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'cash'
+                          // loading: params.row.loading 
+                          },
+                        style: {
+                          color: '#115fd6',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.makepayment(params.row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                   h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('Button', {
+                       props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'email'
+                          // loading: params.row.loading1
+                        },
+                        style: {
+                         color: '#d60606',
+                         fontSize: '36px',
+                         padding: '0px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(params)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      }
+                    }, [
+                       h('Button', {
+                        props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'ios-download'
+                          },
+                        style: {
+                          color: '#d67611',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.createPDF(params)
+                          }
+                        }
+                      }, '')
+                  ])
                 ])
               }else{
                 return h('div', [
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading1
-                    },
-                    style: {
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(params)
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('Button', {
+                       props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'email'
+                          // loading: params.row.loading1
+                        },
+                        style: {
+                          color: '#d60606',
+                          fontSize: '36px',
+                          padding: '0px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(params)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      }
+                    }, [
+                    h('Button', {
+                      props: {
+                        type: 'text',
+                        size: 'large',
+                        icon: 'ios-download'
+                        },
+                      style: {
+                        color: '#d67611',
+                        fontSize: '36px',
+                        padding: '0px'
+                      },
+                      on: {
+                        click: () => {   
+                          this.createPDF(params)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }
             }
           }
+          // {
+          //   title: 'Action',
+          //   key: 'Status',
+          //   align: 'center',
+          //   render: (h, params) => {
+          //     if(params.row.Status == 'AUTHORISED'){
+          //       return h('div', [
+          //         h('Button', {
+          //           props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             loading: params.row.loading 
+          //             },
+          //           style: {
+          //           },
+          //           on: {
+          //             click: () => {   
+          //               this.makepayment(params.row)
+          //             }
+          //           }
+          //         }, 'Payment'),
+          //          h('Button', {
+          //          props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             loading: params.row.loading1
+          //           },
+          //           style: {
+          //             margin: '2px'
+          //           },
+          //           on: {
+          //             click: () => {
+          //               this.sendemail(params)
+          //             }
+          //           }
+          //         }, 'Email')
+          //       ])
+          //     }else{
+          //       return h('div', [
+          //          h('Button', {
+          //          props: {
+          //             type: 'primary',
+          //             size: 'small',
+          //             loading: params.row.loading1
+          //           },
+          //           style: {
+          //           },
+          //           on: {
+          //             click: () => {
+          //               this.sendemail(params)
+          //             }
+          //           }
+          //         }, 'Email')
+          //       ])
+          //     }
+          //   }
+          // }
       ],
       settingIdForPayment : '',
       data6: [],
@@ -601,6 +930,25 @@ export default {
               this.page = p
               this.list = await this.mockTableData1(p,pageSize);
     },
+    createPDF (params) {
+      this.emailData = params;
+      var self = this;
+      // var doc = new jsPDF();
+      setTimeout(function(){ 
+        console.log(self.$refs.email1.innerHTML)
+          var filename = "invoice.html";
+          var data = self.$refs.email1.innerHTML;
+          var blob = new Blob([data], {
+              type: "text/html;charset=utf-8"
+          });
+          saveAs(blob, filename);
+              // doc.fromHTML(self.$refs.foo2.innerHTML, 15, 15,{},function () {
+        //     doc.save('Test.pdf');
+        // });
+       }, 2000);
+      // doc.fromHTML(this.$refs.foo2.innerHTML);
+    },
+
     async makepayment(params){
       console.log(params)
       this.$store.state.invoiceData = params;
