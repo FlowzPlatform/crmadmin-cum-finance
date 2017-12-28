@@ -133,103 +133,78 @@
 
 <div>
   
-  <div v-if="emailData != ''" ref="foo2" style="display:none">
- <div class="row" >
-        <div class="col-xs-6">
-          <h1>
-            <a href="#">
-            <img src="http://container-solutions.com/content/uploads/2016/04/mesos-logo.png">
-            </a>
-          </h1>
-        </div>
-        <div class="col-xs-6 text-right">
-          <h1>INVOICE</h1>
-          <h1><small>Invoice #{{emailData.row.InvoiceNumber}}</small></h1>
-          <h1><small>Invoice Id #{{emailData.row.InvoiceID}}</small></h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-5">
-          <div class="panel panel-default">
+  <div v-if="emailData != ''" ref="email1" style="display:none">
+ 
+  <div style="margin: auto; width: 60%; border: 3px solid #73AD21;padding: 10px; font-family: 'Roboto regular', sans-serif; color:#404040 ;font-size:13px;">
+   <div style=" background:#404040;height:20px;color:#fff; line-height:20px;text-align:center;padding:10px">INVOICE</div>
+   <div>
+      <div style="display:flow-root;padding:10px">
+         <div style="padding:10px;float:left;background: #20619d;color:#fff">
             <div class="panel-heading">
-              <h4>From: 1707 Orlando Central Pkwy Ste 100</h4>
+               <h4>From: 1707 Orlando</h4>
             </div>
             <div class="panel-body">
-              <p>
-                1329 40th St Apt A <br>
-                Orlando, FL  <br>
-              
-              </p>
+               <p>
+                  1329 40th St Apt A <br>
+                  Orlando, FL  <br>
+               </p>
             </div>
-          </div>
-        </div>
-        <div class="col-xs-5 col-xs-offset-2 text-right">
-          <div class="panel panel-default">
+         </div>
+         <div style ="padding:10px;float:right;background: #20619d;color:#fff">
             <div class="panel-heading">
-              <h4>To : {{emailData.row.Contact.Name}}</h4>
+               <h4>To :{{emailData.row.Contact.Name}}</h4>
             </div>
             <div class="panel-body">
-              <p>
-                4800 Dacey Ct <br>
-                Orlando, FL <br>
-              
-              </p>
+               <p>
+                  4800 Dacey Ct <br>
+                  Orlando, FL <br>
+               </p>
             </div>
-          </div>
-        </div>
+         </div>
       </div>
-      <!-- / end client details section -->
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-          <th></th>
-            <th>
-              <h4>Service</h4>
-            </th>
-            <th>
-              <h4>Due Date</h4>
-            </th>
-            <th>
-              <h4>Due Amount</h4>
-            </th>
-            <th>
-              <h4>Paid Amount</h4>
-            </th>
-            <th>
-              <h4>Sub Total</h4>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr >
-            <td><button class="btn btn-danger">-</button></td>
-            <td>XYZ Service</td>
-            <td>{{emailData.row.DueDate}}</td>
-            <td class="text-right">{{emailData.row.AmountDue}}</td>
-            <td class="text-right">${{emailData.row.AmountPaid}}</td>
-            <td class="text-right">${{emailData.row.SubTotal}}</td>
-          </tr>
-          
-        </tbody>
-      </table>
-      <div class="row text-right">
-        <div class="col-xs-2 col-xs-offset-8">
-          <p>
-            <strong>
-            Sub Total : <br>
-            TAX : <br>
-            Total : <br>
-            </strong>
-          </p>
-        </div>
-        <div class="col-xs-2">
-          <strong>
-          ${{emailData.row.SubTotal}}<br>
-          {{emailData.row.TotalTax * 100}}%  <br>
-          ${{emailData.row.Total }} <br>
-          </strong>
-        </div>
+   </div>
+   <div style="display:flow-root;padding:10px">
+      <div style="padding:10px;float:left;border:1px solid #eae8e8;">
+         <div class="panel-heading">
+            <p>Invoice :  #{{emailData.row.InvoiceNumber}}</p>
+            <p>Amount  :  ${{emailData.row.Total }}</p>
+         </div>
       </div>
+   </div>
+   <table style="font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;">
+      <tr>
+         <th style="border:1px solid #8f7777">Service</th>
+         <th style="border:1px solid #8f7777"> Due Date</th>
+         <th style="border:1px solid #8f7777">Billing Date</th>
+         <th style="border:1px solid #8f7777">Due Amount</th>
+         <th style="border:1px solid #8f7777">Paid Amount</th>
+      </tr>
+      <tr style="background-color: #dddddd;">
+         <td align="middle" style="border:1px solid #8f7777">XYZ Service</td>
+         <td align="middle" style="border:1px solid #8f7777">{{emailData.row.DueDate}}</td>
+         <td align="middle" style="border:1px solid #8f7777">{{emailData.row.Date}}</td>
+         <td align="middle" style="border:1px solid #8f7777">${{emailData.row.AmountDue}}</td>
+         <td align="middle" style="border:1px solid #8f7777">${{emailData.row.AmountPaid}}</td>
+      </tr>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px;"  class="border" >Sub Total :</td>
+         <td  colspan="1"  style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px"  class="border">{{emailData.row.SubTotal}} </td>
+      </tr>
+      <tr>
+         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px;"  class="border">TAX :</td>
+         <td  colspan="1"  class="border" style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px">{{emailData.row.TotalTax * 100}}% </td>
+      </tr>
+      <tr>
+         <td colspan="3" style="background-color:#20629E;color:#fff; text-align:right; padding:5px 15px 5px 10px; width:80px; border-bottom:1px solid #aaaaaa;" class="border">Total : </td>
+         <td  colspan="1" class="border"  style="background-color:#20629E;color:#fff; text-align:center; padding:3px; width:80px;  border-bottom:1px solid #aaaaaa;"> {{emailData.row.Total }} </td>
+      </tr>
+   </table>
+</div>
+
 </div>
 </div>
 </div>
@@ -627,7 +602,7 @@ export default {
               this.list = await this.mockTableData1(p,pageSize);
     },
     async makepayment(params){
-      
+      console.log(params)
       this.$store.state.invoiceData = params;
       this.$store.state.settingId = this.settingIdForPayment
       console.log(">>>>>>>>> " , this.$store.state.invoiceData);
@@ -657,13 +632,13 @@ export default {
                         })
                     },
                     onOk: ()=>{
-                               console.log(self.$refs.foo2.innerHTML)
+                               console.log(self.$refs.email1.innerHTML)
                                     
                                     let myData = {
                                           "to": self.emailIdTobeSent,
                                           "from": "obsoftcare@gmail.com",
                                           "subject": "email invoice",
-                                          "body": self.$refs.foo2.innerHTML
+                                          "body": self.$refs.email1.innerHTML
                                         }
                                         myData = JSON.stringify(myData)
                                         axios({
@@ -679,6 +654,7 @@ export default {
                                             self.list[params.index].loading1 = false
                                           })
                                           .catch(function (error) {
+                                            self.$Message.success("email send failed , Please try again later");
                                             console.log(error);
                                           });
                     }
@@ -793,7 +769,7 @@ export default {
   },
   mounted() {
     let self = this;
-    
+    this.$store.state.invoiceData = "";
     //  $('.maindiv').change(async function() {
     //   await self.changeData();
     // }); 
