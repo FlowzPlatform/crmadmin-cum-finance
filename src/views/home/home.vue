@@ -251,7 +251,7 @@ export default {
                 }, 200);
                 this.showAddNewTodo = false;
             } else {
-                this.$Message.error('请输入待办事项内容');
+                this.$Message.error('error');
             }
         },
         cancelAdd () {
@@ -282,6 +282,14 @@ export default {
             .catch(function (error) {
                 console.log("error",error);
                 self.$Loading.error()
+
+                    
+                    Cookies.remove('auth_token') 
+                    self.$Message.error('Auth Error!');
+                    self.$store.commit('logout', self); 
+                    self.$router.push({
+                    name: 'login'
+                })
             });
             return chartdata
         },

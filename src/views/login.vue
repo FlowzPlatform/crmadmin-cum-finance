@@ -377,6 +377,11 @@ export default {
         }
     },
     mounted() {
+      if(Cookies.get("auth_token") != undefined){
+        this.$router.push({
+                                name: 'home_index'
+                            });
+      }
         var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
             $signupMsg = $('.signupMsg'),
