@@ -62,7 +62,7 @@
                         <!-- <Button type="primary" @click="selectChange">Apply</Button> -->
                     </col>
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd" placement="bottom-end left-start" placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
+                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd"  placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
                         <Button type="primary" @click="dateval">Apply</Button>
                     </col>
                 </Row>
@@ -166,6 +166,7 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
+const accounting = require('accounting-js');
 
 import configService from '@/config/customConfig.js';
 let serviceUrl = configService.default.serviceUrl;
@@ -446,6 +447,7 @@ export default {
             await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'cashflow',
+                    status : 'Paid',
                     date1 : date1,
                     date2 : date2,
                     settingId : settingId
@@ -456,7 +458,6 @@ export default {
             })
             .then(function (response) {
                 chartdata = response.data[0].data;
-                // chartdata.reverse();
                 console.log("waterfall chart data",chartdata)
             })
             .catch(function (error) {
@@ -481,7 +482,19 @@ export default {
                     type : 'shadow'
                 },
                 formatter: function (params) {
-                    return params[0].value + params[1].value
+                    var tar;
+                    if (params[1].value != '-') {
+                        tar = params[1];
+                    }
+                    else {
+                        tar = params[0];
+                    }
+                    return accounting.formatMoney(tar.value, {
+                        symbol : '',
+                        precision : 2,
+                        thousand  : ''
+                    })
+
                 }
             },
             legend: {
@@ -544,8 +557,14 @@ export default {
 
             for (var i = 0; i<data_arr.length; i++ ) {
                 var diff = data_arr[i] - data_arr[i-1];
+                diff = accounting.formatMoney(diff, {
+                    symbol : '',
+                    precision : 2,
+                    thousand  : ''
+                });
+
                 if (i == 0) {
-                    data1.push(0);
+                    data1.push(0.00);
                     data2.push(data_arr[i]);
                     data3.push('-');
                 }
@@ -557,7 +576,11 @@ export default {
                 else if (diff < 0) {
                     data1.push(data_arr[i]);
                     data2.push('-');
-                    data3.push(data_arr[i-1] - data_arr[i]);
+                    data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
+                    symbol : '',
+                    precision : 2,
+                    thousand  : ''
+                }));
                 }
                 else {
                     data1.push(data_arr[i]);

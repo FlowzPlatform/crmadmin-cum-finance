@@ -271,9 +271,14 @@
 import config from '@/config/customConfig.js'
 import axios from 'axios'
 import jsPDF from 'jspdf'
+import money from '@/images/Payment.png'
+import mail from '@/images/Mail.png'
+import download from '@/images/Download.png'
+
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
+
 var pageSize = 10
 export default {
   name: 'hello',
@@ -281,6 +286,9 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
+      money:'',
+      mail : '',
+      download:'',
       emailData : '',
       columns2: [
           {
@@ -298,6 +306,11 @@ export default {
               title: 'Due Date',
               key: 'DueDate',
               sortable: true,
+              render : (h,{row}) => {
+                var date = new Date(row.DueDate); 
+                var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return date1
+              }
           },
           {
               title: 'Amount Paid',
@@ -307,13 +320,12 @@ export default {
           {
               title: 'Amount Due',
               key: 'Balance',
-              sortable: true,
-             
+              sortable: true
           },
           {
               title: 'Total Amount',
               key: 'TotalAmt',
-              sortable: true,
+              sortable: true
               
           },
           {
@@ -338,42 +350,42 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Make Payment'
+                      },
+                      style:{
+                        float:'left'
                       }
                     }, [
-                      h('Button', {
-                        props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'cash'
-                          },
+                      h('img', {
+                        attrs: {
+                          src:"../../images/Payment.png"
+                        },
                         style: {
-                          color: '#115fd6',
-                          fontSize: '36px',
-                          padding: '0px'
+                          hight:'30px',
+                          weight:'30px'
                         },
                         on: {
                           click: () => {   
                             this.makepayment(row)
                           }
                         }
-                      }, '')
+                      },'')
                     ]),
                   h('Tooltip', {
                       props: {
                         placement: 'top',
                         content: 'Download'
+                      },
+                      style:{
+                        float:'center'
                       }
                     }, [
-                       h('Button', {
-                        props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'ios-download'
+                       h('img', {
+                        attrs: {
+                          src :this.download
                           },
                         style: {
-                          color: '#d67611',
-                          fontSize: '36px',
-                          padding: '0px'
+                          hight:'30px',
+                          weight:'30px'
                         },
                         on: {
                           click: () => {   
@@ -386,19 +398,18 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Send mail'
+                      },
+                      style:{
+                        float:'right'
                       }
                     }, [
-                       h('Button', {
+                       h('img', {
                          props: {
-                            type: 'text',
-                            size: 'large',
-                            icon: 'email'
-                            //loading: params.row.loading1
+                           src :this.mail 
                           },
                           style: {
-                           color: '#d60606',
-                           fontSize: '36px',
-                           padding: '0px'
+                            hight:'30px',
+                            weight:'30px'
                           },
                           on: {
                             click: () => {
@@ -414,19 +425,19 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
                     }, [
-                      h('Button', {
-                       props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'email'
-                          //loading: params.row.loading1
+                      h('img', {
+                        attrs: {
+                          src :this.mail
                         },
                         style: {
-                          color: '#d60606',
-                          fontSize: '36px',
-                          padding: '0px'
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {
@@ -439,18 +450,19 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Download'
+                      },
+                      style:{
+                        float:'right'
                       }
                     }, [
-                    h('Button', {
-                      props: {
-                        type: 'text',
-                        size: 'large',
-                        icon: 'ios-download'
-                        },
+                    h('img', {
+                      attrs: {
+                          src :this.download
+                      },
                       style: {
-                        color: '#d67611',
-                        fontSize: '36px',
-                        padding: '0px'
+                        height:'30px',
+                        width:'30px',
+                        margin: '2px'
                       },
                       on: {
                         click: () => {   
@@ -463,63 +475,6 @@ export default {
               }
             }
           }
-          // {
-          //   title: 'Action',
-          //   key: 'Status',
-          //   align: 'center',
-          //   render: (h, {row}) => {
-          //     if(row.TotalAmt-row.Balance != 0){
-          //       return h('div', [
-          //         h('Button', {
-          //           props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             //loading: params.row.loading 
-          //             },
-          //           style: {
-          //           },
-          //           on: {
-          //             click: () => {   
-          //               this.makepayment(row)
-          //             }
-          //           }
-          //         }, 'Payment'),
-          //          h('Button', {
-          //          props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             //loading: params.row.loading1
-          //           },
-          //           style: {
-          //             margin: '2px'
-          //           },
-          //           on: {
-          //             click: () => {
-          //               this.sendemail(row)
-          //             }
-          //           }
-          //         }, 'Email')
-          //       ])
-          //     }else{
-          //       return h('div', [
-          //          h('Button', {
-          //          props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             //loading: params.row.loading1
-          //           },
-          //           style: {
-          //           },
-          //           on: {
-          //             click: () => {
-          //               this.sendemail(row)
-          //             }
-          //           }
-          //         }, 'Email')
-          //       ])
-          //     }
-          //   }
-          // }
       ],
        columns1: [
           {
@@ -531,12 +486,18 @@ export default {
               title: 'Name',
               key: 'Contact',
               sortable: true,
-               render:(h,{row})=>{ return row.Contact.Name }
+              render:(h,{row})=>{ return row.Contact.Name }
           },
           {
               title: 'Date',
               key: 'Date',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ 
+  
+               var date = new Date(row.Date); 
+               var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return date1
+              }
           },
            {
               title: 'AmountPaid',
@@ -551,7 +512,7 @@ export default {
           {
               title: 'Total',
               key: 'Total',
-              sortable: true
+              sortable: true  
           },
           {
               title: 'status',
@@ -569,24 +530,24 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Make Payment'
+                      },
+                      style:{
+                        float:'left'
                       }
                     }, [
-                        h('Button', {
-                        props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'cash'
-                          // loading: params.row.loading 
+                        h('img', {
+                          attrs: {
+                            src:"../../images/Payment.png"
                           },
-                        style: {
-                          color: '#115fd6',
-                          fontSize: '36px',
-                          padding: '0px'
-                        },
-                        on: {
-                          click: () => {   
-                            this.makepayment(params.row)
-                          }
+                          style: {
+                            hight:'30px',
+                            width:'30px',
+                            margin: '2px'
+                          },
+                          on: {
+                            click: () => {   
+                              this.makepayment(params.row)
+                            }
                         }
                       }, '')
                     ]),
@@ -594,43 +555,44 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
                     }, [
-                      h('Button', {
-                       props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'email'
-                          // loading: params.row.loading1
+                      h('img', {
+                       attrs: {
+                          src: this.mail
                         },
                         style: {
-                         color: '#d60606',
-                         fontSize: '36px',
-                         padding: '0px'
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {
                             this.sendemail(params)
                           }
                         }
-                      }, '')
+                      },'')
                     ]),
                     h('Tooltip', {
                       props: {
                         placement: 'top',
                         content: 'Download'
+                      },
+                      style:{
+                        float:'right'
                       }
                     }, [
-                       h('Button', {
-                        props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'ios-download'
-                          },
+                       h('img', {
+                       attrs: {
+                          src: this.download
+                        },
                         style: {
-                          color: '#d67611',
-                          fontSize: '36px',
-                          padding: '0px'
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {   
@@ -646,19 +608,19 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
                     }, [
-                      h('Button', {
-                       props: {
-                          type: 'text',
-                          size: 'large',
-                          icon: 'email'
-                          // loading: params.row.loading1
+                      h('img', {
+                       attrs: {
+                          src: this.mail
                         },
                         style: {
-                          color: '#d60606',
-                          fontSize: '36px',
-                          padding: '0px'
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {
@@ -671,19 +633,20 @@ export default {
                       props: {
                         placement: 'top',
                         content: 'Download'
+                      },
+                      style:{
+                        float:'right'
                       }
                     }, [
-                    h('Button', {
-                      props: {
-                        type: 'text',
-                        size: 'large',
-                        icon: 'ios-download'
+                    h('img', {
+                      attrs: {
+                          src: this.download
                         },
-                      style: {
-                        color: '#d67611',
-                        fontSize: '36px',
-                        padding: '0px'
-                      },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
                       on: {
                         click: () => {   
                           this.createPDF(params)
@@ -695,64 +658,9 @@ export default {
               }
             }
           }
-          // {
-          //   title: 'Action',
-          //   key: 'Status',
-          //   align: 'center',
-          //   render: (h, params) => {
-          //     if(params.row.Status == 'AUTHORISED'){
-          //       return h('div', [
-          //         h('Button', {
-          //           props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             loading: params.row.loading 
-          //             },
-          //           style: {
-          //           },
-          //           on: {
-          //             click: () => {   
-          //               this.makepayment(params.row)
-          //             }
-          //           }
-          //         }, 'Payment'),
-          //          h('Button', {
-          //          props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             loading: params.row.loading1
-          //           },
-          //           style: {
-          //             margin: '2px'
-          //           },
-          //           on: {
-          //             click: () => {
-          //               this.sendemail(params)
-          //             }
-          //           }
-          //         }, 'Email')
-          //       ])
-          //     }else{
-          //       return h('div', [
-          //          h('Button', {
-          //          props: {
-          //             type: 'primary',
-          //             size: 'small',
-          //             loading: params.row.loading1
-          //           },
-          //           style: {
-          //           },
-          //           on: {
-          //             click: () => {
-          //               this.sendemail(params)
-          //             }
-          //           }
-          //         }, 'Email')
-          //       ])
-          //     }
-          //   }
-          // }
       ],
+
+       
       settingIdForPayment : '',
       data6: [],
       emailIdTobeSent : '',
