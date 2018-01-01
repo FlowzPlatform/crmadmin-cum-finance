@@ -310,10 +310,26 @@ export default {
         .then(function (response) {
             console.log("response------>iuy",response);
             self.spinShow = false;
-            self.tabPanes = response.data.data;
+            if (response.data.data.length != 0)
+            {
+              self.tabPanes = response.data.data;
             $('.preload').css("display","none")
             let settingId = self.tabPanes[0].id
             self.getContactBySettingId(settingId)
+            }else
+            {
+                self.$Modal.warning({
+                title: 'No Configuration available',
+                okText : "Go to Settings",
+                content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+                onOk: () => {
+                      self.$router.push({
+                          name: 'settings'
+                      })
+                  }
+                });
+            }
+            
         })
         .catch(function (error) {
             console.log("error",error);

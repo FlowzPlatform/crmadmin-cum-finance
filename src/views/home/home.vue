@@ -147,6 +147,7 @@
                 </draggable>
             </Col>
         </Row>
+        
     </div>
 </template>
 
@@ -173,6 +174,7 @@ let serviceUrl = configService.default.serviceUrl;
 
 export default {
     name: 'home',
+    
     components: {
         homeMap,
         dataSourcePie,
@@ -187,6 +189,7 @@ export default {
     },
     data () {
         return {
+            
             name : '',
             daterange1 : '',
             config : '',
@@ -625,10 +628,11 @@ export default {
         },
 
          init(settingId) {
+             
             let self = this;
             this.name = Cookies.get('user');
             var resp;
-         axios.get(serviceUrl+"settings", {
+            axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
                     
@@ -638,19 +642,39 @@ export default {
                 }
             })
             .then(function (response) {
-               console.log("config data list",resp)
-               self.mData = response.data.data;
-               self.config = self.mData[0].id;
+               console.log("config data list",response)
+               
+               if (response.data.data.length != 0){
+                   self.mData = response.data.data;
+                    self.config = self.mData[0].id;
+                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'))
+               }else{
+                   self.$Modal.warning({
+                    title: 'No Configuration available',
+                    okText : "Go to Settings",
+                    content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+                    onOk: () => {
+                        self.$router.push({
+                            name: 'settings'
+                        })
+                    }
+                });
+               }
+                
             })
             .catch(function (error) {
                 console.log(error)
-                    //     this.disabled = false;
-                    //     Cookies.remove('auth_token') 
-                    //     this.$Message.error('Auth Error!');
-                    //     this.$store.commit('logout', this); 
-                    //     this.$router.push({
-                    //     name: 'login'
-                    // })
+                self.disabled = false;
+                //Cookies.remove('auth_token') 
+                self.$Message.error('Auth Error!');
+                //self.$store.commit('logout', self); 
+                // self.$router.push({
+                //     name: 'login'
+                // })
             });
             
             
@@ -694,11 +718,7 @@ export default {
         console.log("daterange1",this.daterange1[0])
         // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
         // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
-        this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
+        
         this.init()
     }
 
