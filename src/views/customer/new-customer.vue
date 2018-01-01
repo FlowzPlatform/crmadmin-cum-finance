@@ -163,7 +163,23 @@ Vue.use(VueWidgets);
               .then(function (response) {
                 console.log("response >>>>>>>>>>>>>>>>",response)
                 //resp = response.data
-                self.configs = response.data.data
+                
+                if (response.data.data.length != 0)
+                {
+                  self.configs = response.data.data
+                }else
+                {
+                    self.$Modal.warning({
+                    title: 'No Configuration available',
+                    okText : "Go to Settings",
+                    content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+                    onOk: () => {
+                          self.$router.push({
+                              name: 'settings'
+                          })
+                      }
+                    });
+                }
               })
               .catch(function (error) {
                 console.log("error",error);

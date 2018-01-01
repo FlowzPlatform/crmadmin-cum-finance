@@ -357,7 +357,7 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src:"../../images/Payment.png"
+                          src:'../../images/Payment.png'
                         },
                         style: {
                           hight:'30px',
@@ -381,7 +381,7 @@ export default {
                     }, [
                        h('img', {
                         attrs: {
-                          src :this.download
+                          src :'../../images/Download.png'
                           },
                         style: {
                           hight:'30px',
@@ -405,7 +405,7 @@ export default {
                     }, [
                        h('img', {
                          props: {
-                           src :this.mail 
+                           src :'../../images/Mail.png'
                           },
                           style: {
                             hight:'30px',
@@ -432,7 +432,7 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src :this.mail
+                          src :'../../images/Mail.png'
                         },
                         style: {
                           height:'30px',
@@ -457,7 +457,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src :this.download
+                          src :'../../images/Download.png'
                       },
                       style: {
                         height:'30px',
@@ -500,12 +500,12 @@ export default {
               }
           },
            {
-              title: 'AmountPaid',
+              title: 'Paid',
               key: 'AmountPaid',
               sortable: true
           },
           {
-              title: 'AmountDue',
+              title: 'Due',
               key: 'AmountDue',
               sortable: true
           },
@@ -537,7 +537,7 @@ export default {
                     }, [
                         h('img', {
                           attrs: {
-                            src:"../../images/Payment.png"
+                            src:"src/images/Payment.png"
                           },
                           style: {
                             hight:'30px',
@@ -562,7 +562,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: this.mail
+                          src: 'src/images/Mail.png'
                         },
                         style: {
                           hight:'30px',
@@ -587,7 +587,7 @@ export default {
                     }, [
                        h('img', {
                        attrs: {
-                          src: this.download
+                          src: 'src/images/Download.png'
                         },
                         style: {
                           hight:'30px',
@@ -615,7 +615,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: this.mail
+                          src: 'src/images/Mail.png'
                         },
                         style: {
                           hight:'30px',
@@ -640,7 +640,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src: this.download
+                          src: 'src/images/Download.png'
                         },
                         style: {
                           hight:'30px',
@@ -1010,13 +1010,29 @@ export default {
       .then(function (response) {
         console.log("response------>iuy",response);
         self.spinShow = false;
-        self.tabPanes = response.data.data;
-        $('.preload').css("display","none")
-        let settingId = self.tabPanes[0].id;
-        self.settingIdForPayment = self.tabPanes[0].id;
-        self.getInvoiceBySettingId(settingId)
+        if (response.data.data.length != 0)
+        {
+          self.tabPanes = response.data.data;
+          $('.preload').css("display","none")
+          let settingId = self.tabPanes[0].id;
+          self.settingIdForPayment = self.tabPanes[0].id;
+          self.getInvoiceBySettingId(settingId)
+        }else
+        {
+            self.$Modal.warning({
+            title: 'No Configuration available',
+            okText : "Go to Settings",
+            content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+            onOk: () => {
+                  self.$router.push({
+                      name: 'settings'
+                  })
+              }
+            });
+        }
       })
       .catch(function (error) {
+        
         console.log("error",error);
         self.spinShow = false;
       });
