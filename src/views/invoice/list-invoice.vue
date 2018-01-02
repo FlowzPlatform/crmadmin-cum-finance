@@ -271,9 +271,9 @@
 import config from '@/config/customConfig.js'
 import axios from 'axios'
 import jsPDF from 'jspdf'
-import money from '@/images/Payment.png'
-import mail from '@/images/Mail.png'
-import download from '@/images/Download.png'
+import money from '../../images/Payment.png'
+import mail from '../../images/Mail.png'
+import download from '../../images/Download.png'
 
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
@@ -286,9 +286,9 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
-      money:'',
-      mail : '',
-      download:'',
+      money,
+      mail,
+      download,
       emailData : '',
       columns2: [
           {
@@ -357,7 +357,7 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src:'../../images/Payment.png'
+                          src:this.money
                         },
                         style: {
                           hight:'30px',
@@ -381,7 +381,7 @@ export default {
                     }, [
                        h('img', {
                         attrs: {
-                          src :'../../images/Download.png'
+                          src :this.download
                           },
                         style: {
                           hight:'30px',
@@ -405,7 +405,7 @@ export default {
                     }, [
                        h('img', {
                          props: {
-                           src :'../../images/Mail.png'
+                           src :this.mail
                           },
                           style: {
                             hight:'30px',
@@ -432,7 +432,7 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src :'../../images/Mail.png'
+                          src : this.mail
                         },
                         style: {
                           height:'30px',
@@ -457,7 +457,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src :'../../images/Download.png'
+                          src : this.download
                       },
                       style: {
                         height:'30px',
@@ -537,7 +537,7 @@ export default {
                     }, [
                         h('img', {
                           attrs: {
-                            src:"src/images/Payment.png"
+                            src: this.money
                           },
                           style: {
                             hight:'30px',
@@ -562,7 +562,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: 'src/images/Mail.png'
+                          src: this.mail
                         },
                         style: {
                           hight:'30px',
@@ -587,7 +587,7 @@ export default {
                     }, [
                        h('img', {
                        attrs: {
-                          src: 'src/images/Download.png'
+                          src: this.download
                         },
                         style: {
                           hight:'30px',
@@ -615,7 +615,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: 'src/images/Mail.png'
+                          src: this.mail
                         },
                         style: {
                           hight:'30px',
@@ -640,7 +640,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src: 'src/images/Download.png'
+                          src: this.download
                         },
                         style: {
                           hight:'30px',
@@ -1074,5 +1074,9 @@ export default {
 .ivu-spin-main {
     width: 100%;
     text-align: -webkit-center;
+}
+tbody.ivu-table-tbody tr.ivu-table-row td.ivu-table-column-center .ivu-table-cell > div > div {
+    margin: 0 9px;
+    float: none !important;
 }
 </style>
