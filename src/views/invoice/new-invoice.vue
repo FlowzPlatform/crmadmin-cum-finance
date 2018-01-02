@@ -14,13 +14,13 @@
             </Select>
         </FormItem> -->
         <FormItem label="Configuration Name" prop="configuration">
-             <Select v-model="formItem.configuration" style="width:100%">
-               <Option v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+             <Select v-model="formItem.configuration" style="width:100%" @on-change="configChange">
+               <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
         <FormItem label="Contact Name" prop="name">
              <Select v-model="formItem.name" style="width:100%">
-               <Option v-for="item in data2" :value="item" :key="item">{{ item }}</Option>
+               <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
         </FormItem>
         <FormItem label="Project">
@@ -72,8 +72,8 @@ export default {
   name: 'newinvoice',
   data () {
     const validateNum = async(rule, value, callback) => {
-      var patt = new RegExp('^[0-9]+$')
-      var _res = patt.test(value)
+      let patt = new RegExp('^[0-9]+$')
+      let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
       } else {
@@ -101,7 +101,6 @@ export default {
         label: '$'
       }],
       rulesValidation: {
-
           configuration : [
               {required: true, message: 'Please select the Configuration account', trigger: 'change'}
           ],
@@ -134,7 +133,7 @@ export default {
     },
     // async configData () {
     //   console.log("config data call")
-    //   var resp
+    //   let resp
     //    await axios({
     //         method: 'get',
     //         url: config.default.settingsUrl + 'settings',
@@ -155,8 +154,8 @@ export default {
     //         })
     // },
     async projectData () {
-      var resp
-      var self = this
+      let resp
+      let self = this
       await axios.get(config.default.projecturl + 'project', {
         params: {
         }
@@ -172,10 +171,13 @@ export default {
         self.data3.push(obj.project_name)
       })
     },
-
+    configChange(data){
+      console.log(data)
+      this.customerData(data);
+    },
     async settingData () {
       
-      var self = this
+      let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
                    Authorization : Cookies.get('auth_token')
@@ -183,23 +185,40 @@ export default {
       })
       .then(function (response) {
         console.log("response >>>>>>>>>>>>>>>>",response)
-        //resp = response.data
-        self.configs = response.data.data
+        if (response.data.data.length != 0)
+        {
+          self.configs = response.data.data
+        }else
+        {
+            self.$Modal.warning({
+            title: 'No Configuration available',
+            okText : "Go to Settings",
+            content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+            onOk: () => {
+                  self.$router.push({
+                      name: 'newsettings'
+                  })
+              }
+            });
+        }
+        
       })
       .catch(function (error) {
         console.log("error",error);
       });
       
     },
-    async customerData () {
-      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRR")
-      var resp
-      var self = this
+    async customerData (settingId) {
+      
+      let resp
+      let self = this
       await axios({
             method: 'get',
             url: config.default.serviceUrl + 'contacts',
-            params: {},
-             headers:{
+            params: {
+              settingId : settingId
+            },
+            headers:{
             Authorization : Cookies.get('auth_token')
         },
             }).then(function (response) {
@@ -210,26 +229,27 @@ export default {
               console.log(error);
             });
       console.log("response------>iuy",resp);
-      resp.forEach(obj =>{
-        self.data2.push(obj.Name)
-      })
+      // resp.forEach(obj =>{
+      //   console.log(obj[0].data)
+     // alert(self.formItem.configuration)
+        self.data2 = resp[0].data
+      //})
     },
     async formData (name) {
       console.log(name)
       this.$refs[name].validate((valid) => {
-        if (valid) {
+        //if (valid) {
           this.newInvoice();
-        } else {
+        // } else {
          
-          this.$Message.error('Data not valid!!!');
-        }
+        //   this.$Message.error('Data not valid!!!');
+        // }
       })
     },
     async newInvoice () {
-      var self = this
+      let self = this
       this.formItem.amount = parseInt(this.formItem.amount)
-
-      var postData = {
+      let postData = {
         // domain: this.formItem.domain,
         settingId : this.formItem.configuration,
         name: this.formItem.name,
@@ -262,7 +282,7 @@ export default {
   },
   mounted() {
    this.projectData();
-   this.customerData();
+   
    this.settingData ();
   }
 }

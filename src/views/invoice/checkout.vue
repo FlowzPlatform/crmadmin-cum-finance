@@ -1,13 +1,57 @@
 <template>
-	<div class="checkout">
+  <div class="checkout">
     <div class="container">
       <div class="row">
           <div class="col-md-2"></div>
-          <div class="col-md-8">
-              <div class="page-header">
-              </div>
+          <div class="col-md-8" id="detail">
+                <Card>
+          <p slot="title">
+              <Icon type="ios-film-outline"></Icon>
+              Invoice Details
+          </p>
+          
+          <ul>
+              <li>
+                  <a href="" target="_blank">Invoice ID :</a>
+                  <span>
+                      
+                      {{ invoiceid }} 
+                  </span>
+              </li>
+              <li>
+                  <a href="" target="_blank">Name :</a>
+                  <span>
+                      
+                      {{ name }}
+                  </span>
+              </li>
+              <li>
+                  <a href="" target="_blank">Paid Amount :</a>
+                  <span>
+                      
+                      ${{ amountpaid }}
+                  </span>
+              </li>
+              <li>
+                  <a href="" target="_blank">Due Amount :</a>
+                  <span>
+                      
+                      ${{ amountDue }}
+                  </span>
+              </li>
+              <li>
+                  <a href="" target="_blank">Total :</a>
+                  <span>
+                      
+                      ${{ total }} 
+                  </span>
+              </li>
+          </ul>
+        </Card>
           </div>
+         <div class="col-md-2"></div> 
       </div>
+       
       <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8">
@@ -90,7 +134,7 @@
                             </div>
                             
                         </div>
-                    </form>
+                    </Form>
                   </div>
                   <div class="panel-footer">
                       <div class="row" style="padding:10px">
@@ -112,14 +156,18 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
+import Cookies from 'js-cookie';
+let responseData
+let settingID
+let paymentAmount
 export default {
   name: 'checkout',
   components: {
   },
   data () {
      const validateNum = async(rule, value, callback) => {
-      var patt = new RegExp('^[0-9]+$')
-      var _res = patt.test(value)
+      let patt = new RegExp('^[0-9]+$')
+      let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
       } else {
@@ -128,7 +176,13 @@ export default {
     };
     return {
       loading: false,
+      settingId:'',
       invoiceid: '',
+      name: '',
+      date: '',
+      amountpaid: '',
+      amountDue: '',
+      total: '',
       payDetail : {
         cardtype: '',
         cardNumber : '',
@@ -136,7 +190,7 @@ export default {
         expiryYY: '',
         cvCode: '',
         gateway: '',
-        amount: 50
+        amount: '',
       },
       rulesValidation: {
         cardtype: [
@@ -164,41 +218,59 @@ export default {
       }
     }
   },
-  mounted () {
-    this.invoiceid = this.$route.params.id
-  },
+  
   methods: {
     backFunction () {
       this.$refs['payDetail'].resetFields()
       this.$router.go(-1)
     }, 
+    async getData () {
+      let settingID = this.$store.state.settingId
+      
+      responseData = this.$store.state.invoiceData;
+      console.log("responseData.Id",responseData.Id)
+      console.log("responseData.TotalAmt",responseData.TotalAmt) 
+      if(responseData.TotalAmt != undefined){
+        paymentAmount = responseData.TotalAmt;
+        this.payDetail.amount = paymentAmount
+      }
+      else{
+        paymentAmount = responseData.Total
+        this.payDetail.amount = paymentAmount
+      }
+      let paymentInvoiceId;
+      if(responseData.Id != undefined){
+        paymentInvoiceId = responseData.Id
+      }else {
+        paymentInvoiceId = responseData.InvoiceID
+      }
+      
+            this.payDetail.amount = responseData.AmountDue;
+            this.invoiceid = paymentInvoiceId
+            this.name = responseData.Contact.Name
+            this.amountpaid = responseData.AmountPaid
+            this.amountDue = responseData.AmountDue
+            this.total = paymentAmount
+            this.settingId = settingID
+    },
     async payNow () {
+      let self = this
       this.loading = true
-      alert(this.$route.params.id)
-          var responseData
-          var self = this
-          await axios.get(config.default.serviceUrl + 'invoice', {
-              params: {
-                Invoiceid:this.$route.params.id,
-                domain : "Xero"
-              }
-            })
-            .then(function (response) {
-              console.log("response data to get data", response)
-              responseData = response.data
-            })
-            .catch(function (error) {
-              console.log("error",error);
-            });
-
-
-
-            var exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
-            console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",exYear)
-            var param1 = {
-            domain:"Xero",
+      // alert(this.$route.params.id)
+            console.log("responseData", responseData)
+            let paymentInvoiceId;
+            console.log("responseData.Id",responseData.Id)
+            if(responseData.Id != undefined){
+              paymentInvoiceId = responseData.Id
+            }else {
+              paymentInvoiceId = responseData.InvoiceID
+            }
+            let exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
+            console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",this.settingId)
+            let param1 = {
+            settingId:this.settingId,
             gateway:this.payDetail.gateway,
-            id:responseData.InvoiceID,
+            id: paymentInvoiceId,
             amount:this.payDetail.amount,
             cname:responseData.Contact.Name,
             value:"59",
@@ -211,8 +283,11 @@ export default {
           console.log("params1", param1)
           await axios({
               method: 'post',
-              url: config.default.paymentUrl + 'payment',
-              data: param1
+              url: config.default.serviceUrl + 'payment',
+              data: param1,
+              headers:{
+                Authorization : Cookies.get('auth_token')
+              }
             })
             .then(function (res) {
               console.log("payment done success", res)
@@ -226,6 +301,7 @@ export default {
       this.backFunction()
     },
     async payFunction (name) {
+      console.log(name)
       this.$refs[name].validate(valid => {
         if(valid) {
           this.payNow();
@@ -233,14 +309,12 @@ export default {
           alert('Error')
         }
       })
-        // console.log("this.payDetail.cardtype",this.payDetail.cardtype)
-        // console.log("this.payDetail.cardNumber",this.payDetail.cardNumber)
-        // console.log("this.payDetail.expiryMM",this.payDetail.expiryMM)
-        // console.log("this.payDetail.expiryYY",this.payDetail.expiryYY)
-        // console.log("this.payDetail.cvCode",this.payDetail.cvCode)
-        // console.log("this.payDetail.gateway",this.payDetail.gateway)
-        // console.log("this.payDetail.amount",this.payDetail.amount)
     }
+  },
+  mounted() {
+    this.invoiceid = this.$route.params.id
+    this.getData ();
+    
   }
 }
 </script>
@@ -252,5 +326,9 @@ export default {
     color: #fff;
     background-color: #000044;
     border-color: #000044;
+  }
+  #detail {
+    background:#eee;
+    padding: 20px
   }
 </style>

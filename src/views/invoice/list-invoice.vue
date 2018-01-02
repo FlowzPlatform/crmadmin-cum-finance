@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <div style="padding: 10px; margin: 5px; display: block;">
+  <!-- <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -11,7 +11,7 @@
             <div class="panel-collapse collapse" id="collapseTwo">
                 <div class="panel-body">
                     <form>
-                        <div class="collapse-maindiv maindiv">
+                        <div class="collapse-maindiv maindiv" >
                             <div class="panel panel-default">
                                 <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                     <label>Customer Name</label>
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div>
   
@@ -130,6 +130,138 @@
 
 </div>
 
+
+<div>
+  
+  <div v-if="emailData != ''" ref="email1" style="display:none">
+ 
+ <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+        <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+            <tbody><tr class="top">
+                <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
+                                <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
+                            </td>
+                            
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                                Invoice #: {{emailData.row.InvoiceNumber}}<br>
+                                Created: {{emailData.row.Date}}<br>
+                                Due: {{emailData.row.DueDate}}
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            
+            <tr>
+            <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                <b>To :</b><br>
+                                {{emailData.row.Contact.Name}}<br>
+                                Sparksuite, Inc.<br>
+                                12345 Sunny Road<br>
+                                Sunnyville, CA 12345
+                            </td>
+                            
+                            <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
+                                <b>From :</b><br>
+                                Acme Corp.<br>
+                                John Doe<br>
+                                john@example.com
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;">
+                    Payment Method
+                </td>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;"></td>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align: right;">
+                    Check 
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="padding: 5px;vertical-align: top;padding-bottom: 20px;">
+                    Stripe
+                </td>
+                <td></td>
+                <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                    1000
+                </td>
+            </tr>
+
+             <tr>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Item
+                </td>
+                
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Paid Amount
+                </td>
+
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Due Amount
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    Website design
+                </td>
+                
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    ${{emailData.row.AmountPaid}}
+                </td>
+                <td style="border-bottom: 1px solid #eee;text-align:center;padding: 5px;vertical-align: top;">
+                    ${{emailData.row.AmountDue}}
+                </td>
+            </tr>
+            
+            
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Sub Total: ${{emailData.row.SubTotal}}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Tax: ${{emailData.row.TotalTax * 100}}%
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Total: ${{emailData.row.Total}}
+                </td>
+            </tr>
+            
+           
+        </tbody></table>
+    </div>
+
+</div>
+<div id="editor"></div>
+</div>
 </div>
 </template>
 
@@ -138,9 +270,15 @@
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
-import Handlebars from 'handlebars'
-import { mjml2html } from 'mjml'
+import jsPDF from 'jspdf'
+import money from '@/images/Payment.png'
+import mail from '@/images/Mail.png'
+import download from '@/images/Download.png'
+
+//import Handlebars from 'handlebars'
+//import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
+
 var pageSize = 10
 export default {
   name: 'hello',
@@ -148,6 +286,10 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
+      money:'',
+      mail : '',
+      download:'',
+      emailData : '',
       columns2: [
           {
               title: 'InvoiceID',
@@ -164,7 +306,11 @@ export default {
               title: 'Due Date',
               key: 'DueDate',
               sortable: true,
-
+              render : (h,{row}) => {
+                var date = new Date(row.DueDate); 
+                var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return date1
+              }
           },
           {
               title: 'Amount Paid',
@@ -174,13 +320,12 @@ export default {
           {
               title: 'Amount Due',
               key: 'Balance',
-              sortable: true,
-             
+              sortable: true
           },
           {
               title: 'Total Amount',
               key: 'TotalAmt',
-              sortable: true,
+              sortable: true
               
           },
           {
@@ -201,52 +346,131 @@ export default {
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading 
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make Payment'
                       },
-                    style: {
-                    },
-                    on: {
-                      click: () => {   
-                        this.makepayment(row.Id)
+                      style:{
+                        float:'left'
                       }
-                    }
-                  }, 'Payment'),
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading1
-                    },
-                    style: {
-                      margin: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(row)
+                    }, [
+                      h('img', {
+                        attrs: {
+                          src:'../../images/Payment.png'
+                        },
+                        style: {
+                          hight:'30px',
+                          weight:'30px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.makepayment(row)
+                          }
+                        }
+                      },'')
+                    ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'center'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                       h('img', {
+                        attrs: {
+                          src :'../../images/Download.png'
+                          },
+                        style: {
+                          hight:'30px',
+                          weight:'30px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.createPDF(row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send mail'
+                      },
+                      style:{
+                        float:'right'
+                      }
+                    }, [
+                       h('img', {
+                         props: {
+                           src :'../../images/Mail.png'
+                          },
+                          style: {
+                            hight:'30px',
+                            weight:'30px'
+                          },
+                          on: {
+                            click: () => {
+                              this.sendemail(row)
+                            }
+                          }
+                        }, '')
+                    ])  
                 ])
               }else{
                 return h('div', [
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      //loading: params.row.loading1
-                    },
-                    style: {
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(row)
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('img', {
+                        attrs: {
+                          src :'../../images/Mail.png'
+                        },
+                        style: {
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(row)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'right'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src :'../../images/Download.png'
+                      },
+                      style: {
+                        height:'30px',
+                        width:'30px',
+                        margin: '2px'
+                      },
+                      on: {
+                        click: () => {   
+                          this.createPDF(row)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }
             }
@@ -262,27 +486,33 @@ export default {
               title: 'Name',
               key: 'Contact',
               sortable: true,
-               render:(h,{row})=>{ return row.Contact.Name }
+              render:(h,{row})=>{ return row.Contact.Name }
           },
           {
               title: 'Date',
               key: 'Date',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ 
+  
+               var date = new Date(row.Date); 
+               var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return date1
+              }
           },
            {
-              title: 'AmountPaid',
+              title: 'Paid',
               key: 'AmountPaid',
               sortable: true
           },
           {
-              title: 'AmountDue',
+              title: 'Due',
               key: 'AmountDue',
               sortable: true
           },
           {
               title: 'Total',
               key: 'Total',
-              sortable: true
+              sortable: true  
           },
           {
               title: 'status',
@@ -296,58 +526,144 @@ export default {
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading 
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make Payment'
                       },
-                    style: {
-                    },
-                    on: {
-                      click: () => {   
-                        this.makepayment(params.row.InvoiceID)
+                      style:{
+                        float:'left'
                       }
-                    }
-                  }, 'Payment'),
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading1
-                    },
-                    style: {
-                      margin: '2px'
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(params)
+                    }, [
+                        h('img', {
+                          attrs: {
+                            src:"src/images/Payment.png"
+                          },
+                          style: {
+                            hight:'30px',
+                            width:'30px',
+                            margin: '2px'
+                          },
+                          on: {
+                            click: () => {   
+                              this.makepayment(params.row)
+                            }
+                        }
+                      }, '')
+                    ]),
+                   h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('img', {
+                       attrs: {
+                          src: 'src/images/Mail.png'
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(params)
+                          }
+                        }
+                      },'')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'right'
+                      }
+                    }, [
+                       h('img', {
+                       attrs: {
+                          src: 'src/images/Download.png'
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {   
+                            this.createPDF(params)
+                          }
+                        }
+                      }, '')
+                  ])
                 ])
               }else{
                 return h('div', [
-                   h('Button', {
-                   props: {
-                      type: 'primary',
-                      size: 'small',
-                      loading: params.row.loading1
-                    },
-                    style: {
-                    },
-                    on: {
-                      click: () => {
-                        this.sendemail(params)
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center'
                       }
-                    }
-                  }, 'Email')
+                    }, [
+                      h('img', {
+                       attrs: {
+                          src: 'src/images/Mail.png'
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(params)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'right'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: 'src/images/Download.png'
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.createPDF(params)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }
             }
           }
       ],
+
+       
+      settingIdForPayment : '',
       data6: [],
+      emailIdTobeSent : '',
       page: 1,
       pageSize: pageSize,
       list: [],
@@ -522,66 +838,117 @@ export default {
               this.page = p
               this.list = await this.mockTableData1(p,pageSize);
     },
+    createPDF (params) {
+      this.emailData = params;
+      var self = this;
+      // var doc = new jsPDF();
+      setTimeout(function(){ 
+        console.log(self.$refs.email1.innerHTML)
+          var filename = "invoice.html";
+          var data = self.$refs.email1.innerHTML;
+          var blob = new Blob([data], {
+              type: "text/html;charset=utf-8"
+          });
+          saveAs(blob, filename);
+              // doc.fromHTML(self.$refs.foo2.innerHTML, 15, 15,{},function () {
+        //     doc.save('Test.pdf');
+        // });
+       }, 2000);
+      // doc.fromHTML(this.$refs.foo2.innerHTML);
+    },
+
     async makepayment(params){
       console.log(params)
-      this.$router.push('/checkout/' + params)
+      this.$store.state.invoiceData = params;
+      this.$store.state.settingId = this.settingIdForPayment
+      console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+       this.$router.push('/checkout/' + params.InvoiceID)
     },
     async sendemail(params){
-      var self = this
-      this.list[params.index].loading1 = true
-      console.log("inside send mail", params)
-      var responseData
-        await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-          params: {
-            Invoiceid:params.row.InvoiceID
-          }
-        })
-        .then(function (response) {
-          console.log("response data", response)
-          responseData = response.data
-        })
-        .catch(function (error) {
-          console.log("error",error);
-        });
-      console.log("send mail responsedata", responseData)
-      var MjmlTemplate
-      await $.get( "mailtemplate.txt", function( data ) {
-        MjmlTemplate = data
-      });
+      this.$Loading.start();
+      this.emailData = params;
+       var self = this;
+       this.$Modal.confirm({
+                    okText: 'OK',
+                    cancelText: 'Cancel',
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: this.value,
+                                autofocus: true,
+                                
+                                placeholder: 'Please enter email Id...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    
+                                    this.emailIdTobeSent = val;
+                                }
+                            }
+                        })
+                    },
+                    onOk: ()=>{
+                               console.log(self.$refs.email1.innerHTML)
+                                    
+                                    let myData = {
+                                          "to": self.emailIdTobeSent,
+                                          "from": "obsoftcare@gmail.com",
+                                          "subject": "email invoice",
+                                          "body": self.$refs.email1.innerHTML
+                                        }
+                                        myData = JSON.stringify(myData)
+                                        axios({
+                                          method: 'post',
+                                          url:  'http://api.flowz.com/vmailmicro/sendEmail',
+                                          data: myData,
+                                          headers: {
+                                            'authorization':  Cookies.get('auth_token')
+                                          }
+                                          }).then(function (response) {
+                                            console.log(response);
+                                            self.$Message.success(response.data.success);
+                                            self.list[params.index].loading1 = false
+                                          })
+                                          .catch(function (error) {
+                                            self.$Message.success("email send failed , Please try again later");
+                                            console.log(error);
+                                          });
+                    }
+                })
+      // this.list[params.index].loading1 = true
+      // console.log("inside send mail", params)
+      // var responseData
+      //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
+      //     params: {
+      //       Invoiceid:params.row.InvoiceID
+      //     }
+      //   })
+      //   .then(function (response) {
+      //     console.log("response data", response)
+      //     responseData = response.data
+      //   })
+      //   .catch(function (error) {
+      //     console.log("error",error);
+      //   });
+      // console.log("send mail responsedata", responseData)
+      // var MjmlTemplate
+      // await $.get( "mailtemplate.txt", function( data ) {
+      //   MjmlTemplate = data
+      // });
       
-      var template = Handlebars.compile(MjmlTemplate); 
-      console.log("template", template)
-       var context = {
-          invoice : responseData
-        }
-      const mjml = template(context);
-      const html1 = mjml2html(mjml);
-       let myData = {
-            "to": "npaul@officebrain.com",
-            "from": "kdalsania@officebrain.com",
-            "subject": "email invoice",
-            "body": html1.html
-          }
-          myData = JSON.stringify(myData)
-          axios({
-            method: 'post',
-            url:  'http://api.flowz.com/vmailmicro/sendEmail',
-            data: myData,
-            headers: {
-              'authorization':  Cookies.get('auth_token')
-            }
-            }).then(function (response) {
-              console.log(response);
-              self.$Message.success(response.data.success);
-              self.list[params.index].loading1 = false
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      // var template = Handlebars.compile(MjmlTemplate); 
+      // console.log("template", template)
+      //  var context = {
+      //     invoice : responseData
+      //   }
+      // const mjml = template(context);
+      // const html1 = mjml2html(mjml);
+      
     },
     async tabClicked(data){
       console.log(data)
       let settingId = this.tabPanes[data].id
+      this.settingIdForPayment = settingId;
       this.getInvoiceBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
@@ -643,12 +1010,29 @@ export default {
       .then(function (response) {
         console.log("response------>iuy",response);
         self.spinShow = false;
-        self.tabPanes = response.data.data;
-        $('.preload').css("display","none")
-        let settingId = self.tabPanes[0].id
-        self.getInvoiceBySettingId(settingId)
+        if (response.data.data.length != 0)
+        {
+          self.tabPanes = response.data.data;
+          $('.preload').css("display","none")
+          let settingId = self.tabPanes[0].id;
+          self.settingIdForPayment = self.tabPanes[0].id;
+          self.getInvoiceBySettingId(settingId)
+        }else
+        {
+            self.$Modal.warning({
+            title: 'No Configuration available',
+            okText : "Go to Settings",
+            content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+            onOk: () => {
+                  self.$router.push({
+                      name: 'newsettings'
+                  })
+              }
+            });
+        }
       })
       .catch(function (error) {
+        
         console.log("error",error);
         self.spinShow = false;
       });
@@ -657,7 +1041,7 @@ export default {
   },
   mounted() {
     let self = this;
-    
+    this.$store.state.invoiceData = "";
     //  $('.maindiv').change(async function() {
     //   await self.changeData();
     // }); 

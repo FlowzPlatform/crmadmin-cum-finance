@@ -56,13 +56,13 @@
                 <Row>
                     
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <Select v-model="config" clearable style="width:200px" placeholder="Select Config" on-change="selectChange">
-                            <Option v-for="item in mData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        <Select v-model="config" clearable style="width:200px;float: right;" placeholder="Select Config" >
+                            <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                         </Select>
-                        <Button type="primary" @click="selectChange">Apply</Button>
+                        <!-- <Button type="primary" @click="selectChange">Apply</Button> -->
                     </col>
                     <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd" placement="bottom-end left-start" placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
+                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd"  placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
                         <Button type="primary" @click="dateval">Apply</Button>
                     </col>
                 </Row>
@@ -147,6 +147,7 @@
                 </draggable>
             </Col>
         </Row>
+        
     </div>
 </template>
 
@@ -166,9 +167,14 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
+const accounting = require('accounting-js');
+
+import configService from '@/config/customConfig.js';
+let serviceUrl = configService.default.serviceUrl;
 
 export default {
     name: 'home',
+    
     components: {
         homeMap,
         dataSourcePie,
@@ -183,6 +189,7 @@ export default {
     },
     data () {
         return {
+            
             name : '',
             daterange1 : '',
             config : '',
@@ -198,30 +205,30 @@ export default {
             dateoptions: {
                 shortcuts: [
                     {
-                        text: 'A month',
+                        text: 'Last month',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
                             this.daterange1 = s
                             return [start, end];
                         }
                     },
                     {
-                        text: '3 month',
+                        text: 'Last 3 months',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 91);
                             return [start, end];
                         }
                     },
                     {
-                        text: '6 month',
+                        text: 'Last 6 months',
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 184);
                             return [start, end];
                         }
                     }
@@ -248,7 +255,7 @@ export default {
                 }, 200);
                 this.showAddNewTodo = false;
             } else {
-                this.$Message.error('请输入待办事项内容');
+                this.$Message.error('error');
             }
         },
         cancelAdd () {
@@ -256,8 +263,10 @@ export default {
             this.newToDoItemValue = '';
         },
         async ChartFun(chart,date1,date2,settingId) {
+            this.$Loading.start()
+            let self = this;
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : chart,
                     date1 : date1,
@@ -271,10 +280,20 @@ export default {
             .then(function (response) {
                 chartdata = response.data[0].data;
                 // chartdata.reverse();
+                self.$Loading.finish()
                 console.log("chart data",chartdata)
             })
             .catch(function (error) {
                 console.log("error",error);
+                self.$Loading.error()
+
+                    
+                //     Cookies.remove('auth_token') 
+                //     self.$Message.error('Auth Error!');
+                //     self.$store.commit('logout', self); 
+                //     self.$router.push({
+                //     name: 'login'
+                // })
             });
             return chartdata
         },
@@ -324,7 +343,7 @@ export default {
          //Pie Chart
         async PieChartFun(date1,date2,settingId) {
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'pie',
                     date1 : date1,
@@ -428,9 +447,10 @@ export default {
         //Cashflow
         async waterfall(date1,date2,settingId) {
             var chartdata;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'cashflow',
+                    status : 'Paid',
                     date1 : date1,
                     date2 : date2,
                     settingId : settingId
@@ -441,7 +461,6 @@ export default {
             })
             .then(function (response) {
                 chartdata = response.data[0].data;
-                // chartdata.reverse();
                 console.log("waterfall chart data",chartdata)
             })
             .catch(function (error) {
@@ -466,7 +485,19 @@ export default {
                     type : 'shadow'
                 },
                 formatter: function (params) {
-                    return params[0].value + params[1].value
+                    var tar;
+                    if (params[1].value != '-') {
+                        tar = params[1];
+                    }
+                    else {
+                        tar = params[0];
+                    }
+                    return accounting.formatMoney(tar.value, {
+                        symbol : '',
+                        precision : 2,
+                        thousand  : ''
+                    })
+
                 }
             },
             legend: {
@@ -529,8 +560,14 @@ export default {
 
             for (var i = 0; i<data_arr.length; i++ ) {
                 var diff = data_arr[i] - data_arr[i-1];
+                diff = accounting.formatMoney(diff, {
+                    symbol : '',
+                    precision : 2,
+                    thousand  : ''
+                });
+
                 if (i == 0) {
-                    data1.push(0);
+                    data1.push(0.00);
                     data2.push(data_arr[i]);
                     data3.push('-');
                 }
@@ -542,7 +579,11 @@ export default {
                 else if (diff < 0) {
                     data1.push(data_arr[i]);
                     data2.push('-');
-                    data3.push(data_arr[i-1] - data_arr[i]);
+                    data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
+                    symbol : '',
+                    precision : 2,
+                    thousand  : ''
+                }));
                 }
                 else {
                     data1.push(data_arr[i]);
@@ -560,7 +601,7 @@ export default {
 
         async totalAmt(date1,date2,settingId) {
             var statsData;
-            await axios.get("http://localhost:3037/invoice", {
+            await axios.get(serviceUrl+"invoice", {
                 params: {
                     stats : true,
                     date1 : date1,
@@ -586,52 +627,80 @@ export default {
             this.count.totalInv = statsData[4].value
         },
 
-        async init(settingId) {
+         init(settingId) {
+             
+            let self = this;
             this.name = Cookies.get('user');
             var resp;
-            await axios.get("http://localhost:3037/settings", {
+            axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
-                    settingId : settingId
+                    
                 },
                 headers: {
                     Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
-               resp = response.data.data;
-               console.log("config data list",resp)
+               console.log("config data list",response)
+               
+               if (response.data.data.length != 0){
+                   self.mData = response.data.data;
+                    self.config = self.mData[0].id;
+                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
+                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'))
+               }else{
+                   self.$Modal.warning({
+                    title: 'No Configuration available',
+                    okText : "Go to Settings",
+                    content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+                    onOk: () => {
+                        self.$router.push({
+                            name: 'newsettings'
+                        })
+                    }
+                });
+               }
+                
             })
             .catch(function (error) {
-                console.log("error",error);
+                console.log(error)
+                self.disabled = false;
+                //Cookies.remove('auth_token') 
+                self.$Message.error('Auth Error!');
+                //self.$store.commit('logout', self); 
+                // self.$router.push({
+                //     name: 'login'
+                // })
             });
-            this.configList = resp
-            this.mData = _.map(resp, (d) => {
-                return {label: d.configName, value: d.id}
-            })
+            
+            
         },
 
         dateval() {
             // console.log("daterange",this.daterange1, typeof this.daterange1)
             // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
-            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
-            // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
-        }, 
-
-        selectChange() {
-            console.log("select change")
-            alert(this.config)
             this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
             this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
             this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
             this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
             this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
-        },
+            // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
+        }, 
+
+        // selectChange() {
+        //     console.log("select change")
+        //     alert(this.config)
+        //     this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+        //     this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
+        // },
 
         async getDate(days) {
           	const end = new Date();
@@ -649,11 +718,7 @@ export default {
         console.log("daterange1",this.daterange1[0])
         // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
         // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
-        this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD')),
-        this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'))
+        
         this.init()
     }
 
