@@ -5,7 +5,7 @@ export const loginRouter = {
     path: '/login',
     name: 'login',
     meta: {
-        title: 'Login - 登录'
+        title: 'Login'
     },
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
@@ -14,7 +14,7 @@ export const page404 = {
     path: '/*',
     name: 'error-404',
     meta: {
-        title: '404-页面不存在'
+        title: '404-Not Found'
     },
     component: resolve => { require(['@/views/error-page/404.vue'], resolve); }
 };
@@ -22,16 +22,16 @@ export const page404 = {
 export const page403 = {
     path: '/403',
     meta: {
-        title: '403-权限不足'
+        title: '403-forbidden'
     },
-    name: 'error-403',
+    name: 'error-403 Unauthorized request',
     component: resolve => { require(['@//views/error-page/403.vue'], resolve); }
 };
 
 export const page500 = {
     path: '/500',
     meta: {
-        title: '500-服务端错误'
+        title: '500-general Error'
     },
     name: 'error-500',
     component: resolve => { require(['@/views/error-page/500.vue'], resolve); }
@@ -56,18 +56,19 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
-        { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
-        { path: 'order/:order_id', title: '订单详情', name: 'order-info', component: resolve => { require(['@/views/advanced-router/component/order-info.vue'], resolve); } }, // 用于展示动态路由
-        { path: 'shopping', title: '购物详情', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
-        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
+        { path: 'home', title: 'home', name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+        { path: 'ownspace', title: 'Own Space', name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
+        { path: 'order/:order_id', title: 'order', name: 'order-info', component: resolve => { require(['@/views/advanced-router/component/order-info.vue'], resolve); } }, // 用于展示动态路由
+        { path: 'shopping', title: 'Shopping', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
+        { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
-        { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } }
+        { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
+        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'editcrm',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
     ]
 };
 
-// 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
+// Main
 export const appRouter = [
     // {
     //     path: '/access',
