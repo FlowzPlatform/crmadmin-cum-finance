@@ -292,8 +292,8 @@ export default {
       emailData : '',
       columns2: [
           {
-              title: 'InvoiceID',
-              key: 'Id',
+              title: 'Invoice',
+              key: 'InvoiceNumber',
               sortable: true
           },
           {
@@ -478,8 +478,8 @@ export default {
       ],
        columns1: [
           {
-              title: 'InvoiceID',
-              key: 'InvoiceID',
+              title: 'Invoice',
+              key: 'InvoiceNumber',
               sortable: true
           },
           {
