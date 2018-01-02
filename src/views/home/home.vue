@@ -628,7 +628,20 @@ export default {
         },
 
          init(settingId) {
-             
+            
+             if(Cookies.get('auth_token')){
+                axios({
+                            method: 'post',
+                            url: configService.default.userDetail,
+                            headers: {'Authorization': Cookies.get('auth_token')}
+                        })
+                        .then(function(result) {
+                            console.log(">>>>>>>>>>>>>>>> " , result)
+                             Cookies.set('user',  result.data.data.email);
+                              
+                        })
+
+            }
             let self = this;
             this.name = Cookies.get('user');
             var resp;
