@@ -18,7 +18,7 @@
                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
-        <FormItem label="Contact Name" prop="name">
+        <FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
              <Select v-model="formItem.name" style="width:100%">
                <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
@@ -173,6 +173,7 @@ export default {
     },
     configChange(data){
       console.log(data)
+      $('#CustomerName').css("display","block")
       this.customerData(data);
     },
     async settingData () {
