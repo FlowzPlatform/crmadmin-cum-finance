@@ -110,6 +110,9 @@
                   <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
           </div>
+           <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
+          
       </TabPane>
     </Tabs>  
   </div>  
@@ -293,7 +296,7 @@ export default {
       columns2: [
           {
               title: 'Invoice',
-              key: 'InvoiceNumber',
+              key: 'Id',
               sortable: true
           },
           {
@@ -833,6 +836,19 @@ export default {
     //         }
           
     // },
+    exportData (type) {
+                if (type === 1) {
+                  console.log(this.$refs);
+                    this.$refs.table[0].exportCsv({
+                        filename: 'The original data'
+                    });
+                } else if (type === 2) {
+                    this.$refs.table[0].exportCsv({
+                        filename: 'Sorting and filtering data',
+                        original: false
+                    });
+                } 
+    },
     async mockTableData1 (p,size) {
               this.len = this.data6.length
               return this.data6.slice((p - 1) * size, p * size);
