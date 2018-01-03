@@ -267,8 +267,10 @@ export default {
             }
             let exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
             console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",this.settingId)
+            console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
             let param1 = {
             settingId:this.settingId,
+            user:Cookies.get('user'),
             gateway:this.payDetail.gateway,
             id: paymentInvoiceId,
             amount:this.payDetail.amount,
