@@ -1,5 +1,7 @@
 <style lang="less">
     @import "./main.less";
+
+     
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -31,7 +33,9 @@
                 </div>
                 <div class="header-avator-con">
                     <Tooltip placement="bottom">
-                         <Icon @click="goToSettings" type="gear-b" size="large"></Icon>
+                         <div @click="goToSettings"><Icon type="gear-b" size="large" style="font-size: 23px;
+                            padding-top: 5px;
+                            cursor: pointer;"></Icon></div>
                          <div slot="content">
                             Settings
                         </div>
