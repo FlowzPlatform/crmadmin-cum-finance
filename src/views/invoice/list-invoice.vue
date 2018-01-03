@@ -360,8 +360,9 @@ export default {
                           src:this.money
                         },
                         style: {
-                          hight:'30px',
-                          weight:'30px'
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {   
@@ -384,8 +385,9 @@ export default {
                           src :this.download
                           },
                         style: {
-                          hight:'30px',
-                          weight:'30px'
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {   
@@ -394,30 +396,31 @@ export default {
                         }
                       }, '')
                     ]),
-                h('Tooltip', {
+               h('Tooltip', {
                       props: {
                         placement: 'top',
-                        content: 'Send mail'
+                        content: 'Send Mail'
                       },
                       style:{
-                        float:'right'
+                        float:'center'
                       }
                     }, [
-                       h('img', {
-                         props: {
-                           src :this.mail
-                          },
-                          style: {
-                            hight:'30px',
-                            weight:'30px'
-                          },
-                          on: {
-                            click: () => {
-                              this.sendemail(row)
-                            }
+                      h('img', {
+                        attrs: {
+                          src : this.mail
+                        },
+                        style: {
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(row)
                           }
-                        }, '')
-                    ])  
+                        }
+                      }, '')
+                    ])
                 ])
               }else{
                 return h('div', [
@@ -841,20 +844,31 @@ export default {
     createPDF (params) {
       this.emailData = params;
       var self = this;
-      // var doc = new jsPDF();
       setTimeout(function(){ 
-        console.log(self.$refs.email1.innerHTML)
-          var filename = "invoice.html";
-          var data = self.$refs.email1.innerHTML;
-          var blob = new Blob([data], {
-              type: "text/html;charset=utf-8"
-          });
-          saveAs(blob, filename);
-              // doc.fromHTML(self.$refs.foo2.innerHTML, 15, 15,{},function () {
-        //     doc.save('Test.pdf');
-        // });
+        self.$Modal.confirm({
+          title: '',
+          content: self.$refs.email1.innerHTML,
+          width: 1000,
+          okText: 'Download',
+          onOk: () => {
+            var filename = "invoice.html";
+            var data = self.$refs.email1.innerHTML;
+            var blob = new Blob([data], {
+                type: "text/html;charset=utf-8"
+            });
+            saveAs(blob, filename);
+          },
+          onCancel: () => {
+          }
+        })
+        // console.log(self.$refs.email1.innerHTML)
+        //   var filename = "invoice.html";
+        //   var data = self.$refs.email1.innerHTML;
+        //   var blob = new Blob([data], {
+        //       type: "text/html;charset=utf-8"
+        //   });
+        //   saveAs(blob, filename);
        }, 2000);
-      // doc.fromHTML(this.$refs.foo2.innerHTML);
     },
 
     async makepayment(params){
@@ -952,6 +966,7 @@ export default {
       this.getInvoiceBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
+      console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
       this.$Loading.start();
       this.data6 = [];
       let self = this;
@@ -1078,5 +1093,8 @@ export default {
 tbody.ivu-table-tbody tr.ivu-table-row td.ivu-table-column-center .ivu-table-cell > div > div {
     margin: 0 9px;
     float: none !important;
+}
+.ivu-icon.ivu-icon-help-circled{
+    display: none;
 }
 </style>
