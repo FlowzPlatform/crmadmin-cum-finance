@@ -1,155 +1,154 @@
 <template>
-<div class="container-fluid">
-  <div class="form-group row">
-      <div class="panel col-sm-12" id="c16894">
-          <label>New CRM case</label>
-      </div>
-      <div class="row">
-          <div class="col-sm-6">
-              <div class="col-sm-12">
-                  <div class="panel" id="c16913">
-                      <p id="c16917"><i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
-                          <label
+	<div class="container-fluid">
+		<div class="form-group row">
+			<div class="panel col-sm-12" id="c16894">
+				<label>New CRM case</label>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="col-sm-12">
+						<div class="panel" id="c16913">
+							<p id="c16917">
+								<i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
+								<label
                           id="c16925">Basic attributes:</label>
-                      </p>
-                      <p>
-                      	<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
-                          <!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
-                      </p>
-                      <textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
-                      <!-- <p id="c16943"> -->
-                      	<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/"
+							</p>
+							<p>
+								<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
+								<!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
+							</p>
+							<textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
+							<!-- <p id="c16943"> -->
+							<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/"
                       	style="padding-top:15px">
-										        <div style="padding: 20px 0">
-										            <icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
-										            <p>Click or drag files here to upload</p>
-										        </div>
-										    </upload>
-                          <!-- <input id="c16947" name="myFile" type="file" /> -->
-                      <!-- </p> -->
-                  </div>
-              </div>
-          </div>
-          <div class="col-sm-6">
-              <div class="col-sm-12">
-                  <div class="panel" id="c16961">
-                      <div>
-                          <p id="c16969"><i class="fa fa-users" id="c16973" aria-hidden="true"></i>
-                              <label id="c16977">Add Related Contact:</label>
-                          </p>
-                      </div>
-                      <div id="c16980">
-                          <p>
-                              <label class="col-xs-3 autoCompleteDropdown" id="c16988">Customer</label>
-                              <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable>
-							 </auto-complete>
-								<!-- <i-select v-model="finaldata.cname" style="width:100px">
-								<i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option>
-							</i-select> -->
-                          </p>
-                      </div>
-                  </div>
-                  <div class="panel" id="c17000">
-                      <div>
-                          <p id="c17008"><i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
-                              <label
+								<div style="padding: 20px 0">
+									<icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
+									<p>Click or drag files here to upload</p>
+								</div>
+							</upload>
+							<!-- <input id="c16947" name="myFile" type="file" /> -->
+							<!-- </p> -->
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-sm-12">
+						<div class="panel" id="c16961">
+							<div>
+								<p id="c16969">
+									<i class="fa fa-users" id="c16973" aria-hidden="true"></i>
+									<label id="c16977">Add Related Contact:</label>
+								</p>
+							</div>
+							<div id="c16980">
+								<p>
+									<label class="col-xs-3 autoCompleteDropdown" id="c16988">Customer</label>
+									<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
+									<!-- <i-select v-model="finaldata.cname" style="width:100px"><i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option></i-select> -->
+								</p>
+							</div>
+						</div>
+						<div class="panel" id="c17000">
+							<div>
+								<p id="c17008">
+									<i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
+									<label
                               id="c17016">Additional attributes:</label>
-                          </p>
-                      </div>
-                      <div id="c17019">
-                          <p>
-                              <label class="col-xs-3" id="c17027">Project</label>
-                              <i-select v-model="finaldata.project" style="width:100px" filterable>
-													      <i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17043">Status</label>
-                              <i-select v-model="finaldata.status" style="width:100px">
-													      <i-option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17059">Assignee</label>
-                              <i-select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
-													      <i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17075">Product line</label>
-                              <i-select v-model="finaldata.product_line" style="width:100px">
-													      <i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17091">Contract date</label>
-                              <!-- <form-item prop="date"> -->
-				                        <date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:60% !important"></date-picker>
-				                    	<!-- </form-item> -->
-                              <!-- <input class="form-control" type="date" id="contractdate"
+								</p>
+							</div>
+							<div id="c17019">
+								<p>
+									<label class="col-xs-3" id="c17027">Project</label>
+									<i-select v-model="finaldata.project" style="width:100px" filterable>
+										<i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
+									</i-select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17043">Status</label>
+									<i-select v-model="finaldata.status" style="width:100px">
+										<i-option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</i-option>
+									</i-select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17059">Assignee</label>
+									<i-select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
+										<i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
+									</i-select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17075">Product line</label>
+									<i-select v-model="finaldata.product_line" style="width:100px">
+										<i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
+									</i-select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17091">Contract date</label>
+									<!-- <el-date-picker v-model="finaldata.contractdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
+									<!-- <form-item prop="date"> -->
+									<date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:60% !important"></date-picker>
+									<!-- </form-item> -->
+									<!-- <input class="form-control" type="date" id="contractdate"
                               /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17104">Next Action</label>
-                              <date-picker type="date" placeholder="Select date" v-model="finaldata.nextdate" style="width:60% !important"></date-picker>
-                              <!-- <input class="form-control" type="date" id="nextdate"
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17104">Next Action</label>
+									<!-- <el-date-picker v-model="finaldata.nextdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
+									<date-picker type="date" placeholder="Select date" v-model="finaldata.nextdate" style="width:60% !important"></date-picker>
+									<!-- <input class="form-control" type="date" id="nextdate"
                               /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17117">Price</label>
-                              <Input v-model="finaldata.priceinput" placeholder="Enter Price..." style="width: 30%"></Input>
-                              
-							  <Input v-model="finaldata.price" readonly style="width: 30%"></Input>
-                              <!-- <i-select v-model="finaldata.price" style="width:30% !important">
-													      <i-option v-for="item in crmdata.currency" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-													    </i-select>                                     -->
-													</p>
-                          <p>
-                              <label class="col-xs-3" id="c17139">Email</label>
-                              <Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%"></Input>
-                              <!-- <input class="form-control" type="text" id="email" /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17152">Phone</label>
-                              <Input v-model="finaldata.phone" placeholder="Enter Phone..." style="width: 60%"></Input>
-                              <!-- <input class="form-control" type="text" id="phone" /> -->
-                          </p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <span class="panel" id="c17165">
-            <button class="form-control" id="create" @click="postdata()">Create</button>
-            <!-- <button class="form-control" id="createandcontinue">Create and Continue</button> -->
-          </span>
-      </div>
-  </div>
-</div>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17117">Price</label>
+									<Input v-model="finaldata.priceinput" placeholder="Enter Price..." style="width: 30%"></Input>
+									<Input v-model="finaldata.price" readonly style="width: 30%"></Input>
+									<!-- <i-select v-model="finaldata.price" style="width:30% !important"><i-option v-for="item in crmdata.currency" :value="item.name" :key="item.name">{{ item.name }}</i-option></i-select>                                     -->
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17139">Email</label>
+									<Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%" type="email"></Input>
+									<!-- <input class="form-control" type="text" id="email" /> -->
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17152">Phone</label>
+									<Input v-model="finaldata.phone" placeholder="Enter Phone..." style="width: 60%"></Input>
+									<!-- <input class="form-control" type="text" id="phone" /> -->
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<span class="panel" id="c17165">
+					<button class="form-control" id="create" @click="postdata()">Create</button>
+					<!-- <button class="form-control" id="createandcontinue">Create and Continue</button> -->
+				</span>
+			</div>
+		</div>
+	</div>
 </template>
 <script>
-import config from '../../config/customConfig.js'
-import Cookies from 'js-cookie';
-var nextdate;
-var priceinput;
-var price;
-var email;
-var phone;
-var serviceUrl = config.default.serviceUrl;
+	import config from '../../config/customConfig.js'
+	import Cookies from 'js-cookie';
+	var nextdate;
+	var priceinput;
+	var price;
+	var email;
+	var phone;
+	var serviceUrl = config.default.serviceUrl;
 
-var apiurl = config.default.serviceUrl + "contacts/";
-var databaseurl = config.default.serviceUrl + "crm-service/";
-var result;
-var result1;
-var name;
-var cname;
-var project;
-var status;
-var assignee;
-var product_line;
-var contractdate;
-var momapi = config.default.projecturl + "project"
-var databasepost = config.default.serviceUrl + "crm-case/";
-var assigneeapi = config.default.assigneeapi;
+	var apiurl = config.default.serviceUrl + "contacts/";
+	var databaseurl = config.default.serviceUrl + "crm-service/";
+	var result;
+	var result1;
+	var name;
+	var cname;
+	var project;
+	var status;
+	var assignee;
+	var product_line;
+	var contractdate;
+	var momapi = config.default.projecturl + "project"
+	var databasepost = config.default.serviceUrl + "crm-case/";
+	var assigneeapi = config.default.assigneeapi;
 
 	export default {
     name: 'newcrm',
@@ -159,8 +158,8 @@ var assigneeapi = config.default.assigneeapi;
         crmdata: [],
         finaldata: {
         	name: '',
-			cname: '',
-        	project: '',
+					cname: '',
+		      project: '',
 					status: '',
 					assignee: [],
 					product_line: '',
@@ -171,10 +170,10 @@ var assigneeapi = config.default.assigneeapi;
 					email: '',
 					phone: '', 
         },
-		momdata: [],
-		description:'',
-        assigneedata: []
-      }
+				momdata: [],
+				description:'',
+		    assigneedata: []
+     	}
     },
     methods: {
     	async calldata() {
@@ -203,10 +202,10 @@ var assigneeapi = config.default.assigneeapi;
 					}
 				});
 	        // console.log("resp data",result);
-	        result.forEach(item => {
-						var customer = item.Name;
-						this.data.push(customer)
-					})
+	    //     result.forEach(item => {
+					// 	var customer = item.Name;
+					// 	this.data.push(customer)
+					// })
     	},
     	async dbdata() {
     		var self = this
@@ -290,6 +289,16 @@ var assigneeapi = config.default.assigneeapi;
 	}
 	body {
 	    margin: 0;
+	}
+	.ivu-date-picker-header {
+		height: 32px;
+	    line-height: 32px;
+	    text-align: center;
+	    border-bottom: 1px solid #e9eaec;
+	    width: 120% !important;
+	}
+	.ivu-picker-panel-content {
+		width: 120% !important;
 	}
 	.row {
 	    display: table;
