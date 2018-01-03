@@ -38,9 +38,12 @@
                   <label id="c22378">Project</label>
                 </div>
                 <div class="col-xs-8">
-                  <i-select v-model="finaldata.project" filterable>
+                  <Select v-model="finaldata.project" filterable>
+                    <Option v-for="(t, inx) in momdata" :value="t.value" :key="inx">{{ t.label }}</Option>
+                  </Select>
+                  <!-- <i-select v-model="finaldata.project" filterable>
                     <i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
-                  </i-select>
+                  </i-select> -->
                   <!-- <select class="form-control" id="project"><option>Select</option></select> -->
                 </div>
               </div>
@@ -65,9 +68,12 @@
                   <label id="c22394">Status</label>
                 </div>
                 <div class="col-xs-8">
-                  <i-select v-model="finaldata.status" >
+                  <Select v-model="finaldata.status">
+                    <Option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</Option>
+                  </Select>
+                  <!-- <i-select v-model="finaldata.status" >
                     <i-option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-                  </i-select>
+                  </i-select> -->
                   <!-- <select class="form-control" id="status">
                     <option>Select</option>
                   </select> -->
@@ -80,9 +86,12 @@
                   <label id="c22410">Assignee</label>
                 </div>
                 <div class="col-xs-8">
-                  <i-select v-model="finaldata.assignee"  filterable multiple>
+                  <Select v-model="finaldata.assignee" filterable multiple>
+                    <Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
+                  </Select>
+                  <!-- <i-select v-model="finaldata.assignee"  filterable multiple>
                     <i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
-                  </i-select>
+                  </i-select> -->
                   <!-- <select class="form-control" id="assignee">
                     <option>Select</option>
                   </select> -->
@@ -95,9 +104,12 @@
                   <label id="c22426">Product line</label>
                 </div>
                 <div class="col-xs-8">
-                  <i-select v-model="finaldata.product_line">
+                  <Select v-model="finaldata.product_line">
+                    <Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option>
+                  </Select>
+                  <!-- <i-select v-model="finaldata.product_line">
                     <i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
-                  </i-select>
+                  </i-select> -->
                  <!--  <select class="form-control" id="product_line">
                     <option>Select</option>
                   </select> -->
@@ -257,19 +269,14 @@
         var self = this
         var result = await (
           axios.get(databasepost  + this.$route.params.id).then(res => {
-            console.log('Response >>>>>>>>>>>>>>> ', res)
+            console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
             return res.data
           }).catch(err => {
             console.log('Error >>>>>>>>>>>>>>', err)
             return err
           })
           )
-        console.log('RESULT ..................', result.project)
-
-        self.momdata.push({project_name: result.project})
-        _.forEach(result.assignee, (d) => {
-          self.assigneedata.push({fullname: d})
-        })
+        console.log('RESULT ..................', result)
         self.finaldata = result
       },
       async calldata() {
@@ -318,7 +325,9 @@
           success: function (data) {
           console.log(">>>>>>>>>>>>>>> " , data)
               result1 = data;
-              self.momdata = result1;
+              self.momdata = _.map(result1, (d) => {
+                return {label: d.project_name, value: d.project_name}
+              })
           },error: function(err){
              console.log("error",err);
           }
@@ -334,7 +343,9 @@
           success: function (data) {
               result1 = data.data;
               console.log(data)
-              self.assigneedata = result1;
+              self.assigneedata = _.map(result1, (d) => {
+                return {label: d.fullname, value: d.fullname}
+              })
           },error: function(err){
              console.log("error",err);
           }
@@ -347,18 +358,27 @@
         let self = this
         let desc = CKEDITOR.instances.editor1.getData()
         self.finaldata.description = desc
-        await $.ajax({
-          type: 'PATCH',
-          url: databasepost + self.$route.params.id,
-          data: self.finaldata,
-          success: function (data1) {
-            result = data1;
-            console.log("json data******123",result);
-            self.$router.push( "list-relationship")
-          },error: function(err){
-              console.log("error",err);
-            }
-        });
+        var re = /\S+@\S+\.\S+/;
+        var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
+        var phone = phone_re.test(self.finaldata.phone);
+        var mail = re.test(self.finaldata.email);
+        
+        if (mail != false && phone != false) {
+          await $.ajax({
+            type: 'PATCH',
+            url: databasepost + self.$route.params.id,
+            data: self.finaldata,
+            success: function (data1) {
+              result = data1;
+              console.log("json data******123",result);
+              self.$router.push( "list-relationship")
+            },error: function(err){
+                console.log("error",err);
+              }
+          });
+        } else {
+          alert("Enter Valid Email Address OR Phone Number")
+        }
       },
   },
     mounted() {

@@ -59,27 +59,27 @@
 							<div id="c17019">
 								<p>
 									<label class="col-xs-3" id="c17027">Project</label>
-									<i-select v-model="finaldata.project" style="width:100px" filterable>
-										<i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
-									</i-select>
+									<Select v-model="finaldata.project" style="width:100px" filterable>
+										<Option v-for="(t, inx) in momdata" :value="t.value" :key="inx">{{ t.label }}</Option>
+									</Select>
 								</p>
 								<p>
 									<label class="col-xs-3" id="c17043">Status</label>
-									<i-select v-model="finaldata.status" style="width:100px">
-										<i-option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-									</i-select>
+									<Select v-model="finaldata.status" style="width:100px">
+										<Option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</Option>
+									</Select>
 								</p>
-								<p>
+								 <p>
 									<label class="col-xs-3" id="c17059">Assignee</label>
-									<i-select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
-										<i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
-									</i-select>
+									<Select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
+										<Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
+									</Select>
 								</p>
 								<p>
 									<label class="col-xs-3" id="c17075">Product line</label>
-									<i-select v-model="finaldata.product_line" style="width:100px">
-										<i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
-									</i-select>
+									<Select v-model="finaldata.product_line" style="width:100px">
+										<Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option>
+									</Select>
 								</p>
 								<p>
 									<label class="col-xs-3" id="c17091">Contract date</label>
@@ -128,6 +128,7 @@
 <script>
 	import config from '../../config/customConfig.js'
 	import Cookies from 'js-cookie';
+	let _ = require('lodash')
 	var nextdate;
 	var priceinput;
 	var price;
@@ -224,18 +225,30 @@
 				let desc = CKEDITOR.instances.editor1.getData()
 				this.finaldata.description = desc
 				let self = this
-				await $.ajax({
-					type: 'POST',
-				    url: databasepost,
-				    data: this.finaldata,
-				    success: function (data1) {
-				        result = data1;
-						console.log("json data******123",result);
-						self.$router.push( "list-relationship")
-				    },error: function(err){
-				       console.log("error",err);
-				    }
-				});
+				var re = /\S+@\S+\.\S+/;
+				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
+				var phone = phone_re.test(self.finaldata.phone);
+    		var mail = re.test(self.finaldata.email);
+
+    		if (mail != false && phone != false) {
+					console.log("json data******123this.finaldata",this.finaldata, mail, phone);
+    			await $.ajax({
+						type: 'POST',
+					    url: databasepost,
+					    data: this.finaldata,
+					    success: function (data1) {
+					        result = data1;
+							console.log("json data******123",result);
+							self.$router.push( "list-relationship")
+					    },error: function(err){
+					       console.log("error",err);
+					    }
+					});
+    		} else {
+    			alert("Enter Valid Email Address OR Phone Number")
+    		}
+
+				
     },
     show() {
       this.$router.push('/edit-crm/'+index)
@@ -250,7 +263,9 @@
 			    success: function (data) {
 					console.log(">>>>>>>>>>>>>>> " , data)
 			        result1 = data;
-			        self.momdata = result1;
+			        self.momdata = _.map(result1, (d) => {
+			        	return {label: d.project_name, value: d.project_name}
+			        })
 			    },error: function(err){
 			       console.log("error",err);
 			    }
@@ -266,7 +281,9 @@
 			    success: function (data) {
 			        result1 = data.data;
 			        console.log(data)
-			        self.assigneedata = result1;
+			        self.assigneedata = _.map(result1, (d) => {
+			        	return {label: d.fullname, value: d.fullname}
+			        })
 			    },error: function(err){
 			       console.log("error",err);
 			    }
