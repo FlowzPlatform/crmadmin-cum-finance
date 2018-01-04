@@ -36,11 +36,15 @@
         </Col>
         </Row>
         </FormItem>
-        <FormItem label="City" prop="city">
-            <Input v-model="formValidate.city" placeholder="Enter city"></Input>
-        </FormItem>
          <FormItem label="Country" prop="country">
-            <Input v-model="formValidate.country" placeholder="Enter country"></Input>
+            <Select v-model="formValidate.country">
+              <Option v-for="item in countryList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+        </FormItem>
+        <FormItem label="City" prop="city">
+          <Select v-model="formValidate.city">
+              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
         </FormItem>
          <FormItem label="Postal code" prop="PostalCode">
             <Input v-model="formValidate.PostalCode" placeholder="Enter PostalCode"></Input>
@@ -96,6 +100,50 @@ Vue.use(VueWidgets);
                   country: '',
                   PostalCode: ''
               },
+              cityList: [
+                    {
+                        value: 'New York',
+                        label: 'New York'
+                    },
+                    {
+                        value: 'London',
+                        label: 'London'
+                    },
+                    {
+                        value: 'Sydney',
+                        label: 'Sydney'
+                    },
+                    {
+                        value: 'Ottawa',
+                        label: 'Ottawa'
+                    },
+                    {
+                        value: 'Paris',
+                        label: 'Paris'
+                    },
+                    {
+                        value: 'Canberra',
+                        label: 'Canberra'
+                    }
+                ],
+                countryList : [
+                    {
+                      value: 'china',
+                      label: 'china'
+                    },
+                    {
+                      value:'india',
+                      label: 'india'
+                    },
+                    {
+                      value:'indonesia',
+                      label: 'indonesia'
+                    },
+                    {
+                      value:'Brazil',
+                      label: 'Brazil'
+                    }
+                ],
               configs:[],
               ruleValidate: {
                   name: [

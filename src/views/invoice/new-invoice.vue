@@ -18,7 +18,7 @@
                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
-        <FormItem label="Contact Name" prop="name">
+        <FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
              <Select v-model="formItem.name" style="width:100%">
                <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
@@ -39,8 +39,8 @@
         <FormItem label="Unit Amount" :input-width="40">
             <Row>
               <Col span="12">
-                <FormItem prop="amount">
-                <Input v-model="formItem.amount" placeholder="Enter Amount"></Input>
+                <FormItem prop="amount1">
+                <Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
                 </FormItem>
               </Col>
               <Col span="12">
@@ -88,7 +88,8 @@ export default {
         config: '',
         description: '',
         qty: '',
-        amount: '',
+        amount:'',
+        amount1: '',
         selectamount: '',
         selectProject: ''
       },
@@ -117,7 +118,7 @@ export default {
               { required: true, message: 'Quantity cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
-          amount: [
+          amount1: [
               { required: true, message: 'Amount cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
@@ -173,6 +174,7 @@ export default {
     },
     configChange(data){
       console.log(data)
+      $('#CustomerName').css("display","block")
       this.customerData(data);
     },
     async settingData () {
@@ -248,7 +250,7 @@ export default {
     },
     async newInvoice () {
       let self = this
-      this.formItem.amount = parseInt(this.formItem.amount)
+      this.formItem.amount = parseInt(this.formItem.amount1)
       let postData = {
         // domain: this.formItem.domain,
         settingId : this.formItem.configuration,

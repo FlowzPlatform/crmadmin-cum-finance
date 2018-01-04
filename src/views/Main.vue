@@ -1,5 +1,7 @@
 <style lang="less">
     @import "./main.less";
+
+     
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -30,25 +32,41 @@
                     </div>
                 </div>
                 <div class="header-avator-con">
-                    <span @click="goToSettings"><Icon type="gear-b" size="medium"></Icon></span>
+                    <Tooltip placement="bottom">
+                         <div @click="goToSettings"><Icon type="gear-b" size="large" style="font-size: 23px;
+                            padding-top: 5px;
+                            cursor: pointer;"></Icon></div>
+                         <div slot="content">
+                            Settings
+                        </div>
+                    </Tooltip>
+                    
                     <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
                     <lock-screen></lock-screen>
-                    <message-tip v-model="mesCount"></message-tip>
+                    <!-- <message-tip v-model="mesCount"></message-tip> -->
                     <theme-switch></theme-switch>
 
                     <div class="user-dropdown-menu-con">
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                             <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
-                                <a href="javascript:void(0)">
-                                    <span class="main-user-name">{{ userName }}</span>
-                                    <Icon type="arrow-down-b"></Icon>
-                                </a>
+                                <Tooltip placement="left">
+                                    <a href="javascript:void(0)">
+                                        <span class="main-user-name">
+                                            {{ userName }}
+                                            </span>
+                                        <Icon type="arrow-down-b"></Icon>
+                                    </a>
+                                    <div slot="content">
+                                        {{ userName }}
+                                    </div>
+                                </Tooltip>
+                                
                                 <DropdownMenu slot="list">
-                                    <DropdownItem name="ownSpace">Personel Center</DropdownItem>
+                                    <!-- <DropdownItem name="ownSpace">Personel Center</DropdownItem> -->
                                     <DropdownItem name="loginout" divided>Sign Out</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
-                            <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                            <!-- <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar> -->
                         </Row>
                     </div>
                 </div>
@@ -123,16 +141,20 @@
         },
         methods: {
             init () {
+                let self = this;
+                
                 let pathArr = util.setCurrentPath(this, this.$route.name);
                 this.$store.commit('updateMenulist');
                 if (pathArr.length >= 2) {
                     this.$store.commit('addOpenSubmenu', pathArr[1].name);
                 }
-                this.userName = Cookies.get('user');
+                
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
                 this.checkTag(this.$route.name);
                 this.$store.commit('setMessageCount', 3);
+                setTimeout(function(){ self.userName = Cookies.get('user'); }, 1000);
+                
             },
             toggleClick () {
                 this.shrink = !this.shrink;
@@ -198,10 +220,11 @@
             }
         },
         mounted () {
+            
             this.init();
         },
         created () {
-            // 显示打开的页面的列表
+
             this.$store.commit('setOpenedList');
         }
     };

@@ -110,6 +110,9 @@
                   <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
           </div>
+           <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
+          
       </TabPane>
     </Tabs>  
   </div>  
@@ -271,9 +274,9 @@
 import config from '@/config/customConfig.js'
 import axios from 'axios'
 import jsPDF from 'jspdf'
-import money from '@/images/Payment.png'
-import mail from '@/images/Mail.png'
-import download from '@/images/Download.png'
+import money from '../../images/Payment.png'
+import mail from '../../images/Mail.png'
+import download from '../../images/Download.png'
 
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
@@ -286,13 +289,13 @@ export default {
     return {
       tabPanes : [],
       spinShow: true,
-      money:'',
-      mail : '',
-      download:'',
+      money,
+      mail,
+      download,
       emailData : '',
       columns2: [
           {
-              title: 'InvoiceID',
+              title: 'Invoice',
               key: 'Id',
               sortable: true
           },
@@ -357,11 +360,12 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src:'../../images/Payment.png'
+                          src:this.money
                         },
                         style: {
-                          hight:'30px',
-                          weight:'30px'
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {   
@@ -381,11 +385,12 @@ export default {
                     }, [
                        h('img', {
                         attrs: {
-                          src :'../../images/Download.png'
+                          src :this.download
                           },
                         style: {
-                          hight:'30px',
-                          weight:'30px'
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
                         },
                         on: {
                           click: () => {   
@@ -394,30 +399,31 @@ export default {
                         }
                       }, '')
                     ]),
-                h('Tooltip', {
+               h('Tooltip', {
                       props: {
                         placement: 'top',
-                        content: 'Send mail'
+                        content: 'Send Mail'
                       },
                       style:{
-                        float:'right'
+                        float:'center'
                       }
                     }, [
-                       h('img', {
-                         props: {
-                           src :'../../images/Mail.png'
-                          },
-                          style: {
-                            hight:'30px',
-                            weight:'30px'
-                          },
-                          on: {
-                            click: () => {
-                              this.sendemail(row)
-                            }
+                      h('img', {
+                        attrs: {
+                          src : this.mail
+                        },
+                        style: {
+                          height:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            this.sendemail(row)
                           }
-                        }, '')
-                    ])  
+                        }
+                      }, '')
+                    ])
                 ])
               }else{
                 return h('div', [
@@ -432,7 +438,7 @@ export default {
                     }, [
                       h('img', {
                         attrs: {
-                          src :'../../images/Mail.png'
+                          src : this.mail
                         },
                         style: {
                           height:'30px',
@@ -457,7 +463,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src :'../../images/Download.png'
+                          src : this.download
                       },
                       style: {
                         height:'30px',
@@ -478,8 +484,8 @@ export default {
       ],
        columns1: [
           {
-              title: 'InvoiceID',
-              key: 'InvoiceID',
+              title: 'Invoice',
+              key: 'InvoiceNumber',
               sortable: true
           },
           {
@@ -537,7 +543,7 @@ export default {
                     }, [
                         h('img', {
                           attrs: {
-                            src:"src/images/Payment.png"
+                            src: this.money
                           },
                           style: {
                             hight:'30px',
@@ -562,7 +568,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: 'src/images/Mail.png'
+                          src: this.mail
                         },
                         style: {
                           hight:'30px',
@@ -587,7 +593,7 @@ export default {
                     }, [
                        h('img', {
                        attrs: {
-                          src: 'src/images/Download.png'
+                          src: this.download
                         },
                         style: {
                           hight:'30px',
@@ -615,7 +621,7 @@ export default {
                     }, [
                       h('img', {
                        attrs: {
-                          src: 'src/images/Mail.png'
+                          src: this.mail
                         },
                         style: {
                           hight:'30px',
@@ -640,7 +646,7 @@ export default {
                     }, [
                     h('img', {
                       attrs: {
-                          src: 'src/images/Download.png'
+                          src: this.download
                         },
                         style: {
                           hight:'30px',
@@ -830,6 +836,19 @@ export default {
     //         }
           
     // },
+    exportData (type) {
+                if (type === 1) {
+                  console.log(this.$refs);
+                    this.$refs.table[0].exportCsv({
+                        filename: 'The original data'
+                    });
+                } else if (type === 2) {
+                    this.$refs.table[0].exportCsv({
+                        filename: 'Sorting and filtering data',
+                        original: false
+                    });
+                } 
+    },
     async mockTableData1 (p,size) {
               this.len = this.data6.length
               return this.data6.slice((p - 1) * size, p * size);
@@ -841,20 +860,31 @@ export default {
     createPDF (params) {
       this.emailData = params;
       var self = this;
-      // var doc = new jsPDF();
       setTimeout(function(){ 
-        console.log(self.$refs.email1.innerHTML)
-          var filename = "invoice.html";
-          var data = self.$refs.email1.innerHTML;
-          var blob = new Blob([data], {
-              type: "text/html;charset=utf-8"
-          });
-          saveAs(blob, filename);
-              // doc.fromHTML(self.$refs.foo2.innerHTML, 15, 15,{},function () {
-        //     doc.save('Test.pdf');
-        // });
+        self.$Modal.confirm({
+          title: '',
+          content: self.$refs.email1.innerHTML,
+          width: 1000,
+          okText: 'Download',
+          onOk: () => {
+            var filename = "invoice.html";
+            var data = self.$refs.email1.innerHTML;
+            var blob = new Blob([data], {
+                type: "text/html;charset=utf-8"
+            });
+            saveAs(blob, filename);
+          },
+          onCancel: () => {
+          }
+        })
+        // console.log(self.$refs.email1.innerHTML)
+        //   var filename = "invoice.html";
+        //   var data = self.$refs.email1.innerHTML;
+        //   var blob = new Blob([data], {
+        //       type: "text/html;charset=utf-8"
+        //   });
+        //   saveAs(blob, filename);
        }, 2000);
-      // doc.fromHTML(this.$refs.foo2.innerHTML);
     },
 
     async makepayment(params){
@@ -952,6 +982,7 @@ export default {
       this.getInvoiceBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
+      console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
       this.$Loading.start();
       this.data6 = [];
       let self = this;
@@ -1074,5 +1105,12 @@ export default {
 .ivu-spin-main {
     width: 100%;
     text-align: -webkit-center;
+}
+tbody.ivu-table-tbody tr.ivu-table-row td.ivu-table-column-center .ivu-table-cell > div > div {
+    margin: 0 9px;
+    float: none !important;
+}
+.ivu-icon.ivu-icon-help-circled{
+    display: none;
 }
 </style>

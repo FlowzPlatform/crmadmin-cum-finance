@@ -15,7 +15,7 @@ module.exports =  {
         googleSuccessCallbackUrl :                      "http://dashboard.flowz.com",
         loginWithGoogleUrl :                                "http://auth.flowz.com/auth/Gplus",  
         serviceUrl :                                            "http://api.flowz.com/crm/",
-       // serviceUrl :                                                "http://localhost:3037/",
+       //serviceUrl :                                                "http://localhost:3037/",
         projecturl :                                                       'http://api.flowz.com/mom/',
         assigneeapi :                                                           'http://api.flowz.com/user/alluserdetails/'
     }

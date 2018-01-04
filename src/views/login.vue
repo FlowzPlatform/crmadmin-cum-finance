@@ -374,7 +374,33 @@ export default {
         validateEmail(email) {
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
+        },
+        init (){
+            let self = this;
+            if(Cookies.get('auth_token')){
+                axios({
+                            method: 'post',
+                            url: config.default.userDetail,
+                            headers: {'Authorization': Cookies.get('auth_token')}
+                        })
+                        .then(function(result) {
+                            console.log(">>>>>>>>>>>>>>>> " , result)
+                             Cookies.set('user',  result.data.data.email);
+                              //Cookies.set('auth_token', result.data.logintoken);
+                        
+                            //Cookies.set('email', response.data.email);
+                            
+                            //self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                            
+                            self.$router.push({
+                                name: 'home_index'
+                            });
+                        })
+
+            }
+
         }
+
     },
     mounted() {
     //   if(Cookies.get("auth_token") != undefined){
@@ -382,6 +408,7 @@ export default {
     //                             name: 'home_index'
     //                         });
     //   }
+        this.init();
         var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
             $signupMsg = $('.signupMsg'),
