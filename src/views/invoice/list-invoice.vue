@@ -1,7 +1,7 @@
 <template>
 <div>
   
-  <!-- <div style="padding: 10px; margin: 5px; display: block;" >
+  <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <div>
   
@@ -281,8 +281,8 @@ import download from '../../images/Download.png'
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
-
 var pageSize = 10
+var settingID
 export default {
   name: 'hello',
   data () {
@@ -295,7 +295,7 @@ export default {
       emailData : '',
       columns2: [
           {
-              title: 'Invoice',
+              title: 'Invoice No.',
               key: 'Id',
               sortable: true
           },
@@ -316,17 +316,17 @@ export default {
               }
           },
           {
-              title: 'Amount Paid',
+              title: 'Paid',
               sortable: true,
               render : (h , {row}) => { return row.TotalAmt-row.Balance}
           },
           {
-              title: 'Amount Due',
+              title: 'Due',
               key: 'Balance',
               sortable: true
           },
           {
-              title: 'Total Amount',
+              title: 'Amount',
               key: 'TotalAmt',
               sortable: true
               
@@ -484,7 +484,7 @@ export default {
       ],
        columns1: [
           {
-              title: 'Invoice',
+              title: 'Invoice No.',
               key: 'InvoiceNumber',
               sortable: true
           },
@@ -495,7 +495,7 @@ export default {
               render:(h,{row})=>{ return row.Contact.Name }
           },
           {
-              title: 'Date',
+              title: 'Due Date',
               key: 'Date',
               sortable: true,
               render:(h,{row})=>{ 
@@ -521,7 +521,7 @@ export default {
               sortable: true  
           },
           {
-              title: 'status',
+              title: 'Status',
               key: 'Status',
               sortable: true
           },
@@ -729,30 +729,35 @@ export default {
     //   this.tableDataBind();
     //   this.list = await this.mockTableData1(1,pageSize);
     // },
-    // async getCustomerUrl(){
-    //   console.log("inside getCustomerUrl " )
-    //   var res
-    //     var settings = {
-    //     "async": true,
-    //     "crossDomain": true,
-    //     "url": config.default.serviceUrl + 'contacts',
-    //     "method": "GET",
-    //     "headers": {
-    //       "cache-control": "no-cache"
-    //     }
-    //   }
-    //   console.log("settings", settings)
-    //   await $.ajax(settings).done(function (response) {
-    //       res = response
-    //       console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
-    //     });
-    //       res.forEach (obj => {
-    //     var x = document.getElementById("selectCustomer");
-    //         var option = document.createElement("option");
-    //         option.text = obj.Name;
-    //         x.add(option);
-    //   })
-    // },
+    async getCustomerBySettingId(settingId){
+      console.log("inside getCustomerUrl " )
+      var res
+      console.log("settingId----------------------->",settingId)
+       await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingId
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              res = response.data[0].data
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      
+          res.forEach (obj => {
+            console.log("obj------------------->",obj);
+          var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = obj.Name;
+            x.add(option);
+          })
+    },
     // async apiData () {
     //   var resp;
     //   let self=this;
@@ -892,7 +897,11 @@ export default {
       this.$store.state.invoiceData = params;
       this.$store.state.settingId = this.settingIdForPayment
       console.log(">>>>>>>>> " , this.$store.state.invoiceData);
-       this.$router.push('/checkout/' + params.InvoiceID)
+      if(params.InvoiceID != undefined){
+        this.$router.push('/checkout/' + params.InvoiceID)
+      }else{
+        this.$router.push('/checkout/' + params.Id)
+      }
     },
     async sendemail(params){
       this.$Loading.start();
@@ -980,9 +989,11 @@ export default {
       let settingId = this.tabPanes[data].id
       this.settingIdForPayment = settingId;
       this.getInvoiceBySettingId(settingId)
+      this.getCustomerBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
       console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
+      settingID = settingId
       this.$Loading.start();
       this.data6 = [];
       let self = this;
@@ -1048,6 +1059,7 @@ export default {
           let settingId = self.tabPanes[0].id;
           self.settingIdForPayment = self.tabPanes[0].id;
           self.getInvoiceBySettingId(settingId)
+          self.getCustomerBySettingId(settingId)
         }else
         {
             self.$Modal.warning({
@@ -1076,7 +1088,6 @@ export default {
     //  $('.maindiv').change(async function() {
     //   await self.changeData();
     // }); 
-    //this.getCustomerUrl();
     //this.searchdata();
     //this.getAllInvoice()
     this.getAllSettings()

@@ -91,7 +91,7 @@
                         <div class="form-group" style="text-align:left"> AMOUNT
                             <div>
                               <FormItem prop="amount">
-                                <Input v-model="payDetail.amount" type="text" class="" readonly/> 
+                                <Input v-model="payDetail.amount" type="text"/> 
                                 </FormItem>
                                 </div>
                             </div>
@@ -159,7 +159,11 @@ import axios from 'axios'
 import Cookies from 'js-cookie';
 let responseData
 let settingID
-let paymentAmount
+let paymentInvoiceId
+let paymentAmountDue
+let paymentAmountPaid
+let paymentName
+let paymentTotal
 export default {
   name: 'checkout',
   components: {
@@ -228,29 +232,55 @@ export default {
       let settingID = this.$store.state.settingId
       
       responseData = this.$store.state.invoiceData;
-      console.log("responseData.Id",responseData.Id)
-      console.log("responseData.TotalAmt",responseData.TotalAmt) 
-      if(responseData.TotalAmt != undefined){
-        paymentAmount = responseData.TotalAmt;
-        this.payDetail.amount = paymentAmount
+      console.log("responseData------------->",responseData)
+    
+      if(responseData.Balance != undefined){
+        paymentAmountDue = responseData.Balance;
+        this.payDetail.amount = paymentAmountDue
       }
       else{
-        paymentAmount = responseData.Total
-        this.payDetail.amount = paymentAmount
+        paymentAmountDue = responseData.AmountDue
+        this.payDetail.amount = paymentAmountDue
       }
-      let paymentInvoiceId;
+
+      console.log("paymentAmountDue------------->",paymentAmountDue)
+
+      if(responseData.TotalAmt != undefined){
+        paymentTotal = responseData.TotalAmt;
+      }
+      else{
+        paymentTotal = responseData.Total
+      }
+
+      console.log("paymentTotal------------->",paymentTotal)
+
+      if(responseData.AmountPaid == undefined){
+        paymentAmountPaid = responseData.TotalAmt - responseData.Balance
+      }
+      else{
+        paymentAmountPaid = responseData.AmountPaid
+      }
+
+      console.log("paymentAmountPaid------------->",paymentAmountPaid)
+
       if(responseData.Id != undefined){
         paymentInvoiceId = responseData.Id
       }else {
         paymentInvoiceId = responseData.InvoiceID
       }
-      
-            this.payDetail.amount = responseData.AmountDue;
+
+      if(responseData.CustomerRef != undefined){
+        paymentName = responseData.CustomerRef.name
+      }
+      else{
+        paymentName = responseData.Contact.Name
+      }
+    
             this.invoiceid = paymentInvoiceId
-            this.name = responseData.Contact.Name
-            this.amountpaid = responseData.AmountPaid
-            this.amountDue = responseData.AmountDue
-            this.total = paymentAmount
+            this.amountDue = paymentAmountDue
+            this.total = paymentTotal
+            this.amountpaid = paymentAmountPaid
+            this.name = paymentName
             this.settingId = settingID
     },
     async payNow () {
@@ -274,7 +304,7 @@ export default {
             gateway:this.payDetail.gateway,
             id: paymentInvoiceId,
             amount:this.payDetail.amount,
-            cname:responseData.Contact.Name,
+            cname:paymentName,
             value:"59",
             type:this.payDetail.cardtype,
             cardNumber:this.payDetail.cardNumber,
@@ -303,10 +333,15 @@ export default {
       this.backFunction()
     },
     async payFunction (name) {
+      var self = this
       console.log(name)
       this.$refs[name].validate(valid => {
         if(valid) {
-          this.payNow();
+          if(self.payDetail.amount > paymentAmountDue){
+            self.$Message.error('please enter amount less than Due Amount')
+          }else{
+            this.payNow();
+          }
         } else {
           alert('Error')
         }
