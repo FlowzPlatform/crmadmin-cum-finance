@@ -44,6 +44,16 @@
     right: 44%
 }
 
+.social{
+    padding: 15px 0px;
+    text-align: center;
+}
+
+.social > span {
+    padding : 2px 7px;
+    cursor: pointer;
+}
+
 .loginMsg,
 .signupMsg {
     width: 50%;

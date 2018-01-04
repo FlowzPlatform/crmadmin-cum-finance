@@ -34,6 +34,12 @@ module.exports = merge(webpackBaseConfig, {
             template: './src/template/index.ejs',
             inject: false
         }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"development"',
+                //baseURL: 'baseURL'
+            }
+        }),
         new CopyWebpackPlugin([
             {
                 from: 'src/views/main-components/theme-switch/theme'

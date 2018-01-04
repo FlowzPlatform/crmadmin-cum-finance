@@ -27,12 +27,21 @@
                </div>
             </div>
          </div>
-         <!-- <form id="form-facebook" name="form-facebook" :action=loginWithFacebookUrl method="post">
-            <input type="hidden" name="success_url" :value=callbackUrl>
-            </form>
-            <form id="form-google" name="form-google" :action = loginWithGoogleUrl method="post">
-            <input type="hidden" name="success_url" :value=callbackUrl>
-            </form> -->
+         <form id="form-facebook" name="form-facebook" :action="loginWithFacebookUrl" method="post">
+            <input type="hidden" name="success_url" :value="facebookSuccessCallbackUrl">
+        </form>
+        <form id="form-google" name="form-google" :action = "loginWithGoogleUrl" method="post">
+            <input type="hidden" name="success_url" :value="googleSuccessCallbackUrl">
+        </form>
+        <form id="form-twitter" name="form-twitter" :action ="loginWithTwitterUrl" method="post">
+            <input type="hidden" name="success_url" :value="twitterSuccessCallbackUrl">
+        </form>
+        <form id="form-github" name="form-github" :action ="loginWithGithubUrl" method="post">
+            <input type="hidden" name="success_url" :value="githubSuccessCallbackUrl">
+        </form>
+        <form id="form-linkedIn" name="form-linkedIn" :action ="loginWithLinkedInUrl" method="post">
+            <input type="hidden" name="success_url" :value="linkedInSuccessCallbackUrl">
+        </form>
          <div class="frontbox">
             <div class="login">
                <h2>LOG IN</h2>
@@ -84,7 +93,7 @@
                   </div>
                   <button type="submit" style="display:none"></button>
                </form>
-               <!-- <div class="social">
+               <div class="social">
                   <span @click="facebookLogin()">
                   <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
                   </span>
@@ -97,7 +106,10 @@
                   <span @click="githubLogin()">
                   <i class="fa fa-github-square fa-2x" aria-hidden="true"></i>
                   </span>
-               </div> -->
+                  <span @click="linkdinLogin()">
+                  <i class="fa fa-linkedin-square  fa-2x" aria-hidden="true"></i>
+                  </span>
+               </div>
             </div>
             <div class="signup hide">
                <h2>SIGN UP</h2>
@@ -134,7 +146,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import config from '../config/customConfig'
 import 'element-ui/lib/theme-chalk/index.css'
-
+alert(config.loginWithFacebookUrl);
 Vue.use(ElementUI)
 var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
@@ -147,6 +159,7 @@ var $loginMsg = $('.loginMsg'),
 export default {
     data () {
         return {
+            isSocialLogin : false,
             form: {
                 userName: 'iview_admin',
                 password: ''
@@ -179,7 +192,17 @@ export default {
                 email: ""
             },
             selectedTabIndex: 1,
-            showForgotPassword: false
+            showForgotPassword: false,
+            facebookSuccessCallbackUrl : config.default.facebookSuccessCallbackUrl,
+            googleSuccessCallbackUrl : config.default.googleSuccessCallbackUrl,
+            twitterSuccessCallbackUrl: config.default.twitterSuccessCallbackUrl,
+            githubSuccessCallbackUrl: config.default.githubSuccessCallbackUrl,
+            linkedInSuccessCallbackUrl: config.default.linkedInSuccessCallbackUrl,
+            loginWithFacebookUrl : config.default.loginWithFacebookUrl,
+            loginWithGoogleUrl : config.default.loginWithGoogleUrl,
+            loginWithTwitterUrl: config.default.loginWithTwitterUrl,
+            loginWithGithubUrl: config.default.loginWithGithubUrl,
+            loginWithLinkedInUrl: config.default.loginWithLinkedInUrl
         };
     },
     methods: {
@@ -202,28 +225,37 @@ export default {
         // }
 
          forgotPassword(){
+             let params = new URLSearchParams(document.location.href);
+        console.log(params)
+        let name = params.get("ob_id"); // is the string "Jonathan"
+
+        alert(name)
             this.showForgotPassword = true;
         },
         backtoLogin(){
             this.showForgotPassword = false;
         },
         facebookLogin() {
-            console.log("calling")
-            // $("#form-facebook").submit() 
+             this.isSocialLogin = true;
+             $("#form-facebook").submit() 
         },
         googleLogin() {
-            console.log("calling")
-            // $("#form-google").submit();
+            this.isSocialLogin = true;
+             $("#form-google").submit();
         },
         twitterLogin() {
-            console.log("calling")
+            this.isSocialLogin = true;
+            $("#form-google").submit();
         },
         githubLogin() {
-            console.log("calling")
+            this.isSocialLogin = true;
+            $("#form-google").submit();
         },
-        forgetPassword() {
-
+        linkdinLogin() {
+            this.isSocialLogin = true;
+            $("#form-linkedIn").submit();
         },
+       
         tabsClicked(val) {
             this.login.email = ''
             this.login.password = ''
@@ -402,12 +434,30 @@ export default {
         }
 
     },
+    watch: {
+        // whenever question changes, this function will run
+        isSocialLogin: function (newQuestion) {
+            console.log("newQuestion ", newQuestion)
+            if(newQuestion){
+                
+            }
+            
+        }
+    },
+    created(){
+        
+        //your code to be executed after 1 second
+        let url = new URL('http://localhost:8081/login?ob_id=5a202ec65973760012c90c98');
+        alert(url.searchParams.get('ob_id'));
+        
+    },
     mounted() {
     //   if(Cookies.get("auth_token") != undefined){
     //     this.$router.push({
     //                             name: 'home_index'
     //                         });
     //   }
+        
         this.init();
         var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
