@@ -1,5 +1,8 @@
 
-console.log(process.env.baseURL)
+//console.log("???????????????????????? " ,process.env.baseURL)
+//let frontEndUrl = 'http://localhost:8081/#/login';
+let frontEndUrl = 'http://crm.flowzcluster.tk/#/login';
+
 module.exports =  {
     default : {
         loginUrl : "http://auth.flowz.com/api/login",
@@ -10,12 +13,24 @@ module.exports =  {
         forgotPasswordUrl :         "http://auth.flowz.com/api/forgetpassword",
         resetpassword :                 "http://auth.flowz.com/api/resetpassword",
         feathersServiceBaseUrl :            "http://api.flowz.com/serverapi/",
-        facebookSuccessCallbackUrl :            "http://dashboard.flowz.com",
-        loginWithFacebookUrl :                      "http://auth.flowz.com/auth/facebook",
-        googleSuccessCallbackUrl :                      "http://dashboard.flowz.com",
-        loginWithGoogleUrl :                                "http://auth.flowz.com/auth/Gplus",  
+
+        varifyEmailUrl :                    "http://auth.flowz.com/api/verifyemail",
+
+        
+        facebookSuccessCallbackUrl: frontEndUrl,
+        googleSuccessCallbackUrl: frontEndUrl,
+        twitterSuccessCallbackUrl: frontEndUrl,
+        githubSuccessCallbackUrl: frontEndUrl,
+        linkedInSuccessCallbackUrl: frontEndUrl,
+        
+        loginWithFacebookUrl : 'http://auth.flowz.com/auth/facebook',
+        loginWithGoogleUrl : 'http://auth.flowz.com/auth/Gplus',
+        loginWithTwitterUrl : 'http://auth.flowz.com/auth/twitter',
+        loginWithGithubUrl : 'http://auth.flowz.com/auth/github',
+        loginWithLinkedInUrl : 'http://auth.flowz.com/auth/linkedin',  
         serviceUrl :                                            "http://api.flowz.com/crm/",
-       //serviceUrl :                                                "http://localhost:3037/",
+      //  serviceUrl :                                                "http://localhost:3037/",
+
         projecturl :                                                       'http://api.flowz.com/mom/',
         assigneeapi :                                                           'http://api.flowz.com/user/alluserdetails/'
     }
