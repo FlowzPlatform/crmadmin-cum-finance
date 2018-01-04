@@ -318,17 +318,19 @@ export default {
           {
               title: 'Paid',
               sortable: true,
-              render : (h , {row}) => { return row.TotalAmt-row.Balance}
+              render : (h , {row}) => { return '$' + row.TotalAmt-row.Balance }
           },
           {
               title: 'Due',
               key: 'Balance',
-              sortable: true
+              sortable: true,
+              render : (h , {row}) => { return '$' + row.Balance }
           },
           {
               title: 'Amount',
               key: 'TotalAmt',
-              sortable: true
+              sortable: true,
+              render : (h , {row}) => { return '$' + row.TotalAmt }
               
           },
           {
@@ -508,17 +510,20 @@ export default {
            {
               title: 'Paid',
               key: 'AmountPaid',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.AmountPaid  }
           },
           {
               title: 'Due',
               key: 'AmountDue',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.AmountDue }
           },
           {
               title: 'Total',
               key: 'Total',
-              sortable: true  
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.Total }
           },
           {
               title: 'Status',
