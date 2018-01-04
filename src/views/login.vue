@@ -6,7 +6,7 @@
     
       <div class="mainBody">
       
-      <div class="loginContainer">
+      <div v-if="!isSocialLogin" class="loginContainer">
           
          <div class="success">
             <p id="text_mess" v-if="errmsg!=''">{{errmsg}}</p>
@@ -135,6 +135,18 @@
             </div>
          </div>
       </div>
+      <div v-else class="loginContainer">
+          <div class="login2">
+            <div class="login2-triangle"></div>
+            
+            <h2 class="login2-header">Email</h2>
+
+            <div class="login2-container">
+                <p><input type="email" placeholder="Email" v-model="varifyEmail"></p>
+                <p><Button type="primary" :loading="emailLoading" @click="getTokenFromSocialLogin" long>PROCEED</Button></p>
+                </div>
+            </div>
+      </div>
    </div>  
     
 </template>
@@ -146,7 +158,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import config from '../config/customConfig'
 import 'element-ui/lib/theme-chalk/index.css'
-alert(config.loginWithFacebookUrl);
+
 Vue.use(ElementUI)
 var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
@@ -159,6 +171,8 @@ var $loginMsg = $('.loginMsg'),
 export default {
     data () {
         return {
+            varifyEmail : "",
+            obId : "",
             isSocialLogin : false,
             form: {
                 userName: 'iview_admin',
@@ -182,6 +196,7 @@ export default {
             saveFileLoading: false,
             saveFileLoadingLogin: false,
             showForgotPassword: false,
+            emailLoading: false,
             login: {
                 email: "",
                 password: ""
@@ -224,7 +239,56 @@ export default {
         //     });
         // }
 
-         forgotPassword(){
+       async  getTokenFromSocialLogin(){
+                let self = this
+                let valid = await this.validateEmail(this.varifyEmail); ;
+                if(!valid){
+                    this.$message.warning("Please enter a valid email address")
+                }else{
+                    this.emailLoading = true;
+                    axios.post(config.default.varifyEmailUrl, {
+                        email: this.varifyEmail,
+                        id: this.obId
+                    })
+                    .then(function(response) {
+                        self.emailLoading = false ;
+                        console.log(response)
+                        self.saveFileLoadingLogin = false;
+                        
+                        axios({
+                            method: 'post',
+                            url: config.default.userDetail,
+                            headers: {'Authorization': response.data.logintoken}
+                        })
+                        .then(function(result) {
+                            console.log(result)
+                             Cookies.set('user',  result.data.data.email);
+                              Cookies.set('auth_token', response.data.logintoken);
+                        
+                            Cookies.set('email', response.data.email);
+                            Cookies.set('password', '123456');
+                            self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                            if (self.form.email === 'iview_admin') {
+                                Cookies.set('access', 0);
+                            } else {
+                                Cookies.set('access', 1);
+                            }
+                            self.$router.push({
+                                name: 'home_index'
+                            });
+                        })
+                    }).catch(function(error){
+                        self.emailLoading = false ;
+                       console.log(error.response)
+                       if(error.response.status == 409){
+                            self.$message.error(error.response.data)
+                        }
+                    })
+                }
+                
+            
+        },
+        forgotPassword(){
              let params = new URLSearchParams(document.location.href);
         console.log(params)
         let name = params.get("ob_id"); // is the string "Jonathan"
@@ -435,21 +499,48 @@ export default {
 
     },
     watch: {
-        // whenever question changes, this function will run
-        isSocialLogin: function (newQuestion) {
-            console.log("newQuestion ", newQuestion)
-            if(newQuestion){
+        // // whenever question changes, this function will run
+        // isSocialLogin: function (newQuestion) {
+        //     console.log("newQuestion ", newQuestion)
+        //     if(newQuestion){
                 
-            }
+        //     }
             
-        }
+        // }
     },
     created(){
-        
-        //your code to be executed after 1 second
-        let url = new URL('http://localhost:8081/login?ob_id=5a202ec65973760012c90c98');
-        alert(url.searchParams.get('ob_id'));
-        
+        let self = this;
+       var configObj = {};
+        if(location.search){
+        addToModel(location.search.slice(1).split('&'));
+        }
+        if(location.hash){
+        addToModel(location.hash.slice(1).split('&'));
+        }
+        function addToModel(searchParams){
+            
+        for(var s in searchParams){
+            
+        var q = searchParams[s].split('=');
+       
+        configObj[q[0]] = !!q[1] ? unescape(q[1]) : "";
+        }
+        }
+        if(Object.keys(configObj)[0] == "/login?ob_id")
+        {
+            let paramsArr = Object.values(configObj);
+            
+            self.isSocialLogin = true;
+            self.obId = paramsArr[0];
+        }else if (Object.keys(configObj)[0] == "/login?token")
+        {
+            let paramsArr = Object.values(configObj);
+            
+            Cookies.set('auth_token', paramsArr[0])
+            
+        }
+       
+
     },
     mounted() {
     //   if(Cookies.get("auth_token") != undefined){

@@ -216,3 +216,98 @@
 ::-moz-placeholder {
     color: #2b3643
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.login2 {
+    width: 400px;
+    margin: 16px auto;
+    font-size: 16px;
+  }
+  
+  /* Reset top and bottom margins from certain elements */
+  .login2-header,
+  .login2 p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  /* The triangle form is achieved by a CSS hack */
+  .login2-triangle {
+    width: 0;
+    margin-right: auto;
+    margin-left: auto;
+    border: 12px solid transparent;
+    border-bottom-color: #28d;
+  }
+  
+  .login2-header {
+    background: #28d;
+    padding: 20px;
+    font-size: 1.4em;
+    font-weight: normal;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  
+  .login2-container {
+    background: #ebebeb;
+    padding: 12px;
+  }
+  
+  /* Every row inside .login-container is defined with p tags */
+  .login2 p {
+    padding: 12px;
+  }
+  
+  .login2 input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    padding: 16px;
+    outline: 0;
+    font-family: inherit;
+    font-size: 0.95em;
+  }
+  
+  .login2 input[type="email"],
+  .login2 input[type="password"] {
+    background: #fff;
+    border-color: #bbb;
+    color: #555;
+  }
+  
+  /* Text fields' focus effect */
+  .login2 input[type="email"]:focus,
+  .login2 input[type="password"]:focus {
+    border-color: #888;
+  }
+  
+  .login2 input[type="submit"] {
+    background: #28d;
+    border-color: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .login2 input[type="submit"]:hover {
+    background: #17c;
+  }
+  
+  /* Buttons' focus effect */
+  .login2 input[type="submit"]:focus {
+    border-color: #05a;
+  }

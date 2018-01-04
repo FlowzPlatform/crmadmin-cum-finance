@@ -94,6 +94,7 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
+    import psl from 'psl';
 
     export default {
         components: {
@@ -167,7 +168,10 @@
                     });
                 } else if (name === 'loginout') {
                     // 退出登录
-                    Cookies.remove('auth_token') 
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
