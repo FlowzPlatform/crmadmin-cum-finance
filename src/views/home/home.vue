@@ -59,7 +59,7 @@
                     </col>
                     <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
                         <Select v-model="contacts" clearable style="width:200px;" placeholder="Select Contacts" >
-                            <Option v-for="item in contactData" :value="item.Name" :key="item.Name" >{{ item.Name }}</Option>
+                            <Option v-for="item in contactData" :value="item.Id" :key="item.Id" >{{ item.Name }}</Option>
                         </Select>
                     </col>
                     <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
@@ -277,9 +277,6 @@ export default {
                     date2 : date2,
                     settingId : settingId,
                     contact : contact
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
@@ -356,9 +353,6 @@ export default {
                     date2 : date2,
                     settingId : settingId,
                     contact : contact
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
@@ -466,9 +460,6 @@ export default {
                     date2 : date2,
                     settingId : settingId,
                     contact : contact
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
@@ -621,9 +612,6 @@ export default {
                     date2 : date2,
                     settingId : settingId,
                     contact : contact
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function (response) {
@@ -649,18 +637,28 @@ export default {
                 params: {
                     settingId : self.config,
                     
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
                 }
             })
             .then(function(response) {
                 console.log("Contact data",response);
                 response.data.forEach(function(contacts) {
-                    // var cnt = contacts.data
+                   
                     console.log("%%%%%%%%%%",contacts.data.length)
+                    let cnt;
                     for (var i=0; i<contacts.data.length; i++) {
-                        self.contactData.push(contacts.data[i])
+                        if (contacts.data[i].DisplayName) {
+                            cnt = {
+                                Id : contacts.data[i].Id,
+                                Name : contacts.data[i].DisplayName
+                            }
+                        }
+                        else {
+                            cnt = {
+                                Id : contacts.data[i].Name,
+                                Name : contacts.data[i].Name
+                            }
+                        }
+                        self.contactData.push(cnt)
                     }
                 })
             })
@@ -677,7 +675,7 @@ export default {
             axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
-                    
+                    user : Cookies.get('user')
                 },
                 headers: {
                     Authorization : Cookies.get('auth_token')
@@ -690,11 +688,11 @@ export default {
                    self.mData = response.data.data;
                     self.config = self.mData[0].id;
                     self.getContacts(self.config)
-                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'))
+                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'),self.config)
                }else{
                    self.$Modal.warning({
                     title: 'No Configuration available',
