@@ -1,7 +1,7 @@
 
 //console.log("???????????????????????? " ,process.env.baseURL)
-let frontEndUrl = 'http://localhost:8081/#/login';
-//let frontEndUrl = 'http://crm.flowzcluster.tk/#/login';
+//let frontEndUrl = 'http://localhost:8081/#/login';
+let frontEndUrl = 'http://crm.flowzcluster.tk/#/login';
 
 module.exports =  {
     default : {
@@ -13,6 +13,7 @@ module.exports =  {
         forgotPasswordUrl :         "http://auth.flowz.com/api/forgetpassword",
         resetpassword :                 "http://auth.flowz.com/api/resetpassword",
         feathersServiceBaseUrl :            "http://api.flowz.com/serverapi/",
+
         varifyEmailUrl :                    "http://auth.flowz.com/api/verifyemail",
 
         
@@ -27,8 +28,9 @@ module.exports =  {
         loginWithTwitterUrl : 'http://auth.flowz.com/auth/twitter',
         loginWithGithubUrl : 'http://auth.flowz.com/auth/github',
         loginWithLinkedInUrl : 'http://auth.flowz.com/auth/linkedin',  
-       // serviceUrl :                                            "http://api.flowz.com/crm/",
-        serviceUrl :                                                "http://localhost:3037/",
+        serviceUrl :                                            "http://api.flowz.com/crm/",
+      //  serviceUrl :                                                "http://localhost:3037/",
+
         projecturl :                                                       'http://api.flowz.com/mom/',
         assigneeapi :                                                           'http://api.flowz.com/user/alluserdetails/'
     }

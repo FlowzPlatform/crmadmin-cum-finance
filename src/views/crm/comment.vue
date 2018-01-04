@@ -8,8 +8,8 @@
     display: block;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: auto;
+    max-height: 365px;
     background: #eee;
   }
   .chat .message {
@@ -305,9 +305,13 @@
                   <img :src="src" />
                   <p class="emailText">{{item.comment}}</p>
                   <span class="sentDate">
-                  <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span>|
-                  <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
-                  <span>{{getDate(item.created_at)}}</span>
+                    <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span>
+                    <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
+                    <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
+                    <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+                    <span v-else>{{getDate(item.created_at)}}</span>
+                    <span v-if="item.isEdited">{{item.edited_by}}</span>
+                    <span v-else>{{item.created_by}}</span>
                   </span>
                </div>
                </Col>
@@ -318,15 +322,21 @@
 </template>
 
 <script>
+  import Cookies from 'js-cookie';
   import gravatar from 'gravatar'
   import moment from 'moment'
   import axios from 'axios'
   import config from '../../config/customConfig.js'
+  var userid
+  var crm_id
+  var created_date
+  var new_comment
   var relationshipcomments = config.default.serviceUrl
   export default {
     data() {
       return { 
         isActive:false,
+        // isEdit:false,
         src : '',
         commentData: []
       }
@@ -343,19 +353,37 @@
         var itemId = item.id
         console.log('deleteItem', item)
         let self = this
-        axios({
-          method:'delete',
-          url: relationshipcomments + 'relationshipcomments/' + itemId
-        })
-        .then(function(response) {
-          console.log("delete response.....",response)
-          for(let i=0;i<self.commentData.length;i++){
-            console.log("for..................",self.commentData[i])
-            if(response.data.id == self.commentData[i].id){
-              self.commentData.splice(i,1)
+        this.$Modal.confirm({
+          okText: 'OK',
+          cancelText: 'Cancel',
+          title: 'Title',
+          content: '<p>Are you sure to delete?<p>',
+          onOk: () => {
+            var userid = Cookies.get('user')
+            var data1= {
+              "isDeleted": true,
+              "deleted_by": userid,
+              "deleted_at": new Date()
             }
+            axios({
+              method:'patch',
+              url: relationshipcomments + 'relationshipcomments/' + itemId,
+              data: data1
+            })
+            .then(function(response) {
+              console.log("delete response.....",response)
+              for(let i=0;i<self.commentData.length;i++){
+                console.log("for..................",self.commentData[i])
+                if(response.data.id == self.commentData[i].id){
+                  self.commentData.splice(i,1)
+                }
+              }
+            });
+          },
+          onCancel: () => {
+            this.$Message.info('Clicked cancel');
           }
-        });
+        })
       },
       clicked (item, index) {
         var itemId = item.id
@@ -364,12 +392,13 @@
         let comment1
         console.log("************",itemId)
         this.$Modal.confirm({
+          okText: 'OK',
+          cancelText: 'Cancel',
           render: (h) => {
             return h('Input', {
               props: {
                 value: comment,
-                autofocus: true,
-                placeholder: 'Please enter your name...'
+                autofocus: true
               },
               on: {
                 input: (val) => {
@@ -380,22 +409,33 @@
             })
           },
           onOk: () => {
+            var userid = Cookies.get('user')
             console.log("comment....",comment)
             this.$Message.info('Clicked ok');
             this.commentData[index].comment = comment1
             this.commentData[index].created_at = new Date() 
             data1 = {
               "comment": comment1,
-              "created_at": new Date()
+              "edited_by": userid,
+              "edited_at": new Date(),
+              "isEdited": true
+              // "created_at": created_date,
+              // "created_by": userid,
+              // "crm_id": crm_id,
+              // "user_id": userid,
+              // "isDeleted": false,
+              // "deleted_by": "",
+              // "deleted_at": ""
             }
             axios({
-              method:'put',
+              method:'patch',
               url: relationshipcomments + 'relationshipcomments/' + itemId,
               data: data1
             })
             .then(function(response) {
               console.log("update response.....",response)
             });
+            // this.isEdit = !this.isEdit
           },
           onCancel: () => {
             this.$Message.info('Clicked cancel');
@@ -409,25 +449,40 @@
         var editor = CKEDITOR.instances.editor2
         if (!this.isActive) {
           CKEDITOR.replace("editor2")
+          CKEDITOR.instances.editor2.setData("")
           this.isActive = !this.isActive
           document.getElementById("block").style.display = "inline-block";
         } 
         else {
+          this.$Notice.success({
+            title: 'Comment Saved',
+            duration: 4.5
+          });
+          // this.$Message.success('Comment Saved')
           var data1
           var self = this
           console.log('else')
           var content = CKEDITOR.instances['editor2'].getData();
-          var text = $(content).text();
-          var date = new Date();
-          var crm_id = self.$route.params.id
-          console.log("text.....",text,"date.....",date)
+          new_comment = $(content).text();
+          created_date = new Date();
+          crm_id = self.$route.params.id
+          userid = Cookies.get('user')
+          console.log("text.....",new_comment,"date.....",created_date)
           console.log("Save called", this.commentData)
           // this.commentData.forEach(function(element) {
             // console.log(element);
             data1 = {
-              "comment": text,
-              "created_at": date,
-              "crm_id": crm_id
+              "comment": new_comment,
+              "created_at": created_date,
+              "created_by": userid,
+              "crm_id": crm_id,
+              "user_id": userid,
+              "isEdited": false,
+              "isDeleted": false,
+              "deleted_by": "",
+              "deleted_at": "",
+              "edited_by": "",
+              "edited_at": "",
             }
           // });
           console.log('data1', data1)
@@ -437,10 +492,12 @@
             data: data1
           })
           .then(function(response) {
-            self.commentData.push({comment: text, created_at: date, id: response.data.id})
+            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: created_by, edited_by: edited_by})
+            self.commentData = _.sortBy(self.commentData, 'created_at')
             console.log("save response.....",response)
             console.log("this.commentData", self.commentData)
           });
+          
           editor.destroy();
           this.isActive = !this.isActive
           document.getElementById("editor2").style.display = "none";
@@ -457,13 +514,14 @@
         })
         .then(function(response) {
           response.data.data.forEach(function(item,index){
-            if (item.crm_id == crm_id){
-              self.commentData.push(item)
+            if (item.crm_id == crm_id && item.isDeleted == false){
+            // if (item.crm_id == crm_id){
+              self.commentData.push(item);
             }
           })          
           
-          console.log("++++++++++++++",self.commentData)
-          console.log("save response.....",response.data.data)
+          console.log("++++++++++++++self.commentData",self.commentData)
+          self.commentData = _.sortBy(self.commentData, 'created_at')
         });
       }
     },
