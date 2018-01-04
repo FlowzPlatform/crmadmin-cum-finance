@@ -17,7 +17,6 @@
   "author": "Lison<zhigang.li@tendcloud.com>",
   "license": "MIT",
   "dependencies": {
-    "accounting-js": "^1.1.1",
     "area-data": "^1.0.0",
     "axios": "^0.17.1",
     "clipboard": "^1.7.1",
@@ -93,3 +92,4 @@
     "webpack-uglify-parallel": "^0.1.4"
   }
 }
+
