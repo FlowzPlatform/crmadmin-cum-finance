@@ -6,53 +6,6 @@
     <div class="home-main">
         <Row :gutter="10">
             <Col :md="24" :lg="24" :sm="12">
-                <Row :gutter="5">
-                    <Col :xs="24" :sm="12" :md="4" :style="{marginBottom: '10px'}">
-                        <infor-card
-                            id-name="totalInv_count"
-                            :end-val="count.totalInv"
-                            iconType="ios-calendar-outline"
-                            color="#E7A6C9"
-                            intro-text="Total Invoice"
-                        ></infor-card>
-                    </Col>
-                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
-                        <infor-card
-                            id-name="total_count"
-                            :end-val="count.total"
-                            iconType="social-usd"
-                            color="#2d8cf0"
-                            intro-text="Invoice Total Amount"
-                        ></infor-card>
-                    </Col>
-                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
-                        <infor-card
-                            id-name="paid_count"
-                            :end-val="count.paid"
-                            iconType="social-usd"
-                            color="#64d572"
-                            intro-text="Invoice Paid Amount"
-                        ></infor-card>
-                    </Col>
-                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
-                        <infor-card
-                            id-name="unpaid_count"
-                            :end-val="count.unpaid"
-                            iconType="social-usd"
-                            color="#ffd572"
-                            intro-text="Invoice Unpaid Amount"
-                        ></infor-card>
-                    </Col>
-                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
-                        <infor-card
-                            id-name="draft_count"
-                            :end-val="count.draft"
-                            iconType="social-usd"
-                            color="#f25e43"
-                            intro-text="Invoice Draft Amount"
-                        ></infor-card>
-                    </Col>
-                </Row>
                 <Row :style="{border: '1px solid #ddd', borderRadius: '5px', backgroundColor: 'whitesmoke'}">
                     <Col :xs="24" :sm="2" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
                         
@@ -77,19 +30,66 @@
 
                     </col>
                 </Row>
+                <Row :gutter="5" :style="{marginTop: '10px'}">
+                    <Col :xs="24" :sm="12" :md="4" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="totalInv_count"
+                            :end-val="count.totalInv"
+                            iconType="ios-calendar-outline"
+                            color="#E7A6C9"
+                            intro-text="Total Invoices"
+                        ></infor-card>
+                    </Col>
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="total_count"
+                            :end-val="count.total"
+                            iconType="social-usd"
+                            color="#2d8cf0"
+                            intro-text="Total Amount"
+                        ></infor-card>
+                    </Col>
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="paid_count"
+                            :end-val="count.paid"
+                            iconType="social-usd"
+                            color="#64d572"
+                            intro-text="Paid Amount"
+                        ></infor-card>
+                    </Col>
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="unpaid_count"
+                            :end-val="count.unpaid"
+                            iconType="social-usd"
+                            color="#ffd572"
+                            intro-text="Unpaid Amount"
+                        ></infor-card>
+                    </Col>
+                    <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
+                        <infor-card
+                            id-name="draft_count"
+                            :end-val="count.draft"
+                            iconType="social-usd"
+                            color="#f25e43"
+                            intro-text="Draft Amount"
+                        ></infor-card>
+                    </Col>
+                </Row>
             </Col>
         </Row>
         <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                             
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="4" :Title="'Bar Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="4" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true" :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
-                            <div id="chart1_content">
-                                <div id="barChart" style="height:400px;"></div>
+                            <div id="chart1_content" style="height: 300px;">
+                                <div id="barChart" style="height:300px;"></div>
                             </div>
                         </div>
                     </WidgetBody>
@@ -98,15 +98,15 @@
                             
                 </draggable>
             </Col>
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                     <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="2" :Title="'Pie Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="2" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
-                                <div id="chart2_content">
-                                    <div id="pieChart" style="height:400px;"></div>
+                                <div id="chart2_content" style="height: 300px;">
+                                    <div id="pieChart" style="height:300px;"></div>
                                 </div>
                             </div>
                         </WidgetBody>
@@ -115,16 +115,16 @@
                     </draggable>
             </Col>
         </Row>
-        <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+        <Row :gutter="10" class="margin-top-5">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="3" :Title="'Line Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="3" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
-                                <div id="chart3_content">
-                                    <div id="lineChart" style="height:400px;"> </div>
+                                <div id="chart3_content" style="height: 300px;">
+                                    <div id="lineChart" style="height: 300px;"> </div>
                                 </div>
                             </div>
                         </WidgetBody>
@@ -132,15 +132,15 @@
                         <!-- END PORTLET-->
                 </draggable>
             </Col>
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
-                            <div id="chart4_content">
-                                <div id="waterfall" style="height: 400px;"> </div>
+                            <div id="chart4_content" style="height: 300px;">
+                                <div id="waterfall" style="height: 300px;"> </div>
                             </div>
                         </div>
                     </WidgetBody>

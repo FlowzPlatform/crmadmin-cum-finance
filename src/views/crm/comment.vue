@@ -270,57 +270,55 @@
     color: rgb(255, 255, 255);
     width: auto !important;
   }
-</style> 
-
- 
+</style>
 <template>
-   <div class="chat">
-      <div id="block" style="text-align:right;width:100%">
-         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
-         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
-         <button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
-      </div>
-      <textarea style="display:none" id="editor2" name="editor2" ></textarea>
-      <div style="margin-bottom: 10px;margin-right: 10px;">
-         <div class="message">
-            <Row>
-               <Col span="24" >
-               <!-- <div v-for="(item, index) in commentData"> -->
-               <div >
-                  <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
-                  <!-- <p class="emailText">{{item.Text}}</p> -->
-                  <p class="emailText">I am here </p>
-                  <span class="receivedDate">
-                     <!-- <span>{{getDate(item.date)}}</span> -->
-                     <span>1 day ago</span>
-                  </span>
-               </div>
-               </Col>
-            </Row>
-         </div>
-         <div class="message me" >
-            <Row>
-               <Col span="24" >
-               <div v-for="(item, index) in commentData">
-                  <img :src="src" />
-                  <p class="emailText">{{item.comment}}</p>
-                  <span class="sentDate">
-                    <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span>
-                    <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
-                    <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
-                    <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
-                    <span v-else>{{getDate(item.created_at)}}</span>
-                    <span v-if="item.isEdited">{{item.edited_by}}</span>
-                    <span v-else>{{item.created_by}}</span>
-                  </span>
-               </div>
-               </Col>
-            </Row>
-         </div>
-      </div>
-   </div>
+	<div class="chat">
+		<div id="block" style="text-align:right;width:100%">
+			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
+			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
+			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
+		</div>
+		<textarea style="display:none" id="editor2" name="editor2" ></textarea>
+		<div style="margin-bottom: 10px;margin-right: 10px;">
+			<div class="message">
+				<Row>
+					<Col span="24" >
+						<!-- <div v-for="(item, index) in commentData"> -->
+						<div >
+							<img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
+							<!-- <p class="emailText">{{item.Text}}</p> -->
+							<p class="emailText">I am here </p>
+							<span class="receivedDate">
+								<!-- <span>{{getDate(item.date)}}</span> -->
+								<span>1 day ago</span>
+							</span>
+						</div>
+					</Col>
+				</Row>
+			</div>
+			<div class="message me" >
+				<Row>
+					<Col span="24" >
+						<div v-for="(item, index) in commentData">
+							<img :src="src" />
+							<p class="emailText">{{item.comment}}</p>
+							<span class="sentDate">
+								<span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span>
+								<span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
+                    
+								<span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
+								<span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+								<span v-else>{{getDate(item.created_at)}}</span>
+								<span v-if="item.isEdited">{{item.edited_by}}</span>
+								<span v-else>{{item.created_by}}</span>
+							</span>
+						</div>
+					</Col>
+				</Row>
+			</div>
+		</div>
+	</div>
 </template>
-
 <script>
   import Cookies from 'js-cookie';
   import gravatar from 'gravatar'
@@ -372,7 +370,8 @@
             })
             .then(function(response) {
               console.log("delete response.....",response)
-              for(let i=0;i<self.commentData.length;i++){
+              for(let i=0;i
+			<self.commentData.length;i++){
                 console.log("for..................",self.commentData[i])
                 if(response.data.id == self.commentData[i].id){
                   self.commentData.splice(i,1)
@@ -409,6 +408,7 @@
             })
           },
           onOk: () => {
+            var self = this
             var userid = Cookies.get('user')
             console.log("comment....",comment)
             this.$Message.info('Clicked ok');
@@ -434,8 +434,11 @@
             })
             .then(function(response) {
               console.log("update response.....",response)
+              self.commentData[index].edited_at = new Date() 
+              self.commentData[index].isEdited = true
+              self.commentData[index].edited_by = userid
             });
-            // this.isEdit = !this.isEdit
+            
           },
           onCancel: () => {
             this.$Message.info('Clicked cancel');
@@ -492,9 +495,8 @@
             data: data1
           })
           .then(function(response) {
-            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: created_by, edited_by: edited_by})
-            self.commentData = _.sortBy(self.commentData, 'created_at')
             console.log("save response.....",response)
+            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid})
             console.log("this.commentData", self.commentData)
           });
           
@@ -530,4 +532,5 @@
       this.getData()
     }
   }
-</script>
+
+			</script>

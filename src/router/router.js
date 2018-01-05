@@ -112,31 +112,41 @@ export const appRouter = [
         children: [
             { 
                 path: 'new-customer', 
-                title: 'new-customer',
+                title: 'New',
                 icon: 'ios-plus-outline',
                 name: 'newcustomer', 
                 component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
             },
             { 
                 path: 'list-customer', 
-                title: 'list-customer',
+                title: 'List',
                 icon: 'ios-list-outline',
                 name: 'listcustomer', 
                 component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
-            },
-            {    path: 'new-relationship', 
-                 title: 'new-relationship',
-                 icon: 'ios-plus-outline',
-                 name: 'newcrm', 
-                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
+            }  
+        ]
+    },
+    {
+        path: '/relationship',
+        icon: 'android-hand',
+        title: 'RELATIONSHIP',
+        name: 'RELATIONSHIP',
+        component: Main,
+        children: [
+            {    
+                path: 'new-relationship', 
+                title: 'New',
+                icon: 'ios-plus-outline',
+                name: 'newcrm', 
+                component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
             },
             { 
                 path: 'list-relationship', 
-                title: 'list-relationship',
+                title: 'List',
                 icon: 'ios-list-outline',
                 name: 'listcrm', 
                 component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
-            }  
+            }
         ]
     },
     {
@@ -148,14 +158,14 @@ export const appRouter = [
         children: [
             { 
                 path: 'new-invoice', 
-                title: 'new-invoice',
+                title: 'New',
                 icon: 'ios-plus-outline',
                 name: 'new-invoice', 
                 component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve);}
             },
             { 
                 path: 'list-invoice', 
-                title: 'list-invoice',
+                title: 'List',
                 icon: 'ios-list-outline',
                 name: 'list-invoice', 
                 component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
