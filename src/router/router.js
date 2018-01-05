@@ -4,10 +4,20 @@ import Main from '@/views/Main.vue';
 export const loginRouter = {
     path: '/login',
     name: 'login',
+    
     meta: {
         title: 'Login'
     },
     component: resolve => { require(['@/views/login.vue'], resolve); }
+};
+
+export const varifyEmailRouter = {
+    path: '/varifyEmail',
+    name: 'varifyEmail',
+    meta: {
+        title: 'varifyEmail'
+    },
+    component: resolve => { require(['@/views/varifyEmail/varifyEmail.vue'], resolve); }
 };
 
 export const page404 = {
@@ -65,6 +75,7 @@ export const otherRouter = {
         { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
         {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'editcrm',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+        
     ]
 };
 
@@ -325,6 +336,7 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
+    varifyEmailRouter,
     otherRouter,
     preview,
     locking,
