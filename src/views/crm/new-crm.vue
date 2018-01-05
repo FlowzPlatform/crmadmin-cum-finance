@@ -75,12 +75,7 @@
 										<Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
 									</Select>
 								</p>
-								<!-- <p>
-									<label class="col-xs-3" id="c17075">Product line</label>
-									<Select v-model="finaldata.product_line" style="width:100px">
-										<Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option>
-									</Select>
-								</p> -->
+								<!-- <p><label class="col-xs-3" id="c17075">Product line</label><Select v-model="finaldata.product_line" style="width:100px"><Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option></Select></p> -->
 								<p>
 									<label class="col-xs-3" id="c17091">Contract date</label>
 									<!-- <el-date-picker v-model="finaldata.contractdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
@@ -192,7 +187,8 @@
 						data.forEach(function(contacts) {
 							var cnt = contacts.data
 							console.log("%%%%%%%%%%",cnt.length)
-							for (var i=0; i<cnt.length; i++) {
+							for (var i=0; i
+	<cnt.length; i++) {
 								self.customerData.push(cnt[i].Name)
 							}
 						})
@@ -239,13 +235,23 @@
 					    success: function (data1) {
 					        result = data1;
 							console.log("json data******123",result);
+							self.$Notice.success({
+            		title: 'Sucess',
+            		desc: 'New CRM case is Saved. ',
+								duration: 4.5
+          		});
 							self.$router.push( "list-relationship")
 					    },error: function(err){
 					       console.log("error",err);
 					    }
 					});
     		} else {
-    			alert("Enter Valid Email Address OR Phone Number")
+    			// alert("Enter Valid Email Address OR Phone Number")
+					this.$Notice.error({
+            title: 'Error',
+            desc: 'Enter Valid Email Address OR Phone Number. ',
+						duration: 4.5
+          });
     		}
 
 				
@@ -310,8 +316,9 @@
     	this.assigneelist()
 	}
 }
-</script>
-<style scoped>
+
+	</script>
+	<style scoped>
 	* {
 	    box-sizing: border-box;
 	}

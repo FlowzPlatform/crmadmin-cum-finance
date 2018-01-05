@@ -32,9 +32,7 @@
 							} 
 							else {
 									return row.assignee
-							}
-									
-								
+							}	
 						}
 					},
 					{
@@ -78,21 +76,19 @@
 						filterMultiple: false,
 						filterMethod (value, row) {
 							console.log("123.....Status.........", row, value)
-						    if (value === 1) {
-						        return row.status == 'Leed';
-						    } else if (value === 2) {
-						        return row.status == 'Quotation';
-						    } else if (value === 3) {
-						        return row.status == 'Opportunity';
-						    } else if (value === 4) {
-						        return row.status == 'Negotiation';
-						    } else if (value === 5) {
-						        return row.status == 'Won';
-						    } else if (value === 6) {
-						        return row.status == 'Closed';
-						    }
-						    // setTimeout(function(){
-					// },100)
+							if (value === 1) {
+									return row.status == 'Leed';
+							} else if (value === 2) {
+									return row.status == 'Quotation';
+							} else if (value === 3) {
+									return row.status == 'Opportunity';
+							} else if (value === 4) {
+									return row.status == 'Negotiation';
+							} else if (value === 5) {
+									return row.status == 'Won';
+							} else if (value === 6) {
+									return row.status == 'Closed';
+							}
 						}
 					},
 					{
@@ -101,25 +97,23 @@
 						align: 'center',
 						render: (h, params) => {
 							return h('Button', {
-				                props: {
-									type: 'text',
-									size: 'large',
-									icon: 'ios-compose-outline'
-				                },
-				                style: {
-									marginRight: '3px',
-									padding: '0px',
-									fontSize: '20px',
-									color: '#2d8cf0'
-				                },
-				                on: {
-				                  click: () => {
-				                  	// alert(params.index)
-				                    // this.$router.push('edit-crm/:id')
-				                    this.show(params.row.id)
-				                  }
-				                }
-				              }, '')
+				          props: {
+										type: 'text',
+										size: 'large',
+										icon: 'ios-compose-outline'
+				          },
+				          style: {
+										marginRight: '3px',
+										padding: '0px',
+										fontSize: '20px',
+										color: '#2d8cf0'
+				          },
+				          on: {
+				            click: () => {
+				              this.show(params.row.id)
+				            }
+				          }
+				      }, '')
 						}
 					}
 				],
