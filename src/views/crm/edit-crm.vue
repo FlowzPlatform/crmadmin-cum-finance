@@ -343,9 +343,19 @@
           success: function (data) {
               result1 = data.data;
               console.log(data)
-              self.assigneedata = _.map(result1, (d) => {
-                return {label: d.fullname, value: d.fullname}
-              })
+              var myarr = []
+			        _.forEach(result1, (d) => {
+								if (d.hasOwnProperty('fullname')) {
+									if (d.fullname !== undefined) {
+										if (d.fullname !== null) {
+											if (d.fullname.trim() !== '') {
+												myarr.push({label: d.fullname, value: d.fullname})
+											}
+										}
+									}
+								}
+			        })
+							self.assigneedata = myarr
           },error: function(err){
              console.log("error",err);
           }

@@ -281,7 +281,7 @@
 			    success: function (data) {
 			        result1 = data.data;
 			        console.log(data)
-							var myarr = []
+					var myarr = []
 			        _.forEach(result1, (d) => {
 								if (d.hasOwnProperty('fullname')) {
 									if (d.fullname !== undefined) {
