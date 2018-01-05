@@ -55,6 +55,7 @@ module.exports = merge(webpackBaseConfig, {
               drop_debugger: true
              }
         }),
+        new webpack.EnvironmentPlugin(['domainkey']),
         new CopyWebpackPlugin([
             {
                 from: 'td_icon.ico'

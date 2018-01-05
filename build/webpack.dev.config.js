@@ -34,6 +34,7 @@ module.exports = merge(webpackBaseConfig, {
             template: './src/template/index.ejs',
             inject: false
         }),
+        new webpack.EnvironmentPlugin(['domainkey']),
         new CopyWebpackPlugin([
             {
                 from: 'src/views/main-components/theme-switch/theme'
