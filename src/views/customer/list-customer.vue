@@ -54,12 +54,13 @@ export default {
     columns1: [
       {
         "title": "Customer Name",
-        "key": "Name",
+        "key": "Name"
       },
       {
         "title": "Status",
         "key": "ContactStatus",
         "sortable": true,
+        "width":120,
         filters: [
           {
             label: 'ACTIVE',
@@ -94,9 +95,10 @@ export default {
           }
       },
       {
-        "title": "Mobile",
+        "title": "Mobile No.",
         "key": "Phones",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
@@ -108,8 +110,9 @@ export default {
           }
       },
       {
-        "title": "Phone",
+        "title": "Phone No.",
         "key": "click",
+        "align":"center",
         "sortable": true,
         render:(h,{row})=>{ 
           if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
@@ -122,9 +125,10 @@ export default {
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
           if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
             {
@@ -147,22 +151,27 @@ export default {
       {
         "title": "isCustomer",
         "key": "IsCustomer",
-        "sortable": true
+        "sortable": true,
+        "align":"center",
+        "width":140
       },
       {
         "title": "isSupplier",
         "key": "IsSupplier",
-        "sortable": true
+        "sortable": true,
+        "align":"center",
+        "width":130
       }
     ],
     columns2: [
       {
         "title": "Customer Name",
-        "key": "Name",
+        "key": "Name"
       },
       {
         "title": "Status",
         "key": "ContactStatus",
+        "width":120,
         "sortable": true,
         filters: [
           {
@@ -198,9 +207,10 @@ export default {
           }
       },
       {
-        "title": "Mobile",
+        "title": "Mobile No.",
         "key": "Phones",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
@@ -212,9 +222,10 @@ export default {
           }
       },
       {
-        "title": "Phone",
+        "title": "Phone No.",
         "key": "click",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
           if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
             {
@@ -226,9 +237,10 @@ export default {
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
           if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
             {
@@ -253,12 +265,16 @@ export default {
       {
         "title": "isCustomer",
         "key": "IsCustomer",
-        "sortable": true
+        "sortable": true,
+        "align":"center",
+        "width":140
       },
       {
         "title": "isSupplier",
         "key": "IsSupplier",
-        "sortable": true
+        "sortable": true,
+        "align":"center",
+        "width":130
       }
     ],
     data6: [],
