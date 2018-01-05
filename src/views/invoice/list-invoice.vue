@@ -300,7 +300,7 @@ export default {
               sortable: true
           },
           {
-              title: 'Name',
+              title: 'customer Name',
               key: 'CustomerRef',
               sortable: true,
               render : (h , {row}) => { return row.CustomerRef.name}
@@ -491,7 +491,7 @@ export default {
               sortable: true
           },
           {
-              title: 'Name',
+              title: 'Customer Name',
               key: 'Contact',
               sortable: true,
               render:(h,{row})=>{ return row.Contact.Name }

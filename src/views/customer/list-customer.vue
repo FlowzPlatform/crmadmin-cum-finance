@@ -53,7 +53,7 @@ export default {
     pageSize: pageSize,
     columns1: [
       {
-        "title": "Name",
+        "title": "Customer Name",
         "key": "Name",
       },
       {
@@ -157,7 +157,7 @@ export default {
     ],
     columns2: [
       {
-        "title": "Name",
+        "title": "Customer Name",
         "key": "Name",
       },
       {
