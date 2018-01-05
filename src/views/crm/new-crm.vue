@@ -69,18 +69,18 @@
 										<Option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</Option>
 									</Select>
 								</p>
-								 <p>
+								<p>
 									<label class="col-xs-3" id="c17059">Assignee</label>
 									<Select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
 										<Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
 									</Select>
 								</p>
-								<p>
+								<!-- <p>
 									<label class="col-xs-3" id="c17075">Product line</label>
 									<Select v-model="finaldata.product_line" style="width:100px">
 										<Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option>
 									</Select>
-								</p>
+								</p> -->
 								<p>
 									<label class="col-xs-3" id="c17091">Contract date</label>
 									<!-- <el-date-picker v-model="finaldata.contractdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
@@ -281,9 +281,20 @@
 			    success: function (data) {
 			        result1 = data.data;
 			        console.log(data)
-			        self.assigneedata = _.map(result1, (d) => {
-			        	return {label: d.fullname, value: d.fullname}
+							var myarr = []
+			        _.forEach(result1, (d) => {
+								if (d.hasOwnProperty('fullname')) {
+									if (d.fullname !== undefined) {
+										if (d.fullname !== null) {
+											if (d.fullname.trim() !== '') {
+												myarr.push({label: d.fullname, value: d.fullname})
+											}
+										}
+									}
+								}
 			        })
+							self.assigneedata = myarr
+							// console.log('self.assigneedata', JSON.stringify(self.assigneedata))
 			    },error: function(err){
 			       console.log("error",err);
 			    }

@@ -98,7 +98,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group">
+          <!--  <div class="form-group">
               <div class="row">
                 <div class="col-xs-4 text-right">
                   <label id="c22426">Product line</label>
@@ -107,15 +107,15 @@
                   <Select v-model="finaldata.product_line">
                     <Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option>
                   </Select>
-                  <!-- <i-select v-model="finaldata.product_line">
+                  <i-select v-model="finaldata.product_line">
                     <i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
-                  </i-select> -->
-                 <!--  <select class="form-control" id="product_line">
+                  </i-select> 
+                  <select class="form-control" id="product_line">
                     <option>Select</option>
-                  </select> -->
+                  </select>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="col-sm-6">
             <div class="form-group">
