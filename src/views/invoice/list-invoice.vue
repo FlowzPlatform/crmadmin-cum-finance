@@ -1,12 +1,12 @@
 <template>
 <div>
   
-  <!-- <div style="padding: 10px; margin: 5px; display: block;" >
+  <div style="padding: 10px; margin: 5px; display: block;" >
     <div>
         <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
             <div class="panel-heading">
-                <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+                <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
             </div>
             <div class="panel-collapse collapse" id="collapseTwo">
                 <div class="panel-body">
@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="Customer">
                                     <select class="form-control"  v-model="cname" id="selectCustomer">
-                                      <option disabled value="">Please select</option>
+                                      <option value="">All</option>
                                     </select>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="status">
                                     <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
-                                        <option disabled value="">Please select</option>
+                                        <option value="">All</option>
                                         <option value="PAID">PAID</option>
                                         <option value="AUTHORISED">AUTHORISED</option>
                                         <option value="DRAFT">DRAFT</option>
@@ -82,8 +82,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                              <Button type="warning" @click= "reset()" style= "float:right;">Reset</Button>
+                            <div style="margin-top: 5px;">
+                              <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                              <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
                             </div>
                         </div>
                     </form>
@@ -91,7 +92,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <div>
   
@@ -277,12 +278,12 @@ import jsPDF from 'jspdf'
 import money from '../../images/Payment.png'
 import mail from '../../images/Mail.png'
 import download from '../../images/Download.png'
-
+import _ from 'lodash'
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
-
 var pageSize = 10
+var settingID
 export default {
   name: 'hello',
   data () {
@@ -295,12 +296,12 @@ export default {
       emailData : '',
       columns2: [
           {
-              title: 'Invoice',
+              title: 'Invoice No.',
               key: 'Id',
               sortable: true
           },
           {
-              title: 'Name',
+              title: 'customer Name',
               key: 'CustomerRef',
               sortable: true,
               render : (h , {row}) => { return row.CustomerRef.name}
@@ -311,24 +312,26 @@ export default {
               sortable: true,
               render : (h,{row}) => {
                 var date = new Date(row.DueDate); 
-                var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
                 return date1
               }
           },
           {
-              title: 'Amount Paid',
+              title: 'Paid',
               sortable: true,
-              render : (h , {row}) => { return row.TotalAmt-row.Balance}
+              render : (h , {row}) => { return '$' + row.TotalAmt-row.Balance }
           },
           {
-              title: 'Amount Due',
+              title: 'Due',
               key: 'Balance',
-              sortable: true
+              sortable: true,
+              render : (h , {row}) => { return '$' + row.Balance }
           },
           {
-              title: 'Total Amount',
+              title: 'Amount',
               key: 'TotalAmt',
-              sortable: true
+              sortable: true,
+              render : (h , {row}) => { return '$' + row.TotalAmt }
               
           },
           {
@@ -484,44 +487,47 @@ export default {
       ],
        columns1: [
           {
-              title: 'Invoice',
+              title: 'Invoice No.',
               key: 'InvoiceNumber',
               sortable: true
           },
           {
-              title: 'Name',
+              title: 'Customer Name',
               key: 'Contact',
               sortable: true,
               render:(h,{row})=>{ return row.Contact.Name }
           },
           {
-              title: 'Date',
-              key: 'Date',
+              title: 'Due Date',
+              key: 'DueDate',
               sortable: true,
               render:(h,{row})=>{ 
   
-               var date = new Date(row.Date); 
-               var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+               var date = new Date(row.DueDate); 
+               var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
                 return date1
               }
           },
            {
               title: 'Paid',
               key: 'AmountPaid',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.AmountPaid  }
           },
           {
               title: 'Due',
               key: 'AmountDue',
-              sortable: true
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.AmountDue }
           },
           {
               title: 'Total',
               key: 'Total',
-              sortable: true  
+              sortable: true,
+              render:(h,{row})=>{ return '$' + row.Total }
           },
           {
-              title: 'status',
+              title: 'Status',
               key: 'Status',
               sortable: true
           },
@@ -669,6 +675,7 @@ export default {
        
       settingIdForPayment : '',
       data6: [],
+      testArray: [],
       emailIdTobeSent : '',
       page: 1,
       pageSize: pageSize,
@@ -707,52 +714,152 @@ export default {
     //   this.list = await this.mockTableData1(1,pageSize)
     //   this.spind = true
     // },
-    // reset() {
-    //   this.cname = '';
-    //   this.status = '';
-    //   this.dategt = '';
-    //   this.datelt = '';
-    //   this.totalgt = '';
-    //   this.totallt = '';
-    //   this.duegt = '';
-    //   this.duelt = '';
-    //   this.data1 = []
-    //   this.list = []
-    //   this.searchdata();
-    // },
-    // async changeData() {
-    //   this.data1 = []
-    //   this.list = []
-    //   console.log("Inside change data")
-    //   this.resdata = await this.changeApiData();
-    //   console.log("response------------------------>", this.resdata)
-    //   this.tableDataBind();
-    //   this.list = await this.mockTableData1(1,pageSize);
-    // },
-    // async getCustomerUrl(){
-    //   console.log("inside getCustomerUrl " )
-    //   var res
-    //     var settings = {
-    //     "async": true,
-    //     "crossDomain": true,
-    //     "url": config.default.serviceUrl + 'contacts',
-    //     "method": "GET",
-    //     "headers": {
-    //       "cache-control": "no-cache"
-    //     }
-    //   }
-    //   console.log("settings", settings)
-    //   await $.ajax(settings).done(function (response) {
-    //       res = response
-    //       console.log("$$$$$$$$$$$$$$!!!!!!!!!!!!!!!!!!", response)
-    //     });
-    //       res.forEach (obj => {
-    //     var x = document.getElementById("selectCustomer");
-    //         var option = document.createElement("option");
-    //         option.text = obj.Name;
-    //         x.add(option);
-    //   })
-    // },
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.totalgt = '';
+      this.totallt = '';
+      this.duegt = '';
+      this.duelt = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data6", this.data6)
+      this.testArray = this.data6
+      var self = this
+
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.testArray = _.filter(this.testArray,  function(item){
+        console.log("item",item)
+        if(item.Contact != undefined){
+          return item.Contact.Name === self.cname;
+        }else{
+          return item.CustomerRef.name === self.cname
+        }
+      });
+       console.log("myarr",this.testArray)
+       this.list = this.testArray
+      }
+
+      if(this.status != ''){
+        console.log("this.status", this.status)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          return item.Status === self.status;
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.dategt != ''){
+        console.log("this.dategt", this.dategt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          return item.DueDate >= self.dategt;
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.datelt != ''){
+        console.log("this.dategt", this.datelt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          return item.DueDate <= self.datelt;
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.totalgt != ''){
+        console.log("this.totalgt", this.totalgt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          if(item.Total != undefined){  
+            return item.Total >= self.totalgt;
+          }else{
+            return item.TotalAmt >= self.totalgt;
+          }
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.totallt != ''){
+        console.log("this.totallt", this.totallt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+           if(item.Total != undefined){  
+            return item.Total <= self.totallt;
+          }else{
+            return item.TotalAmt >= self.totallt;
+          }
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.duegt != ''){
+        console.log("this.duegt", this.duegt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          if(item.AmountDue != undefined){
+            return item.AmountDue >=self.duegt
+          }else{
+            return item.Balance >= self.duegt;
+          }
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+      if(this.duelt != ''){
+        console.log("this.duelt", this.duelt)
+        this.testArray = _.filter(this.testArray,  function(item){
+          console.log("item",item)
+          if(item.AmountDue != undefined){
+            return item.AmountDue >=self.duelt
+          }else{
+            return item.Balance >= self.duelt;
+          }
+        });
+         console.log("myarr",this.testArray)
+         this.list = this.testArray
+      }
+
+    },
+    async getCustomerBySettingId(settingId){
+      console.log("inside getCustomerUrl " )
+      var res
+      console.log("settingId----------------------->",settingId)
+       await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingId
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              res = response.data[0].data
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      
+          res.forEach (obj => {
+            console.log("obj------------------->",obj);
+          var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = obj.Name;
+            x.add(option);
+          })
+    },
     // async apiData () {
     //   var resp;
     //   let self=this;
@@ -850,8 +957,11 @@ export default {
                 } 
     },
     async mockTableData1 (p,size) {
-              this.len = this.data6.length
-              return this.data6.slice((p - 1) * size, p * size);
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.data6)
+      this.len = this.data6.length
+      return this.data6.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
               this.page = p
@@ -892,7 +1002,11 @@ export default {
       this.$store.state.invoiceData = params;
       this.$store.state.settingId = this.settingIdForPayment
       console.log(">>>>>>>>> " , this.$store.state.invoiceData);
-       this.$router.push('/checkout/' + params.InvoiceID)
+      if(params.InvoiceID != undefined){
+        this.$router.push('/checkout/' + params.InvoiceID)
+      }else{
+        this.$router.push('/checkout/' + params.Id)
+      }
     },
     async sendemail(params){
       this.$Loading.start();
@@ -980,9 +1094,11 @@ export default {
       let settingId = this.tabPanes[data].id
       this.settingIdForPayment = settingId;
       this.getInvoiceBySettingId(settingId)
+      this.getCustomerBySettingId(settingId)
     },
     async getInvoiceBySettingId(settingId){
       console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
+      settingID = settingId
       this.$Loading.start();
       this.data6 = [];
       let self = this;
@@ -1048,6 +1164,7 @@ export default {
           let settingId = self.tabPanes[0].id;
           self.settingIdForPayment = self.tabPanes[0].id;
           self.getInvoiceBySettingId(settingId)
+          self.getCustomerBySettingId(settingId)
         }else
         {
             self.$Modal.warning({
@@ -1076,9 +1193,8 @@ export default {
     //  $('.maindiv').change(async function() {
     //   await self.changeData();
     // }); 
-    //this.getCustomerUrl();
-    //this.searchdata();
-    //this.getAllInvoice()
+    // this.searchdata();
+    // this.getAllInvoice()
     this.getAllSettings()
     
   }

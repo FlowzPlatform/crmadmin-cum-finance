@@ -158,6 +158,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import config from '../config/customConfig'
 import 'element-ui/lib/theme-chalk/index.css'
+import psl from 'psl';
 
 Vue.use(ElementUI)
 var $loginMsg = $('.loginMsg'),
@@ -262,10 +263,12 @@ export default {
                         })
                         .then(function(result) {
                             console.log(result)
-                             Cookies.set('user',  result.data.data.email);
-                              Cookies.set('auth_token', response.data.logintoken);
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                             Cookies.set('user',  result.data.data.email  , {domain: location});
+                              Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
-                            Cookies.set('email', response.data.email);
+                            Cookies.set('email', response.data.email  , {domain: location});
                             Cookies.set('password', '123456');
                             self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
                             if (self.form.email === 'iview_admin') {
@@ -300,23 +303,23 @@ export default {
             this.showForgotPassword = false;
         },
         facebookLogin() {
-             this.isSocialLogin = true;
+            // this.isSocialLogin = true;
              $("#form-facebook").submit() 
         },
         googleLogin() {
-            this.isSocialLogin = true;
+            ////this.isSocialLogin = true;
              $("#form-google").submit();
         },
         twitterLogin() {
-            this.isSocialLogin = true;
+           // this.isSocialLogin = true;
             $("#form-google").submit();
         },
         githubLogin() {
-            this.isSocialLogin = true;
+            //this.isSocialLogin = true;
             $("#form-google").submit();
         },
         linkdinLogin() {
-            this.isSocialLogin = true;
+           // this.isSocialLogin = true;
             $("#form-linkedIn").submit();
         },
        
@@ -360,10 +363,12 @@ export default {
                         })
                         .then(function(result) {
                             console.log(result)
-                             Cookies.set('user',  result.data.data.email);
-                              Cookies.set('auth_token', response.data.logintoken);
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                             Cookies.set('user',  result.data.data.email  , {domain: location});
+                              Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
-                            Cookies.set('email', response.data.email);
+                            Cookies.set('email', response.data.email , {domain: location}) ;
                             Cookies.set('password', '123456');
                             self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
                             if (self.form.email === 'iview_admin') {
@@ -481,7 +486,10 @@ export default {
                         })
                         .then(function(result) {
                             console.log(">>>>>>>>>>>>>>>> " , result)
-                             Cookies.set('user',  result.data.data.email);
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                             Cookies.set('user',  result.data.data.email  , {domain: location});
+                             
                               //Cookies.set('auth_token', result.data.logintoken);
                         
                             //Cookies.set('email', response.data.email);
@@ -535,8 +543,9 @@ export default {
         }else if (Object.keys(configObj)[0] == "/login?token")
         {
             let paramsArr = Object.values(configObj);
-            
-            Cookies.set('auth_token', paramsArr[0])
+            let location = psl.parse(window.location.hostname)
+            location = location.domain === null ? location.input : location.domain;
+            Cookies.set('auth_token', paramsArr[0] , {domain: location})
             
         }
        
