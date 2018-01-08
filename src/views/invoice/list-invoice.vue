@@ -104,7 +104,8 @@
      <Tabs  @on-click="tabClicked">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
           <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-          <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+          <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+          <Table v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
           
           <div style="margin: 10px;overflow: hidden">
                   <div style="float: right;">
@@ -294,6 +295,7 @@ export default {
       mail,
       download,
       emailData : '',
+      columns3 : [],
       columns2: [
           {
               title: 'Invoice No.',
@@ -675,6 +677,7 @@ export default {
        
       settingIdForPayment : '',
       data6: [],
+      data7: [],
       testArray: [],
       emailIdTobeSent : '',
       page: 1,
@@ -831,11 +834,27 @@ export default {
       }
 
     },
-    async getCustomerBySettingId(settingId){
+    async getCustomerBySettingId(settingId , settingDomain , data){
       console.log("inside getCustomerUrl " )
-      var res
-      console.log("settingId----------------------->",settingId)
-       await axios({
+      let res
+      console.log("settingId----------------------->",settingDomain)
+      if(settingDomain == 'custom'){
+        let customerUrl = this.tabPanes[data].customer_url;
+         await axios({
+            method: 'get',
+            url: customerUrl,
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log(response)
+              res = response.data
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      }else{
+         await axios({
             method: 'get',
             url: config.default.serviceUrl + 'contacts',
             params: {
@@ -845,15 +864,17 @@ export default {
             Authorization : Cookies.get('auth_token')
         },
             }).then(function (response) {
-              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              
               res = response.data[0].data
             })
             .catch(function (error) {
               console.log(error);
             });
+      }
+      
       
           res.forEach (obj => {
-            console.log("obj------------------->",obj);
+            
           var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
             option.text = obj.Name;
@@ -957,9 +978,7 @@ export default {
                 } 
     },
     async mockTableData1 (p,size) {
-      console.log("p-------------->",p)
-      console.log("p-------------->",size)
-      console.log("console.log------------>",this.data6)
+      
       this.len = this.data6.length
       return this.data6.slice((p - 1) * size, p * size);
     },
@@ -1091,19 +1110,68 @@ export default {
     },
     async tabClicked(data){
       console.log(data)
-      let settingId = this.tabPanes[data].id
+      let settingId = this.tabPanes[data].id;
+      let settingDomain = this.tabPanes[data].domain;
       this.settingIdForPayment = settingId;
-      this.getInvoiceBySettingId(settingId)
-      this.getCustomerBySettingId(settingId)
+      
+      this.getInvoiceBySettingId(settingId ,settingDomain , data)
+      this.getCustomerBySettingId(settingId , settingDomain , data)
     },
-    async getInvoiceBySettingId(settingId){
+    async getInvoiceBySettingId(settingId , settingDomain , data){
       console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
       settingID = settingId
       this.$Loading.start();
       this.data6 = [];
       let self = this;
       self.list = [];
-      axios.get(config.default.serviceUrl + 'invoice', {
+      
+      if(settingDomain == 'custom'){
+        let Invoiceurl = self.tabPanes[data].invoice_url;
+        axios.get(Invoiceurl, {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        }
+      })
+      .then(async function (response) {
+        self.$Loading.finish();
+        $('.preload').css("display","none")
+        console.log("response------>iuy",response);
+        self.data6 = response.data;
+        self.list = await self.mockTableData1(1,pageSize)
+        self.columns3 = [
+                    {
+                        title: 'Invoice',
+                        key: 'Invoice'
+                    },
+                    {
+                        title: 'Customer',
+                        key: 'Name'
+                    },
+                    {
+                        title: 'Due Date',
+                        key: 'Due Date'
+                    },
+                    {
+                        title: 'Due Amount',
+                        key: 'Amount Due'
+                    },
+                    {
+                        title: 'Paid Amount',
+                        key: 'Amount Paid'
+                    },
+                    {
+                        title: 'Total Amount',
+                        key: 'Total Amount'
+                    }
+                ]
+      })
+      .catch(function (error) {
+        console.log("error",error);
+        self.$Loading.error();
+        
+      });
+      }else{
+        axios.get(config.default.serviceUrl + 'invoice', {
         headers:{
             Authorization : Cookies.get('auth_token')
         },
@@ -1124,29 +1192,11 @@ export default {
         self.$Loading.error();
         
       });
+      }
+      
       
     },
-    // async getAllInvoice(){
-    //   let self = this;
-      
-    //   axios.get(config.default.serviceUrl + 'invoice', {
-    //     headers:{
-    //         Authorization : Cookies.get('auth_token')
-    //     },
-    //   })
-    //   .then(function (response) {
-        
-    //     console.log("response------>iuy",response);
-    //     self.spinShow = false;
-    //     self.tabPanes = response.data;
-    //     $('.preload').css("display","none")
-        
-    //   })
-    //   .catch(function (error) {
-    //     console.log("error",error);
-    //     self.spinShow = false;
-    //   });
-    // },
+    
     async getAllSettings(){
       let self = this;
       axios.get(config.default.serviceUrl + 'settings?isActive=true', {
@@ -1162,9 +1212,10 @@ export default {
           self.tabPanes = response.data.data;
           $('.preload').css("display","none")
           let settingId = self.tabPanes[0].id;
+          let settingDomain = self.tabPanes[0].domain;
           self.settingIdForPayment = self.tabPanes[0].id;
-          self.getInvoiceBySettingId(settingId)
-          self.getCustomerBySettingId(settingId)
+          self.getInvoiceBySettingId(settingId , settingDomain , 0)
+          self.getCustomerBySettingId(settingId , settingDomain , 0)
         }else
         {
             self.$Modal.warning({

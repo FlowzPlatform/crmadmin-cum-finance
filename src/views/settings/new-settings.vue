@@ -5,7 +5,7 @@
         </div>
         <Tabs type="card">
             <TabPane label="Xero">
-                <Form ref="XeroformValidate" :model="XeroformValidate" :rules="XeroruleValidate" :label-width="100">
+                <Form ref="XeroformValidate" :model="XeroformValidate" :rules="XeroruleValidate" :label-width="150">
                     <FormItem label="Configuration Name" prop="configName">
                         <Input v-model="XeroformValidate.configName" placeholder="Enter your Configuration Name"></Input>
                     </FormItem>
@@ -40,7 +40,7 @@
                 </Form>
             </TabPane>
             <TabPane label="Quickbook">
-                <Form ref="QBformValidate" :model="QBformValidate" :rules="QBruleValidate" :label-width="100">
+                <Form ref="QBformValidate" :model="QBformValidate" :rules="QBruleValidate" :label-width="150">
                     <FormItem label="Configuration Name" prop="configName">
                         <Input v-model="QBformValidate.configName" placeholder="Enter your Configuration Name"></Input>
                     </FormItem>
@@ -62,6 +62,26 @@
                     <FormItem>
                         <Button type="primary" @click="QBhandleSubmit('QBformValidate')" :loading ="loading" >Submit</Button>
                         <Button type="ghost" @click="handleReset('QBformValidate')" style="margin-left: 8px">Reset</Button>
+                    </FormItem>
+                </Form>
+            </TabPane>
+            <TabPane label="Custom">
+                <Form ref="customformValidate" :model="customformValidate" :rules="customruleValidate" :label-width="150">
+                    <FormItem label="Configuration Name" prop="configName">
+                        <Input v-model="customformValidate.configName" placeholder="Enter your Configuration Name"></Input>
+                    </FormItem>
+                    <FormItem label="Customer URL" prop="customer_url">
+                        <Input v-model="customformValidate.customer_url" placeholder="Enter Customer URL"></Input>
+                    </FormItem>
+                    <FormItem label="Invoice URL" prop="invoice_url">
+                        <Input v-model="customformValidate.invoice_url" placeholder="Enter Invoice URL"></Input>
+                    </FormItem>
+                    <FormItem label="Set as Active" prop="setAsDefault">
+                        <Checkbox size="large" v-model="isActivecustom"></Checkbox>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="primary" @click="customhandleSubmit('customformValidate')" :loading ="loading" >Submit</Button>
+                        <Button type="ghost" @click="handleReset('customformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
                 </Form>
             </TabPane>
@@ -93,6 +113,7 @@ Vue.use(VueWidgets);
                file: null,
                isActive: false,
                isActiveQb:false,
+               isActivecustom:false,
                 loadingStatus: false,
                XeroformValidate: {
                     configName : '',
@@ -112,7 +133,7 @@ Vue.use(VueWidgets);
                         { required: true, message: "Consumer Secret cannot be empty", trigger: 'blur' }
                     ],
                     configName: [
-                        { required: true, message: "config Name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Cconfiguration name Key cannot be empty", trigger: 'blur' }
                     ]
                 },
                 QBformValidate: {
@@ -124,7 +145,7 @@ Vue.use(VueWidgets);
                 },
                 QBruleValidate: {
                     configName: [
-                        { required: true, message: "config Name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Configuration name Key cannot be empty", trigger: 'blur' }
                     ],
                     refresh_token: [
                         { required: true, message: 'Refresh token cannot be empty', trigger: 'blur' }
@@ -137,6 +158,22 @@ Vue.use(VueWidgets);
                     ],
                     realmId: [
                         { required: true, message: "RealmId cannot be empty", trigger: 'blur' }
+                    ]
+                },
+                customformValidate : {
+                    configName : '',
+                    customer_url: '',
+                    invoice_url:'',
+                },
+                customruleValidate : {
+                    configName: [
+                        { required: true, message: "Configuration name Key cannot be empty", trigger: 'blur' }
+                    ],
+                    customer_url: [
+                        { required: true, message: 'Customer Url cannot be empty', trigger: 'blur' }
+                    ],
+                    invoice_url: [
+                        { required: true, message: 'invoice Url cannot be empty', trigger: 'blur' }
                     ]
                 }
                 
@@ -199,6 +236,8 @@ Vue.use(VueWidgets);
                                 console.log(response)
                                  self.$Message.success('Success!');
                                  self.loading = false;
+                                 self.$Message.success('Success!');
+                                 self.handleReset('XeroformValidate')
                             })
                             .catch(function (error) {
                                 Cookies.remove('auth_token') 
@@ -251,6 +290,8 @@ Vue.use(VueWidgets);
                                 console.log(response)
                                  self.$Message.success('Success!');
                                  self.loading = false;
+                                 self.$Message.success('Success!');
+                                 self.handleReset('QBformValidate')
                             })
                             .catch(function (error) {
                                 Cookies.remove('auth_token') 
@@ -262,8 +303,54 @@ Vue.use(VueWidgets);
                                 })
                                
                             });
-                        self.$Message.success('Success!');
-                        self.handleReset('QBformValidate')
+                        
+                    }
+                    else {
+                        self.$Message.error('Fail!');
+                    }
+                })
+            },
+
+            async customhandleSubmit (name) {
+
+                let self = this;
+                this.$refs[name].validate(async  (valid)   => {
+                    if (valid) {
+                        self.loading = true;
+                        let  data = {
+                                    "configName": self.customformValidate.configName.trim(),
+                                    "customer_url" :  self.customformValidate.customer_url.trim(),
+                                    "invoice_url" : self.customformValidate.invoice_url.trim(),
+                                    "domain" : 'custom',
+                                    "isActive" : self.isActivecustom,
+                                    "isDeleated" : false
+                                }
+                        axios({
+                                method: 'post',
+                                url: feathersUrl +'settings',
+                                headers:{
+                                    Authorization : Cookies.get('auth_token')
+                                },
+                                data: data
+                            })  
+                            .then(function (response) {
+                                console.log(response)
+                                 self.$Message.success('Success!');
+                                 self.loading = false;
+                                 self.handleReset('customformValidate')
+                            })
+                            .catch(function (error) {
+                                Cookies.remove('auth_token') 
+                                self.$Message.error('Auth Error!');
+                                self.loading = false;
+                                  self.$store.commit('logout', this); 
+                                   self.$router.push({
+                                    name: 'login'
+                                })
+                               
+                            });
+                        
+                        
                     }
                     else {
                         self.$Message.error('Fail!');

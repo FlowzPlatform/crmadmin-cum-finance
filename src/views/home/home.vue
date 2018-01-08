@@ -721,14 +721,20 @@ export default {
                 
             })
             .catch(function (error) {
-                console.log(error)
+                console.log(error.response)
                 self.disabled = false;
-                //Cookies.remove('auth_token') 
-                self.$Message.error('Auth Error!');
-                //self.$store.commit('logout', self); 
-                // self.$router.push({
-                //     name: 'login'
-                // })
+                if(error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    this.$store.commit('logout', this);
+                    this.$store.commit('clearOpenedSubmenu');
+                    this.$router.push({
+                        name: 'login'
+                    });
+                }
+                
             });
             
             

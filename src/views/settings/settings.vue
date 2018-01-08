@@ -32,11 +32,19 @@
                             </Input>                            
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client ID </td>
                         <td>
                              <Input :type="client_idType" readonly :value='product.client_id'>
                                 <Button slot="append" icon="eye" @click="showSecret" ></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Customer Url </td>
+                        <td>
+                             <Input  readonly :value='product.customer_url'>
+                                
                             </Input>
                         </td>
                     </tr>
@@ -49,11 +57,18 @@
                             </Input>
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client secret </td>
                         <td>
                             <Input :type="client_secretType" readonly :value='product.client_secret'>
                                 <Button slot="append" icon="eye" @click="showSecret"></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Invoice Url </td>
+                        <td>
+                             <Input  readonly :value='product.invoice_url'>
                             </Input>
                         </td>
                     </tr>
@@ -62,7 +77,7 @@
                         <td >User agent</td>
                         <td >{{ product.useragent}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >realmId </td>
                         <td >{{product.realmId}}</td>
                     </tr>
@@ -71,7 +86,7 @@
                         <td >Certificate </td>
                         <td >{{ product.pem}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Refresh Token: </td>
                         <td >{{product.refresh_token}}</td>
                     </tr>
@@ -125,7 +140,7 @@
                         <div v-else>Uploaded file: {{ editData.pem }} </div>
                     </FormItem>
                 </Form>
-                <Form :model="editFormItemQB" :label-width="60" v-else>
+                <Form :model="editFormItemQB" :label-width="60" v-if='editFormType == "QB"'>
                     <FormItem label="Config Name">
                         <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
                     </FormItem>
@@ -141,6 +156,18 @@
                     <FormItem label="Refresh Token">
                         <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
                     </FormItem>
+                </Form>
+                <Form :model="editFormItemCustom" :label-width="60" v-if='editFormType == "custom"'>
+                    <FormItem label="Config Name">
+                        <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                    </FormItem>
+                    <FormItem label="Customer Url">
+                        <Input v-model="editData.customer_url" placeholder="Customer Url"></Input>
+                    </FormItem>
+                    <FormItem label="Invoice Url">
+                        <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
+                    </FormItem>
+                    
                 </Form>
             
             
@@ -172,6 +199,9 @@ Vue.use(VueWidgets);
                     input: ''
                 },
                 editFormItemQB: {
+                    input: ''
+                },
+                editFormItemCustom :{
                     input: ''
                 },
                 file:'',

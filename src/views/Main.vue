@@ -32,6 +32,22 @@
                     </div>
                 </div>
                 <div class="header-avator-con">
+                    <div class="headerMenu">
+                    <Menu mode="horizontal"  active-name="1">
+                        <Submenu name="3">
+                            <template slot="title">
+                                <Icon type="grid" size="large" style="font-size: 23px;padding-top: 21px;"></Icon>
+                            </template>
+                            <MenuGroup title="Flowz-Products">
+                                <MenuItem name="3-1"><span @click="goToFlowzDashboard">Flowz Dashboard</span></MenuItem>
+                                <MenuItem name="3-2"><span @click="goToFlowzBuilder">Website Builder</span></MenuItem>
+                                <MenuItem name="3-3"><span @click="goToFlowzVmail">Vmail</span></MenuItem>
+                                <MenuItem name="3-4"><span @click="goToFlowzUploader">Uploader</span></MenuItem>
+                                <MenuItem name="3-5"><span @click="goToFlowzDbetl">DBETL</span></MenuItem>
+                            </MenuGroup>
+                        </Submenu>
+                    </Menu>
+                    </div>
                     <Tooltip placement="bottom">
                          <div @click="goToSettings"><Icon type="gear-b" size="large" style="font-size: 23px;
                             padding-top: 5px;
@@ -40,6 +56,7 @@
                             Settings
                         </div>
                     </Tooltip>
+                    
                     
                     <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
                     <lock-screen></lock-screen>
@@ -95,8 +112,9 @@
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
     import psl from 'psl';
-
+    import config from '@/config/customConfig'
     export default {
+        
         components: {
             shrinkableMenu,
             tagsPageOpened,
@@ -111,7 +129,12 @@
                 shrink: false,
                 userName: '',
                 isFullScreen: false,
-                openedSubmenuArr: this.$store.state.app.openedSubmenuArr
+                openedSubmenuArr: this.$store.state.app.openedSubmenuArr,
+                flowzDashboardUrl : config.default.flowzDashboardUrl,
+                flowzBuilderUrl : config.default.flowzBuilderUrl ,
+                flowzVmailUrl : config.default.flowzVmailUrl ,
+                flowzUploaderUrl : config.default.flowzUploaderUrl ,
+                flowzDbetlUrl : config.default.flowzDbetlUrl 
             };
         },
         computed: {
@@ -207,6 +230,23 @@
                this.$router.push({
                         name: 'settings'
                     });
+            },
+            goToFlowzDashboard (){
+                
+                window.open(this.flowzDashboardUrl, '_blank');
+            },
+            goToFlowzBuilder (){
+                
+                window.open(this.flowzBuilderUrl, '_blank');
+            },
+            goToFlowzVmail() {
+                window.open(this.flowzVmailUrl, '_blank');
+            },
+            goToFlowzUploader (){
+                window.open(this.flowzUploaderUrl, '_blank');
+            },
+            goToFlowzDbetl (){
+                window.open(this.flowzDbetlUrl, '_blank');
             }
         },
         watch: {

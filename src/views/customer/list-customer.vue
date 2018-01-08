@@ -18,7 +18,8 @@
       <Tabs  @on-click="tabClicked">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
         <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-        <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+        <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+        <Table v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
         
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
@@ -51,6 +52,7 @@ export default {
     len: 1,
     list: [],
     pageSize: pageSize,
+    column3:[],
     columns1: [
       {
         "title": "Name",
@@ -277,30 +279,82 @@ export default {
     async tabClicked(data){
       console.log(data)
       let settingId = this.tabPanes[data].id
-      this.getContactBySettingId(settingId)
+      let settingDomain = this.tabPanes[data].domain;
+      this.getContactBySettingId(settingId , settingDomain , data)
     },
-    async getContactBySettingId(settingId){
+    async getContactBySettingId(settingId , settingDomain , data){
       this.$Loading.start();
       this.data6 = [];
       let self = this;
       self.list = [];
-      await axios.get(feathersUrl +'contacts', {
+      if(settingDomain == 'custom'){
+        let customerUrl = this.tabPanes[data].customer_url;
+        await axios.get(customerUrl, {
          headers:{
           Authorization : Cookies.get('auth_token')
-      },
-      params : {
-      settingId : settingId
+          }
+          }).then(async function (response) {
+            console.log("$$$$$$$$$$$$$$$$$$$",response)
+            self.data6 = response.data;
+            self.columns3 = [
+                    
+                    {
+                        title: 'Customer',
+                        key: 'Name'
+                    },
+                    {
+                        title: 'Status',
+                        key: 'Status'
+                    },
+                    {
+                        title: 'Email',
+                        key: 'Email'
+                    },
+                    {
+                        title: 'Phone No',
+                        key: 'Phone'
+                    },
+                    {
+                        title: 'Mobile No',
+                        key: 'Mobile'
+                    },
+                    
+                    {
+                        title: 'Fax',
+                        key: 'Fax'
+                    },
+                    {
+                        title: 'Address',
+                        key: 'Address'
+                    }
+                ]
+              self.$Loading.finish();
+              $('.preload').css("display","none")
+              self.list = await self.mockTableData1(1,pageSize)
+          }).catch(function (error) {
+            console.log("error",error);
+              self.$Loading.error();
+          });
+      }else{
+        await axios.get(feathersUrl +'contacts', {
+         headers:{
+          Authorization : Cookies.get('auth_token')
+          },
+          params : {
+          settingId : settingId
+          }
+          }).then(async function (response) {
+            console.log("$$$$$$$$$$$$$$$$$$$",response)
+            self.data6 = response.data[0].data;
+              self.$Loading.finish();
+              $('.preload').css("display","none")
+              self.list = await self.mockTableData1(1,pageSize)
+          }).catch(function (error) {
+            console.log("error",error);
+              self.$Loading.error();
+          });
       }
-      }).then(async function (response) {
-        console.log("$$$$$$$$$$$$$$$$$$$",response)
-        self.data6 = response.data[0].data;
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
-      }).catch(function (error) {
-        console.log("error",error);
-          self.$Loading.error();
-      });   
+         
     },          
     async getAllSettings(){
         let self = this;
@@ -317,7 +371,8 @@ export default {
               self.tabPanes = response.data.data;
             $('.preload').css("display","none")
             let settingId = self.tabPanes[0].id
-            self.getContactBySettingId(settingId)
+            let settingDomain = self.tabPanes[0].domain;
+            self.getContactBySettingId(settingId , settingDomain , 0)
             }else
             {
                 self.$Modal.warning({

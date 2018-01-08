@@ -46,6 +46,12 @@ module.exports =  {
         twitterSuccessCallbackUrl: frontEndUrl,
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
+
+        flowzDashboardUrl : 'http://dashboard.'+process.env.domainkey,
+        flowzBuilderUrl : 'http://webbuilder.'+process.env.domainkey ,
+        flowzVmailUrl : 'http://vmail.'+process.env.domainkey ,
+        flowzUploaderUrl : 'http://uploader.'+process.env.domainkey ,
+        flowzDbetlUrl : 'http://dbetl.'+process.env.domainkey , 
         
         loginWithFacebookUrl : 'http://auth.'+process.env.domainkey+'/auth/facebook',
         loginWithGoogleUrl : 'http://auth.'+process.env.domainkey+'/auth/Gplus',
