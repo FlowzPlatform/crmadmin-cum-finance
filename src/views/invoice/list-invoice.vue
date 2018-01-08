@@ -1,12 +1,8 @@
 <template>
 <div>
-  
-  <div style="padding: 10px; margin: 5px; display: block;" >
-    <div>
-        <h1>Invoice List </h1>
         <div class="panel panel-default panel-group" id="accordion">
             <div class="panel-heading">
-                <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+                <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
             </div>
             <div class="panel-collapse collapse" id="collapseTwo">
                 <div class="panel-body">
@@ -18,7 +14,7 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="Customer">
                                     <select class="form-control"  v-model="cname" id="selectCustomer">
-                                      <option disabled value="">Please select</option>
+                                      <option value="">All</option>
                                     </select>
                                 </div>
                             </div>
@@ -29,7 +25,7 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="status">
                                     <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
-                                        <option disabled value="">Please select</option>
+                                        <option value="">All</option>
                                         <option value="PAID">PAID</option>
                                         <option value="AUTHORISED">AUTHORISED</option>
                                         <option value="DRAFT">DRAFT</option>
@@ -82,17 +78,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                              <Button type="warning" @click= "reset()" style= "float:right;">Reset</Button>
+                            <div style="margin-top: 5px;">
+                              <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                              <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
 <div>
   
   <div v-if="spinShow">
@@ -150,8 +144,8 @@
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
                                 Invoice #: {{emailData.row.InvoiceNumber}}<br>
-                                Created: {{emailData.row.Date}}<br>
-                                Due: {{emailData.row.DueDate}}
+                                Created: {{createdDate}}<br>
+                                Due: {{dueDate}}
                             </td>
                         </tr>
                     </tbody></table>
@@ -165,9 +159,10 @@
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
                                 {{emailData.row.Contact.Name}}<br>
-                                Sparksuite, Inc.<br>
-                                12345 Sunny Road<br>
-                                Sunnyville, CA 12345
+                                {{emailDataCustomer.Addresses[0].AddressLine1}}<br>
+                                {{emailDataCustomer.Addresses[0].AddressLine2}}<br>
+                                {{emailDataCustomer.Addresses[0].City}}<br>
+                                {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}<br>
                             </td>
                             
                             <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
@@ -180,27 +175,6 @@
                     </tbody></table>
                 </td>
             </tr>
-            
-            <tr>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;">
-                    Payment Method
-                </td>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;"></td>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align: right;">
-                    Check 
-                </td>
-            </tr>
-            
-            <tr>
-                <td style="padding: 5px;vertical-align: top;padding-bottom: 20px;">
-                    Stripe
-                </td>
-                <td></td>
-                <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
-                    1000
-                </td>
-            </tr>
-
              <tr>
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
                     Item
@@ -254,7 +228,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
                 <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Total: ${{emailData.row.Total}}
+                   Total: ${{emailData.row.AmountDue}}
                 </td>
             </tr>
             
@@ -277,7 +251,7 @@ import jsPDF from 'jspdf'
 import money from '../../images/Payment.png'
 import mail from '../../images/Mail.png'
 import download from '../../images/Download.png'
-
+import _ from 'lodash'
 //import Handlebars from 'handlebars'
 //import { mjml2html } from 'mjml'
 import Cookies from 'js-cookie';
@@ -293,6 +267,9 @@ export default {
       mail,
       download,
       emailData : '',
+      createdDate: '',
+      dueDate: '',
+      emailDataCustomer: '',
       columns2: [
           {
               title: 'Invoice No.',
@@ -311,7 +288,7 @@ export default {
               sortable: true,
               render : (h,{row}) => {
                 var date = new Date(row.DueDate); 
-                var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
                 return date1
               }
           },
@@ -348,6 +325,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
+            width: 200,
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
@@ -357,7 +335,8 @@ export default {
                         content: 'Make Payment'
                       },
                       style:{
-                        float:'left'
+                        float:'left',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -382,7 +361,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                        h('img', {
@@ -407,7 +387,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -435,7 +416,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -460,7 +442,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                     h('img', {
@@ -498,12 +481,12 @@ export default {
           },
           {
               title: 'Due Date',
-              key: 'Date',
+              key: 'DueDate',
               sortable: true,
               render:(h,{row})=>{ 
   
-               var date = new Date(row.Date); 
-               var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+               var date = new Date(row.DueDate); 
+               var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
                 return date1
               }
           },
@@ -534,6 +517,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
+            width: 200,
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
@@ -543,7 +527,8 @@ export default {
                         content: 'Make Payment'
                       },
                       style:{
-                        float:'left'
+                        float:'left',
+                        cursor:'pointer'
                       }
                     }, [
                         h('img', {
@@ -568,7 +553,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -593,7 +579,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                        h('img', {
@@ -621,7 +608,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -646,7 +634,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                     h('img', {
@@ -669,11 +658,10 @@ export default {
               }
             }
           }
-      ],
-
-       
+      ],      
       settingIdForPayment : '',
       data6: [],
+      filterArray: [],
       emailIdTobeSent : '',
       page: 1,
       pageSize: pageSize,
@@ -712,33 +700,128 @@ export default {
     //   this.list = await this.mockTableData1(1,pageSize)
     //   this.spind = true
     // },
-    // reset() {
-    //   this.cname = '';
-    //   this.status = '';
-    //   this.dategt = '';
-    //   this.datelt = '';
-    //   this.totalgt = '';
-    //   this.totallt = '';
-    //   this.duegt = '';
-    //   this.duelt = '';
-    //   this.data1 = []
-    //   this.list = []
-    //   this.searchdata();
-    // },
-    // async changeData() {
-    //   this.data1 = []
-    //   this.list = []
-    //   console.log("Inside change data")
-    //   this.resdata = await this.changeApiData();
-    //   console.log("response------------------------>", this.resdata)
-    //   this.tableDataBind();
-    //   this.list = await this.mockTableData1(1,pageSize);
-    // },
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.totalgt = '';
+      this.totallt = '';
+      this.duegt = '';
+      this.duelt = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data6", this.data6)
+      this.filterArray = this.data6
+      var self = this
+
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+        if(item.Contact != undefined){
+          return item.Contact.Name === self.cname;
+        }else{
+          return item.CustomerRef.name === self.cname
+        }
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.status != ''){
+        console.log("this.status", this.status)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          return item.Status === self.status;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.dategt != ''){
+        console.log("this.dategt", this.dategt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          return item.DueDate >= self.dategt;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.datelt != ''){
+        console.log("this.dategt", this.datelt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          return item.DueDate <= self.datelt;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.totalgt != ''){
+        console.log("this.totalgt", this.totalgt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          if(item.Total != undefined){  
+            return item.Total >= self.totalgt;
+          }else{
+            return item.TotalAmt >= self.totalgt;
+          }
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.totallt != ''){
+        console.log("this.totallt", this.totallt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+           if(item.Total != undefined){  
+            return item.Total <= self.totallt;
+          }else{
+            return item.TotalAmt >= self.totallt;
+          }
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.duegt != ''){
+        console.log("this.duegt", this.duegt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          if(item.AmountDue != undefined){
+            return item.AmountDue >=self.duegt
+          }else{
+            return item.Balance >= self.duegt;
+          }
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.duelt != ''){
+        console.log("this.duelt", this.duelt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          if(item.AmountDue != undefined){
+            return item.AmountDue >=self.duelt
+          }else{
+            return item.Balance >= self.duelt;
+          }
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+    },
     async getCustomerBySettingId(settingId){
       console.log("inside getCustomerUrl " )
       var res
       console.log("settingId----------------------->",settingId)
-       await axios({
+      await axios({
             method: 'get',
             url: config.default.serviceUrl + 'contacts',
             params: {
@@ -757,7 +840,7 @@ export default {
       
           res.forEach (obj => {
             console.log("obj------------------->",obj);
-          var x = document.getElementById("selectCustomer");
+            var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
             option.text = obj.Name;
             x.add(option);
@@ -860,16 +943,55 @@ export default {
                 } 
     },
     async mockTableData1 (p,size) {
-              this.len = this.data6.length
-              return this.data6.slice((p - 1) * size, p * size);
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.data6)
+      this.len = this.data6.length
+      return this.data6.slice((p - 1) * size, p * size);
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
-              this.page = p
-              this.list = await this.mockTableData1(p,pageSize);
+      this.page = p
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
     },
-    createPDF (params) {
+    async createPDF (params) {
       this.emailData = params;
-      var self = this;
+      var self = this
+      var date = new Date(params.row.Date); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      var date1 = new Date(params.row.DueDate); 
+      this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+      await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.row.Contact.Name
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              self.emailDataCustomer = response.data[0].data[0]
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+      console.log('self.emailDataCustomer',self.emailDataCustomer)
       setTimeout(function(){ 
         self.$Modal.confirm({
           title: '',
@@ -911,8 +1033,32 @@ export default {
     async sendemail(params){
       this.$Loading.start();
       this.emailData = params;
-       var self = this;
-       this.$Modal.confirm({
+      var date = new Date(params.row.Date); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      var date1 = new Date(params.row.DueDate); 
+      this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+      console.log("this.emailData------------------------------------->",this.emailData)
+      var self = this;
+      await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.row.Contact.Name
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              self.emailDataCustomer = response.data[0].data[0]
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+      console.log('self.emailDataCustomer',self.emailDataCustomer)
+      this.$Modal.confirm({
                     okText: 'OK',
                     cancelText: 'Cancel',
                     render: (h) => {
@@ -1093,8 +1239,8 @@ export default {
     //  $('.maindiv').change(async function() {
     //   await self.changeData();
     // }); 
-    //this.searchdata();
-    //this.getAllInvoice()
+    // this.searchdata();
+    // this.getAllInvoice()
     this.getAllSettings()
     
   }
