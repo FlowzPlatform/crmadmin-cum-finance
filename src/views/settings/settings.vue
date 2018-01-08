@@ -256,7 +256,7 @@ Vue.use(VueWidgets);
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'newsettings'
+                        name: 'New-settings'
                     });
             },
             defaultChanged(e){
