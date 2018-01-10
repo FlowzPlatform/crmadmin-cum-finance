@@ -312,11 +312,11 @@ export default {
         },
         twitterLogin() {
            // this.isSocialLogin = true;
-            $("#form-google").submit();
+            $("#form-twitter").submit();
         },
         githubLogin() {
             //this.isSocialLogin = true;
-            $("#form-google").submit();
+            $("#form-github").submit();
         },
         linkdinLogin() {
            // this.isSocialLogin = true;

@@ -72,9 +72,9 @@ export const otherRouter = {
         { path: 'shopping', title: 'Shopping', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
-        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        { path: 'new-settings', title: 'newSettings', name: 'New-settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'editcrm',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
         
     ]
 };
@@ -114,14 +114,14 @@ export const appRouter = [
                 path: 'new-customer', 
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'newcustomer', 
+                name: 'New-customer', 
                 component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
             },
             { 
                 path: 'list-customer', 
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'listcustomer', 
+                name: 'List-customer', 
                 component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
             }  
         ]
@@ -137,14 +137,14 @@ export const appRouter = [
                 path: 'new-relationship', 
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'newcrm', 
+                name: 'New-relationship', 
                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
             },
             { 
                 path: 'list-relationship', 
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'listcrm', 
+                name: 'List-relationship', 
                 component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
             }
         ]
@@ -160,14 +160,14 @@ export const appRouter = [
                 path: 'new-invoice', 
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'new-invoice', 
+                name: 'New-invoice', 
                 component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve);}
             },
             { 
                 path: 'list-invoice', 
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'list-invoice', 
+                name: 'List-invoice', 
                 component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
             }
         ]

@@ -198,7 +198,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'newsettings'
+                      name: 'New-settings'
                   })
               }
             });
@@ -254,10 +254,15 @@ export default {
       let postData = {
         // domain: this.formItem.domain,
         settingId : this.formItem.configuration,
-        name: this.formItem.name,
-        description: this.formItem.description,
-        qty: this.formItem.qty,
-        amount: this.formItem.amount
+        Name: this.formItem.name,
+        products:[
+            {
+              description: this.formItem.description,
+              qty: this.formItem.qty,
+              amount: this.formItem.amount
+            }
+        ]
+        
       }
       console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",this.formItem)
       await axios({
@@ -275,7 +280,7 @@ export default {
         })
         .catch(function (err) {
           console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
-          self.$Message.error('invoice error')
+          self.$Message.error('invoice creation error')
         });
     },
     Cancel(name){

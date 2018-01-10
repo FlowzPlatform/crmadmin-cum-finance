@@ -32,11 +32,19 @@
                             </Input>                            
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client ID </td>
                         <td>
                              <Input :type="client_idType" readonly :value='product.client_id'>
                                 <Button slot="append" icon="eye" @click="showSecret" ></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Customer Url </td>
+                        <td>
+                             <Input  readonly :value='product.customer_url'>
+                                
                             </Input>
                         </td>
                     </tr>
@@ -49,11 +57,18 @@
                             </Input>
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client secret </td>
                         <td>
                             <Input :type="client_secretType" readonly :value='product.client_secret'>
                                 <Button slot="append" icon="eye" @click="showSecret"></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Invoice Url </td>
+                        <td>
+                             <Input  readonly :value='product.invoice_url'>
                             </Input>
                         </td>
                     </tr>
@@ -62,7 +77,7 @@
                         <td >User agent</td>
                         <td >{{ product.useragent}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >realmId </td>
                         <td >{{product.realmId}}</td>
                     </tr>
@@ -71,7 +86,7 @@
                         <td >Certificate </td>
                         <td >{{ product.pem}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Refresh Token: </td>
                         <td >{{product.refresh_token}}</td>
                     </tr>
@@ -125,7 +140,7 @@
                         <div v-else>Uploaded file: {{ editData.pem }} </div>
                     </FormItem>
                 </Form>
-                <Form :model="editFormItemQB" :label-width="60" v-else>
+                <Form :model="editFormItemQB" :label-width="60" v-if='editFormType == "QB"'>
                     <FormItem label="Config Name">
                         <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
                     </FormItem>
@@ -141,6 +156,18 @@
                     <FormItem label="Refresh Token">
                         <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
                     </FormItem>
+                </Form>
+                <Form :model="editFormItemCustom" :label-width="60" v-if='editFormType == "custom"'>
+                    <FormItem label="Config Name">
+                        <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                    </FormItem>
+                    <FormItem label="Customer Url">
+                        <Input v-model="editData.customer_url" placeholder="Customer Url"></Input>
+                    </FormItem>
+                    <FormItem label="Invoice Url">
+                        <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
+                    </FormItem>
+                    
                 </Form>
             
             
@@ -162,6 +189,7 @@ import axios from "axios"
 let config = require("@/config/customConfig.js")
 let feathersUrl =  config.default.serviceUrl;
 import Cookies from 'js-cookie';
+import psl from 'psl';
 Vue.use(VueWidgets);
 
 
@@ -172,6 +200,9 @@ Vue.use(VueWidgets);
                     input: ''
                 },
                 editFormItemQB: {
+                    input: ''
+                },
+                editFormItemCustom :{
                     input: ''
                 },
                 file:'',
@@ -226,7 +257,7 @@ Vue.use(VueWidgets);
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'newsettings'
+                        name: 'New-settings'
                     });
             },
             defaultChanged(e){
@@ -257,12 +288,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                       this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
                 
             },
@@ -295,12 +331,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         this.disabled = false;
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
             },
             async editedData (){
@@ -384,12 +425,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         this.disabled = false;
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
             }
         },
@@ -399,7 +445,7 @@ Vue.use(VueWidgets);
         }
         },
         mounted(){
-            
+            this.$Loading.start()
             axios({
                     method:'get',
                     url:feathersUrl +'settings',
@@ -410,14 +456,21 @@ Vue.use(VueWidgets);
                 .then(response => {
                 console.log(response)
                 this.data6 = response.data.data
+                this.$Loading.finish();
                 })
                 .catch(error => {
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
+                        this.$Loading.error();
                 });
         }
     }

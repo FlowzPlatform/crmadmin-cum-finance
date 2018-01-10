@@ -1,16 +1,55 @@
-<style >
-   
-</style>
-
 <template>
   <div>
-    <!-- <Table :columns="columns8" :data="listData" stripe border ref="table"></Table>
-    <div style="margin: 10px;overflow: hidden">
-        <div style="float: right;">
-            <Page :total="len" :current="1" @on-change="changePage"></Page>
+    <div class="panel panel-default panel-group" id="accordion">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+      </div>
+      <div class="panel-collapse collapse" id="collapseTwo">
+        <div class="panel-body">
+          <form>
+              <div class="collapse-maindiv maindiv" >
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                          <label>Customer Name</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="Customer">
+                          <select class="form-control"  v-model="cname" id="selectCustomer">
+                            <option value="">All</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Email"></span>
+                          <label>Email Address</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="Email">
+                          <select class="form-control"  v-model="email" id="selectEmail">
+                            <option value="">All</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
+                          data-target="#status"></span>
+                          <label>status</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="status">
+                          <select class="form-control mb-2 mb-sm-0" v-model="status">
+                              <option value="">All</option>
+                              <option value="ACTIVE">ACTIVE</option>
+                              <option value="INACTIVE">INACTIVE</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div style="margin-top: 5px;">
+                    <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                    <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                  </div>
+              </div>
+          </form>
         </div>
+      </div>
     </div>
-    <br> -->
     <div v-if="spinShow">
       <Spin size="large"></Spin>
     </div>
@@ -53,13 +92,14 @@ export default {
     pageSize: pageSize,
     columns1: [
       {
-        "title": "Name",
-        "key": "Name",
+        "title": "Customer Name",
+        "key": "Name"
       },
       {
         "title": "Status",
         "key": "ContactStatus",
         "sortable": true,
+        "width":120,
         filters: [
           {
             label: 'ACTIVE',
@@ -94,9 +134,10 @@ export default {
           }
       },
       {
-        "title": "Mobile",
+        "title": "Mobile No.",
         "key": "Phones",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
@@ -108,11 +149,12 @@ export default {
           }
       },
       {
-        "title": "Phone",
+        "title": "Phone No.",
         "key": "click",
+        "align":"center",
         "sortable": true,
         render:(h,{row})=>{ 
-          if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+          if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
               return "Not available"
             }
@@ -122,11 +164,13 @@ export default {
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
-          if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
+          console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
+          if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
               return "Not available"
             } 
@@ -143,26 +187,17 @@ export default {
         render:(h,{row})=>{
           return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;      
         }
-      },
-      {
-        "title": "isCustomer",
-        "key": "IsCustomer",
-        "sortable": true
-      },
-      {
-        "title": "isSupplier",
-        "key": "IsSupplier",
-        "sortable": true
       }
     ],
     columns2: [
       {
-        "title": "Name",
-        "key": "Name",
+        "title": "Customer Name",
+        "key": "Name"
       },
       {
         "title": "Status",
         "key": "ContactStatus",
+        "width":120,
         "sortable": true,
         filters: [
           {
@@ -198,9 +233,10 @@ export default {
           }
       },
       {
-        "title": "Mobile",
+        "title": "Mobile No.",
         "key": "Phones",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
@@ -212,11 +248,12 @@ export default {
           }
       },
       {
-        "title": "Phone",
+        "title": "Phone No.",
         "key": "click",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
-          if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+          if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
               return "Not available"
             }
@@ -226,11 +263,12 @@ export default {
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{ 
-          if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
+          if(row.Phones[2].PhoneNumber == undefined || row.Phones[2].PhoneNumber == '')
             {
               return "Not available"
             } 
@@ -249,30 +287,76 @@ export default {
               return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
           
         }
-      },
-      {
-        "title": "isCustomer",
-        "key": "IsCustomer",
-        "sortable": true
-      },
-      {
-        "title": "isSupplier",
-        "key": "IsSupplier",
-        "sortable": true
       }
     ],
     data6: [],
-    listData: []
+    filterArray: [],
+    listData: [],
+    cname: '',
+    status:'',
+    email: ''
     }
   },
   methods: {
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.email = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data6", this.data6)
+      this.filterArray = this.data6
+      var self = this
+
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          return item.Name === self.cname;
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+      if(this.status != ''){
+       console.log("this.status", this.status)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          return item.ContactStatus === self.status;
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+      if(this.email != ''){
+       console.log("this.email", this.email)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          return item.EmailAddress === self.email;
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
     async mockTableData1 (p,size) {
       this.len = this.data6.length
       return this.data6.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
       this.page = p
-      this.list = await this.mockTableData1(p,pageSize);
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
     },
     async tabClicked(data){
       console.log(data)
@@ -293,14 +377,26 @@ export default {
       }
       }).then(async function (response) {
         console.log("$$$$$$$$$$$$$$$$$$$",response)
-        self.data6 = response.data[0].data;
+        self.data6 = response.data[0].data.reverse();
           self.$Loading.finish();
           $('.preload').css("display","none")
           self.list = await self.mockTableData1(1,pageSize)
       }).catch(function (error) {
         console.log("error",error);
           self.$Loading.error();
-      });   
+      });
+
+      self.data6.forEach (obj => {
+            console.log("obj------------------->",obj);
+            var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = obj.Name;
+            x.add(option);
+            var y = document.getElementById("selectEmail");
+            var option = document.createElement("option");
+            option.text = obj.EmailAddress;
+            y.add(option);
+          })   
     },          
     async getAllSettings(){
         let self = this;
@@ -364,6 +460,10 @@ export default {
 }
 .ivu-table th{
   background-color: #d9edf7;
+}
+.ivu-spin-main {
+    width: 100%;
+    text-align: -webkit-center;
 }
 .ivu-table-border th {
     border-right: 1px solid #ddd;

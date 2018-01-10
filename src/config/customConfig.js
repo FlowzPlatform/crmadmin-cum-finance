@@ -46,6 +46,12 @@ module.exports =  {
         twitterSuccessCallbackUrl: frontEndUrl,
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
+
+        flowzDashboardUrl : 'http://dashboard.'+process.env.domainkey,
+        flowzBuilderUrl : 'http://webbuilder.'+process.env.domainkey ,
+        flowzVmailUrl : 'http://vmail.'+process.env.domainkey ,
+        flowzUploaderUrl : 'http://uploader.'+process.env.domainkey ,
+        flowzDbetlUrl : 'http://dbetl.'+process.env.domainkey , 
         
         loginWithFacebookUrl : 'http://auth.'+process.env.domainkey+'/auth/facebook',
         loginWithGoogleUrl : 'http://auth.'+process.env.domainkey+'/auth/Gplus',
@@ -53,7 +59,7 @@ module.exports =  {
         loginWithGithubUrl : 'http://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'http://auth.'+process.env.domainkey+'/auth/linkedin',  
         serviceUrl :            'http://api.'+process.env.domainkey+'/crm/',
-       // serviceUrl :            'http://localhost:3037/',
+        //serviceUrl :            'http://localhost:3037/',
         projecturl :            'http://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'http://api.'+process.env.domainkey+'/user/alluserdetails/'
     }
