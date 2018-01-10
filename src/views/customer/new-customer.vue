@@ -108,6 +108,8 @@ Vue.use(VueWidgets);
             }
           };
           return {
+              customCustomerUrl:'',
+              customInvoiceUrl: '',
               formValidate: {
                   configuration: '',
                   name: '',
@@ -173,6 +175,7 @@ Vue.use(VueWidgets);
                         //this.$Message.success('Success!');
                         this.createCustomer();
                     } else {
+                        
                         this.$Message.error('Please fill up all the fields correctly');
                     }
                 })
@@ -216,43 +219,87 @@ Vue.use(VueWidgets);
             configChange(data){
               
               $('#CustomerName').css("display","block")
-              settingId = data
+              settingId = data;
+              
             },
           async createCustomer () {
             var self = this
             
-            var params = {
-              settingId : settingId,
-              Name: this.formValidate.name,
-              ContactStatus: 'ACTIVE',
-              EmailAddress:this.formValidate.mail,
-              AddressLine1:this.formValidate.AddressLine1,
-              AddressLine2:this.formValidate.AddressLine2,
-              City:this.formValidate.city,
-              State: this.formValidate.state,
-              Country:this.formValidate.country,
-              PostalCode:this.formValidate.PostalCode,
-              PhoneNumber:this.formValidate.mobile
-            }
-            
-            await axios({
-            method: 'post',
-            url: config.default.serviceUrl + 'contacts',
-            data: params,
-            headers:{
-              Authorization : Cookies.get('auth_token')
-            }
-            })
-            .then(function (response) {
-              
-              self.$Message.success('created customer successfully');
-              self.$refs['formValidate'].resetFields();
 
-            })
-            .catch(function (error) {
-              console.log("error",error);
-              self.$Message.error('error in create customer')
-            });
+            console.log(">>>>>>>>>>> " , settingId)
+            await axios({
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingId
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+
+                        var params = {
+                          settingId : settingId,
+                          Name: self.formValidate.name,
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:self.formValidate.mail,
+                          Address: self.formValidate.AddressLine1+","+self.formValidate.AddressLine2+","+self.formValidate.city+","+self.formValidate.state+","+self.formValidate.PostalCode+","+self.formValidate.country,
+                          
+                          PhoneNumber:self.formValidate.mobile
+                        }
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                            axios({
+                              method: 'post',
+                              url: self.customCustomerUrl,
+                              data: params,
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              self.$Message.success('created customer successfully');
+                              self.$refs['formValidate'].resetFields();
+                            })
+                            .catch(function (error) {
+                              console.log("error",error);
+                              self.$Message.error('error in create customer')
+                            });
+
+                      }else{
+                        var params1 = {
+                          settingId : settingId,
+                          Name: this.formValidate.name,
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:this.formValidate.mail,
+                          AddressLine1:this.formValidate.AddressLine1,
+                          AddressLine2:this.formValidate.AddressLine2,
+                          City:this.formValidate.city,
+                          Country:this.formValidate.country,
+                          PostalCode:this.formValidate.PostalCode,
+                          PhoneNumber:this.formValidate.mobile
+                        }
+                            axios({
+                              method: 'post',
+                              url: config.default.serviceUrl + 'contacts',
+                              data: params1,
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              self.$Message.success('created customer successfully');
+                              self.$refs['formValidate'].resetFields();
+                            })
+                            .catch(function (error) {
+                              console.log("error",error);
+                              self.$Message.error('error in create customer')
+                            });
+                      }
+                  });
+
+            
+            
+            
           }
         },
         mounted(){
