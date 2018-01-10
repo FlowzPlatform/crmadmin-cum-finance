@@ -307,7 +307,15 @@ export default {
             var chart_data = await this.ChartFun("bar",date1,date2,settingId,contact)
             // specify chart configuration item and data
             var option = {
-                tooltip: {},
+                tooltip: {
+                    formatter: function (params) {
+                        return accounting.formatMoney(params.value, {
+                            symbol : '$',
+                            precision : 2,
+                            thousand  : ''
+                        })
+                    }
+                },
                 legend: {
                     bottom: 10,
                     left: 'center',
@@ -327,13 +335,13 @@ export default {
 
             chart_data.forEach(function(invoice) {
                 var series = {
-                name: invoice.name,
-                type: 'bar',
-                data: []
+                    name: invoice.name,
+                    type: 'bar',
+                    data: []
                 }
                 option.legend.data.push(invoice.name)
                 invoice.data.forEach(function(invoice_data) {
-                series.data.push(invoice_data.y)
+                    series.data.push(invoice_data.y)
                 })
                 option.series.push(series)
             })
@@ -373,7 +381,15 @@ export default {
             var chart_data = await this.PieChartFun(date1,date2,settingId,contact);
             // specify chart configuration item and data
             var option = {
-            tooltip: {},
+            tooltip: {
+                formatter: function (params) {
+                    return accounting.formatMoney(params.value, {
+                        symbol : '$',
+                        precision : 2,
+                        thousand  : ''
+                    })
+                }
+            },
             legend: {
                 bottom: 10,
                 left: 'center',
@@ -407,7 +423,14 @@ export default {
             var option = {
             tooltip: {
                 axisPointer: {
-                type: 'cross'
+                    type: 'cross'
+                },
+                formatter: function (params) {
+                    return accounting.formatMoney(params.value, {
+                        symbol : '$',
+                        precision : 2,
+                        thousand  : ''
+                    })
                 }
             },
             legend: {
@@ -497,7 +520,7 @@ export default {
                         tar = params[0];
                     }
                     return accounting.formatMoney(tar.value, {
-                        symbol : '',
+                        symbol : '$',
                         precision : 2,
                         thousand  : ''
                     })

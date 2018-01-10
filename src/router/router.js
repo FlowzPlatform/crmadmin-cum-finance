@@ -105,7 +105,7 @@ export const appRouter = [
     
     {
         path: '/customer',
-        icon: 'person-stalker',
+        icon: 'person',
         title: 'CUSTOMER',
         name: 'CUSTOMER',
         component: Main,
@@ -128,7 +128,7 @@ export const appRouter = [
     },
     {
         path: '/relationship',
-        icon: 'android-hand',
+        icon: 'ios-people',
         title: 'RELATIONSHIP',
         name: 'RELATIONSHIP',
         component: Main,
@@ -169,6 +169,22 @@ export const appRouter = [
                 icon: 'ios-list-outline',
                 name: 'list-invoice', 
                 component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
+            }
+        ]
+    },
+    {
+        path: '/transaction',
+        icon: 'cash',
+        title: 'TRANSACTION',
+        name: 'TRANSACTION',
+        component: Main,
+        children: [
+            { 
+                path: 'list-transaction', 
+                title: 'List',
+                icon: 'ios-list-outline',
+                name: 'list-transaction', 
+                component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
             }
         ]
     },
