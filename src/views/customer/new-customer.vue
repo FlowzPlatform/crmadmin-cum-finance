@@ -1,6 +1,24 @@
 <style>
-   .form{
-       width: 70%
+  .vw-widget-body {
+    text-align: -webkit-center;
+  }
+  .form {
+    width: 70%;
+  }
+
+  #state{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
+   }
+   #country{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
    }
 </style>
 
@@ -9,14 +27,13 @@
     <Widget>
       <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
       <WidgetBody>
-            
-      <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
+        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
         <FormItem label="Configuration Name" prop="configuration">
-           <Select v-model="formValidate.configuration" style="width:100%" @on-change="configChange">
+           <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
              <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
           </Select>
         </FormItem>
-        <FormItem label="Name" prop="name">
+        <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
             <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
         </FormItem>
         <FormItem label="E-mail" prop="mail">
@@ -37,14 +54,14 @@
         </Row>
         </FormItem>
          <FormItem label="Country" prop="country">
-            <Select v-model="formValidate.country">
-              <Option v-for="item in countryList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
+            <select v-model="formValidate.country" id="country" name ="country">
+            </select>
+        </FormItem>
+        <FormItem label="State" prop="state" class="state1" style="display:none">
+          <select v-model="formValidate.state" name ="state" id ="state" ></select>
         </FormItem>
         <FormItem label="City" prop="city">
-          <Select v-model="formValidate.city">
-              <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
+         <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
         </FormItem>
          <FormItem label="Postal code" prop="PostalCode">
             <Input v-model="formValidate.PostalCode" placeholder="Enter PostalCode"></Input>
@@ -58,8 +75,10 @@
          <FormItem label="Fax" prop="fax">
             <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
         </FormItem> -->
+        <div style="text-align:center;">
           <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</Button>
+          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+          </div>
         </FormItem>
     </Form>
         </WidgetBody>
@@ -97,53 +116,10 @@ Vue.use(VueWidgets);
                   AddressLine1: '',
                   AddressLine2 : '',
                   city: '',
+                  state: '',
                   country: '',
                   PostalCode: ''
               },
-              cityList: [
-                    {
-                        value: 'New York',
-                        label: 'New York'
-                    },
-                    {
-                        value: 'London',
-                        label: 'London'
-                    },
-                    {
-                        value: 'Sydney',
-                        label: 'Sydney'
-                    },
-                    {
-                        value: 'Ottawa',
-                        label: 'Ottawa'
-                    },
-                    {
-                        value: 'Paris',
-                        label: 'Paris'
-                    },
-                    {
-                        value: 'Canberra',
-                        label: 'Canberra'
-                    }
-                ],
-                countryList : [
-                    {
-                      value: 'china',
-                      label: 'china'
-                    },
-                    {
-                      value:'india',
-                      label: 'india'
-                    },
-                    {
-                      value:'indonesia',
-                      label: 'indonesia'
-                    },
-                    {
-                      value:'Brazil',
-                      label: 'Brazil'
-                    }
-                ],
               configs:[],
               ruleValidate: {
                   name: [
@@ -161,8 +137,11 @@ Vue.use(VueWidgets);
                   city:[
                     { required: true, message: 'The city cannot be empty', trigger: 'blur' }
                   ],
+                  state: [
+                    { required: true, message: 'Please select state', trigger: 'blur' }
+                  ],
                   country:[
-                    { required: true, message: 'The country cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
                     { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
@@ -191,10 +170,10 @@ Vue.use(VueWidgets);
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('Success!');
+                        //this.$Message.success('Success!');
                         this.createCustomer();
                     } else {
-                        this.$Message.error('Fail!');
+                        this.$Message.error('Please fill up all the fields correctly');
                     }
                 })
             },
@@ -223,7 +202,7 @@ Vue.use(VueWidgets);
                     content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                     onOk: () => {
                           self.$router.push({
-                              name: 'New-settings'
+                              name: 'newsettings'
                           })
                       }
                     });
@@ -235,12 +214,13 @@ Vue.use(VueWidgets);
               
             },
             configChange(data){
-              console.log("data--------------->",data)
+              
+              $('#CustomerName').css("display","block")
               settingId = data
             },
           async createCustomer () {
             var self = this
-            console.log("settingId-------->",settingId)
+            
             var params = {
               settingId : settingId,
               Name: this.formValidate.name,
@@ -249,11 +229,12 @@ Vue.use(VueWidgets);
               AddressLine1:this.formValidate.AddressLine1,
               AddressLine2:this.formValidate.AddressLine2,
               City:this.formValidate.city,
+              State: this.formValidate.state,
               Country:this.formValidate.country,
               PostalCode:this.formValidate.PostalCode,
               PhoneNumber:this.formValidate.mobile
             }
-            console.log("params",params)
+            
             await axios({
             method: 'post',
             url: config.default.serviceUrl + 'contacts',
@@ -263,8 +244,10 @@ Vue.use(VueWidgets);
             }
             })
             .then(function (response) {
-              console.log("response >>>>>>>>>>>>>>>>",response)
+              
               self.$Message.success('created customer successfully');
+              self.$refs['formValidate'].resetFields();
+
             })
             .catch(function (error) {
               console.log("error",error);
@@ -274,6 +257,13 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.settingData ();
+            populateCountries("country", "state");
+            $("#country").on("change",function() {
+            // $('#country').change(function(){ 
+                // var value = $(this).val();
+                console.log("Hii")
+                $('.state1').css("display","block")
+            });
         }
     }
 </script>

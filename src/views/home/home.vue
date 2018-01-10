@@ -170,6 +170,7 @@ import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
 const accounting = require('accounting-js');
+import psl from 'psl';
 
 import configService from '@/config/customConfig.js';
 let serviceUrl = configService.default.serviceUrl;
@@ -701,7 +702,7 @@ export default {
                    self.mData = response.data.data;
                     self.config = self.mData[0].id;
                     self.getContacts(self.config)
-                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
@@ -729,7 +730,7 @@ export default {
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
                     this.$store.commit('logout', this);
-                    this.$store.commit('clearOpenedSubmenu');
+                    
                     this.$router.push({
                         name: 'login'
                     });

@@ -25,7 +25,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
                                     data-target="#status"></span>
-                                    <label>status</label>
+                                    <label>Status</label>
                                 </div>
                                 <div class="panel-collapse collapse" id="status">
                                     <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
@@ -138,22 +138,22 @@
 
 <div>
   
-  <div v-if="emailData != ''" ref="email1" style="display:none">
+<div v-if="emailData != ''" ref="email1" style="display:none">
  
- <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+<div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
         <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
             <tbody><tr class="top">
                 <td colspan="3" style="padding: 5px;vertical-align: top;">
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
+                                <img src="../../images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
                                 Invoice #: {{emailData.row.InvoiceNumber}}<br>
-                                Created: {{emailData.row.Date}}<br>
-                                Due: {{emailData.row.DueDate}}
+                                Created: {{createdDate}}<br>
+                                Due: {{dueDate}}
                             </td>
                         </tr>
                     </tbody></table>
@@ -166,43 +166,23 @@
                         <tbody><tr>
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
-                                {{emailData.row.Contact.Name}}<br>
-                                Sparksuite, Inc.<br>
-                                12345 Sunny Road<br>
-                                Sunnyville, CA 12345
+                                <p>{{emailData.row.Contact.Name}}</p>
+                                <p>{{emailDataCustomer.Addresses[0].AddressLine1}}</p>
+                                <p>{{emailDataCustomer.Addresses[0].AddressLine2}}</p>
+                                <p>{{emailDataCustomer.Addresses[0].City}}</p>
+                                <p>{{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}</p>
                             </td>
                             
                             <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
                                 <b>From :</b><br>
                                 Acme Corp.<br>
                                 John Doe<br>
-                                john@example.com
+                                
                             </td>
                         </tr>
                     </tbody></table>
                 </td>
             </tr>
-            
-            <tr>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;">
-                    Payment Method
-                </td>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;"></td>
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align: right;">
-                    Check 
-                </td>
-            </tr>
-            
-            <tr>
-                <td style="padding: 5px;vertical-align: top;padding-bottom: 20px;">
-                    Stripe
-                </td>
-                <td></td>
-                <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
-                    1000
-                </td>
-            </tr>
-
              <tr>
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
                     Item
@@ -256,7 +236,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
                 <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Total: ${{emailData.row.Total}}
+                   Total Due Amount: ${{emailData.row.AmountDue}}
                 </td>
             </tr>
             
@@ -281,8 +261,8 @@ import mail from '../../images/Mail.png'
 import download from '../../images/Download.png'
 import _ from 'lodash'
 //import Handlebars from 'handlebars'
-//import { mjml2html } from 'mjml'
-import Cookies from 'js-cookie';
+import moment from 'moment'
+import Cookies from 'js-cookie'
 var pageSize = 10
 var settingID
 export default {
@@ -295,6 +275,8 @@ export default {
       mail,
       download,
       emailData : '',
+      emailDataCustomer:'',
+      filterArray : [],
       columns3 : [],
       columns2: [
           {
@@ -351,6 +333,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
+            width: 200,
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
@@ -360,7 +343,8 @@ export default {
                         content: 'Make Payment'
                       },
                       style:{
-                        float:'left'
+                        float:'left',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -385,7 +369,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                        h('img', {
@@ -410,7 +395,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -438,7 +424,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -463,7 +450,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                     h('img', {
@@ -486,6 +474,7 @@ export default {
               }
             }
           }
+
       ],
        columns1: [
           {
@@ -537,6 +526,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
+            width: 200,
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
@@ -546,7 +536,8 @@ export default {
                         content: 'Make Payment'
                       },
                       style:{
-                        float:'left'
+                        float:'left',
+                        cursor:'pointer'
                       }
                     }, [
                         h('img', {
@@ -571,7 +562,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -596,7 +588,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                        h('img', {
@@ -624,7 +617,8 @@ export default {
                         content: 'Send Mail'
                       },
                       style:{
-                        float:'center'
+                        float:'center',
+                        cursor:'pointer'
                       }
                     }, [
                       h('img', {
@@ -649,7 +643,8 @@ export default {
                         content: 'Download'
                       },
                       style:{
-                        float:'right'
+                        float:'right',
+                        cursor:'pointer'
                       }
                     }, [
                     h('img', {
@@ -672,6 +667,7 @@ export default {
               }
             }
           }
+
       ],
 
        
@@ -729,13 +725,13 @@ export default {
       this.getAllSettings();
     },
     async changeData() {
-      console.log("this.data6", this.data6)
-      this.testArray = this.data6
+     console.log("this.data6", this.data6)
+      this.filterArray = this.data6
       var self = this
 
       if(this.cname != ''){
        console.log("this.cname", this.cname)
-       this.testArray = _.filter(this.testArray,  function(item){
+       this.filterArray = _.filter(this.filterArray,  function(item){
         console.log("item",item)
         if(item.Contact != undefined){
           return item.Contact.Name === self.cname;
@@ -743,43 +739,48 @@ export default {
           return item.CustomerRef.name === self.cname
         }
       });
-       console.log("myarr",this.testArray)
-       this.list = this.testArray
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.status != ''){
         console.log("this.status", this.status)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
           return item.Status === self.status;
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.dategt != ''){
         console.log("this.dategt", this.dategt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
-          return item.DueDate >= self.dategt;
+          var itemdate = moment(item.DueDate).format('DD/MM/YYYY');
+          var newdate = moment(self.dategt).format('DD/MM/YYYY')
+
+          return itemdate >= newdate;
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.datelt != ''){
         console.log("this.dategt", this.datelt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
-          return item.DueDate <= self.datelt;
+           var itemdate = moment(item.DueDate).format('DD/MM/YYYY');
+          var newdate = moment(self.datelt).format('DD/MM/YYYY')
+          return itemdate <= newdate;
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.totalgt != ''){
         console.log("this.totalgt", this.totalgt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
           if(item.Total != undefined){  
             return item.Total >= self.totalgt;
@@ -787,13 +788,13 @@ export default {
             return item.TotalAmt >= self.totalgt;
           }
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.totallt != ''){
         console.log("this.totallt", this.totallt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
            if(item.Total != undefined){  
             return item.Total <= self.totallt;
@@ -801,13 +802,13 @@ export default {
             return item.TotalAmt >= self.totallt;
           }
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.duegt != ''){
         console.log("this.duegt", this.duegt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
           if(item.AmountDue != undefined){
             return item.AmountDue >=self.duegt
@@ -815,13 +816,13 @@ export default {
             return item.Balance >= self.duegt;
           }
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.duelt != ''){
         console.log("this.duelt", this.duelt)
-        this.testArray = _.filter(this.testArray,  function(item){
+        this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
           if(item.AmountDue != undefined){
             return item.AmountDue >=self.duelt
@@ -829,9 +830,10 @@ export default {
             return item.Balance >= self.duelt;
           }
         });
-         console.log("myarr",this.testArray)
-         this.list = this.testArray
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
       }
+
 
     },
     async getCustomerBySettingId(settingId , settingDomain , data){
@@ -982,13 +984,50 @@ export default {
       this.len = this.data6.length
       return this.data6.slice((p - 1) * size, p * size);
     },
-    async changePage (p) {
-              this.page = p
-              this.list = await this.mockTableData1(p,pageSize);
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
     },
-    createPDF (params) {
+    async changePage (p) {
+        this.page = p
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
+    },
+    async createPDF (params) {
+      console.log("paramsssssssssssssssss " , params)
       this.emailData = params;
-      var self = this;
+      var self = this
+      var date = new Date(params.row.Date); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      var date1 = new Date(params.row.DueDate); 
+      this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+      await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.row.Contact.Name
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              self.emailDataCustomer = response.data[0].data[0]
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+      console.log('self.emailDataCustomer',self.emailDataCustomer)
       setTimeout(function(){ 
         self.$Modal.confirm({
           title: '',
@@ -1014,6 +1053,7 @@ export default {
         //   });
         //   saveAs(blob, filename);
        }, 2000);
+
     },
 
     async makepayment(params){
@@ -1030,14 +1070,39 @@ export default {
     async sendemail(params){
       this.$Loading.start();
       this.emailData = params;
-       var self = this;
-       this.$Modal.confirm({
+      var date = new Date(params.row.Date); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      var date1 = new Date(params.row.DueDate); 
+      this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+      console.log("this.emailData------------------------------------->",this.emailData)
+      var self = this;
+      await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.row.Contact.Name
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              self.emailDataCustomer = response.data[0].data[0]
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+      console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
+      this.$Modal.confirm({
+                    title: 'Email would be sent to',
                     okText: 'OK',
                     cancelText: 'Cancel',
                     render: (h) => {
                         return h('Input', {
                             props: {
-                                value: this.value,
+                                value: self.emailDataCustomer.EmailAddress,
                                 autofocus: true,
                                 
                                 placeholder: 'Please enter email Id...'
@@ -1045,16 +1110,15 @@ export default {
                             on: {
                                 input: (val) => {
                                     
-                                    this.emailIdTobeSent = val;
+                                    self.emailIdTobeSent = val;
                                 }
                             }
                         })
                     },
                     onOk: ()=>{
-                               console.log(self.$refs.email1.innerHTML)
-                                    
+                               
                                     let myData = {
-                                          "to": self.emailIdTobeSent,
+                                          "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
                                           "from": "obsoftcare@gmail.com",
                                           "subject": "email invoice",
                                           "body": self.$refs.email1.innerHTML
@@ -1073,40 +1137,12 @@ export default {
                                             self.list[params.index].loading1 = false
                                           })
                                           .catch(function (error) {
-                                            self.$Message.success("email send failed , Please try again later");
+                                            self.$Message.warning("email send failed , Please try again later");
                                             console.log(error);
                                           });
                     }
                 })
-      // this.list[params.index].loading1 = true
-      // console.log("inside send mail", params)
-      // var responseData
-      //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-      //     params: {
-      //       Invoiceid:params.row.InvoiceID
-      //     }
-      //   })
-      //   .then(function (response) {
-      //     console.log("response data", response)
-      //     responseData = response.data
-      //   })
-      //   .catch(function (error) {
-      //     console.log("error",error);
-      //   });
-      // console.log("send mail responsedata", responseData)
-      // var MjmlTemplate
-      // await $.get( "mailtemplate.txt", function( data ) {
-      //   MjmlTemplate = data
-      // });
-      
-      // var template = Handlebars.compile(MjmlTemplate); 
-      // console.log("template", template)
-      //  var context = {
-      //     invoice : responseData
-      //   }
-      // const mjml = template(context);
-      // const html1 = mjml2html(mjml);
-      
+
     },
     async tabClicked(data){
       console.log(data)
@@ -1129,7 +1165,7 @@ export default {
         let Invoiceurl = self.tabPanes[data].invoice_url;
         axios.get(Invoiceurl, {
         headers:{
-            Authorization : Cookies.get('auth_token')
+            Authorization : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YTJmYWY5YTcwZGRjMDAwMTJkYzk3NmIiLCJpYXQiOjE1MTU0OTk2MTMsImV4cCI6MTUxNTUwMzI0MywiYXVkIjoiaHR0cHM6Ly95b3VyZG9tYWluLmNvbSIsImlzcyI6ImZlYXRoZXJzIiwic3ViIjoiYW5vbnltb3VzIn0.N92EluGPHltyhKLXpACd9SNTQqOULDNwZr8kpOmu2YM"
         }
       })
       .then(async function (response) {
@@ -1137,33 +1173,172 @@ export default {
         $('.preload').css("display","none")
         console.log("response------>iuy",response);
         self.data6 = response.data;
+        let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+        let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" );
+        
+        
+       
+        let arr = [];
+        let len = columnArray.length;
+        for (let i = 0; i < len; i++) {
+            arr.push({
+                title: columnArray[i],
+                key : columnArray[i],
+                sortable: true,
+                width: 200,
+            });
+        }
+        if(modifiedArray.indexOf("Action") != -1){
+          modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
+        }else{
+          arr.push({
+                title: "Action",
+                width: 200,
+                render: (h, params) => {
+                  console.log(params)
+              if(params.row.Status != 'PAID'){
+                return h('div', [
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make Payment'
+                      },
+                      style:{
+                        float:'left',
+                        cursor:'pointer'
+                      }
+                    }, [
+                        h('img', {
+                          attrs: {
+                            src: self.money
+                          },
+                          style: {
+                            hight:'30px',
+                            width:'30px',
+                            margin: '2px'
+                          },
+                          on: {
+                            click: () => {   
+                              self.makepayment(params.row)
+                            }
+                        }
+                      }, '')
+                    ]),
+                   h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center',
+                        cursor:'pointer'
+                      }
+                    }, [
+                      h('img', {
+                       attrs: {
+                          src: self.mail
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            self.sendemail(params)
+                          }
+                        }
+                      },'')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'right',
+                        cursor:'pointer'
+                      }
+                    }, [
+                       h('img', {
+                       attrs: {
+                          src: self.download
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {   
+                            self.createPDF(params)
+                          }
+                        }
+                      }, '')
+                  ])
+                ])
+              }else{
+                return h('div', [
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
+                        float:'center',
+                        cursor:'pointer'
+                      }
+                    }, [
+                      h('img', {
+                       attrs: {
+                          src: self.mail
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            self.sendemail(params)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
+                        float:'right',
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.download
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.createPDF(params)
+                        }
+                      }
+                    }, '')
+                  ])
+                ])
+              }
+            }
+          })
+        }
         self.list = await self.mockTableData1(1,pageSize)
-        self.columns3 = [
-                    {
-                        title: 'Invoice',
-                        key: 'Invoice'
-                    },
-                    {
-                        title: 'Customer',
-                        key: 'Name'
-                    },
-                    {
-                        title: 'Due Date',
-                        key: 'Due Date'
-                    },
-                    {
-                        title: 'Due Amount',
-                        key: 'Amount Due'
-                    },
-                    {
-                        title: 'Paid Amount',
-                        key: 'Amount Paid'
-                    },
-                    {
-                        title: 'Total Amount',
-                        key: 'Total Amount'
-                    }
-                ]
+        self.columns3 = arr;
+        
       })
       .catch(function (error) {
         console.log("error",error);
@@ -1182,7 +1357,7 @@ export default {
       .then(async function (response) {
         console.log("response------>iuy",response);
         
-        self.data6 = response.data[0].data;
+        self.data6 = response.data[0].data.reverse();
         self.$Loading.finish();
         $('.preload').css("display","none")
         self.list = await self.mockTableData1(1,pageSize)
