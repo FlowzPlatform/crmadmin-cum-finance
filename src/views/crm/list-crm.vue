@@ -4,6 +4,7 @@
 <script>
 	import config from '../../config/customConfig.js'
 	import axios from 'axios'
+	import Cookies from 'js-cookie';
 	var crmpostapiurl = config.default.serviceUrl;
 	export default {
 		data () {
@@ -16,7 +17,7 @@
 						sortable: true
 					},
 					{
-						title: 'Name',
+						title: 'Customer Name',
 						align: 'center',
 						key: 'cname',
 						sortable: true
@@ -129,9 +130,12 @@
 		mounted() {
 			let self= this;
 			axios.get(crmpostapiurl +'crm-case/', {
+				headers: {
+						Authorization : Cookies.get('auth_token')
+					}
 			})
 			.then(function (response) {
-				console.log(response.data.data)
+				console.log(response)
 				 // setTimeout(function(){
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)

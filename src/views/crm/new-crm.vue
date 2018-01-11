@@ -42,8 +42,13 @@
 							</div>
 							<div id="c16980">
 								<p>
-									<label class="col-xs-3 autoCompleteDropdown" id="c16988">Customer</label>
-									<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
+									<Select v-model="finaldata.config" style="width:86% !important;margin-bottom:10px" placeholder="Select Config" @on-change="configChange">
+							          <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
+							        </Select>
+									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
+							        <!-- <div id="CustomerName"> -->
+										<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
+									<!-- </div> -->
 									<!-- <i-select v-model="finaldata.cname" style="width:100px"><i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option></i-select> -->
 								</p>
 							</div>
@@ -113,7 +118,7 @@
 					</div>
 				</div>
 				<span class="panel" id="c17165">
-					<button class="form-control" id="create" @click="postdata()">Create</button>
+					<Button class="form-control" id="create" :loading="loading" @click="postdata()">Create</Button>
 					<!-- <button class="form-control" id="createandcontinue">Create and Continue</button> -->
 				</span>
 			</div>
@@ -123,6 +128,7 @@
 <script>
 	import config from '../../config/customConfig.js'
 	import Cookies from 'js-cookie';
+	import axios from 'axios';
 	let _ = require('lodash')
 	var nextdate;
 	var priceinput;
@@ -152,43 +158,45 @@
       return {
         customerData:[],
         crmdata: [],
+        loading: false,
         finaldata: {
         	name: '',
-					cname: '',
-		      project: '',
-					status: '',
-					assignee: [],
-					product_line: '',
-					contractdate: '',
-					nextdate: '',
-					priceinput: '',
-					price: '',
-					email: '',
-					phone: '', 
+			cname: '',
+      		project: '',
+			status: '',
+			assignee: [],
+			product_line: '',
+			contractdate: '',
+			nextdate: '',
+			priceinput: '',
+			price: '',
+			email: '',
+			phone: '',
+			config: '', 
         },
 				momdata: [],
+				mData: [],
+				// config1: '',
 				description:'',
 		    assigneedata: []
      	}
     },
     methods: {
     	async calldata() {
-			let self=this;
+				let self=this;
+				self.customerData = [];
 	    	await $.ajax({
 					type: 'GET',
 					url: serviceUrl +"contacts",
-					async: true,
-					dataType: 'json',
-					headers: {
-					'authorization':  Cookies.get('auth_token')
-					},
+					data: {
+                    settingId : self.finaldata.config,   
+                },
 					success: function (data) {
-						console.log("data>>>>>>>>>>>>>> " , data)
+						// console.log("data>>>>>>>>>>>>>> Contacts" , data)
 						data.forEach(function(contacts) {
 							var cnt = contacts.data
-							console.log("%%%%%%%%%%",cnt.length)
-							for (var i=0; i
-	<cnt.length; i++) {
+							for (var i=0; i<cnt.length; i++) {
+								// console.log("%%%%%%%%%%",cnt[i].Name)
 								self.customerData.push(cnt[i].Name)
 							}
 						})
@@ -204,13 +212,49 @@
 					// 	this.data.push(customer)
 					// })
     	},
+			init() {
+				let self = this;
+				axios.get(serviceUrl+"settings", {
+					params: {
+						isActive : true,
+						user : Cookies.get('user')
+					},
+					headers: {
+						Authorization : Cookies.get('auth_token')
+					}
+				})
+				.then(function (response) {
+					// console.log("config data list",response)
+					self.mData = response.data.data;
+					// self.config1 = self.mData[0].id;
+					// self.calldata()    
+				})
+				.catch(function (error) {
+					console.log(error)
+					self.disabled = false;
+					//Cookies.remove('auth_token') 
+					self.$Message.error('Auth Error!');
+					//self.$store.commit('logout', self); 
+					// self.$router.push({
+					//     name: 'login'
+					// })
+				});
+			},
+		configChange(data){
+			console.log(data)
+			$('.ivu-select-single').css("display","inline-block")
+			$('.autoCompleteDropdown').css("display","inline-block")
+			this.calldata(data);
+		},
     	async dbdata() {
     		var self = this
+    		console.log("databaseurl.....url", databaseurl)
     		await $.ajax({
+    			type: 'GET',
 			    url: databaseurl,
 			    success: function (data) {
 					result1 = data.data[0];
-					console.log(">>>>>>>>>>>>>> " ,data)
+					console.log("databaseurl data.............." ,data)
 			        self.crmdata = result1
 			    },error: function(err){
 			       console.log("error",err);
@@ -220,6 +264,7 @@
     	async postdata() {
 				let desc = CKEDITOR.instances.editor1.getData()
 				this.finaldata.description = desc
+				
 				let self = this
 				var re = /\S+@\S+\.\S+/;
 				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
@@ -227,21 +272,27 @@
     		var mail = re.test(self.finaldata.email);
 
     		if (mail != false && phone != false) {
-					console.log("json data******123this.finaldata",this.finaldata, mail, phone);
+    			this.loading = true
+					console.log("json data******123this.finaldata",this.finaldata);
     			await $.ajax({
 						type: 'POST',
+					    headers: {
+		  					'Authorization': Cookies.get('auth_token')
+		  				},
 					    url: databasepost,
 					    data: this.finaldata,
 					    success: function (data1) {
 					        result = data1;
 							console.log("json data******123",result);
+							self.loading = false,
 							self.$Notice.success({
-            		title: 'Sucess',
-            		desc: 'New CRM case is Saved. ',
+            					title: 'Sucess',
+            					desc: 'New CRM case is Saved. ',
 								duration: 4.5
-          		});
+          					});
 							self.$router.push( "list-relationship")
 					    },error: function(err){
+					    	self.loading = false,
 					       console.log("error",err);
 					    }
 					});
@@ -256,15 +307,13 @@
 
 				
     },
-    show() {
-      this.$router.push('/edit-crm/'+index)
-    },
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
   	},
   	async projectlist() {
   		var self = this
   		await $.ajax({
+  				type: 'GET',
 			    url: momapi,
 			    success: function (data) {
 					console.log(">>>>>>>>>>>>>>> " , data)
@@ -280,6 +329,7 @@
   	async assigneelist() {
   		var self = this
   		await $.ajax({
+  				type: 'GET',
   				headers: {
   					'Authorization': Cookies.get('auth_token')
   				},
@@ -310,7 +360,7 @@
     mounted() {
 		this.finaldata.price = "$";
     	CKEDITOR.replace("editor1"),
-    	this.calldata(),
+    	this.init(),
     	this.dbdata()
     	this.projectlist()
     	this.assigneelist()
