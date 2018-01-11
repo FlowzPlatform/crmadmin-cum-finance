@@ -245,6 +245,117 @@
     </div>
 
 </div>
+
+
+
+<div v-if="emailDataCustom != ''" ref="email2" style="display:none">
+ 
+<div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+        <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+            <tbody><tr class="top">
+                <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
+                                <img src="../../images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                            </td>
+                            
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                                Invoice #: {{emailDataCustom.Invoice_No}}<br>
+                                Created: {{createdDate}}<br>
+                                Due: {{dueDate}}
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+            
+            <tr>
+            <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody><tr>
+                            <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                <b>To :</b><br>
+                                <p>{{emailDataCustom.Name}}</p>
+                                
+                                E-169<br>
+                                New Alkapuri<br>
+                                Vadodara<br>
+                                India,799864<br>
+                            </td>
+                            
+                            <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
+                                <b>From :</b><br>
+                                Acme Corp.<br>
+                                John Doe<br>
+                                
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
+             <tr>
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Item
+                </td>
+                
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Paid Amount
+                </td>
+
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                    Due Amount
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    Website design
+                </td>
+                
+                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                    ${{emailDataCustom.Paid}}
+                </td>
+                <td style="border-bottom: 1px solid #eee;text-align:center;padding: 5px;vertical-align: top;">
+                    ${{emailDataCustom.Due}}
+                </td>
+            </tr>
+            
+            
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Sub Total: ${{emailDataCustom.Total}}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Tax: 0%
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Total Due Amount: ${{emailDataCustom.Due}}
+                </td>
+            </tr>
+            
+           
+        </tbody></table>
+    </div>
+
+</div>
 <div id="editor"></div>
 </div>
 </div>
@@ -274,6 +385,7 @@ export default {
       money,
       mail,
       download,
+      emailDataCustom:'',
       emailData : '',
       emailDataCustomer:'',
       filterArray : [],
@@ -1189,71 +1301,71 @@ export default {
                 width: 200,
             });
         }
-        // if(modifiedArray.indexOf("Action") != -1){
-        //   modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
-        // }else{
-        //   arr.push({
-        //         title: "Action",
-        //         width: 200,
-        //         render: (h, params) => {
-        //         return h('div', [
-        //             h('Tooltip', {
-        //               props: {
-        //                 placement: 'top',
-        //                 content: 'Send Mail'
-        //               },
-        //               style:{
+        if(modifiedArray.indexOf("Action") != -1){
+          modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
+        }else{
+          arr.push({
+                title: "Action",
+                width: 200,
+                render: (h, params) => {
+                return h('div', [
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Send Mail'
+                      },
+                      style:{
                         
-        //                 cursor:'pointer'
-        //               }
-        //             }, [
-        //               h('img', {
-        //                attrs: {
-        //                   src: self.mail
-        //                 },
-        //                 style: {
-        //                   hight:'30px',
-        //                   width:'30px',
-        //                   margin: '2px'
-        //                 },
-        //                 on: {
-        //                   click: () => {
-        //                     self.sendemail(params)
-        //                   }
-        //                 }
-        //               }, '')
-        //             ]),
-        //             h('Tooltip', {
-        //               props: {
-        //                 placement: 'top',
-        //                 content: 'Download'
-        //               },
-        //               style:{
+                        cursor:'pointer'
+                      }
+                    }, [
+                      h('img', {
+                       attrs: {
+                          src: self.mail
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                        on: {
+                          click: () => {
+                            self.sendemailCustom(params)
+                          }
+                        }
+                      }, '')
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Download'
+                      },
+                      style:{
                         
-        //                 cursor:'pointer'
-        //               }
-        //             }, [
-        //             h('img', {
-        //               attrs: {
-        //                   src: self.download
-        //                 },
-        //                 style: {
-        //                   hight:'30px',
-        //                   width:'30px',
-        //                   margin: '2px'
-        //                 },
-        //               on: {
-        //                 click: () => {   
-        //                   self.createPDF(params)
-        //                 }
-        //               }
-        //             }, '')
-        //           ])
-        //         ])
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.download
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.createPDFCustom(params)
+                        }
+                      }
+                    }, '')
+                  ])
+                ])
               
-        //     }
-        //   })
-        // }
+            }
+          })
+        }
         self.list = await self.mockTableData1(1,pageSize)
         self.columns3 = arr;
         
@@ -1290,6 +1402,91 @@ export default {
       
     },
     
+
+    async createPDFCustom(params){
+      console.log(params.row)
+      this.emailDataCustom = params.row;
+      var self = this
+      var date = new Date(); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      this.dueDate =  params.row.DueDate
+      setTimeout(function(){ 
+        self.$Modal.confirm({
+          title: '',
+          content: self.$refs.email2.innerHTML,
+          width: 1000,
+          okText: 'Download',
+          onOk: () => {
+            var filename = "invoice.html";
+            var data = self.$refs.email2.innerHTML;
+            var blob = new Blob([data], {
+                type: "text/html;charset=utf-8"
+            });
+            saveAs(blob, filename);
+          },
+          onCancel: () => {
+          }
+        })
+       }, 2000);
+    },
+    async sendemailCustom(params){
+      this.$Loading.start();
+      this.emailDataCustom = params.row;
+      var self = this
+      var date = new Date(); 
+      this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+      this.dueDate =  params.row.DueDate
+      var self = this;
+      
+
+      this.$Modal.confirm({
+                    title: 'Email would be sent to',
+                    okText: 'OK',
+                    cancelText: 'Cancel',
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: "",
+                                autofocus: true,
+                                
+                                placeholder: 'Please enter email Id...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    
+                                    self.emailIdTobeSent = val;
+                                }
+                            }
+                        })
+                    },
+                    onOk: ()=>{
+                               
+                                    let myData = {
+                                          "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                                          "from": "obsoftcare@gmail.com",
+                                          "subject": "email invoice",
+                                          "body": self.$refs.email2.innerHTML
+                                        }
+                                        myData = JSON.stringify(myData)
+                                        axios({
+                                          method: 'post',
+                                          url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                                          data: myData,
+                                          headers: {
+                                            'authorization':  Cookies.get('auth_token')
+                                          }
+                                          }).then(function (response) {
+                                            console.log(response);
+                                            self.$Message.success(response.data.success);
+                                            self.list[params.index].loading1 = false
+                                          })
+                                          .catch(function (error) {
+                                            self.$Message.warning("email send failed , Please try again later");
+                                            console.log(error);
+                                          });
+                    }
+                })
+    },
     async getAllSettings(){
       let self = this;
       axios.get(config.default.serviceUrl + 'settings?isActive=true', {

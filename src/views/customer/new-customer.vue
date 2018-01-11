@@ -268,15 +268,15 @@ Vue.use(VueWidgets);
                       }else{
                         var params1 = {
                           settingId : settingId,
-                          Name: this.formValidate.name,
+                          Name: self.formValidate.name,
                           ContactStatus: 'ACTIVE',
-                          EmailAddress:this.formValidate.mail,
-                          AddressLine1:this.formValidate.AddressLine1,
-                          AddressLine2:this.formValidate.AddressLine2,
-                          City:this.formValidate.city,
-                          Country:this.formValidate.country,
-                          PostalCode:this.formValidate.PostalCode,
-                          PhoneNumber:this.formValidate.mobile
+                          EmailAddress:self.formValidate.mail,
+                          AddressLine1:self.formValidate.AddressLine1,
+                          AddressLine2:self.formValidate.AddressLine2,
+                          City:self.formValidate.city,
+                          Country:self.formValidate.country,
+                          PostalCode:self.formValidate.PostalCode,
+                          PhoneNumber:self.formValidate.mobile
                         }
                             axios({
                               method: 'post',
