@@ -57,8 +57,8 @@
       <Tabs  @on-click="tabClicked">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
         <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-        <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-        
+        <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+        <Table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" border size="small" ref="table" stripe></Table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage"></Page>
@@ -289,7 +289,9 @@ export default {
         }
       }
     ],
+    column3:[],
     data6: [],
+    data7: [],
     filterArray: [],
     listData: [],
     cname: '',
@@ -346,7 +348,7 @@ export default {
     },
     async mockTableData1 (p,size) {
       this.len = this.data6.length
-      return this.data6.slice((p - 1) * size, p * size);
+      return this.data6.slice((p - 1) * size, p * size).reverse();
     },
     async changePage (p) {
       this.page = p
@@ -361,33 +363,69 @@ export default {
     async tabClicked(data){
       console.log(data)
       let settingId = this.tabPanes[data].id
-      this.getContactBySettingId(settingId)
+      let settingDomain = this.tabPanes[data].domain;
+      this.getContactBySettingId(settingId ,settingDomain , data)
     },
-    async getContactBySettingId(settingId){
+    async getContactBySettingId(settingId , settingDomain , data){
       this.$Loading.start();
       this.data6 = [];
       let self = this;
       self.list = [];
-      await axios.get(feathersUrl +'contacts', {
-         headers:{
-          Authorization : Cookies.get('auth_token')
-      },
-      params : {
-      settingId : settingId
+
+      if(settingDomain == 'custom'){
+        let customerUrl = this.tabPanes[data].customer_url;
+         await axios({
+            method: 'get',
+            url: customerUrl,
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(async function (response) {
+              console.log(response)
+              self.data6 = response.data.data.reverse();
+
+              let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+              let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
+              let arr = [];
+              let len = columnArray.length;
+              for (let i = 0; i < len; i++) {
+                  arr.push({
+                      title: columnArray[i],
+                      key : columnArray[i],
+                      sortable: true
+                      
+                  });
+              }
+              self.list = await self.mockTableData1(1,pageSize)
+              self.column3 = arr;
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+      }else{
+        await axios.get(feathersUrl +'contacts', {
+          headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+        params : {
+        settingId : settingId
+        }
+        }).then(async function (response) {
+          console.log("$$$$$$$$$$$$$$$$$$$",response)
+            self.data6 = response.data[0].data.reverse();
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.list = await self.mockTableData1(1,pageSize)
+        }).catch(function (error) {
+          console.log("error",error);
+            self.$Loading.error();
+        });
       }
-      }).then(async function (response) {
-        console.log("$$$$$$$$$$$$$$$$$$$",response)
-        self.data6 = response.data[0].data.reverse();
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
-      }).catch(function (error) {
-        console.log("error",error);
-          self.$Loading.error();
-      });
+
+      
 
       self.data6.forEach (obj => {
-            console.log("obj------------------->",obj);
+            //console.log("obj------------------->",obj);
             var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
             option.text = obj.Name;
@@ -413,7 +451,8 @@ export default {
               self.tabPanes = response.data.data;
             $('.preload').css("display","none")
             let settingId = self.tabPanes[0].id
-            self.getContactBySettingId(settingId)
+            let settingDomain = self.tabPanes[0].domain;
+            self.getContactBySettingId(settingId , settingDomain , 0)
             }else
             {
                 self.$Modal.warning({
