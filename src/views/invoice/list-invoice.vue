@@ -856,22 +856,24 @@ export default {
               console.log(error);
             });
       }else{
-         await axios({
-            method: 'get',
-            url: config.default.serviceUrl + 'contacts',
-            params: {
-              settingId : settingId
-            },
-            headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-            }).then(function (response) {
-              
-              res = response.data[0].data
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+        if (settingId != '') {
+          await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingId
+              },
+              headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+              }).then(function (response) {
+                
+                res = response.data[0].data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+        }
       }
       
       
@@ -1126,7 +1128,7 @@ export default {
                                         myData = JSON.stringify(myData)
                                         axios({
                                           method: 'post',
-                                          url:  'http://api.flowz.com/vmailmicro/sendEmail',
+                                          url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
                                           data: myData,
                                           headers: {
                                             'authorization':  Cookies.get('auth_token')

@@ -46,6 +46,20 @@
 								</div>
 							</div>
 						</div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-xs-4 text-right">
+                  <label id="c22339">Customer Config</label>
+                </div>
+                <div class="col-xs-8">
+                  <Select v-model="finaldata.config" placeholder="Select Config" @on-change="configChange">
+                    <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
+                  </Select>
+                  <!-- <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete> -->
+                  <!-- <select class="form-control" id="customer"><option>Select</option></select> -->
+                </div>
+              </div>
+            </div>
 						<div class="form-group">
 							<div class="row">
 								<div class="col-xs-4 text-right">
@@ -80,8 +94,6 @@
 									<Select v-model="finaldata.assignee" filterable multiple>
 										<Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
 									</Select>
-									<!-- <i-select v-model="finaldata.assignee"  filterable multiple><i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option></i-select> -->
-									<!-- <select class="form-control" id="assignee"><option>Select</option></select> -->
 								</div>
 							</div>
 						</div>
@@ -95,9 +107,6 @@
 								</div>
 								<div class="col-xs-8">
 									<date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:100% !important"></date-picker>
-									<!-- <el-date-picker v-model="finaldata.contractdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker>
- -->
-									<!-- <input class="form-control" type="date" id="contractdate" /> -->
 								</div>
 							</div>
 						</div>
@@ -171,7 +180,7 @@
 				<!-- <div class="panel" id="c22351"><div class="panel"><i class="fa fa-pencil" aria-hidden="true"></i><label id="c22367">Notes:</label></div><textarea name="editor1"></textarea><div id="c2597"><input id="c2601" type="file" name="myFile" /></div></div> -->
 			</div>
 			<div id="c2607">
-				<button class="form-control" id="c2611" @click="postdata()">Save</button>
+				<Button class="form-control" id="c2611" @click="postdata()" :loading="loading">Save</Button>
 			</div>
 		</div>
 	</div>
@@ -187,10 +196,10 @@
   var price;
   var email;
   var phone;
-  // var serviceUrl = config.default.serviceUrl;
+  var serviceUrl = config.default.serviceUrl;
 
-  var apiurl = config.default.serviceUrl + "contacts/";
-  var databaseurl = config.default.serviceUrl + "crm-service/";
+  // var apiurl = config.default.serviceUrl + "contacts/";
+  // var databaseurl = config.default.serviceUrl + "crm-service/";
   var result;
   var result1;
   var name;
@@ -212,6 +221,7 @@
     data() {
       return { 
         customerData:[],
+        loading: false,
         crmdata: {},
         finaldata: {
           name: '',
@@ -228,41 +238,48 @@
           phone: '', 
         },
         momdata: [],
+        mData: [],
         description:'',
-        assigneedata: []
+        assigneedata: [],
+        question: ''
       }
     },
     methods: {
       async showdata() {
+
         var self = this
-        var result = await (
+        // var result = await (
           axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
-            return res.data
+            self.finaldata = res.data
+           // return res.data
           }).catch(err => {
             console.log('Error >>>>>>>>>>>>>>', err)
             return err
           })
-          )
-        console.log('RESULT ..................', result)
-        self.finaldata = result
+          //)
+        console.log('RESULT ..................', self.finaldata)
+        
+      },
+      configChange () {
+        this.calldata();
       },
       async calldata() {
         let self=this;
+        console.log("self.finaldata.config", self.finaldata.config)
+        self.customerData = [];
         await $.ajax({
           type: 'GET',
-          url: apiurl,
-          async: true,
-          dataType: 'json',
-          headers: {
-          'authorization':  Cookies.get('auth_token')
-          },
+          url: serviceUrl +"contacts",
+          data: {
+                    settingId : self.finaldata.config,   
+                },
           success: function (data) {
-            console.log("Customer-data>>>>>>>>>>>>>> " , data)
+            // console.log("data>>>>>>>>>>>>>> Contacts" , data)
             data.forEach(function(contacts) {
               var cnt = contacts.data
-              console.log("%%%%%%%%%%",cnt.length)
               for (var i=0; i<cnt.length; i++) {
+                // console.log("%%%%%%%%%%",cnt[i].Name)
                 self.customerData.push(cnt[i].Name)
               }
             })
@@ -272,11 +289,34 @@
             console.log("Error",err)
           }
         });
+        // await $.ajax({
+        //   type: 'GET',
+        //   url: apiurl,
+        //   async: true,
+        //   dataType: 'json',
+        //   headers: {
+        //   'authorization':  Cookies.get('auth_token')
+        //   },
+        //   success: function (data) {
+        //     console.log("Customer-data>>>>>>>>>>>>>> " , data)
+        //     data.forEach(function(contacts) {
+        //       var cnt = contacts.data
+        //       console.log("%%%%%%%%%%",cnt.length)
+        //       for (var i=0; i<cnt.length; i++) {
+        //         self.customerData.push(cnt[i].Name)
+        //       }
+        //     })
+
+        //     // console.log(data)
+        //   },error: function(err) {
+        //     console.log("Error",err)
+        //   }
+        // });
       },
       async dbdata() {
       var self = this
       await $.ajax({
-        url: databaseurl,
+        url: serviceUrl + "crm-service/",
         success: function (data) {
             result1 = data.data[0];
             self.crmdata = result1
@@ -342,15 +382,23 @@
         var mail = re.test(self.finaldata.email);
         
         if (mail != false && phone != false) {
+          this.loading = true
           await $.ajax({
             type: 'PATCH',
             url: databasepost + self.$route.params.id,
             data: self.finaldata,
             success: function (data1) {
               result = data1;
+              self.loading = false
+              self.$Notice.success({
+                      title: 'Sucess',
+                      desc: 'Edit CRM case is Saved. ',
+                duration: 4.5
+                    });
               console.log("json data******123",result);
-              self.$router.push( "list-relationship")
+              self.$router.push("list-relationship")
             },error: function(err){
+              self.loading = false,
                 console.log("error",err);
               }
           });
@@ -358,16 +406,49 @@
           alert("Enter Valid Email Address OR Phone Number")
         }
       },
+      init() {
+        let self = this;
+        axios.get(serviceUrl+"settings", {
+          params: {
+            isActive : true,
+            user : Cookies.get('user')
+          },
+          headers: {
+            Authorization : Cookies.get('auth_token')
+          }
+        })
+        .then(function (response) {
+          self.mData = response.data.data;
+          console.log("config data list................self.mData",self.mData)
+          // self.config1 = self.mData[0].id;
+          // self.calldata()    
+        })
+        .catch(function (error) {
+          console.log(error)
+          self.disabled = false;
+          //Cookies.remove('auth_token') 
+          self.$Message.error('Auth Error!');
+          //self.$store.commit('logout', self); 
+          // self.$router.push({
+          //     name: 'login'
+          // })
+        });
+      }
   },
     mounted() {
       console.log('^^^^^^^^^^^^^^^^^^^^^^^^', databasepost)
       CKEDITOR.replace("editor1");
       console.log("this.$route.params.id", this.$route.params.id)
       this.showdata()
-      this.calldata()
+      this.init()
       this.dbdata()
       this.projectlist()
       this.assigneelist()
+    },
+     watch(){
+        $route: {
+            alert('route change');
+        }
     }
 }
 

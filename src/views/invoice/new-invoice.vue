@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="col-sm-12">      
-    <Form :model="formItem" label-position="left" :label-width="100"  :rules="rulesValidation" ref="formItem">
+    <Form :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem">
          <!-- <FormItem label="configure" prop="config">
              <Select v-model="formItem.config" style="width:100%">
                <Option v-for="item in data4" :value="item.value" :key="item.label">{{ item.label }} </Option>
@@ -217,6 +217,7 @@ export default {
       let resp
       let self = this
 
+      
       await axios({
                     method:'get',
                     url: config.default.serviceUrl + 'settings/'+settingId
@@ -265,7 +266,6 @@ export default {
                                   });
                       }
                   });
-      
       
       
       console.log("response------>iuy",resp);

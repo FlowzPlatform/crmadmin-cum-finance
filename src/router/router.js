@@ -175,15 +175,15 @@ export const appRouter = [
     {
         path: '/transaction',
         icon: 'cash',
-        title: 'TRANSACTION',
-        name: 'TRANSACTION',
+        title: 'TRANSACTION LIST',
+        name: 'TRANSACTION LIST',
         component: Main,
         children: [
             { 
                 path: 'list-transaction', 
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'list-transaction', 
+                name: 'List-transaction', 
                 component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
             }
         ]
