@@ -214,22 +214,24 @@ export default {
       
       let resp
       let self = this
-      await axios({
-            method: 'get',
-            url: config.default.serviceUrl + 'contacts',
-            params: {
-              settingId : settingId
-            },
-            headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-            }).then(function (response) {
-             
-              resp = response.data
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      if  (settingId != '') {
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingId
+              },
+              headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+              }).then(function (response) {
+              
+                resp = response.data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+      }
       console.log("response------>iuy",resp);
       // resp.forEach(obj =>{
       //   console.log(obj[0].data)
