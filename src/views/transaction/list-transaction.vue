@@ -1,5 +1,58 @@
 <template>
     <div>
+        <div class="panel panel-default panel-group" id="accordion">
+          <div class="panel-heading">
+              <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+          </div>
+          <div class="panel-collapse collapse" id="collapseTwo">
+              <div class="panel-body">
+                  <form>
+                      <div class="collapse-maindiv maindiv" >
+                          <div class="panel panel-default">
+                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                                  <label>Customer Name</label>
+                              </div>
+                              <div class="panel-collapse collapse" id="Customer">
+                                  <select class="form-control"  v-model="cname" id="selectCustomer">
+                                    <option value="">All</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="panel panel-default">
+                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
+                                  data-target="#invoiceId"></span>
+                                  <label>Invoice No.</label>
+                              </div>
+                              <div class="panel-collapse collapse" id="invoiceId">
+                                 <input class="form-control" type="text" v-model="invoiceId"/>
+                              </div>
+                          </div>
+                          <div class="panel panel-default">
+                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
+                                  data-target="#date"></span>
+                                  <label>Date</label>
+                              </div>
+                              <div class="form-group row panel-collapse collapse" id="date">
+                                  <div class="col-xs-3">
+                                    <label>From Date</label>
+                                      <input class="form-control" type="date" v-model="dategt"/>
+                                  </div>
+                                  <div class="col-xs-3">
+                                    <label>To Date</label>
+                                      <input class="form-control" type="date" v-model="datelt" />
+                                  </div>
+                              </div>
+                          </div>
+                          <div style="margin-top: 5px;">
+                            <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                            <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+        </div>
+
         <div v-if="spinShow">
                 <Spin size="large"></Spin>
         </div>
@@ -19,13 +72,15 @@
             </TabPane>
             </Tabs>  
         </div>
-    </div>
+  </div>
 </template>
 
 <script>
 import config from '@/config/customConfig.js'
 import axios from 'axios'
+import moment from 'moment'
 import Cookies from 'js-cookie';
+import _ from 'lodash'
 
 var pageSize = 10
 export default {
@@ -35,6 +90,7 @@ export default {
         tabPanes : [],
         spinShow: true,
         data : [],
+        len:1,
         list: [],
         columns1: [
           {
@@ -74,7 +130,7 @@ export default {
               render:(h,{row})=>{ 
   
                var date = new Date(row.paymentAccounting.Invoice.Date); 
-               var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+               var date1 = date.getDate() + '/' + (date.getMonth() + 1)+ '/' +  date.getFullYear()
                 return date1
               }
           },
@@ -123,7 +179,7 @@ export default {
                 render:(h,{row})=>{ 
     
                 var date = new Date(row.paymentAccounting.Invoice.Date); 
-                var date1 = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
                     return date1
                 }
             },
@@ -133,14 +189,87 @@ export default {
                 sortable: true,
                 render:(h,{row})=>{ return row.paymentAccounting.Amount }
             }
-        ]
+        ],
+        filterArray: [],
+        cname: '',
+        invoiceId : '',
+        dategt: '',
+        datelt: ''
       }
   },
   methods: {
+    reset() {
+      this.cname = '';
+      this.invoiceId = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data", this.data)
+      this.filterArray = this.data
+      var self = this
+
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          return item.paymentAccounting.Contact.Name === self.cname;
+        
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.invoiceId != ''){
+        console.log("this.invoiceId", this.invoiceId)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.dategt != ''){
+        console.log("this.dategt", this.dategt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)
+          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
+          var newdate = moment(self.dategt).format('DD/MM/YYYY');
+          return itemdate >= newdate;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.datelt != ''){
+        console.log("this.datelt", this.datelt)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item.paymentAccounting.Invoice.Date)
+          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
+          var newdate = moment(self.datelt).format('DD/MM/YYYY');
+          console.log("itemdate",itemdate)
+          console.log("newdate",newdate)
+          return itemdate <= newdate;
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
     async getAllSettings(){
       let self = this;
       axios.get(config.default.serviceUrl + 'settings', {
         params : {
+            isActive : true,
             user : Cookies.get('user')
         },
         headers:{
@@ -186,8 +315,14 @@ export default {
               return this.data.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
-        this.page = p
+      this.page = p
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
         this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
     },
     async getTransaction(settingId) {
         this.$Loading.start();
@@ -212,6 +347,14 @@ export default {
             console.log("error",error);
             self.$Loading.error();
         });
+
+        self.data.forEach (obj => {
+            // console.log("obj------------------->",obj);
+            var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = obj.paymentAccounting.Contact.Name;
+            x.add(option);
+          })   
     }
   },
   mounted() {

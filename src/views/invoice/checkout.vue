@@ -91,7 +91,7 @@
                         <div class="form-group" style="text-align:left"> AMOUNT
                             <div>
                               <FormItem prop="amount">
-                                <Input v-model="payDetail.amount" type="text" class="" readonly/> 
+                                <Input v-model="payDetail.amount" type="text" class=""/> 
                                 </FormItem>
                                 </div>
                             </div>
@@ -268,6 +268,7 @@ export default {
             let exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
             console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",this.settingId)
             console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
+            this.payDetail.amount = parseInt(this.payDetail.amount);
             let param1 = {
             settingId:this.settingId,
             user:Cookies.get('user'),
@@ -306,9 +307,13 @@ export default {
       console.log(name)
       this.$refs[name].validate(valid => {
         if(valid) {
-          this.payNow();
+          if(this.payDetail.amount <= this.$store.state.invoiceData.AmountDue){
+            this.payNow();
+          }else{
+            this.$Message.error('Enter Amount less than Due Amount');
+          }
         } else {
-          alert('Error')
+          this.$Message.error('Enter Valid Input');
         }
       })
     }

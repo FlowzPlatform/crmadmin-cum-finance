@@ -27,7 +27,7 @@
     <Widget>
       <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
       <WidgetBody>
-        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
+        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
         <FormItem label="Configuration Name" prop="configuration">
            <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
              <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
