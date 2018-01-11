@@ -273,33 +273,43 @@
 </style>
 <template>
 	<div class="chat">
-		<div id="block" style="text-align:right;width:100%">
+		<div id="block" style="text-align:right;width:100%;display:inline-block">
 			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
 			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
 			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
 		</div>
+
 		<textarea style="display:none" id="editor2" name="editor2" ></textarea>
-		<div style="margin-bottom: 10px;margin-right: 10px;">
-			<div class="message">
+		<div v-for="(item, index) in commentData" style="margin-bottom: 10px;margin-right: 10px;">
+			<div class="message"  v-if="item.user_id != userId">
 				<Row>
 					<Col span="24" >
 						<!-- <div v-for="(item, index) in commentData"> -->
 						<div >
 							<img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
 							<!-- <p class="emailText">{{item.Text}}</p> -->
-							<p class="emailText">I am here </p>
+							<!-- <p class="emailText">I am here </p> -->
+              <p class="emailText">{{item.comment}}</p>
 							<span class="receivedDate">
 								<!-- <span>{{getDate(item.date)}}</span> -->
-								<span>1 day ago</span>
+								<!-- <span>1 day ago</span> -->
+                <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
+                <!-- <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> || -->
+                    
+                <!-- <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
+                <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+                <span v-else>{{getDate(item.created_at)}}</span>
+                <span v-if="item.isEdited">{{item.edited_by}}</span>
+                <span v-else>{{item.created_by}}</span>
 							</span>
 						</div>
 					</Col>
 				</Row>
 			</div>
-			<div class="message me" >
+			<div v-else class="message me" >
 				<Row>
 					<Col span="24" >
-						<div v-for="(item, index) in commentData">
+						<div  >
 							<img :src="src" />
 							<p class="emailText">{{item.comment}}</p>
 							<span class="sentDate">
@@ -334,6 +344,7 @@
     data() {
       return { 
         isActive:false,
+        userId: '',
         // isEdit:false,
         src : '',
         commentData: []
@@ -345,7 +356,7 @@
         editor.destroy();
         this.isActive = !this.isActive
         document.getElementById("editor2").style.display = "none";
-        document.getElementById("block").style.display = "inline";
+        document.getElementById("block").style.display = "inline-block";
       },
       deleteItem (item) {
         var itemId = item.id
@@ -503,13 +514,14 @@
           editor.destroy();
           this.isActive = !this.isActive
           document.getElementById("editor2").style.display = "none";
-          document.getElementById("block").style.display = "inline";
+          document.getElementById("block").style.display = "inline-block";
         }
         console.log('outer',this.isActive)
       },
       getData () {
         var self = this
         var crm_id = self.$route.params.id
+        this.userId = Cookies.get('user')
         axios({
           method:'GET',
           url: relationshipcomments + 'relationshipcomments',
