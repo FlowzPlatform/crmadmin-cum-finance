@@ -4,10 +4,20 @@ import Main from '@/views/Main.vue';
 export const loginRouter = {
     path: '/login',
     name: 'login',
+    
     meta: {
         title: 'Login'
     },
     component: resolve => { require(['@/views/login.vue'], resolve); }
+};
+
+export const varifyEmailRouter = {
+    path: '/varifyEmail',
+    name: 'varifyEmail',
+    meta: {
+        title: 'varifyEmail'
+    },
+    component: resolve => { require(['@/views/varifyEmail/varifyEmail.vue'], resolve); }
 };
 
 export const page404 = {
@@ -56,15 +66,16 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: 'home', name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
+        { path: 'home', title: 'Home', name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
         { path: 'ownspace', title: 'Own Space', name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
         { path: 'order/:order_id', title: 'order', name: 'order-info', component: resolve => { require(['@/views/advanced-router/component/order-info.vue'], resolve); } }, // 用于展示动态路由
         { path: 'shopping', title: 'Shopping', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
-        { path: 'new-settings', title: 'newSettings', name: 'newsettings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        { path: 'new-settings', title: 'newSettings', name: 'New-settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'checkout', name: 'checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'editcrm',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+        
     ]
 };
 
@@ -94,38 +105,48 @@ export const appRouter = [
     
     {
         path: '/customer',
-        icon: 'person-stalker',
+        icon: 'person',
         title: 'CUSTOMER',
         name: 'CUSTOMER',
         component: Main,
         children: [
             { 
                 path: 'new-customer', 
-                title: 'new-customer',
+                title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'newcustomer', 
+                name: 'New-customer', 
                 component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
             },
             { 
                 path: 'list-customer', 
-                title: 'list-customer',
+                title: 'List',
                 icon: 'ios-list-outline',
-                name: 'listcustomer', 
+                name: 'List-customer', 
                 component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
-            },
-            {    path: 'new-relationship', 
-                 title: 'new-relationship',
-                 icon: 'ios-plus-outline',
-                 name: 'newcrm', 
-                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
+            }  
+        ]
+    },
+    {
+        path: '/relationship',
+        icon: 'ios-people',
+        title: 'RELATIONSHIP',
+        name: 'RELATIONSHIP',
+        component: Main,
+        children: [
+            {    
+                path: 'new-relationship', 
+                title: 'New',
+                icon: 'ios-plus-outline',
+                name: 'New-relationship', 
+                component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
             },
             { 
                 path: 'list-relationship', 
-                title: 'list-relationship',
+                title: 'List',
                 icon: 'ios-list-outline',
-                name: 'listcrm', 
+                name: 'List-relationship', 
                 component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
-            }  
+            }
         ]
     },
     {
@@ -137,17 +158,33 @@ export const appRouter = [
         children: [
             { 
                 path: 'new-invoice', 
-                title: 'new-invoice',
+                title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'new-invoice', 
+                name: 'New-invoice', 
                 component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve);}
             },
             { 
                 path: 'list-invoice', 
-                title: 'list-invoice',
+                title: 'List',
                 icon: 'ios-list-outline',
-                name: 'list-invoice', 
+                name: 'List-invoice', 
                 component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
+            }
+        ]
+    },
+    {
+        path: '/transaction',
+        icon: 'cash',
+        title: 'TRANSACTION LIST',
+        name: 'TRANSACTION LIST',
+        component: Main,
+        children: [
+            { 
+                path: 'list-transaction', 
+                title: 'List',
+                icon: 'ios-list-outline',
+                name: 'List-transaction', 
+                component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
             }
         ]
     },
@@ -315,6 +352,7 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
+    varifyEmailRouter,
     otherRouter,
     preview,
     locking,

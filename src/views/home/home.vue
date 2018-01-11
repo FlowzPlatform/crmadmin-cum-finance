@@ -6,14 +6,38 @@
     <div class="home-main">
         <Row :gutter="10">
             <Col :md="24" :lg="24" :sm="12">
-                <Row :gutter="5">
+                <Row :style="{border: '1px solid #ddd', borderRadius: '5px', backgroundColor: 'whitesmoke'}">
+                    <Col :xs="24" :sm="2" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        
+                    </col>
+                    <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        <Select v-model="contacts" clearable style="width:200px;" placeholder="Select Contacts" >
+                            <Option v-for="item in contactData" :value="item.Id" :key="item.Id" >{{ item.Name }}</Option>
+                        </Select>
+                    </col>
+                    <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        <Select v-model="config" clearable style="width:200px;" placeholder="Select Config" @on-change="getContacts">
+                            <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
+                        </Select>
+                    </col>
+                    <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd"  placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
+                    </col>
+                    <Col :xs="24" :sm="6" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        <Button type="primary" @click="dateval">Apply</Button>
+                    </col>
+                    <Col :xs="24" :sm="1" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
+
+                    </col>
+                </Row>
+                <Row :gutter="5" :style="{marginTop: '10px'}">
                     <Col :xs="24" :sm="12" :md="4" :style="{marginBottom: '10px'}">
                         <infor-card
                             id-name="totalInv_count"
                             :end-val="count.totalInv"
                             iconType="ios-calendar-outline"
                             color="#E7A6C9"
-                            intro-text="Total Invoice"
+                            intro-text="Total Invoices"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
@@ -22,7 +46,7 @@
                             :end-val="count.total"
                             iconType="social-usd"
                             color="#2d8cf0"
-                            intro-text="Invoice Total Amount"
+                            intro-text="Total Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
@@ -31,7 +55,7 @@
                             :end-val="count.paid"
                             iconType="social-usd"
                             color="#64d572"
-                            intro-text="Invoice Paid Amount"
+                            intro-text="Paid Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
@@ -40,7 +64,7 @@
                             :end-val="count.unpaid"
                             iconType="social-usd"
                             color="#ffd572"
-                            intro-text="Invoice Unpaid Amount"
+                            intro-text="Unpaid Amount"
                         ></infor-card>
                     </Col>
                     <Col :xs="24" :sm="12" :md="5" :style="{marginBottom: '10px'}">
@@ -49,39 +73,23 @@
                             :end-val="count.draft"
                             iconType="social-usd"
                             color="#f25e43"
-                            intro-text="Invoice Draft Amount"
+                            intro-text="Draft Amount"
                         ></infor-card>
                     </Col>
-                </Row>
-                <Row>
-                    
-                    <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <Select v-model="config" clearable style="width:200px;float: right;" placeholder="Select Config" >
-                            <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
-                        </Select>
-                        <!-- <Button type="primary" @click="selectChange">Apply</Button> -->
-                    </col>
-                    <Col :xs="24" :sm="12" :md="12" :style="{marginBottom: '10px'}">
-                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd"  placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
-                        <Button type="primary" @click="dateval">Apply</Button>
-                    </col>
                 </Row>
             </Col>
         </Row>
         <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                             
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="4" :Title="'Bar Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="4" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true" :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
-                            <div id="chart1_loading">
-                                <img src="" alt="loading.." /> 
-                            </div>
-                            <div id="chart1_content">
-                                <div id="barChart" style="height:400px;"></div>
+                            <div id="chart1_content" style="height: 300px;">
+                                <div id="barChart" style="height:300px;"></div>
                             </div>
                         </div>
                     </WidgetBody>
@@ -90,17 +98,15 @@
                             
                 </draggable>
             </Col>
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                     <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="2" :Title="'Pie Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="2" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
-                                <div id="chart2_loading">
-                                <img src="" alt="loading.." /> </div>
-                                <div id="chart2_content">
-                                    <div id="pieChart" style="height:400px;"></div>
+                                <div id="chart2_content" style="height: 300px;">
+                                    <div id="pieChart" style="height:300px;"></div>
                                 </div>
                             </div>
                         </WidgetBody>
@@ -109,18 +115,16 @@
                     </draggable>
             </Col>
         </Row>
-        <Row :gutter="10" class="margin-top-10">
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+        <Row :gutter="10" class="margin-top-5">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="3" :Title="'Line Chart'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="3" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
-                                <div id="chart3_loading">
-                                    <img src="" alt="loading.." /> </div>
-                                <div id="chart3_content">
-                                    <div id="lineChart" style="height:400px;"> </div>
+                                <div id="chart3_content" style="height: 300px;">
+                                    <div id="lineChart" style="height: 300px;"> </div>
                                 </div>
                             </div>
                         </WidgetBody>
@@ -128,17 +132,15 @@
                         <!-- END PORTLET-->
                 </draggable>
             </Col>
-            <Col :md="24" :lg="12" :style="{marginBottom: '10px'}">
+            <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :DeleteButton="true" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
-                            <div id="chart4_loading">
-                                <img src="" alt="loading.." /> </div>
-                            <div id="chart4_content">
-                                <div id="waterfall" style="height: 400px;"> </div>
+                            <div id="chart4_content" style="height: 300px;">
+                                <div id="waterfall" style="height: 300px;"> </div>
                             </div>
                         </div>
                     </WidgetBody>
@@ -168,6 +170,7 @@ import moment from 'moment';
 import axios from 'axios';
 const _ = require('lodash');
 const accounting = require('accounting-js');
+import psl from 'psl';
 
 import configService from '@/config/customConfig.js';
 let serviceUrl = configService.default.serviceUrl;
@@ -201,6 +204,8 @@ export default {
                 draft: 0,
                 totalInv: 0
             },
+            contacts : '',
+            contactData : [],
             mData: [],
             dateoptions: {
                 shortcuts: [
@@ -219,7 +224,7 @@ export default {
                         value () {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 91);
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 92);
                             return [start, end];
                         }
                     },
@@ -262,7 +267,7 @@ export default {
             this.showAddNewTodo = false;
             this.newToDoItemValue = '';
         },
-        async ChartFun(chart,date1,date2,settingId) {
+        async ChartFun(chart,date1,date2,settingId,contact) {
             this.$Loading.start()
             let self = this;
             var chartdata;
@@ -271,10 +276,8 @@ export default {
                     chart : chart,
                     date1 : date1,
                     date2 : date2,
-                    settingId : settingId
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
+                    settingId : settingId,
+                    contact : contact
                 }
             })
             .then(function (response) {
@@ -298,13 +301,22 @@ export default {
             return chartdata
         },
         // Bar chart
-        async barChartFun(date1,date2,settingId) {
+        async barChartFun(date1,date2,settingId,contact) {
             // based on prepared DOM, initialize echarts instance
             var barchart = echarts.init(document.getElementById('barChart'))
-            var chart_data = await this.ChartFun("bar",date1,date2,settingId)
+            barchart.showLoading();
+            var chart_data = await this.ChartFun("bar",date1,date2,settingId,contact)
             // specify chart configuration item and data
             var option = {
-                tooltip: {},
+                tooltip: {
+                    formatter: function (params) {
+                        return accounting.formatMoney(params.value, {
+                            symbol : '$',
+                            precision : 2,
+                            thousand  : ''
+                        })
+                    }
+                },
                 legend: {
                     bottom: 10,
                     left: 'center',
@@ -324,34 +336,32 @@ export default {
 
             chart_data.forEach(function(invoice) {
                 var series = {
-                name: invoice.name,
-                type: 'bar',
-                data: []
+                    name: invoice.name,
+                    type: 'bar',
+                    data: []
                 }
                 option.legend.data.push(invoice.name)
                 invoice.data.forEach(function(invoice_data) {
-                series.data.push(invoice_data.y)
+                    series.data.push(invoice_data.y)
                 })
                 option.series.push(series)
             })
 
             console.log("options",option)
             // use configuration item and data specified to show chart
-            document.getElementById('chart1_loading').style = "display:none"
+            barchart.hideLoading();
             barchart.setOption(option)
         },
          //Pie Chart
-        async PieChartFun(date1,date2,settingId) {
+        async PieChartFun(date1,date2,settingId,contact) {
             var chartdata;
             await axios.get(serviceUrl+"invoice", {
                 params: {
                     chart : 'pie',
                     date1 : date1,
                     date2 : date2,
-                    settingId : settingId
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
+                    settingId : settingId,
+                    contact : contact
                 }
             })
             .then(function (response) {
@@ -364,13 +374,23 @@ export default {
             });
             return chartdata;
         },
-        async pieChartFun(date1,date2,settingId) {
+        async pieChartFun(date1,date2,settingId,contact) {
             // based on prepared DOM, initialize echarts instance
+            // document.getElementById('chart2_loading').style = "display:block"            
             var piechart = echarts.init(document.getElementById('pieChart'));
-            var chart_data = await this.PieChartFun(date1,date2,settingId);
+            piechart.showLoading();
+            var chart_data = await this.PieChartFun(date1,date2,settingId,contact);
             // specify chart configuration item and data
             var option = {
-            tooltip: {},
+            tooltip: {
+                formatter: function (params) {
+                    return accounting.formatMoney(params.value, {
+                        symbol : '$',
+                        precision : 2,
+                        thousand  : ''
+                    })
+                }
+            },
             legend: {
                 bottom: 10,
                 left: 'center',
@@ -391,18 +411,27 @@ export default {
                 option.series[0].data.push(piedata);
             })
             // use configuration item and data specified to show chart
-            document.getElementById('chart2_loading').style = "display:none"
+            // document.getElementById('chart2_loading').style = "display:none"
+            piechart.hideLoading();
             piechart.setOption(option);
         },
-        async lineChartFun(date1,date2,settingId) {
+        async lineChartFun(date1,date2,settingId,contact) {
             // based on prepared DOM, initialize echarts instance
             var linechart = echarts.init(document.getElementById('lineChart'));
-            var chart_data = await this.ChartFun("line",date1,date2,settingId);
+            linechart.showLoading();
+            var chart_data = await this.ChartFun("line",date1,date2,settingId,contact);
             // specify chart configuration item and data
             var option = {
             tooltip: {
                 axisPointer: {
-                type: 'cross'
+                    type: 'cross'
+                },
+                formatter: function (params) {
+                    return accounting.formatMoney(params.value, {
+                        symbol : '$',
+                        precision : 2,
+                        thousand  : ''
+                    })
                 }
             },
             legend: {
@@ -441,11 +470,11 @@ export default {
             })
             // console.log("Inside line chart option",option)
             // use configuration item and data specified to show chart
-            document.getElementById('chart3_loading').style = "display:none" 
+            linechart.hideLoading();
             linechart.setOption(option);
         },
         //Cashflow
-        async waterfall(date1,date2,settingId) {
+        async waterfall(date1,date2,settingId,contact) {
             var chartdata;
             await axios.get(serviceUrl+"invoice", {
                 params: {
@@ -453,10 +482,8 @@ export default {
                     status : 'Paid',
                     date1 : date1,
                     date2 : date2,
-                    settingId : settingId
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
+                    settingId : settingId,
+                    contact : contact
                 }
             })
             .then(function (response) {
@@ -469,10 +496,11 @@ export default {
             return chartdata;
         },
 
-        async waterfallFun(date1,date2,settingId) {
+        async waterfallFun(date1,date2,settingId,contact) {
             // based on prepared DOM, initialize echarts instance
             var waterfallChart = echarts.init(document.getElementById('waterfall'));
-            var chart_data = await this.waterfall(date1,date2,settingId);
+            waterfallChart.showLoading();
+            var chart_data = await this.waterfall(date1,date2,settingId,contact);
 
             var data1 = [];
             var data2 = [];
@@ -493,7 +521,7 @@ export default {
                         tar = params[0];
                     }
                     return accounting.formatMoney(tar.value, {
-                        symbol : '',
+                        symbol : '$',
                         precision : 2,
                         thousand  : ''
                     })
@@ -595,21 +623,19 @@ export default {
             // console.log("data1",data1);
             // console.log("data2",data2);
             // console.log("data3",data3);
-            document.getElementById('chart4_loading').style = "display:none" 
+            waterfallChart.hideLoading(); 
             waterfallChart.setOption(option);
         },
 
-        async totalAmt(date1,date2,settingId) {
+        async totalAmt(date1,date2,settingId,contact) {
             var statsData;
             await axios.get(serviceUrl+"invoice", {
                 params: {
                     stats : true,
                     date1 : date1,
                     date2 : date2,
-                    settingId : settingId
-                },
-                headers: {
-                    Authorization : Cookies.get('auth_token')
+                    settingId : settingId,
+                    contact : contact
                 }
             })
             .then(function (response) {
@@ -627,15 +653,66 @@ export default {
             this.count.totalInv = statsData[4].value
         },
 
+        getContacts() {
+            let self = this;
+            self.contactData = [];
+            console.log("config name inside get contacts",self.config)
+            axios.get(serviceUrl+"contacts", {
+                params: {
+                    settingId : self.config,
+                    
+                }
+            })
+            .then(function(response) {
+                console.log("Contact data",response);
+                response.data.forEach(function(contacts) {
+                   
+                    console.log("%%%%%%%%%%",contacts.data.length)
+                    let cnt;
+                    for (var i=0; i<contacts.data.length; i++) {
+                        if (contacts.data[i].DisplayName) {
+                            cnt = {
+                                Id : contacts.data[i].Id,
+                                Name : contacts.data[i].DisplayName
+                            }
+                        }
+                        else {
+                            cnt = {
+                                Id : contacts.data[i].Name,
+                                Name : contacts.data[i].Name
+                            }
+                        }
+                        self.contactData.push(cnt)
+                    }
+                })
+            })
+            .catch(function(error) {
+                console.log("Inside getcontact error",error)
+            })
+        },
+
          init(settingId) {
-             
+            
+             if(Cookies.get('auth_token')){
+                axios({
+                            method: 'post',
+                            url: configService.default.userDetail,
+                            headers: {'Authorization': Cookies.get('auth_token')}
+                        })
+                        .then(function(result) {
+                            console.log(">>>>>>>>>>>>>>>> " , result)
+                             Cookies.set('user',  result.data.data.email);
+                              
+                        })
+
+            }
             let self = this;
             this.name = Cookies.get('user');
             var resp;
             axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
-                    
+                    user : Cookies.get('user')
                 },
                 headers: {
                     Authorization : Cookies.get('auth_token')
@@ -647,11 +724,12 @@ export default {
                if (response.data.data.length != 0){
                    self.mData = response.data.data;
                     self.config = self.mData[0].id;
-                   self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD')),
-                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'))
+                    self.getContacts(self.config)
+                    self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
+                    self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'),self.config)
                }else{
                    self.$Modal.warning({
                     title: 'No Configuration available',
@@ -659,7 +737,7 @@ export default {
                     content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                     onOk: () => {
                         self.$router.push({
-                            name: 'newsettings'
+                            name: 'New-settings'
                         })
                     }
                 });
@@ -667,14 +745,20 @@ export default {
                 
             })
             .catch(function (error) {
-                console.log(error)
+                console.log(error.response)
                 self.disabled = false;
-                //Cookies.remove('auth_token') 
-                self.$Message.error('Auth Error!');
-                //self.$store.commit('logout', self); 
-                // self.$router.push({
-                //     name: 'login'
-                // })
+                if(error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    this.$store.commit('logout', this);
+                    
+                    this.$router.push({
+                        name: 'login'
+                    });
+                }
+                
             });
             
             
@@ -684,14 +768,13 @@ export default {
             // console.log("daterange",this.daterange1, typeof this.daterange1)
             // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
-            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
-            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
+            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config,this.contacts)
             // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
         }, 
-
         // selectChange() {
         //     console.log("select change")
         //     alert(this.config)
@@ -713,7 +796,7 @@ export default {
     },
     async mounted() {
         
-        this.daterange1 = await this.getDate(91);
+        this.daterange1 = await this.getDate(92);
         console.log("daterange1",this.daterange1)
         console.log("daterange1",this.daterange1[0])
         // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
@@ -728,5 +811,8 @@ export default {
 <style>
     .ivu-card-body {
         padding: 3px;
+    }
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
     }
 </style>

@@ -1,5 +1,7 @@
 <style lang="less">
     @import "./main.less";
+
+     
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -30,25 +32,58 @@
                     </div>
                 </div>
                 <div class="header-avator-con">
-                    <span @click="goToSettings"><Icon type="gear-b" size="medium"></Icon></span>
+                    <div class="headerMenu">
+                    <Menu mode="horizontal"  active-name="1">
+                        <Submenu name="3">
+                            <template slot="title">
+                                <Icon type="grid" size="large" style="font-size: 23px;padding-top: 21px;"></Icon>
+                            </template>
+                            <MenuGroup title="Flowz-Products">
+                                <MenuItem name="3-1"><span @click="goToFlowzDashboard">Flowz Dashboard</span></MenuItem>
+                                <MenuItem name="3-2"><span @click="goToFlowzBuilder">Website Builder</span></MenuItem>
+                                <MenuItem name="3-3"><span @click="goToFlowzVmail">Vmail</span></MenuItem>
+                                <MenuItem name="3-4"><span @click="goToFlowzUploader">Uploader</span></MenuItem>
+                                <MenuItem name="3-5"><span @click="goToFlowzDbetl">DBETL</span></MenuItem>
+                            </MenuGroup>
+                        </Submenu>
+                    </Menu>
+                    </div>
+                    <Tooltip placement="bottom">
+                         <div @click="goToSettings"><Icon type="gear-b" size="large" style="font-size: 23px;
+                            padding-top: 5px;
+                            cursor: pointer;"></Icon></div>
+                         <div slot="content">
+                            Settings
+                        </div>
+                    </Tooltip>
+                    
+                    
                     <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
                     <lock-screen></lock-screen>
-                    <message-tip v-model="mesCount"></message-tip>
+                    <!-- <message-tip v-model="mesCount"></message-tip> -->
                     <theme-switch></theme-switch>
 
                     <div class="user-dropdown-menu-con">
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                             <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
-                                <a href="javascript:void(0)">
-                                    <span class="main-user-name">{{ userName }}</span>
-                                    <Icon type="arrow-down-b"></Icon>
-                                </a>
+                                <Tooltip placement="left">
+                                    <a href="javascript:void(0)">
+                                        <span class="main-user-name">
+                                            {{ userName }}
+                                            </span>
+                                        <Icon type="arrow-down-b"></Icon>
+                                    </a>
+                                    <div slot="content">
+                                        {{ userName }}
+                                    </div>
+                                </Tooltip>
+                                
                                 <DropdownMenu slot="list">
-                                    <DropdownItem name="ownSpace">Personel Center</DropdownItem>
+                                    <!-- <DropdownItem name="ownSpace">Personel Center</DropdownItem> -->
                                     <DropdownItem name="loginout" divided>Sign Out</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
-                            <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                            <!-- <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar> -->
                         </Row>
                     </div>
                 </div>
@@ -76,8 +111,10 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
-
+    import psl from 'psl';
+    import config from '@/config/customConfig'
     export default {
+        
         components: {
             shrinkableMenu,
             tagsPageOpened,
@@ -92,7 +129,12 @@
                 shrink: false,
                 userName: '',
                 isFullScreen: false,
-                openedSubmenuArr: this.$store.state.app.openedSubmenuArr
+                openedSubmenuArr: this.$store.state.app.openedSubmenuArr,
+                flowzDashboardUrl : config.default.flowzDashboardUrl,
+                flowzBuilderUrl : config.default.flowzBuilderUrl ,
+                flowzVmailUrl : config.default.flowzVmailUrl ,
+                flowzUploaderUrl : config.default.flowzUploaderUrl ,
+                flowzDbetlUrl : config.default.flowzDbetlUrl 
             };
         },
         computed: {
@@ -123,16 +165,20 @@
         },
         methods: {
             init () {
+                let self = this;
+                
                 let pathArr = util.setCurrentPath(this, this.$route.name);
                 this.$store.commit('updateMenulist');
                 if (pathArr.length >= 2) {
                     this.$store.commit('addOpenSubmenu', pathArr[1].name);
                 }
-                this.userName = Cookies.get('user');
+                
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
                 this.checkTag(this.$route.name);
                 this.$store.commit('setMessageCount', 3);
+                setTimeout(function(){ self.userName = Cookies.get('user'); }, 1000);
+                
             },
             toggleClick () {
                 this.shrink = !this.shrink;
@@ -145,7 +191,10 @@
                     });
                 } else if (name === 'loginout') {
                     // 退出登录
-                    Cookies.remove('auth_token') 
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
@@ -181,6 +230,23 @@
                this.$router.push({
                         name: 'settings'
                     });
+            },
+            goToFlowzDashboard (){
+                
+                window.open(this.flowzDashboardUrl, '_blank');
+            },
+            goToFlowzBuilder (){
+                
+                window.open(this.flowzBuilderUrl, '_blank');
+            },
+            goToFlowzVmail() {
+                window.open(this.flowzVmailUrl, '_blank');
+            },
+            goToFlowzUploader (){
+                window.open(this.flowzUploaderUrl, '_blank');
+            },
+            goToFlowzDbetl (){
+                window.open(this.flowzDbetlUrl, '_blank');
             }
         },
         watch: {
@@ -198,10 +264,11 @@
             }
         },
         mounted () {
+            
             this.init();
         },
         created () {
-            // 显示打开的页面的列表
+
             this.$store.commit('setOpenedList');
         }
     };

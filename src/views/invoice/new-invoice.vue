@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="col-sm-12">      
-    <Form :model="formItem" label-position="left" :label-width="100"  :rules="rulesValidation" ref="formItem">
+    <Form :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem">
          <!-- <FormItem label="configure" prop="config">
              <Select v-model="formItem.config" style="width:100%">
                <Option v-for="item in data4" :value="item.value" :key="item.label">{{ item.label }} </Option>
@@ -18,7 +18,7 @@
                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
-        <FormItem label="Contact Name" prop="name">
+        <FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
              <Select v-model="formItem.name" style="width:100%">
                <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
@@ -39,8 +39,8 @@
         <FormItem label="Unit Amount" :input-width="40">
             <Row>
               <Col span="12">
-                <FormItem prop="amount">
-                <Input v-model="formItem.amount" placeholder="Enter Amount"></Input>
+                <FormItem prop="amount1">
+                <Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
                 </FormItem>
               </Col>
               <Col span="12">
@@ -88,7 +88,8 @@ export default {
         config: '',
         description: '',
         qty: '',
-        amount: '',
+        amount:'',
+        amount1: '',
         selectamount: '',
         selectProject: ''
       },
@@ -117,7 +118,7 @@ export default {
               { required: true, message: 'Quantity cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
-          amount: [
+          amount1: [
               { required: true, message: 'Amount cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
@@ -173,6 +174,7 @@ export default {
     },
     configChange(data){
       console.log(data)
+      $('#CustomerName').css("display","block")
       this.customerData(data);
     },
     async settingData () {
@@ -196,7 +198,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'newsettings'
+                      name: 'New-settings'
                   })
               }
             });
@@ -212,22 +214,24 @@ export default {
       
       let resp
       let self = this
-      await axios({
-            method: 'get',
-            url: config.default.serviceUrl + 'contacts',
-            params: {
-              settingId : settingId
-            },
-            headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-            }).then(function (response) {
-             
-              resp = response.data
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+      if  (settingId != '') {
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingId
+              },
+              headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+              }).then(function (response) {
+              
+                resp = response.data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+      }
       console.log("response------>iuy",resp);
       // resp.forEach(obj =>{
       //   console.log(obj[0].data)
@@ -248,14 +252,19 @@ export default {
     },
     async newInvoice () {
       let self = this
-      this.formItem.amount = parseInt(this.formItem.amount)
+      this.formItem.amount = parseInt(this.formItem.amount1)
       let postData = {
         // domain: this.formItem.domain,
         settingId : this.formItem.configuration,
-        name: this.formItem.name,
-        description: this.formItem.description,
-        qty: this.formItem.qty,
-        amount: this.formItem.amount
+        Name: this.formItem.name,
+        products:[
+            {
+              description: this.formItem.description,
+              qty: this.formItem.qty,
+              amount: this.formItem.amount
+            }
+        ]
+        
       }
       console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",this.formItem)
       await axios({
@@ -273,7 +282,7 @@ export default {
         })
         .catch(function (err) {
           console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
-          self.$Message.error('invoice error')
+          self.$Message.error('invoice creation error')
         });
     },
     Cancel(name){
