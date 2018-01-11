@@ -276,7 +276,7 @@
 		<div id="block" style="text-align:right;width:100%;display:inline-block">
 			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
 			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
-			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment{{userId}}</button>
+			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
 		</div>
 
 		<textarea style="display:none" id="editor2" name="editor2" ></textarea>
