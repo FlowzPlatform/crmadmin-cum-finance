@@ -290,6 +290,8 @@ export default {
 
       let self = this;
       let settingIdForInvoice = this.formItem.configuration
+      
+      
       await axios({
                     method:'get',
                     url: config.default.serviceUrl + 'settings/'+settingIdForInvoice
@@ -302,11 +304,12 @@ export default {
                             // domain: this.formItem.domain,
                             settingId : self.formItem.configuration,
                             Name: self.formItem.name,
-                            products:[
+                            DueDate:self.formItem.duedate,
+                            Products:[
                                 {
                                   description: self.formItem.description,
                                   qty: self.formItem.qty,
-                                  amount: self.formItem.amount
+                                  amount: self.formItem.amount1
                                 }
                             ]
                             
@@ -339,6 +342,7 @@ export default {
                             // domain: self.formItem.domain,
                             settingId : self.formItem.configuration,
                             Name: self.formItem.name,
+                            DueDate: self.formItem.duedate,
                             products:[
                                 {
                                   description: self.formItem.description,

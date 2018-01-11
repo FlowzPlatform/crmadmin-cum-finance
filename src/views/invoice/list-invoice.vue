@@ -1163,21 +1163,20 @@ export default {
       
       if(settingDomain == 'custom'){
         let Invoiceurl = self.tabPanes[data].invoice_url;
+        
         axios.get(Invoiceurl, {
-        headers:{
-            Authorization : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YTJmYWY5YTcwZGRjMDAwMTJkYzk3NmIiLCJpYXQiOjE1MTU0OTk2MTMsImV4cCI6MTUxNTUwMzI0MywiYXVkIjoiaHR0cHM6Ly95b3VyZG9tYWluLmNvbSIsImlzcyI6ImZlYXRoZXJzIiwic3ViIjoiYW5vbnltb3VzIn0.N92EluGPHltyhKLXpACd9SNTQqOULDNwZr8kpOmu2YM"
-        }
+        
       })
       .then(async function (response) {
         self.$Loading.finish();
         $('.preload').css("display","none")
         console.log("response------>iuy",response);
-        self.data6 = response.data;
+        self.data6 = response.data.data;
         let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
-        let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" );
+        let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
         
-        
-       
+        console.log("############# " , columnArray);
+        columnArray = ["Invoice_No","Name", "DueDate","Due",  "Paid",  "Total" , "Status"]
         let arr = [];
         let len = columnArray.length;
         for (let i = 0; i < len; i++) {
@@ -1188,154 +1187,71 @@ export default {
                 width: 200,
             });
         }
-        if(modifiedArray.indexOf("Action") != -1){
-          modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
-        }else{
-          arr.push({
-                title: "Action",
-                width: 200,
-                render: (h, params) => {
-                  console.log(params)
-              if(params.row.Status != 'PAID'){
-                return h('div', [
-                  h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Make Payment'
-                      },
-                      style:{
-                        float:'left',
-                        cursor:'pointer'
-                      }
-                    }, [
-                        h('img', {
-                          attrs: {
-                            src: self.money
-                          },
-                          style: {
-                            hight:'30px',
-                            width:'30px',
-                            margin: '2px'
-                          },
-                          on: {
-                            click: () => {   
-                              self.makepayment(params.row)
-                            }
-                        }
-                      }, '')
-                    ]),
-                   h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Send Mail'
-                      },
-                      style:{
-                        float:'center',
-                        cursor:'pointer'
-                      }
-                    }, [
-                      h('img', {
-                       attrs: {
-                          src: self.mail
-                        },
-                        style: {
-                          hight:'30px',
-                          width:'30px',
-                          margin: '2px'
-                        },
-                        on: {
-                          click: () => {
-                            self.sendemail(params)
-                          }
-                        }
-                      },'')
-                    ]),
-                    h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Download'
-                      },
-                      style:{
-                        float:'right',
-                        cursor:'pointer'
-                      }
-                    }, [
-                       h('img', {
-                       attrs: {
-                          src: self.download
-                        },
-                        style: {
-                          hight:'30px',
-                          width:'30px',
-                          margin: '2px'
-                        },
-                        on: {
-                          click: () => {   
-                            self.createPDF(params)
-                          }
-                        }
-                      }, '')
-                  ])
-                ])
-              }else{
-                return h('div', [
-                    h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Send Mail'
-                      },
-                      style:{
-                        float:'center',
-                        cursor:'pointer'
-                      }
-                    }, [
-                      h('img', {
-                       attrs: {
-                          src: self.mail
-                        },
-                        style: {
-                          hight:'30px',
-                          width:'30px',
-                          margin: '2px'
-                        },
-                        on: {
-                          click: () => {
-                            self.sendemail(params)
-                          }
-                        }
-                      }, '')
-                    ]),
-                    h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Download'
-                      },
-                      style:{
-                        float:'right',
-                        cursor:'pointer'
-                      }
-                    }, [
-                    h('img', {
-                      attrs: {
-                          src: self.download
-                        },
-                        style: {
-                          hight:'30px',
-                          width:'30px',
-                          margin: '2px'
-                        },
-                      on: {
-                        click: () => {   
-                          self.createPDF(params)
-                        }
-                      }
-                    }, '')
-                  ])
-                ])
-              }
-            }
-          })
-        }
+        // if(modifiedArray.indexOf("Action") != -1){
+        //   modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
+        // }else{
+        //   arr.push({
+        //         title: "Action",
+        //         width: 200,
+        //         render: (h, params) => {
+        //         return h('div', [
+        //             h('Tooltip', {
+        //               props: {
+        //                 placement: 'top',
+        //                 content: 'Send Mail'
+        //               },
+        //               style:{
+                        
+        //                 cursor:'pointer'
+        //               }
+        //             }, [
+        //               h('img', {
+        //                attrs: {
+        //                   src: self.mail
+        //                 },
+        //                 style: {
+        //                   hight:'30px',
+        //                   width:'30px',
+        //                   margin: '2px'
+        //                 },
+        //                 on: {
+        //                   click: () => {
+        //                     self.sendemail(params)
+        //                   }
+        //                 }
+        //               }, '')
+        //             ]),
+        //             h('Tooltip', {
+        //               props: {
+        //                 placement: 'top',
+        //                 content: 'Download'
+        //               },
+        //               style:{
+                        
+        //                 cursor:'pointer'
+        //               }
+        //             }, [
+        //             h('img', {
+        //               attrs: {
+        //                   src: self.download
+        //                 },
+        //                 style: {
+        //                   hight:'30px',
+        //                   width:'30px',
+        //                   margin: '2px'
+        //                 },
+        //               on: {
+        //                 click: () => {   
+        //                   self.createPDF(params)
+        //                 }
+        //               }
+        //             }, '')
+        //           ])
+        //         ])
+              
+        //     }
+        //   })
+        // }
         self.list = await self.mockTableData1(1,pageSize)
         self.columns3 = arr;
         
