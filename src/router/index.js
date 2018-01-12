@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
             Util.title();
             
             next({
-                name: 'home_index'
+                name: 'Dashboard'
             });
         } else {
             const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
