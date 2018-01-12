@@ -800,6 +800,7 @@ export default {
     },
     async mounted() {
         
+        
         this.daterange1 = await this.getDate(92);
         console.log("daterange1",this.daterange1)
         console.log("daterange1",this.daterange1[0])

@@ -195,6 +195,7 @@
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
+                    Cookies.remove('user' ,{domain: location}) 
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
