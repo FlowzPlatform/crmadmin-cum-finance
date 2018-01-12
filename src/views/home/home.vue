@@ -722,8 +722,7 @@ export default {
                 }
             })
             .then(function (response) {
-               console.log("config data list",response)
-               
+              
                if (response.data.data.length != 0){
                    self.mData = response.data.data;
                     self.config = self.mData[0].id;
@@ -734,16 +733,18 @@ export default {
                     self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'),self.config)
                }else{
-                   self.$Modal.warning({
-                    title: 'No Configuration available',
-                    okText : "Go to Settings",
-                    content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
-                    onOk: () => {
-                        self.$router.push({
-                            name: 'New-settings'
-                        })
-                    }
-                });
+                   setTimeout(function(){ 
+                        self.$Modal.warning({
+                            title: 'No Configuration available',
+                            okText : "Go to Settings",
+                            content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+                            onOk: () => {
+                                self.$router.push({
+                                    name: 'New-settings'
+                                })
+                            }
+                        });
+                   },1000)
                }
                 
             })
