@@ -11,6 +11,10 @@
     position: absolute
 }
 
+.login div  .ivu-tabs-nav-scroll {
+    position: fixed;
+  }
+
 .mainBody {
     margin-top: 30%
 }

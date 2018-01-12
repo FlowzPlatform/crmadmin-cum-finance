@@ -7,7 +7,7 @@
         <div class="close-all-tag-con">
             <Dropdown transfer @on-click="handleTagsOption">
                 <Button size="small" type="primary">
-                    Label Option
+                    Close Tabs
                     <Icon type="arrow-down-b"></Icon>
                 </Button>
                 <DropdownMenu slot="list">
