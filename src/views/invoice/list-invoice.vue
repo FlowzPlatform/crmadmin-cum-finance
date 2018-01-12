@@ -147,7 +147,7 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="../../images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
@@ -228,7 +228,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
                 <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Tax: ${{emailData.row.TotalTax * 100}}%
+                   Tax: ${{emailData.row.TotalTax}}
                 </td>
             </tr>
             <tr>
@@ -257,7 +257,7 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="../../images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
@@ -407,8 +407,7 @@ export default {
               key: 'DueDate',
               sortable: true,
               render : (h,{row}) => {
-                var date = new Date(row.DueDate); 
-                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+                var date1 = moment(row.DueDate).format('LL')
                 return date1
               }
           },
@@ -605,9 +604,7 @@ export default {
               key: 'DueDate',
               sortable: true,
               render:(h,{row})=>{ 
-  
-               var date = new Date(row.DueDate); 
-               var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+                var date1 = moment(row.DueDate).format('LL')
                 return date1
               }
           },
@@ -853,6 +850,10 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
+      }else{
+        console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+        console.log("myarr",this.filterArray)
+        this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.status != ''){
@@ -863,16 +864,21 @@ export default {
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
+      }else{
+            console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+            console.log("myarr",this.filterArray)
+            this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.dategt != ''){
         console.log("this.dategt", this.dategt)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-          var itemdate = moment(item.DueDate).format('DD/MM/YYYY');
-          var newdate = moment(self.dategt).format('DD/MM/YYYY')
-
-          return itemdate >= newdate;
+          console.log("item",item.DueDate)
+          var date1 = moment(item.DueDate).format('MM/DD/YYYY');
+          var newdate = moment(self.dategt).format('MM/DD/YYYY');
+          console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyy",date1)
+          console.log("zzzzzzzzzzzzzzzzzzzzzzzz",newdate)
+          return date1 >= newdate;
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -881,10 +887,12 @@ export default {
       if(this.datelt != ''){
         console.log("this.dategt", this.datelt)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-           var itemdate = moment(item.DueDate).format('DD/MM/YYYY');
-          var newdate = moment(self.datelt).format('DD/MM/YYYY')
-          return itemdate <= newdate;
+          console.log("item",item.DueDate)
+          var date1 = moment(item.DueDate).format('MM/DD/YYYY');
+          var newdate = moment(self.datelt).format('MM/DD/YYYY');
+          console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyy",date1)
+          console.log("zzzzzzzzzzzzzzzzzzzzzzzz",newdate)
+          return date1 <= newdate;
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
