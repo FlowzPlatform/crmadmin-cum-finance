@@ -129,9 +129,12 @@ export default {
               sortable: true,
               render:(h,{row})=>{ 
   
-               var date = new Date(row.paymentAccounting.Invoice.Date); 
-               var date1 = date.getDate() + '/' + (date.getMonth() + 1)+ '/' +  date.getFullYear()
-                return date1
+               let date = row.paymentAccounting.Invoice.Date; 
+               let initial = date.split(/\//);
+                let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
+                
+                return moment(formatDate).format("ll")
+                
               }
           },
           {
