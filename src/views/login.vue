@@ -5,7 +5,7 @@
 <template>
     
       <div class="mainBody">
-      
+        <vue-particles color="#dedede"></vue-particles>
       <div v-if="!isSocialLogin" class="loginContainer">
           
          <div class="success">
@@ -46,37 +46,36 @@
             <div class="login">
                <h2>LOG IN</h2>
                <form  v-on:submit.prevent="handleLoginSubmit" action="#" method="post">
-                   
-                  <Tabs class="lconun" type="card" value="1" @on-click="tabsClicked">
-                     <TabPane label="Standard" name="1">
+                <el-tabs type="card" v-model="activeName" @tab-click="tabsClicked">
+                    <el-tab-pane label="Standard" name="1">
                         <div class="lconun">
                            <div class="lrinp">
-                              <label>Email</label>
-                              <input type="email" v-model="login.email" class="" placeholder="Enter Email (Required) ">
+                              <label class="email">* </label><label> Email</label>
+                              <input type="email" v-model="login.email" class="" placeholder="Enter Standard Email">
                            </div>
                         </div>
                         <div v-if="!showForgotPassword"  class="lconun">
                            <div class="lrinp">
-                              <label>Password</label>
-                              <input type="password" class="" v-model="login.password" placeholder="Enter Password (Required) ">
+                              <label class="password">* </label><label> Password</label>
+                              <input type="password" class="" v-model="login.password" placeholder="Enter Standard Password">
                            </div>
                         </div>
-                     </TabPane>
-                     <TabPane label="LDAP" name="2">
+                    </el-tab-pane>
+                    <el-tab-pane label="LDAP" name="2">
                         <div class="lconun">
                            <div class="lrinp">
-                              <label>Email</label>
-                              <input type="email" v-model="login.email" class="" placeholder="Enter Email (Required) ">
+                              <label class="email">* </label><label>Email</label>
+                              <input type="email" v-model="login.email" class="" placeholder="Enter LDAP Email">
                            </div>
                         </div>
                         <div class="lconun">
                            <div class="lrinp">
-                              <label>Password</label>
-                              <input type="password" class="" v-model="login.password" placeholder="Enter Password (Required) ">
+                              <label class="password">* </label><label>Password</label>
+                              <input type="password" class="" v-model="login.password" placeholder="Enter LDAP Password">
                            </div>
                         </div>
-                     </TabPane>
-                  </Tabs>
+                    </el-tab-pane>
+                </el-tabs>
                   <div class="lconun">
                      <div class="lrinp">
                         <div class="row">
@@ -85,8 +84,8 @@
                               <el-button type="success" size="small" class="signupButton"  v-if="showForgotPassword" @click="forgotPasswordSendEmail()" :loading="saveFileLoadingLogin" >Submit</el-button>
                            </div>
                            <div class="col-md-6" style="top: 9px;">
-                              <a href="javascript:void()" class="lfort" v-if="!showForgotPassword"  v-show="this.selectedTabIndex==1" @click="forgotPassword()">Forgot Password</a>
-                              <a href="javascript:void()" class="lfort" v-if="showForgotPassword" v-show="this.selectedTabIndex==1" @click="backtoLogin()">Back to Login</a>
+                              <a href="javascript:void()" class="lfort" v-if="!showForgotPassword"  v-show="this.selectedTabIndex==0" @click="forgotPassword()">Forgot Password</a>
+                              <a href="javascript:void()" class="lfort" v-if="showForgotPassword" v-show="this.selectedTabIndex==0" @click="backtoLogin()">Back to Login</a>
                            </div>
                         </div>
                      </div>
@@ -172,6 +171,7 @@ var $loginMsg = $('.loginMsg'),
 export default {
     data () {
         return {
+            activeName: '1',
             varifyEmail : "",
             obId : "",
             isSocialLogin : false,
@@ -207,7 +207,7 @@ export default {
                 password: "",
                 email: ""
             },
-            selectedTabIndex: 1,
+            selectedTabIndex: 0,
             showForgotPassword: false,
             facebookSuccessCallbackUrl : config.default.facebookSuccessCallbackUrl,
             googleSuccessCallbackUrl : config.default.googleSuccessCallbackUrl,
@@ -326,8 +326,8 @@ export default {
         tabsClicked(val) {
             this.login.email = ''
             this.login.password = ''
-            console.log('value is:', val);
-            this.selectedTabIndex = val;
+            console.log('value is:', val.index);
+            this.selectedTabIndex = val.index;
         },
         handleLoginSubmit: function() {
             if (this.showForgotPassword) {
@@ -342,14 +342,17 @@ export default {
             console.log(emailValidator);
 
             if (self.login.email == "") {
+                $(".email").css("color", "red");
                 self.$message.warning("email field is required");
             } else if (emailValidator == false) {
+                $(".email").css("color", "red");
                 self.$message.warning("Email is not valid");
             } else if (self.login.password == "") {
+                $(".password").css("color", "red");
                 self.$message.warning("password field is required");
             } else {
                 self.saveFileLoadingLogin = true;
-                axios.post(this.selectedTabIndex == 1 ? config.default.loginUrl : config.default.ldapLoginUrl, {
+                axios.post(this.selectedTabIndex == 0 ? config.default.loginUrl : config.default.ldapLoginUrl, {
                         email: self.login.email.trim(),
                         password: self.login.password.trim()
                     })
@@ -581,6 +584,3 @@ export default {
     }
 };
 </script>
-
-
-
