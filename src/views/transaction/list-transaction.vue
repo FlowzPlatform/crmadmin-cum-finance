@@ -345,12 +345,21 @@ export default {
             self.$Loading.error();
         });
 
-        self.data.forEach (obj => {
-            var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.paymentAccounting.Contact.Name;
-            x.add(option);
-          })   
+        var NameArr = [];
+      
+            self.data.forEach (obj => { 
+                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                NameArr.push(obj.paymentAccounting.Contact.Name);
+              })
+            NameArr.sort();
+
+            NameArr.forEach(item => {
+                var x = document.getElementById("selectCustomer");
+                var option = document.createElement("option");
+                option.text = item;
+                console.log()
+                x.add(option);
+            })
     }
   },
   mounted() {

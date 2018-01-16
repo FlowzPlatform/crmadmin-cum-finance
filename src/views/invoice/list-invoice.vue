@@ -30,9 +30,9 @@
                                 <div class="panel-collapse collapse" id="status">
                                     <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
                                         <option value="">All</option>
-                                        <option value="PAID">PAID</option>
                                         <option value="AUTHORISED">AUTHORISED</option>
                                         <option value="DRAFT">DRAFT</option>
+                                        <option value="PAID">PAID</option>
                                     </select>
                                 </div>
                             </div>
@@ -183,43 +183,60 @@
                     </tbody></table>
                 </td>
             </tr>
+            <div v-for="item in DescriptionPdf">
+            <tr>
+            <td colspan="3" style="padding: 5px;vertical-align: top;">
+                    <table style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody>
+                        <tr  v-if='item.Title'>
+                            <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                <b>Item :</b><br>
+                                {{item.Description}}
+                            </td>
+                        </tr>
+                         <tr>
+                            <td style="vertical-align: top;">
+                                <b>Item Description :</b><br>
+                                {{item.Description}}
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </td>
+            </tr>
              <tr>
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                    Item
+                    Quantity
                 </td>
                 
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                    Paid Amount
+                    Unit Amount
                 </td>
 
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                    Due Amount
+                    Line Amount
                 </td>
             </tr>
             
             <tr>
-                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
-                    Website design
+                <td style="padding: 5px;vertical-align: top;text-align:center">
+                    {{item.Quantity}}
                 </td>
                 
-                <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
-                    ${{emailData.row.AmountPaid}}
+                <td style="padding: 5px;vertical-align: top;text-align:center">
+                    ${{item.UnitAmount}}
                 </td>
-                <td style="border-bottom: 1px solid #eee;text-align:center;padding: 5px;vertical-align: top;">
-                    ${{emailData.row.AmountDue}}
+                <td style="text-align:center;padding: 5px;vertical-align: top;">
+                    ${{item.LineAmount}}
                 </td>
             </tr>
-            
-            
+            <tr>
+                <td colspan="3"><hr style="border: #efefef solid 1px;"></td>
+            </tr>
+            </div>
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
-                <td style="padding: 5px;vertical-align: top;"></td>
-            </tr>
-            <tr>
-                <td style="padding: 5px;vertical-align: top;"></td>
-                <td style="padding: 5px;vertical-align: top;"></td>
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                <td style="font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
                    Sub Total: ${{emailData.row.SubTotal}}
                 </td>
             </tr>
@@ -227,7 +244,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                <td style="font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
                    Tax: ${{emailData.row.TotalTax}}
                 </td>
             </tr>
@@ -235,8 +252,16 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Total Due Amount: ${{emailData.row.AmountDue}}
+                <td style="border-top: 1px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Total: ${{emailData.row.Total}}
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                <td style="padding: 5px;vertical-align: top;"></td>
+                
+                <td style="border-top: 1px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                   Total Due: ${{emailData.row.AmountDue}}
                 </td>
             </tr>
             
@@ -294,6 +319,7 @@
                     </tbody></table>
                 </td>
             </tr>
+
              <tr>
                 <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
                     Item
@@ -310,7 +336,7 @@
             
             <tr>
                 <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
-                    Website design
+                    {{DescriptionPdf}}
                 </td>
                 
                 <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
@@ -800,7 +826,8 @@ export default {
       totalgt: '',
       totallt: '',
       duegt: '',
-      duelt: ''
+      duelt: '',
+      DescriptionPdf : ''
     }
   },
    methods: {
@@ -957,7 +984,10 @@ export default {
 
     },
     async getCustomerBySettingId(settingId , settingDomain , data){
-      console.log("inside getCustomerUrl " )
+      // $('#selectCustomer').remove(); 
+      var NameArr = [];
+      $('#selectCustomer').children('option:not(:first)').remove();
+      console.log("NameArr ", NameArr )
       let res
       console.log("settingId----------------------->",settingDomain)
       if(settingDomain == 'custom'){
@@ -970,7 +1000,7 @@ export default {
         },
             }).then(function (response) {
               console.log(response)
-              res = response.data
+              res = response.data.data
             })
             .catch(function (error) {
               console.log(error);
@@ -996,14 +1026,20 @@ export default {
         }
       }
       
-      
-          res.forEach (obj => {
+            res.forEach (obj => { 
+                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                NameArr.push(obj.Name);
+              })
+            NameArr.sort();
+
+            NameArr.forEach(item => {
+                var x = document.getElementById("selectCustomer");
+                var option = document.createElement("option");
+                option.text = item;
+                console.log()
+                x.add(option);
+            })
             
-          var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.Name;
-            x.add(option);
-          })
     },
     // async apiData () {
     //   var resp;
@@ -1149,6 +1185,21 @@ export default {
               console.log(error);
             });
 
+    axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
+        headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+        params : {
+          settingId : settingID
+        }
+      })
+      .then(async function (response) {
+        console.log("response-------------->",response);
+        self.DescriptionPdf = response.data[0].LineItems;
+      })
+      .catch(function (error) {
+      });
+
       console.log('self.emailDataCustomer',self.emailDataCustomer)
       setTimeout(function(){ 
         self.$Modal.confirm({
@@ -1163,10 +1214,19 @@ export default {
                 type: "text/html;charset=utf-8"
             });
             saveAs(blob, filename);
+            // console.log(self.$refs.email1.innerHTML)
+            // var doc = new jsPDF();
+            // doc.fromHTML(self.$refs.email1.innerHTML, 15, 15, {
+            //     'width': 170
+            // },function() {  
+            //     doc.save('sample-file.pdf');
+            // });
+            
           },
           onCancel: () => {
           }
         })
+
         // console.log(self.$refs.email1.innerHTML)
         //   var filename = "invoice.html";
         //   var data = self.$refs.email1.innerHTML;
