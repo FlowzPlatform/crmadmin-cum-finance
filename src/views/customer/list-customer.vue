@@ -373,14 +373,19 @@ export default {
       self.list = [];
 
       if(settingDomain == 'custom'){
+        console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
         let customerUrl = this.tabPanes[data].customer_url;
          await axios({
             method: 'get',
             url: customerUrl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
             headers:{
             Authorization : Cookies.get('auth_token')
         },
             }).then(async function (response) {
+              self.$Loading.finish();
               console.log(response)
               self.data6 = response.data.data.reverse();
 
@@ -400,6 +405,7 @@ export default {
               self.column3 = arr;
             })
             .catch(function (error) {
+              self.$Loading.error();
               console.log(error);
             });
       }else{
@@ -411,6 +417,7 @@ export default {
         settingId : settingId
         }
         }).then(async function (response) {
+
           console.log("$$$$$$$$$$$$$$$$$$$",response)
             self.data6 = response.data[0].data.reverse();
             self.$Loading.finish();

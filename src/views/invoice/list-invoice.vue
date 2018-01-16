@@ -150,7 +150,7 @@
                                 <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
-                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
                                 Invoice #: {{emailData.row.InvoiceNumber}}<br>
                                 Created: {{createdDate}}<br>
                                 Due: {{dueDate}}
@@ -166,11 +166,11 @@
                         <tbody><tr>
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
-                                <p>{{emailData.row.Contact.Name}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].AddressLine1}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].AddressLine2}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].City}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}</p>
+                                {{emailData.row.Contact.Name}}<br>
+                                {{emailDataCustomer.Addresses[0].AddressLine1}}<br>
+                                {{emailDataCustomer.Addresses[0].AddressLine2}}<br>
+                                {{emailDataCustomer.Addresses[0].City}}<br>
+                                {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}<br>
                             </td>
                             
                             <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
@@ -260,7 +260,7 @@
                                 <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
-                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
                                 Invoice #: {{emailDataCustom.Invoice_No}}<br>
                                 Created: {{createdDate}}<br>
                                 Due: {{dueDate}}
@@ -276,7 +276,7 @@
                         <tbody><tr>
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
-                                <p>{{emailDataCustom.Name}}</p>
+                                {{emailDataCustom.Name}}<br>
                                 
                                 E-169<br>
                                 New Alkapuri<br>
@@ -470,7 +470,7 @@ export default {
                         },
                         on: {
                           click: () => {   
-                            this.makepayment(row)
+                            this.makepayment(row )
                           }
                         }
                       },'')
@@ -1147,14 +1147,28 @@ export default {
           title: '',
           content: self.$refs.email1.innerHTML,
           width: 1000,
-          okText: 'Download',
+          okText: 'Download PDF',
           onOk: () => {
-            var filename = "invoice.html";
-            var data = self.$refs.email1.innerHTML;
-            var blob = new Blob([data], {
-                type: "text/html;charset=utf-8"
+          axios({
+            method: 'post',
+            url: config.default.serviceUrl + 'exporttopdf',
+            data: {
+              
+                "html" : self.$refs.email1.innerHTML
+            },
+            
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              var arrayBufferView = new Uint8Array( response.data.data );
+              var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+              var link=document.createElement('a');
+              link.href=window.URL.createObjectURL(blob);
+              link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
+              link.click();
+            })
+            .catch(function (error) {
+              console.log(error);
             });
-            saveAs(blob, filename);
           },
           onCancel: () => {
           }
@@ -1171,16 +1185,24 @@ export default {
     },
 
     async makepayment(params){
-      console.log(params)
-      this.$store.state.invoiceData = params;
-      this.$store.state.settingId = this.settingIdForPayment
-      console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+        //alert(">>>>>>>>>>> , "+this.settingIdForPayment)
+       console.log(params)
+      // this.$store.state.invoiceData = params;
+      // this.$store.state.settingId = this.settingIdForPayment
+      // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
       if(params.InvoiceID != undefined){
-        this.$router.push('/checkout/' + params.InvoiceID)
+        this.$router.push('/checkout/' + params.InvoiceID+"?settingId="+this.settingIdForPayment)
       }else{
-        this.$router.push('/checkout/' + params.Id)
+        this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
       }
     },
+    async makePaymentCustom(params ,settingIdForPayment, domain){
+        
+        console.log(params)
+        this.$router.push('/checkout/' + params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
+      
+    },
+
     async sendemail(params){
       this.$Loading.start();
       this.emailData = params;
@@ -1276,10 +1298,18 @@ export default {
       self.list = [];
       
       if(settingDomain == 'custom'){
-        let Invoiceurl = self.tabPanes[data].invoice_url;
+      let Invoiceurl = self.tabPanes[data].invoice_url;
         
-        axios.get(Invoiceurl, {
         
+      axios({
+            method: 'get',
+            url: Invoiceurl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
       })
       .then(async function (response) {
         self.$Loading.finish();
@@ -1360,6 +1390,32 @@ export default {
                         }
                       }
                     }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make payment'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.money
+                        },
+                        style: {
+                          hight:'30px',
+                          width:'30px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.makePaymentCustom(params ,settingId, settingDomain)
+                        }
+                      }
+                    }, '')
                   ])
                 ])
               
@@ -1415,14 +1471,25 @@ export default {
           title: '',
           content: self.$refs.email2.innerHTML,
           width: 1000,
-          okText: 'Download',
+          okText: 'Download PDF',
           onOk: () => {
-            var filename = "invoice.html";
-            var data = self.$refs.email2.innerHTML;
-            var blob = new Blob([data], {
-                type: "text/html;charset=utf-8"
-            });
-            saveAs(blob, filename);
+            axios({
+            method: 'post',
+            url: config.default.serviceUrl + 'exporttopdf',
+            data: {
+              
+                "html" : self.$refs.email2.innerHTML
+            },
+            
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              var arrayBufferView = new Uint8Array( response.data.data );
+              var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+              var link=document.createElement('a');
+              link.href=window.URL.createObjectURL(blob);
+              link.download=params.row.Invoice_No == undefined ? "custom_Invoice" : params.row.Invoice_No;
+              link.click();
+            })
           },
           onCancel: () => {
           }
