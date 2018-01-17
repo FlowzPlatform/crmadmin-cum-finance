@@ -35,11 +35,11 @@
                               <div class="form-group row panel-collapse collapse" id="date">
                                   <div class="col-xs-3">
                                     <label>From Date</label>
-                                      <input class="form-control" type="date" v-model="dategt"/>
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
                                   </div>
                                   <div class="col-xs-3">
                                     <label>To Date</label>
-                                      <input class="form-control" type="date" v-model="datelt" />
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
                                   </div>
                               </div>
                           </div>
@@ -94,18 +94,6 @@ export default {
         list: [],
         columns1: [
           {
-              title: 'Payment Id',
-              key: 'PaymentId',
-              sortable: true,
-              render:(h,{row})=>{ return row.paymentGateway.id }
-          },
-          {
-              title: 'Accounting Id',
-              key: 'AccountingId',
-              sortable: true,
-              render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-          },
-          {
               title: 'Account Name',
               key: 'Name',
               sortable: true,
@@ -128,7 +116,7 @@ export default {
               key: 'Date',
               sortable: true,
               render:(h,{row})=>{ 
-              var date1 = moment(row.paymentAccounting.Invoice.Date).format('LL')
+              var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
               return date1
               }
           },
@@ -140,18 +128,6 @@ export default {
           }
         ],
         columns2: [
-            {
-              title: 'Payment Id',
-              key: 'PaymentId',
-              sortable: true,
-              render:(h,{row})=>{ return row.paymentGateway.id }
-            },
-            {
-                title: 'Accounting Id',
-                key: 'AccountingId',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-            },
             {
                 title: 'Account Id',
                 key: 'value',
@@ -175,7 +151,7 @@ export default {
                 key: 'Date',
                 sortable: true,
                 render:(h,{row})=>{ 
-                var date1 = moment(row.paymentAccounting.Invoice.Date).format('LL')
+                var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
                 return date1
                 }
             },

@@ -44,11 +44,11 @@
                                 <div class="form-group row panel-collapse collapse" id="date">
                                     <div class="col-xs-3">
                                       <label>From Date</label>
-                                        <input class="form-control" type="date" v-model="dategt"/>
+                                        <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
                                     </div>
                                     <div class="col-xs-3">
                                       <label>To Date</label>
-                                        <input class="form-control" type="date" v-model="datelt" />
+                                        <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
                                     </div>
                                 </div>
                             </div>
@@ -160,20 +160,20 @@
                 </td>
             </tr>
             
-            <tr>
-            <td colspan="3" style="padding: 5px;vertical-align: top;">
+            <tr style="background: rgb(238, 238, 238);">
+            <td colspan="3" style="padding: 13px;vertical-align: top;">
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
-                                <p>{{emailData.row.Contact.Name}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].AddressLine1}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].AddressLine2}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].City}}</p>
-                                <p>{{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}</p>
+                                {{emailData.row.Contact.Name}}<br>
+                                {{emailDataCustomer.Addresses[0].AddressLine1}}<br>
+                                {{emailDataCustomer.Addresses[0].AddressLine2}}<br>
+                                {{emailDataCustomer.Addresses[0].City}}<br>
+                                {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}
                             </td>
                             
-                            <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
+                            <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;">
                                 <b>From :</b><br>
                                 Acme Corp.<br>
                                 John Doe<br>
@@ -181,6 +181,10 @@
                             </td>
                         </tr>
                     </tbody></table>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 15px;">
                 </td>
             </tr>
             <div v-for="item in DescriptionPdf">
@@ -212,7 +216,7 @@
                     Unit Amount
                 </td>
 
-                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center;width:32%;">
                     Line Amount
                 </td>
             </tr>
@@ -236,32 +240,40 @@
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
-                <td style="font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Sub Total: ${{emailData.row.SubTotal}}
+                <td style="font-weight: bold;padding: 5px;">
+                    <div class="col-sm-6" style="text-align: -webkit-right;">Sub Total:</div>
+                    <div class="col-sm-6">${{emailData.row.SubTotal}}</div>
+                    
                 </td>
             </tr>
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Tax: ${{emailData.row.TotalTax}}
+                <td style="font-weight: bold;padding: 5px;">
+                    <div class="col-sm-6" style="text-align: -webkit-right;">Tax: </div>
+                    <div class="col-sm-6">${{emailData.row.TotalTax}}</div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 1px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Total: ${{emailData.row.Total}}
+                <td style="border-top: 1px solid #eee;font-weight: bold;padding: 5px;">
+                    <div class="col-sm-6" style="text-align: -webkit-right;">Total:</div>
+                    <div class="col-sm-6">${{emailData.row.Total}}</div>
+                    
                 </td>
             </tr>
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 1px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
-                   Total Due: ${{emailData.row.AmountDue}}
+                <td style="border-top: 1px solid #eee;font-weight: bold;background: rgb(238, 238, 238);padding: 5px;
+">
+                    <div class="col-sm-6" style="text-align: -webkit-right;">Total Due:</div>
+                    <div class="col-sm-6">${{emailData.row.AmountDue}}</div>
+                    
                 </td>
             </tr>
             
@@ -356,7 +368,7 @@
             <tr>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
                    Sub Total: ${{emailDataCustom.Total}}
                 </td>
             </tr>
@@ -364,7 +376,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
                    Tax: 0%
                 </td>
             </tr>
@@ -372,7 +384,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
-                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top;">
+                <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
                    Total Due Amount: ${{emailDataCustom.Due}}
                 </td>
             </tr>
@@ -433,7 +445,7 @@ export default {
               key: 'DueDate',
               sortable: true,
               render : (h,{row}) => {
-                var date1 = moment(row.DueDate).format('LL')
+                var date1 = moment(row.DueDate).format('DD-MMM-YYYY')
                 return date1
               }
           },
@@ -630,7 +642,7 @@ export default {
               key: 'DueDate',
               sortable: true,
               render:(h,{row})=>{ 
-                var date1 = moment(row.DueDate).format('LL')
+                var date1 = moment(row.DueDate).format('DD-MMM-YYYY')
                 return date1
               }
           },
@@ -1160,6 +1172,7 @@ export default {
       }
     },
     async createPDF (params) {
+      this.$Loading.start();
       console.log("paramsssssssssssssssss " , params)
       this.emailData = params;
       var self = this
@@ -1201,7 +1214,8 @@ export default {
       });
 
       console.log('self.emailDataCustomer',self.emailDataCustomer)
-      setTimeout(function(){ 
+      setTimeout(function(){
+        self.$Loading.finish(); 
         self.$Modal.confirm({
           title: '',
           content: self.$refs.email1.innerHTML,
