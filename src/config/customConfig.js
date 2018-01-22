@@ -58,8 +58,8 @@ module.exports =  {
         loginWithTwitterUrl : 'http://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'http://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'http://auth.'+process.env.domainkey+'/auth/linkedin',  
-        //serviceUrl :            'http://api.'+process.env.domainkey+'/crm/',
-        serviceUrl :            'http://localhost:3037/',
+        serviceUrl :            'http://api.'+process.env.domainkey+'/crm/',
+       // serviceUrl :            'http://localhost:3037/',
         projecturl :            'http://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'http://api.'+process.env.domainkey+'/user/alluserdetails/'
     }

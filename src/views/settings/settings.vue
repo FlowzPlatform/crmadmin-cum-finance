@@ -257,7 +257,7 @@ Vue.use(VueWidgets);
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'New-settings'
+                        name: 'New Settings'
                     });
             },
             defaultChanged(e){
@@ -446,6 +446,7 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.$Loading.start()
+           
             axios({
                     method:'get',
                     url:feathersUrl +'settings',

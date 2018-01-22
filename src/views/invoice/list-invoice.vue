@@ -101,7 +101,7 @@
   </div>
   <div v-else>
     
-     <Tabs  @on-click="tabClicked">
+     <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
           <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
           <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
@@ -112,9 +112,9 @@
                   <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
           </div>
-           <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+           <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
           <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
-          
+           -->
       </TabPane>
     </Tabs>  
   </div>  
@@ -357,6 +357,18 @@
 
 </div>
 <div id="editor"></div>
+
+
+
+<Modal
+        title="All Transaction List"
+        id = "viewDetailInInvoice"
+        v-model="viewDetailModal"
+        :styles="{width:'95%'}">
+        
+        <list-transaction :list="newList" :tabIndex="newTabIndex"></list-transaction>
+    </Modal>
+
 </div>
 </div>
 </template>
@@ -368,9 +380,13 @@ import config from '@/config/customConfig.js'
 import axios from 'axios'
 import jsPDF from 'jspdf'
 import money from '../../images/Payment.png'
+import eye from '../../images/Eye.png'
 import mail from '../../images/Mail.png'
 import download from '../../images/Download.png'
 import _ from 'lodash'
+
+import ListTransaction from '../transaction/list-transaction.vue'
+
 //import Handlebars from 'handlebars'
 import moment from 'moment'
 import Cookies from 'js-cookie'
@@ -380,8 +396,14 @@ export default {
   name: 'hello',
   data () {
     return {
+      newList:[],
+      //message:"hello",
+      newTabIndex : '',
+      viewDetailModal : false,
+      tabIndex : 0,
       tabPanes : [],
       spinShow: true,
+      eye,
       money,
       mail,
       download,
@@ -445,7 +467,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
-            width: 200,
+            width: 210,
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
@@ -464,8 +486,8 @@ export default {
                           src:this.money
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -490,8 +512,8 @@ export default {
                           src :this.download
                           },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -516,8 +538,8 @@ export default {
                           src : this.mail
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -526,7 +548,33 @@ export default {
                           }
                         }
                       }, '')
-                    ])
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }else{
                 return h('div', [
@@ -545,8 +593,8 @@ export default {
                           src : this.mail
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -571,13 +619,39 @@ export default {
                           src : this.download
                       },
                       style: {
-                        height:'30px',
-                        width:'30px',
+                        height:'20px',
+                        width:'20px',
                         margin: '2px'
                       },
                       on: {
                         click: () => {   
                           this.createPDF(row)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
                         }
                       }
                     }, '')
@@ -638,7 +712,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
-            width: 200,
+            width: 210,
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
@@ -657,8 +731,8 @@ export default {
                             src: this.money
                           },
                           style: {
-                            hight:'30px',
-                            width:'30px',
+                            hight:'20px',
+                            width:'20px',
                             margin: '2px'
                           },
                           on: {
@@ -683,8 +757,8 @@ export default {
                           src: this.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -709,8 +783,8 @@ export default {
                           src: this.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -719,6 +793,32 @@ export default {
                           }
                         }
                       }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
+                        }
+                      }
+                    }, '')
                   ])
                 ])
               }else{
@@ -738,8 +838,8 @@ export default {
                           src: this.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -764,13 +864,39 @@ export default {
                           src: this.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                       on: {
                         click: () => {   
                           this.createPDF(params)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
                         }
                       }
                     }, '')
@@ -806,6 +932,9 @@ export default {
       duelt: ''
     }
   },
+  components :{
+    'list-transaction' : ListTransaction
+  },
    methods: {
     // async mockTableData1 (p,size) {
     //   this.len = this.data1.length
@@ -836,6 +965,7 @@ export default {
       this.duelt = '';
       this.getAllSettings();
     },
+    
     async changeData() {
      console.log("this.data6", this.data6)
       this.filterArray = this.data6
@@ -1196,12 +1326,7 @@ export default {
         this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
       }
     },
-    async makePaymentCustom(params ,settingIdForPayment, domain){
-        
-        console.log(params)
-        this.$router.push('/checkout/' + params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
-      
-    },
+    
 
     async sendemail(params){
       this.$Loading.start();
@@ -1282,6 +1407,7 @@ export default {
     },
     async tabClicked(data){
       console.log(data)
+      this.tabIndex = data;
       let settingId = this.tabPanes[data].id;
       let settingDomain = this.tabPanes[data].domain;
       this.settingIdForPayment = settingId;
@@ -1327,8 +1453,7 @@ export default {
             arr.push({
                 title: columnArray[i],
                 key : columnArray[i],
-                sortable: true,
-                width: 200,
+                sortable: true
             });
         }
         if(modifiedArray.indexOf("Action") != -1){
@@ -1336,7 +1461,8 @@ export default {
         }else{
           arr.push({
                 title: "Action",
-                width: 200,
+                width: 210,
+                align: 'center',
                 render: (h, params) => {
                 return h('div', [
                     h('Tooltip', {
@@ -1354,8 +1480,8 @@ export default {
                           src: self.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -1380,8 +1506,8 @@ export default {
                           src: self.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                       on: {
@@ -1406,13 +1532,39 @@ export default {
                           src: self.money
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                       on: {
                         click: () => {   
                           self.makePaymentCustom(params ,settingId, settingDomain)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.viewDetailsCustom(params ,settingId, settingDomain)
                         }
                       }
                     }, '')
@@ -1457,7 +1609,72 @@ export default {
       
       
     },
+
+    async makePaymentCustom(params ,settingIdForPayment, domain){
+        
+        console.log(params)
+        this.$router.push('/checkout/' + params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
+      
+    },
     
+    async viewDetailsCustom(params ,settingIdForPayment, domain){
+
+      //this.$router.push('/transaction/list-transaction/'+ params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
+      this.viewDetailModal = true;
+      // console.log(this)
+      //alert(this.tabIndex);
+      
+      let self = this;
+      await axios.get(config.default.serviceUrl + 'transaction', {
+            params : {
+                
+                settingId : params.row.settingId,
+                InvoiceNumber : params.row.Invoice_No
+            }
+        })
+        .then(function (response) {
+            console.log("transaction response",response);
+            //alert(self.tabPanes[self.tabIndex].configName)
+            self.newTabIndex = self.tabIndex 
+            self.newList = response.data.data;
+
+            // self.$Loading.finish();
+            // $('.preload').css("display","none")
+            // self.newList = await self.mockTableData1(1,pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+        });
+    },
+
+    async viewDetails(params){
+      this.viewDetailModal = true;
+      let self = this;
+
+      await axios.get(config.default.serviceUrl + 'transaction', {
+            params : {
+                
+                settingId : self.tabPanes[self.tabIndex].id,
+                InvoiceID : params.row.InvoiceID
+            }
+        })
+        .then(function (response) {
+            console.log("transaction response",response);
+            //alert(self.tabPanes[self.tabIndex].configName)
+            self.newTabIndex = self.tabIndex 
+            self.newList = response.data.data;
+
+            // self.$Loading.finish();
+            // $('.preload').css("display","none")
+            // self.newList = await self.mockTableData1(1,pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+        });
+    },
+
 
     async createPDFCustom(params){
       console.log(params.row)
@@ -1581,7 +1798,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'New-settings'
+                      name: 'New Settings'
                   })
               }
             });
@@ -1631,10 +1848,17 @@ export default {
     text-align: -webkit-center;
 }
 tbody.ivu-table-tbody tr.ivu-table-row td.ivu-table-column-center .ivu-table-cell > div > div {
-    margin: 0 9px;
+    margin: 0 6px;
     float: none !important;
 }
+
+
+
 .ivu-icon.ivu-icon-help-circled{
     display: none;
+}
+
+#viewDetailInInvoice #accordion {
+  display: none;
 }
 </style>

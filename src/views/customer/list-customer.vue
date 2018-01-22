@@ -64,8 +64,8 @@
                 <Page :total="len" :current="1" @on-change="changePage"></Page>
             </div>
         </div>
-        <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
-          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
+        <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button> -->
       </TabPane>
       </Tabs>  
     </div>
@@ -468,7 +468,7 @@ export default {
                 content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                 onOk: () => {
                       self.$router.push({
-                          name: 'New-settings'
+                          name: 'New Settings'
                       })
                   }
                 });

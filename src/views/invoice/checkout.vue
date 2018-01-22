@@ -183,6 +183,7 @@ export default {
       amountpaid: '',
       amountDue: '',
       total: '',
+      responseDataForPayment :'', 
       payDetail : {
         cardtype: '',
         cardNumber : '',
@@ -263,7 +264,7 @@ export default {
                 Authorization : Cookies.get('auth_token')
             },
             }).then(function (response) {
-                
+                console.log(">>>>>>>>>>>>>> response ", response)
                 if(Array.isArray(response.data)){
                   responseData = response.data[0];
                 
@@ -281,7 +282,7 @@ export default {
                 }else {
                   paymentInvoiceId = responseData.InvoiceID
                 }
-                
+                      self.responseDataForPayment = responseData;
                       self.payDetail.amount = responseData.AmountDue;
                       self.invoiceid = paymentInvoiceId
                       self.name = responseData.Contact.Name
@@ -292,7 +293,7 @@ export default {
                       self.$Spin.hide();
                 }else{
                   responseData = response.data;
-
+                  self.responseDataForPayment = responseData;
                       self.payDetail.amount = responseData.Due;
                       self.invoiceid = responseData.Invoice_No
                       self.name = responseData.Name
@@ -316,37 +317,75 @@ export default {
       
       
     },
-    async payNow () {
+    async payNow (domain) {
       let self = this
       this.loading = true
-      // alert(this.$route.params.id)
-            console.log("responseData", responseData)
+      if(domain == undefined){
+
+        console.log("responseData", self.responseDataForPayment)
+        
             let paymentInvoiceId;
-            console.log("responseData.Id",responseData.Id)
-            if(responseData.Id != undefined){
-              paymentInvoiceId = responseData.Id
+            
+            if(self.responseDataForPayment.Id != undefined){
+              paymentInvoiceId = self.responseDataForPayment.Id
             }else {
-              paymentInvoiceId = responseData.InvoiceID
+              paymentInvoiceId = self.responseDataForPayment.InvoiceID
             }
-            let exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
-            console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",this.settingId)
-            console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
-            this.payDetail.amount = parseInt(this.payDetail.amount);
+            let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
+            // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
+            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
+            self.payDetail.amount = parseInt(self.payDetail.amount);
             let param1 = {
-            settingId:this.settingId,
-            user:Cookies.get('user'),
-            gateway:this.payDetail.gateway,
-            id: paymentInvoiceId,
-            amount:this.payDetail.amount,
-            cname:responseData.Contact.Name,
-            value:"59",
-            type:this.payDetail.cardtype,
-            cardNumber:this.payDetail.cardNumber,
-            expMonth:this.payDetail.expiryMM,
-            expYear:exYear,
-            cvc:this.payDetail.cvCode
-          }
-          console.log("params1", param1)
+              settingId:self.settingId.query.settingId,
+              user:Cookies.get('user'),
+              gateway:self.payDetail.gateway,
+              id: paymentInvoiceId,
+              amount:self.payDetail.amount,
+              cname:self.responseDataForPayment.Contact.Name,
+              value:"59",
+              type:self.payDetail.cardtype,
+              cardNumber:self.payDetail.cardNumber,
+              expMonth:self.payDetail.expiryMM,
+              expYear:exYear,
+              cvc:self.payDetail.cvCode
+            }
+          
+          await axios({
+              method: 'post',
+              url: config.default.serviceUrl + 'payment',
+              data: param1,
+              headers:{
+                Authorization : Cookies.get('auth_token')
+              }
+            })
+            .then(function (res) {
+              
+              self.$Message.success('payment done successfully');
+              self.loading = false
+            })
+            .catch(function (err) {
+              self.loading = false
+              self.$Message.error('payment error')
+            });
+            this.backFunction()
+      }else {
+            let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
+            
+            let param1 = {
+              settingId:self.responseDataForPayment.settingId,
+              user:Cookies.get('user'),
+              gateway:self.payDetail.gateway,
+              id: self.responseDataForPayment.Invoice_No,
+              amount:self.payDetail.amount,
+              cname:self.responseDataForPayment.Name,
+              value:"59",
+              type:self.payDetail.cardtype,
+              cardNumber:self.payDetail.cardNumber,
+              expMonth:self.payDetail.expiryMM,
+              expYear:exYear,
+              cvc:self.payDetail.cvCode
+            }
+         
           await axios({
               method: 'post',
               url: config.default.serviceUrl + 'payment',
@@ -364,19 +403,46 @@ export default {
               self.loading = false
               self.$Message.error('payment error')
             });
-      this.backFunction()
+            this.backFunction()
+      }
+      // alert(this.$route.params.id)
+            
     },
+
+
     async payFunction (name) {
-      console.log(name)
+      
+      
+      let self = this
       this.$refs[name].validate(valid => {
         if(valid) {
-          if(this.payDetail.amount <= this.$store.state.invoiceData.AmountDue){
-            this.payNow();
+          console.log("self.payDetail.amount ", self.payDetail.amount);
+          console.log("self.responseDataForPayment.Due " , self.responseDataForPayment)
+          let DueAmount ;
+          if(self.responseDataForPayment.Due != undefined){
+            DueAmount = self.responseDataForPayment.Due
+          }
+          if(self.responseDataForPayment.AmountDue != undefined){
+            DueAmount = self.responseDataForPayment.AmountDue
+          }
+          if(self.responseDataForPayment.Balance != undefined){
+            DueAmount = self.responseDataForPayment.Balance
+          }
+          if(self.payDetail.amount <= DueAmount)
+          {
+          if(self.responseDataForPayment.settingId != undefined){
+            self.payNow('custom');
           }else{
-            this.$Message.error('Enter Amount less than Due Amount');
+            self.payNow();
+          }
+            //self.payNow();
+            
+          }else{
+            
+            self.$Message.error('Enter Amount less than Due Amount');
           }
         } else {
-          this.$Message.error('Enter Valid Input');
+          self.$Message.error('Enter Valid Input');
         }
       })
     },
@@ -386,6 +452,7 @@ export default {
     
     this.invoiceid = this.$route.params.id
     
+    this.getData (this.$route);
     
     //this.getCustomData()
   },
