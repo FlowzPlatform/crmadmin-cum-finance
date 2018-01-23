@@ -126,9 +126,9 @@
                                 </div>
                             </div>
                             <div class="col-xs-5 col-md-5 pull-right">
-                                <div class="form-group"  style="text-align:left"> CV CODE
+                                <div class="form-group"  style="text-align:left"> CVV
                                   <FormItem prop="cvCode">
-                                    <Input type="text" v-model="payDetail.cvCode" class="" placeholder="CV" required/> 
+                                    <Input type="text" v-model="payDetail.cvCode" class="" placeholder="CVV" required/> 
                                   </FormItem>
                                 </div>
                             </div>
@@ -183,6 +183,7 @@ export default {
       amountpaid: '',
       amountDue: '',
       total: '',
+      responseDataForPayment :'', 
       payDetail : {
         cardtype: '',
         cardNumber : '',
@@ -224,66 +225,167 @@ export default {
       this.$refs['payDetail'].resetFields()
       this.$router.go(-1)
     }, 
-    async getData () {
-      let settingID = this.$store.state.settingId
-      
-      responseData = this.$store.state.invoiceData;
-      console.log("responseData.Id",responseData.Id)
-      console.log("responseData.TotalAmt",responseData.TotalAmt) 
-      if(responseData.TotalAmt != undefined){
-        paymentAmount = responseData.TotalAmt;
-        this.payDetail.amount = paymentAmount
-      }
-      else{
-        paymentAmount = responseData.Total
-        this.payDetail.amount = paymentAmount
-      }
-      let paymentInvoiceId;
-      if(responseData.Id != undefined){
-        paymentInvoiceId = responseData.Id
-      }else {
-        paymentInvoiceId = responseData.InvoiceID
+    async getData (settingID) {
+      let self = this;
+      console.log(settingID)
+      console.log(settingID.query.domain)
+      let getInvoiceUrl ;
+      if(settingID.query.domain == undefined){
+        getInvoiceUrl = 'invoice/'
+        }else{
+        getInvoiceUrl = 'custominvoice/'
       }
       
-            this.payDetail.amount = responseData.AmountDue;
-            this.invoiceid = paymentInvoiceId
-            this.name = responseData.Contact.Name
-            this.amountpaid = responseData.AmountPaid
-            this.amountDue = responseData.AmountDue
-            this.total = paymentAmount
-            this.settingId = settingID
+        if(settingID.params.id != undefined){
+        this.$Spin.show({
+                    render: (h) => {
+                        return h('div', [
+                            h('Icon', {
+                                'class': 'demo-spin-icon-load',
+                                props: {
+                                    type: 'load-c',
+                                    size: 18
+                                }
+                            }),
+                            h('div', 'Loading Payment Information...')
+                        ])
+                    }
+                });
+                setTimeout(() => {
+                    this.$Spin.hide();
+                }, 10000);
+        axios({
+            method: 'get',
+            url: config.default.serviceUrl + getInvoiceUrl +settingID.params.id,
+            params: {
+              settingId : settingID.query.settingId
+            },
+            headers:{
+                Authorization : Cookies.get('auth_token')
+            },
+            }).then(function (response) {
+                console.log(">>>>>>>>>>>>>> response ", response)
+                if(Array.isArray(response.data)){
+                  responseData = response.data[0];
+                
+                if(responseData.TotalAmt != undefined){
+                  paymentAmount = responseData.TotalAmt;
+                  self.payDetail.amount = paymentAmount
+                }
+                else{
+                  paymentAmount = responseData.Total
+                  self.payDetail.amount = paymentAmount
+                }
+                let paymentInvoiceId;
+                if(responseData.Id != undefined){
+                  paymentInvoiceId = responseData.Id
+                }else {
+                  paymentInvoiceId = responseData.InvoiceID
+                }
+                      self.responseDataForPayment = responseData;
+                      self.payDetail.amount = responseData.AmountDue;
+                      self.invoiceid = paymentInvoiceId
+                      self.name = responseData.Contact.Name
+                      self.amountpaid = responseData.AmountPaid
+                      self.amountDue = responseData.AmountDue
+                      self.total = paymentAmount
+                      self.settingId = settingID
+                      self.$Spin.hide();
+                }else{
+                  responseData = response.data;
+                  self.responseDataForPayment = responseData;
+                      self.payDetail.amount = responseData.Due;
+                      self.invoiceid = responseData.Invoice_No
+                      self.name = responseData.Name
+                      self.amountpaid = responseData.Paid
+                      self.amountDue = responseData.Due
+                      self.total = responseData.Total
+                      self.settingId = responseData.settingId
+                      self.$Spin.hide();
+                }
+                
+                
+                
+            })
+            .catch(function (error) {
+              self.$Spin.hide();
+              console.log(error);
+            });
+      }
+      
+      
+      
+      
     },
-    async payNow () {
+    async payNow (domain) {
       let self = this
       this.loading = true
-      // alert(this.$route.params.id)
-            console.log("responseData", responseData)
+      if(domain == undefined){
+
+        console.log("responseData", self.responseDataForPayment)
+        
             let paymentInvoiceId;
-            console.log("responseData.Id",responseData.Id)
-            if(responseData.Id != undefined){
-              paymentInvoiceId = responseData.Id
+            
+            if(self.responseDataForPayment.Id != undefined){
+              paymentInvoiceId = self.responseDataForPayment.Id
             }else {
-              paymentInvoiceId = responseData.InvoiceID
+              paymentInvoiceId = self.responseDataForPayment.InvoiceID
             }
-            let exYear = this.payDetail.expiryYY.getFullYear().toString().slice(-2)
-            console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",this.settingId)
-            console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
-            this.payDetail.amount = parseInt(this.payDetail.amount);
+            let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
+            // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
+            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
+            self.payDetail.amount = parseInt(self.payDetail.amount);
             let param1 = {
-            settingId:this.settingId,
-            user:Cookies.get('user'),
-            gateway:this.payDetail.gateway,
-            id: paymentInvoiceId,
-            amount:this.payDetail.amount,
-            cname:responseData.Contact.Name,
-            value:"59",
-            type:this.payDetail.cardtype,
-            cardNumber:this.payDetail.cardNumber,
-            expMonth:this.payDetail.expiryMM,
-            expYear:exYear,
-            cvc:this.payDetail.cvCode
-          }
-          console.log("params1", param1)
+              settingId:self.settingId.query.settingId,
+              user:Cookies.get('user'),
+              gateway:self.payDetail.gateway,
+              id: paymentInvoiceId,
+              amount:self.payDetail.amount,
+              cname:self.responseDataForPayment.Contact.Name,
+              value:"59",
+              type:self.payDetail.cardtype,
+              cardNumber:self.payDetail.cardNumber,
+              expMonth:self.payDetail.expiryMM,
+              expYear:exYear,
+              cvc:self.payDetail.cvCode
+            }
+          
+          await axios({
+              method: 'post',
+              url: config.default.serviceUrl + 'payment',
+              data: param1,
+              headers:{
+                Authorization : Cookies.get('auth_token')
+              }
+            })
+            .then(function (res) {
+              
+              self.$Message.success('payment done successfully');
+              self.loading = false
+            })
+            .catch(function (err) {
+              self.loading = false
+              self.$Message.error('payment error')
+            });
+            this.backFunction()
+      }else {
+            let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
+            
+            let param1 = {
+              settingId:self.responseDataForPayment.settingId,
+              user:Cookies.get('user'),
+              gateway:self.payDetail.gateway,
+              id: self.responseDataForPayment.Invoice_No,
+              amount:self.payDetail.amount,
+              cname:self.responseDataForPayment.Name,
+              value:"59",
+              type:self.payDetail.cardtype,
+              cardNumber:self.payDetail.cardNumber,
+              expMonth:self.payDetail.expiryMM,
+              expYear:exYear,
+              cvc:self.payDetail.cvCode
+            }
+         
           await axios({
               method: 'post',
               url: config.default.serviceUrl + 'payment',
@@ -301,27 +403,64 @@ export default {
               self.loading = false
               self.$Message.error('payment error')
             });
-      this.backFunction()
+            this.backFunction()
+      }
+      // alert(this.$route.params.id)
+            
     },
+
+
     async payFunction (name) {
-      console.log(name)
+      
+      
+      let self = this
       this.$refs[name].validate(valid => {
         if(valid) {
-          if(this.payDetail.amount <= this.$store.state.invoiceData.AmountDue){
-            this.payNow();
+          console.log("self.payDetail.amount ", self.payDetail.amount);
+          console.log("self.responseDataForPayment.Due " , self.responseDataForPayment)
+          let DueAmount ;
+          if(self.responseDataForPayment.Due != undefined){
+            DueAmount = self.responseDataForPayment.Due
+          }
+          if(self.responseDataForPayment.AmountDue != undefined){
+            DueAmount = self.responseDataForPayment.AmountDue
+          }
+          if(self.responseDataForPayment.Balance != undefined){
+            DueAmount = self.responseDataForPayment.Balance
+          }
+          if(self.payDetail.amount <= DueAmount)
+          {
+          if(self.responseDataForPayment.settingId != undefined){
+            self.payNow('custom');
           }else{
-            this.$Message.error('Enter Amount less than Due Amount');
+            self.payNow();
+          }
+            //self.payNow();
+            
+          }else{
+            
+            self.$Message.error('Enter Amount less than Due Amount');
           }
         } else {
-          this.$Message.error('Enter Valid Input');
+          self.$Message.error('Enter Valid Input');
         }
       })
-    }
+    },
+    
   },
   mounted() {
-    this.invoiceid = this.$route.params.id
-    this.getData ();
     
+    this.invoiceid = this.$route.params.id
+    
+    this.getData (this.$route);
+    
+    //this.getCustomData()
+  },
+    watch: {
+    '$route': function (id) {
+      
+      this.getData (id);
+    }
   }
 }
 </script>
@@ -338,4 +477,7 @@ export default {
     background:#eee;
     padding: 20px
   }
+  .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
 </style>

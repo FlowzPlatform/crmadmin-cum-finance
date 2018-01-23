@@ -229,7 +229,7 @@
             },
             goToSettings () {
                this.$router.push({
-                        name: 'settings'
+                        name: 'Settings'
                     });
             },
             goToFlowzDashboard (){

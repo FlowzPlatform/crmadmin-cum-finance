@@ -30,6 +30,7 @@ let frontEndUrl = 'https://crm.'+process.env.domainkey+'/#/login';
 
 module.exports =  {
     default : {
+
         loginUrl : "https://auth."+process.env.domainkey+"/api/login",
         ldapLoginUrl : "https://auth."+process.env.domainkey+"/api/ldapauth",
         registrationUrl : "https://api."+process.env.domainkey+"/serverapi/register",
@@ -41,11 +42,13 @@ module.exports =  {
         varifyEmailUrl :                    "https://auth."+process.env.domainkey+"/api/verifyemail",
 
 
+
         facebookSuccessCallbackUrl: frontEndUrl,
         googleSuccessCallbackUrl: frontEndUrl,
         twitterSuccessCallbackUrl: frontEndUrl,
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
+
 
         flowzDashboardUrl : 'https://dashboard.'+process.env.domainkey,
         flowzBuilderUrl : 'https://webbuilder.'+process.env.domainkey ,
@@ -62,6 +65,7 @@ module.exports =  {
         //serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
+
     }
 
 }
