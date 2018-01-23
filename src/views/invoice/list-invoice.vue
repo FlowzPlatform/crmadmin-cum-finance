@@ -147,7 +147,7 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                                <img src="https://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
@@ -257,7 +257,7 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                                <img src="https://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
