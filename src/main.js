@@ -12,6 +12,8 @@ import util from '@/libs/util';
 import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
 
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
 
 
 Vue.use(VueI18n);
