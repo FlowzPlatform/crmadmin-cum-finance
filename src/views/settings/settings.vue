@@ -456,6 +456,7 @@ Vue.use(VueWidgets);
                 })
                 .then(response => {
                 console.log(response)
+                localStorage.clear();
                 this.data6 = response.data.data
                 this.$Loading.finish();
                 })
