@@ -114,12 +114,12 @@ export default {
               sortable: true,
               render:(h,{row})=>{ return row.paymentGateway.id }
           },
-          {
-              title: 'Accounting Id',
-              key: 'AccountingId',
-              sortable: true,
-              render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-          },
+        //   {
+        //       title: 'Accounting Id',
+        //       key: 'AccountingId',
+        //       sortable: true,
+        //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+        //   },
        
           {
               title: 'Invoice No.',
@@ -161,12 +161,12 @@ export default {
               sortable: true,
               render:(h,{row})=>{ return row.paymentGateway.id }
             },
-            {
-                title: 'Accounting Id',
-                key: 'AccountingId',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+            // },
             {
                 title: 'Account Id',
                 key: 'value',
@@ -210,12 +210,12 @@ export default {
               sortable: true,
               render:(h,{row})=>{ return row.paymentGateway.id }
             },
-            {
-                title: 'Accounting Id',
-                key: 'AccountingId',
-                sortable: true,
-                render:(h,{row})=>{ return row.id }
-            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.id }
+            // },
             // {
             //     title: 'Account Id',
             //     key: 'value',

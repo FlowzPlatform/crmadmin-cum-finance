@@ -437,7 +437,7 @@ export default {
           {
               title: 'Paid',
               sortable: true,
-              render : (h , {row}) => { return '$' + row.TotalAmt-row.Balance }
+              render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
           },
           {
               title: 'Due',
@@ -456,10 +456,10 @@ export default {
               title: 'Status',
               sortable: true,
               render : (h , {row}) => {
-                 if(row.TotalAmt-row.Balance == 0){
-                   return "PAID"
-                 }else{
+                  if(row.TotalAmt-row.Balance != row.TotalAmt){
                    return "AUTHORISED"
+                 }else{
+                   return "PAID"
                  }
               }
           },
