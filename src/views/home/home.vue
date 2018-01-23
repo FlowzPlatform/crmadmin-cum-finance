@@ -724,7 +724,16 @@ export default {
             .then(function (response) {
               
                if (response.data.data.length != 0){
-                   self.mData = response.data.data;
+                   
+                   let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
+                   if(arrIndex != -1){
+                       response.data.data.push(response.data.data.splice(arrIndex, 1)[0]);
+                   }
+                   
+                   
+                //     let arr = response.data.data;
+                //    arr.push(arr.splice(arr.indexOf(6), 1)[0]);
+                    self.mData = response.data.data;
                     self.config = self.mData[0].id;
                     self.getContacts(self.config)
                     self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),

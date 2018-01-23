@@ -337,12 +337,10 @@ export default {
             self.payDetail.amount = parseInt(self.payDetail.amount);
             let param1 = {
               settingId:self.settingId.query.settingId,
-              user:Cookies.get('user'),
               gateway:self.payDetail.gateway,
               id: paymentInvoiceId,
               amount:self.payDetail.amount,
-              cname:self.responseDataForPayment.Contact.Name,
-              value:"59",
+              Name:self.responseDataForPayment.Contact.Name,
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,
               expMonth:self.payDetail.expiryMM,
@@ -362,23 +360,23 @@ export default {
               
               self.$Message.success('payment done successfully');
               self.loading = false
+              self.backFunction()
             })
             .catch(function (err) {
               self.loading = false
-              self.$Message.error('payment error')
+              self.$Message.error(err.response.data.message)
+
             });
-            this.backFunction()
+            
       }else {
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             
             let param1 = {
               settingId:self.responseDataForPayment.settingId,
-              user:Cookies.get('user'),
               gateway:self.payDetail.gateway,
               id: self.responseDataForPayment.Invoice_No,
               amount:self.payDetail.amount,
               cname:self.responseDataForPayment.Name,
-              value:"59",
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,
               expMonth:self.payDetail.expiryMM,
@@ -398,12 +396,13 @@ export default {
               console.log("payment done success", res)
               self.$Message.success('payment done successfully');
               self.loading = false
+              this.backFunction()
             })
             .catch(function (err) {
               self.loading = false
-              self.$Message.error('payment error')
+              self.$Message.error(err.response.data.message)
             });
-            this.backFunction()
+            
       }
       // alert(this.$route.params.id)
             
