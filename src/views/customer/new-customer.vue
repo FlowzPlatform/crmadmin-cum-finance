@@ -93,6 +93,7 @@ import Cookies from 'js-cookie';
 import Vue from 'vue'
 import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
+import _ from 'lodash'
 var settingId
 Vue.use(VueWidgets);
   export default {
@@ -196,7 +197,10 @@ Vue.use(VueWidgets);
                 
                 if (response.data.data.length != 0)
                 {
-                  self.configs = response.data.data
+                  var newConf = response.data.data
+                  console.log("self.configs---------------->before",newConf)
+                  self.configs = _.sortBy(newConf, ['configName']);
+                  console.log("self.configs---------------->after",self.configs)
                 }else
                 {
                     self.$Modal.warning({

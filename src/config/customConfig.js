@@ -50,6 +50,8 @@ module.exports =  {
         linkedInSuccessCallbackUrl: frontEndUrl,
 
 
+
+
         flowzDashboardUrl : 'https://dashboard.'+process.env.domainkey,
         flowzBuilderUrl : 'https://webbuilder.'+process.env.domainkey ,
         flowzVmailUrl : 'https://vmail.'+process.env.domainkey ,

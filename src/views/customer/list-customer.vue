@@ -429,19 +429,37 @@ export default {
         });
       }
 
-      
+      var NameArr = [];
+      var EmailArr = [];
 
       self.data6.forEach (obj => {
-            //console.log("obj------------------->",obj);
+            console.log("obj------------------->",obj);
+            NameArr.push(obj.Name);
+            EmailArr.push(obj.EmailAddress);
+          })
+
+          console.log("NameArr----------->before", NameArr);
+          NameArr.sort();
+          console.log("NameArr----------->after", NameArr);
+
+          console.log("EmailArr----------->before", EmailArr);
+          EmailArr.sort();
+          console.log("EmailArr----------->after", EmailArr);
+
+          NameArr.forEach(item => {
             var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
-            option.text = obj.Name;
-            x.add(option);
+            option.text = item;
+            x.add(option); 
+          })
+
+          EmailArr.forEach(item => {
             var y = document.getElementById("selectEmail");
             var option = document.createElement("option");
-            option.text = obj.EmailAddress;
-            y.add(option);
-          })   
+            option.text = item;
+            y.add(option); 
+          })
+
     },          
     async getAllSettings(){
         let self = this;
