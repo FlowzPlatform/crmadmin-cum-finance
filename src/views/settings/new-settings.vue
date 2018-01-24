@@ -65,7 +65,7 @@
                     </FormItem>
                 </Form>
             </TabPane>
-            <TabPane label="Custom">
+            <!-- <TabPane label="Custom">
                 <Form ref="customformValidate" :model="customformValidate" :rules="customruleValidate" :label-width="150">
                     <FormItem label="Configuration Name" prop="configName">
                         <Input v-model="customformValidate.configName" placeholder="Enter your Configuration Name"></Input>
@@ -84,7 +84,7 @@
                         <Button type="ghost" @click="handleReset('customformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
                 </Form>
-            </TabPane>
+            </TabPane> -->
         </Tabs>
     
 
@@ -311,52 +311,94 @@ Vue.use(VueWidgets);
                 })
             },
 
-            async customhandleSubmit (name) {
+            // async customhandleSubmit (name) {
 
-                let self = this;
-                this.$refs[name].validate(async  (valid)   => {
-                    if (valid) {
-                        self.loading = true;
-                        let  data = {
-                                    "configName": self.customformValidate.configName.trim(),
-                                    "customer_url" :  self.customformValidate.customer_url.trim(),
-                                    "invoice_url" : self.customformValidate.invoice_url.trim(),
-                                    "domain" : 'custom',
-                                    "isActive" : self.isActivecustom,
-                                    "isDeleated" : false
-                                }
-                        axios({
-                                method: 'post',
-                                url: feathersUrl +'settings',
-                                headers:{
-                                    Authorization : Cookies.get('auth_token')
-                                },
-                                data: data
-                            })  
-                            .then(function (response) {
-                                console.log(response)
-                                 self.$Message.success('Success!');
-                                 self.loading = false;
-                                 self.handleReset('customformValidate')
-                            })
-                            .catch(function (error) {
-                                Cookies.remove('auth_token') 
-                                self.$Message.error('Auth Error!');
-                                self.loading = false;
-                                  self.$store.commit('logout', this); 
-                                   self.$router.push({
-                                    name: 'login'
-                                })
+            //     let self = this;
+                
+                   
+            //             self.loading = true;
+            //             let  data = {
+            //                         "configName": "Custom Configuration",
+            //                         "customer_url" :  feathersUrl+"customcustomer",
+            //                         "invoice_url" : feathersUrl+"custominvoice",
+            //                         "domain" : 'custom',
+            //                         "isActive" : false,
+            //                         "isDeleated" : false
+            //                     }
+            //             axios({
+            //                     method: 'post',
+            //                     url: feathersUrl +'settings',
+            //                     headers:{
+            //                         Authorization : Cookies.get('auth_token')
+            //                     },
+            //                     data: data
+            //                 })  
+            //                 .then(function (response) {
+            //                     console.log(response)
+            //                      self.$Message.success('Success!');
+            //                      self.loading = false;
+            //                      self.handleReset('customformValidate')
+            //                 })
+            //                 .catch(function (error) {
+            //                     Cookies.remove('auth_token') 
+            //                     self.$Message.error('Auth Error!');
+            //                     self.loading = false;
+            //                       self.$store.commit('logout', this); 
+            //                        self.$router.push({
+            //                         name: 'login'
+            //                     })
                                
-                            });
+            //                 });
+                    
+                
+            // },
+
+            // async customhandleSubmit (name) {
+
+            //     let self = this;
+            //     this.$refs[name].validate(async  (valid)   => {
+            //         if (valid) {
+            //             self.loading = true;
+            //             let  data = {
+            //                         "configName": self.customformValidate.configName.trim(),
+            //                         "customer_url" :  self.customformValidate.customer_url.trim(),
+            //                         "invoice_url" : self.customformValidate.invoice_url.trim(),
+            //                         "domain" : 'custom',
+            //                         "isActive" : self.isActivecustom,
+            //                         "isDeleated" : false
+            //                     }
+            //             axios({
+            //                     method: 'post',
+            //                     url: feathersUrl +'settings',
+            //                     headers:{
+            //                         Authorization : Cookies.get('auth_token')
+            //                     },
+            //                     data: data
+            //                 })  
+            //                 .then(function (response) {
+            //                     console.log(response)
+            //                      self.$Message.success('Success!');
+            //                      self.loading = false;
+            //                      self.handleReset('customformValidate')
+            //                 })
+            //                 .catch(function (error) {
+            //                     Cookies.remove('auth_token') 
+            //                     self.$Message.error('Auth Error!');
+            //                     self.loading = false;
+            //                       self.$store.commit('logout', this); 
+            //                        self.$router.push({
+            //                         name: 'login'
+            //                     })
+                               
+            //                 });
                         
                         
-                    }
-                    else {
-                        self.$Message.error('Fail!');
-                    }
-                })
-            },
+            //         }
+            //         else {
+            //             self.$Message.error('Fail!');
+            //         }
+            //     })
+            // },
 
             handleReset (name) {
                 this.$refs[name].resetFields();
