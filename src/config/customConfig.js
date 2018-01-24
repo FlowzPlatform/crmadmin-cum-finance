@@ -40,7 +40,9 @@ module.exports =  {
         resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
         feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/serverapi/",
         varifyEmailUrl :                    "https://auth."+process.env.domainkey+"/api/verifyemail",
-
+        // pdmUrl:                             "http://172.16.230.151:3038/pdm/US",
+        vshopListUrl:                       "https://api."+process.env.domainkey+"/pdmnew/vshop-list",
+        pdmUrl:                             "https://api."+process.env.domainkey+"/pdmnew/pdm/US",
 
 
         facebookSuccessCallbackUrl: frontEndUrl,
