@@ -7,7 +7,7 @@
         <div class="close-all-tag-con">
             <Dropdown transfer @on-click="handleTagsOption">
                 <Button size="small" type="primary">
-                    Label Option
+                    Close Tabs
                     <Icon type="arrow-down-b"></Icon>
                 </Button>
                 <DropdownMenu slot="list">
@@ -26,7 +26,7 @@
                     :name="item.name" 
                     @on-close="closePage"
                     @click.native="linkTo(item)"
-                    :closable="item.name==='home_index'?false:true"
+                    :closable="item.name==='Dashboard'?false:true"
                     :color="item.children?(item.children[0].name===currentPageName?'blue':'default'):(item.name===currentPageName?'blue':'default')"
                 >{{ itemTitle(item) }}</Tag>
             </transition-group>
@@ -136,7 +136,7 @@ export default {
             if (type === 'clearAll') {
                 this.$store.commit('clearAllTags');
                 this.$router.push({
-                    name: 'home_index'
+                    name: 'Dashboard'
                 });
             } else {
                 this.$store.commit('clearOtherTags', this);

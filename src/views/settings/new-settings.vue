@@ -183,7 +183,7 @@ Vue.use(VueWidgets);
             
             goToSettingsList(){
                 this.$router.push({
-                        name: 'settings'
+                        name: 'Settings'
                     });
             },
             async handleUpload (file) {

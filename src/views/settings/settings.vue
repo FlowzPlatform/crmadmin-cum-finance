@@ -8,7 +8,7 @@
         
     <!-- <RadioGroup v-model="radio7" :on-change="defaultChanged()"> -->
         <div  v-for="(chunk , index) in productChunks">
-            <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px">
+            <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px;height:340px;">
             <Widget>
                 <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
                 <WidgetBody>
@@ -257,7 +257,7 @@ Vue.use(VueWidgets);
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'New-settings'
+                        name: 'New Settings'
                     });
             },
             defaultChanged(e){
@@ -446,6 +446,7 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.$Loading.start()
+           
             axios({
                     method:'get',
                     url:feathersUrl +'settings',
