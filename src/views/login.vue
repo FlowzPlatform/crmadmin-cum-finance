@@ -388,12 +388,12 @@ export default {
                     .catch(function(error) {
                         console.log("error-->", error)
                         self.saveFileLoadingLogin = false;
-                        console.log(error)
-                        if (!error.status) {
+                        console.log(error.response)
+                        if (!error.response.status) {
                             
                             self.$message.error("The server encountered a temporary error and could not complete your request");
                                
-                        }else{
+                        }else if(error.response.status == 401){
                             self.$message.error("email or password is incorrect");
                         }
                         
