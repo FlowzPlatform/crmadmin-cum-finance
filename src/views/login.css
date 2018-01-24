@@ -11,6 +11,19 @@
     position: absolute
 }
 
+.login div  .ivu-tabs-nav-scroll {
+    position: fixed;
+  }
+
+.el-tabs__header {
+    margin-bottom: 5px !important;
+}
+
+.email,
+.password {
+    margin-right: 3px
+}
+
 .mainBody {
     margin-top: 30%
 }

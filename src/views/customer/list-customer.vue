@@ -64,8 +64,8 @@
                 <Page :total="len" :current="1" @on-change="changePage"></Page>
             </div>
         </div>
-        <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
-          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
+        <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button> -->
       </TabPane>
       </Tabs>  
     </div>
@@ -373,14 +373,19 @@ export default {
       self.list = [];
 
       if(settingDomain == 'custom'){
+        console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
         let customerUrl = this.tabPanes[data].customer_url;
          await axios({
             method: 'get',
             url: customerUrl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
             headers:{
             Authorization : Cookies.get('auth_token')
         },
             }).then(async function (response) {
+              self.$Loading.finish();
               console.log(response)
               self.data6 = response.data.data.reverse();
 
@@ -400,6 +405,7 @@ export default {
               self.column3 = arr;
             })
             .catch(function (error) {
+              self.$Loading.error();
               console.log(error);
             });
       }else{
@@ -411,6 +417,7 @@ export default {
         settingId : settingId
         }
         }).then(async function (response) {
+
           console.log("$$$$$$$$$$$$$$$$$$$",response)
             self.data6 = response.data[0].data.reverse();
             self.$Loading.finish();
@@ -479,7 +486,7 @@ export default {
                 content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                 onOk: () => {
                       self.$router.push({
-                          name: 'newsettings'
+                          name: 'New Settings'
                       })
                   }
                 });

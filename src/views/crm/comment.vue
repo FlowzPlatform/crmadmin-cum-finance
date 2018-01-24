@@ -507,7 +507,7 @@
           })
           .then(function(response) {
             console.log("save response.....",response)
-            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid})
+            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
             console.log("this.commentData", self.commentData)
           });
           

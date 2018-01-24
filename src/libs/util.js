@@ -97,20 +97,20 @@ util.setCurrentPath = function (vm, name) {
         }
     });
     let currentPathArr = [];
-    if (name === 'home_index') {
+    if (name === 'Dashboard') {
         currentPathArr = [
             {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'Dashboard')),
                 path: '',
-                name: 'home_index'
+                name: 'Dashboard'
             }
         ];
-    } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
+    } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'Dashboard') {
         currentPathArr = [
             {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'Dashboard')),
                 path: '/home',
-                name: 'home_index'
+                name: 'Dashboard'
             },
             {
                 title: title,
@@ -140,7 +140,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 }
             ];
         } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
@@ -148,7 +148,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '/home',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 },
                 {
                     title: currentPathObj.title,
@@ -164,7 +164,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '/home',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 },
                 {
                     title: currentPathObj.title,

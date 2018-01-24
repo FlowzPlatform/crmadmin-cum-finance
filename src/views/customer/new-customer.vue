@@ -63,8 +63,8 @@
         <FormItem label="City" prop="city">
          <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
         </FormItem>
-         <FormItem label="Postal code" prop="PostalCode">
-            <Input v-model="formValidate.PostalCode" placeholder="Enter PostalCode"></Input>
+         <FormItem label="Zip Code" prop="PostalCode">
+            <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
         </FormItem>
         <FormItem label="Mobile" prop="mobile">
             <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
@@ -147,7 +147,7 @@ Vue.use(VueWidgets);
                     { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
-                    { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
+                    { required: true, message: 'The Postal Code cannot be empty', trigger: 'blur' },
                     { validator: validateNum, trigger: 'blur' }
                   ],
                   mail: [
@@ -209,7 +209,7 @@ Vue.use(VueWidgets);
                     content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                     onOk: () => {
                           self.$router.push({
-                              name: 'newsettings'
+                              name: 'New Settings'
                           })
                       }
                     });

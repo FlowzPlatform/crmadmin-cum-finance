@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <div class="panel panel-default panel-group" id="accordion">
           <div class="panel-heading">
               <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
@@ -58,11 +59,12 @@
         </div>
         <div v-else>
             
-            <Tabs  @on-click="tabClicked">
+            <Tabs  @on-click="tabClicked" :value="tabIndex">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-                <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-                <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-                
+                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='QB'"  :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='custom'"  :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
+
                 <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
                         <Page :total="len" :current="1" @on-change="changePage"></Page>
@@ -72,6 +74,7 @@
             </TabPane>
             </Tabs>  
         </div>
+       
   </div>
 </template>
 
@@ -82,23 +85,44 @@ import moment from 'moment'
 import Cookies from 'js-cookie';
 import _ from 'lodash'
 
+
 var pageSize = 10
 export default {
   name: '',
+  props: {
+     list : {
+         default: function () { return [] }
+     },
+     tabIndex : {
+         default: function () { return 0 }
+     }
+  },
   data() {
       return {
+       // msg : "weqweq",
         tabPanes : [],
+        //tabIndex: 0,
         spinShow: true,
         data : [],
         len:1,
-        list: [],
+        //list: [],
+        columns3:[],
         columns1: [
           {
-              title: 'Account Name',
-              key: 'Name',
+
+              title: 'Payment Id',
+              key: 'PaymentId',
               sortable: true,
-              render:(h,{row})=>{ return row.paymentAccounting.Account.Name }
+              render:(h,{row})=>{ return row.paymentGateway.id }
           },
+        //   {
+        //       title: 'Accounting Id',
+        //       key: 'AccountingId',
+        //       sortable: true,
+        //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+        //   },
+       
+
           {
               title: 'Invoice No.',
               key: 'InvoiceNumber',
@@ -116,8 +140,15 @@ export default {
               key: 'Date',
               sortable: true,
               render:(h,{row})=>{ 
-              var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-              return date1
+
+  
+               let date = row.paymentAccounting.Invoice.Date; 
+               let initial = date.split(/\//);
+                let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
+                
+                return moment(formatDate).format("ll")
+                
+
               }
           },
           {
@@ -129,6 +160,20 @@ export default {
         ],
         columns2: [
             {
+
+              title: 'Payment Id',
+              key: 'PaymentId',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentGateway.id }
+            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+            // },
+            {
+
                 title: 'Account Id',
                 key: 'value',
                 sortable: true,
@@ -162,6 +207,53 @@ export default {
                 render:(h,{row})=>{ return row.paymentAccounting.Amount }
             }
         ],
+        columns3: [
+            {
+              title: 'Payment Id',
+              key: 'PaymentId',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentGateway.id }
+            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.id }
+            // },
+            // {
+            //     title: 'Account Id',
+            //     key: 'value',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.paymentAccounting.Account.value }
+            // },
+            {
+                title: 'Invoice No',
+                key: 'InvoiceId',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceNumber }
+            },
+            {
+                title: 'Customer Name',
+                key: 'Contact',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
+            },
+            {
+                title: 'Payment Date',
+                key: 'Date',
+                sortable: true,
+                render:(h,{row})=>{ 
+    
+                return row.paymentAccounting.Invoice.Date
+                }
+            },
+            {
+                title: 'Amount',
+                key: 'Amount',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Amount }
+            }
+        ],
         filterArray: [],
         cname: '',
         invoiceId : '',
@@ -170,6 +262,10 @@ export default {
       }
   },
   methods: {
+    // changeMessage(event) {
+    //             this.message = event.target.value;
+    //             this.$emit('messageChanged', this.message);
+    // },
     reset() {
       this.cname = '';
       this.invoiceId = '';
@@ -240,6 +336,7 @@ export default {
     },
     async getAllSettings(){
       let self = this;
+      
       axios.get(config.default.serviceUrl + 'settings', {
         params : {
             isActive : true,
@@ -254,10 +351,14 @@ export default {
         self.spinShow = false;
         if (response.data.data.length != 0)
         {
+          
           self.tabPanes = response.data.data;
           $('.preload').css("display","none")
           let settingId = self.tabPanes[0].id;
+          
+          
           self.getTransaction(settingId)
+
         }
         else {
             self.$Modal.warning({
@@ -279,10 +380,13 @@ export default {
       });
     },
     async tabClicked(data){
-      console.log(data)
+      console.log(this.tabPanes)
+      console.log(">>>>>>>>>>>>>>>>>> " , data)
       let settingId = this.tabPanes[data].id
+      
       this.getTransaction(settingId);
     },
+   
     async mockTableData1 (p,size) {
               this.len = this.data.length
               return this.data.slice((p - 1) * size, p * size);
@@ -298,13 +402,15 @@ export default {
       }
     },
     async getTransaction(settingId) {
+        
+        
         this.$Loading.start();
         this.data = [];
         let self = this;
         self.list = [];
         await axios.get(config.default.serviceUrl + 'transaction', {
             params : {
-                user : Cookies.get('user'),
+                
                 settingId : settingId
             }
         })
@@ -340,6 +446,15 @@ export default {
   },
   mounted() {
       this.getAllSettings()
+      
+      
+  },
+  watch: {
+    '$route': function (id) {
+      console.log(id)
+      
+     // this.activetab = "2"
+    }
   }
 }
 </script>

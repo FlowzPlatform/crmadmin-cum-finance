@@ -14,14 +14,14 @@ const app = {
         pageOpenedList: [{
             title: 'Home',
             path: '',
-            name: 'home_index'
+            name: 'Dashboard'
         }],
         currentPageName: '',
         currentPath: [
             {
                 title: 'Home',
                 path: '',
-                name: 'home_index'
+                name: 'Dashboard'
             }
         ], // 面包屑数组
         menuList: [],

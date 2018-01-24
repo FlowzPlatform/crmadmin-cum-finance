@@ -205,7 +205,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'New-settings'
+                      name: 'New Settings'
                   })
               }
             });
@@ -237,6 +237,7 @@ export default {
                            await axios({
                               method: 'get',
                               url: self.customCustomerUrl,
+                              params : {settingId : response.data.id},
                               headers:{
                                 Authorization : Cookies.get('auth_token')
                               }
@@ -248,8 +249,11 @@ export default {
                               self.data2 = _.sortBy(resp, ['Name']);
                               console.log("self.data2---------------->after",self.data2)
                             })
-                            .catch(function (error) {                              
-                              self.$Message.error('error in finding customer')
+
+                            .catch(function (error) {
+                              console.log(error.response)
+                              self.$Message.error(error.response.data.data[0].message)
+
                             });
 
                       }else{
@@ -307,7 +311,7 @@ export default {
                     .then(async function(response) {
                       console.log(response)
                       if(response.data.domain == 'custom'){
-
+                       // alert(self.formItem.configuration)
                         let postData1 = {
                             // domain: this.formItem.domain,
                             settingId : self.formItem.configuration,

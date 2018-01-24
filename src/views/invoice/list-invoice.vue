@@ -101,7 +101,7 @@
   </div>
   <div v-else>
     
-     <Tabs  @on-click="tabClicked">
+     <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
           <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
           <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
@@ -112,9 +112,9 @@
                   <Page :total="len" :current="1" @on-change="changePage"></Page>
               </div>
           </div>
-           <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+           <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
           <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button>
-          
+           -->
       </TabPane>
     </Tabs>  
   </div>  
@@ -147,10 +147,12 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
+
                                 <img :src='emailDataCompany.logo' key="max-logo" style="height: 82px;width: 215px;">
+
                             </td>
                             
-                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
                                 Invoice #: {{emailData.row.InvoiceNumber}}<br>
                                 Created: {{createdDate}}<br>
                                 Due: {{dueDate}}
@@ -170,7 +172,9 @@
                                 {{emailDataCustomer.Addresses[0].AddressLine1}}<br>
                                 {{emailDataCustomer.Addresses[0].AddressLine2}}<br>
                                 {{emailDataCustomer.Addresses[0].City}}<br>
+
                                 {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}
+
                             </td>
                             
                             <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;">
@@ -261,10 +265,12 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
+
                 <td style="border-top: 1px solid #eee;font-weight: bold;padding: 5px;">
                     <div class="col-sm-6" style="text-align: -webkit-right;">Total:</div>
                     <div class="col-sm-6">${{emailData.row.Total}}</div>
                     
+
                 </td>
             </tr>
             <tr>
@@ -296,10 +302,11 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
+
+                                <img :src='emailDataCompany.logo' key="max-logo" style="height: 82px;width: 215px;">
                             </td>
                             
-                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
+                            <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
                                 Invoice #: {{emailDataCustom.Invoice_No}}<br>
                                 Created: {{createdDate}}<br>
                                 Due: {{dueDate}}
@@ -315,7 +322,7 @@
                         <tbody><tr>
                             <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
                                 <b>To :</b><br>
-                                <p>{{emailDataCustom.Name}}</p>
+                                {{emailDataCustom.Name}}<br>
                                 
                                 E-169<br>
                                 New Alkapuri<br>
@@ -397,6 +404,18 @@
 
 </div>
 <div id="editor"></div>
+
+
+
+<Modal
+        title="All Transaction List"
+        id = "viewDetailInInvoice"
+        v-model="viewDetailModal"
+        :styles="{width:'95%'}">
+        
+        <list-transaction :list="newList" :tabIndex="newTabIndex"></list-transaction>
+    </Modal>
+
 </div>
 </div>
 </template>
@@ -408,9 +427,13 @@ import config from '@/config/customConfig.js'
 import axios from 'axios'
 import jsPDF from 'jspdf'
 import money from '../../images/Payment.png'
+import eye from '../../images/Eye.png'
 import mail from '../../images/Mail.png'
 import download from '../../images/Download.png'
 import _ from 'lodash'
+
+import ListTransaction from '../transaction/list-transaction.vue'
+
 //import Handlebars from 'handlebars'
 import moment from 'moment'
 import Cookies from 'js-cookie'
@@ -420,8 +443,14 @@ export default {
   name: 'hello',
   data () {
     return {
+      newList:[],
+      //message:"hello",
+      newTabIndex : '',
+      viewDetailModal : false,
+      tabIndex : 0,
       tabPanes : [],
       spinShow: true,
+      eye,
       money,
       mail,
       download,
@@ -455,7 +484,7 @@ export default {
           {
               title: 'Paid',
               sortable: true,
-              render : (h , {row}) => { return '$' + row.TotalAmt-row.Balance }
+              render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
           },
           {
               title: 'Due',
@@ -474,10 +503,10 @@ export default {
               title: 'Status',
               sortable: true,
               render : (h , {row}) => {
-                 if(row.TotalAmt-row.Balance == 0){
-                   return "PAID"
-                 }else{
+                  if(row.TotalAmt-row.Balance != row.TotalAmt){
                    return "AUTHORISED"
+                 }else{
+                   return "PAID"
                  }
               }
           },
@@ -485,7 +514,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
-            width: 200,
+            width: 210,
             render: (h, {row}) => {
               if(row.TotalAmt-row.Balance != 0){
                 return h('div', [
@@ -504,13 +533,13 @@ export default {
                           src:this.money
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
                           click: () => {   
-                            this.makepayment(row)
+                            this.makepayment(row )
                           }
                         }
                       },'')
@@ -530,8 +559,8 @@ export default {
                           src :this.download
                           },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -556,8 +585,8 @@ export default {
                           src : this.mail
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -566,7 +595,33 @@ export default {
                           }
                         }
                       }, '')
-                    ])
+                    ]),
+                    h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
+                        }
+                      }
+                    }, '')
+                  ])
                 ])
               }else{
                 return h('div', [
@@ -585,8 +640,8 @@ export default {
                           src : this.mail
                         },
                         style: {
-                          height:'30px',
-                          width:'30px',
+                          height:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -611,13 +666,39 @@ export default {
                           src : this.download
                       },
                       style: {
-                        height:'30px',
-                        width:'30px',
+                        height:'20px',
+                        width:'20px',
                         margin: '2px'
                       },
                       on: {
                         click: () => {   
                           this.createPDF(row)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
                         }
                       }
                     }, '')
@@ -676,7 +757,7 @@ export default {
             title: 'Action',
             key: 'Status',
             align: 'center',
-            width: 200,
+            width: 210,
             render: (h, params) => {
               if(params.row.Status == 'AUTHORISED'){
                 return h('div', [
@@ -695,8 +776,8 @@ export default {
                             src: this.money
                           },
                           style: {
-                            hight:'30px',
-                            width:'30px',
+                            hight:'20px',
+                            width:'20px',
                             margin: '2px'
                           },
                           on: {
@@ -721,8 +802,8 @@ export default {
                           src: this.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -747,8 +828,8 @@ export default {
                           src: this.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -757,6 +838,32 @@ export default {
                           }
                         }
                       }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
+                        }
+                      }
+                    }, '')
                   ])
                 ])
               }else{
@@ -776,8 +883,8 @@ export default {
                           src: this.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -802,13 +909,39 @@ export default {
                           src: this.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                       on: {
                         click: () => {   
                           this.createPDF(params)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: this.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          this.viewDetails(params)
                         }
                       }
                     }, '')
@@ -845,6 +978,9 @@ export default {
       DescriptionPdf : ''
     }
   },
+  components :{
+    'list-transaction' : ListTransaction
+  },
    methods: {
     // async mockTableData1 (p,size) {
     //   this.len = this.data1.length
@@ -875,6 +1011,7 @@ export default {
       this.duelt = '';
       this.getAllSettings();
     },
+    
     async changeData() {
      console.log("this.data6", this.data6)
       this.filterArray = this.data6
@@ -1237,13 +1374,29 @@ export default {
           title: '',
           content: self.$refs.email1.innerHTML,
           width: 1000,
-          okText: 'Download',
+          okText: 'Download PDF',
           onOk: () => {
-            var filename = "invoice.html";
-            var data = self.$refs.email1.innerHTML;
-            var blob = new Blob([data], {
-                type: "text/html;charset=utf-8"
+          axios({
+            method: 'post',
+            url: config.default.serviceUrl + 'exporttopdf',
+            data: {
+              
+                "html" : self.$refs.email1.innerHTML
+            },
+            
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              var arrayBufferView = new Uint8Array( response.data.data );
+              var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+              var link=document.createElement('a');
+              link.href=window.URL.createObjectURL(blob);
+              link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
+              link.click();
+            })
+            .catch(function (error) {
+              console.log(error);
             });
+
             saveAs(blob, filename);
             // console.log(self.$refs.email1.innerHTML)
             // var doc = new jsPDF();
@@ -1253,6 +1406,7 @@ export default {
             //     doc.save('sample-file.pdf');
             // });
             
+
           },
           onCancel: () => {
           }
@@ -1270,16 +1424,19 @@ export default {
     },
 
     async makepayment(params){
-      console.log(params)
-      this.$store.state.invoiceData = params;
-      this.$store.state.settingId = this.settingIdForPayment
-      console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+        //alert(">>>>>>>>>>> , "+this.settingIdForPayment)
+       console.log(params)
+      // this.$store.state.invoiceData = params;
+      // this.$store.state.settingId = this.settingIdForPayment
+      // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
       if(params.InvoiceID != undefined){
-        this.$router.push('/checkout/' + params.InvoiceID)
+        this.$router.push('/checkout/' + params.InvoiceID+"?settingId="+this.settingIdForPayment)
       }else{
-        this.$router.push('/checkout/' + params.Id)
+        this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
       }
     },
+    
+
     async sendemail(params){
       this.$Loading.start();
       this.emailData = params;
@@ -1359,6 +1516,7 @@ export default {
     },
     async tabClicked(data){
       console.log(data)
+      this.tabIndex = data;
       let settingId = this.tabPanes[data].id;
       let settingDomain = this.tabPanes[data].domain;
       this.settingIdForPayment = settingId;
@@ -1375,10 +1533,18 @@ export default {
       self.list = [];
       
       if(settingDomain == 'custom'){
-        let Invoiceurl = self.tabPanes[data].invoice_url;
+      let Invoiceurl = self.tabPanes[data].invoice_url;
         
-        axios.get(Invoiceurl, {
         
+      axios({
+            method: 'get',
+            url: Invoiceurl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
       })
       .then(async function (response) {
         self.$Loading.finish();
@@ -1396,8 +1562,7 @@ export default {
             arr.push({
                 title: columnArray[i],
                 key : columnArray[i],
-                sortable: true,
-                width: 200,
+                sortable: true
             });
         }
         if(modifiedArray.indexOf("Action") != -1){
@@ -1405,7 +1570,8 @@ export default {
         }else{
           arr.push({
                 title: "Action",
-                width: 200,
+                width: 210,
+                align: 'center',
                 render: (h, params) => {
                 return h('div', [
                     h('Tooltip', {
@@ -1423,8 +1589,8 @@ export default {
                           src: self.mail
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                         on: {
@@ -1449,13 +1615,65 @@ export default {
                           src: self.download
                         },
                         style: {
-                          hight:'30px',
-                          width:'30px',
+                          hight:'20px',
+                          width:'20px',
                           margin: '2px'
                         },
                       on: {
                         click: () => {   
                           self.createPDFCustom(params)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'Make payment'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.money
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.makePaymentCustom(params ,settingId, settingDomain)
+                        }
+                      }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                      props: {
+                        placement: 'top',
+                        content: 'View Detailed Transaction'
+                      },
+                      style:{
+                        
+                        cursor:'pointer'
+                      }
+                    }, [
+                    h('img', {
+                      attrs: {
+                          src: self.eye
+                        },
+                        style: {
+                          hight:'20px',
+                          width:'20px',
+                          margin: '2px'
+                        },
+                      on: {
+                        click: () => {   
+                          self.viewDetailsCustom(params ,settingId, settingDomain)
                         }
                       }
                     }, '')
@@ -1500,7 +1718,72 @@ export default {
       
       
     },
+
+    async makePaymentCustom(params ,settingIdForPayment, domain){
+        
+        console.log(params)
+        this.$router.push('/checkout/' + params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
+      
+    },
     
+    async viewDetailsCustom(params ,settingIdForPayment, domain){
+
+      //this.$router.push('/transaction/list-transaction/'+ params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
+      this.viewDetailModal = true;
+      // console.log(this)
+      //alert(this.tabIndex);
+      
+      let self = this;
+      await axios.get(config.default.serviceUrl + 'transaction', {
+            params : {
+                
+                settingId : params.row.settingId,
+                InvoiceNumber : params.row.Invoice_No
+            }
+        })
+        .then(function (response) {
+            console.log("transaction response",response);
+            //alert(self.tabPanes[self.tabIndex].configName)
+            self.newTabIndex = self.tabIndex 
+            self.newList = response.data.data;
+
+            // self.$Loading.finish();
+            // $('.preload').css("display","none")
+            // self.newList = await self.mockTableData1(1,pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+        });
+    },
+
+    async viewDetails(params){
+      this.viewDetailModal = true;
+      let self = this;
+
+      await axios.get(config.default.serviceUrl + 'transaction', {
+            params : {
+                
+                settingId : self.tabPanes[self.tabIndex].id,
+                InvoiceID : params.row.InvoiceID
+            }
+        })
+        .then(function (response) {
+            console.log("transaction response",response);
+            //alert(self.tabPanes[self.tabIndex].configName)
+            self.newTabIndex = self.tabIndex 
+            self.newList = response.data.data;
+
+            // self.$Loading.finish();
+            // $('.preload').css("display","none")
+            // self.newList = await self.mockTableData1(1,pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+        });
+    },
+
 
     async createPDFCustom(params){
       console.log(params.row)
@@ -1514,14 +1797,25 @@ export default {
           title: '',
           content: self.$refs.email2.innerHTML,
           width: 1000,
-          okText: 'Download',
+          okText: 'Download PDF',
           onOk: () => {
-            var filename = "invoice.html";
-            var data = self.$refs.email2.innerHTML;
-            var blob = new Blob([data], {
-                type: "text/html;charset=utf-8"
-            });
-            saveAs(blob, filename);
+            axios({
+            method: 'post',
+            url: config.default.serviceUrl + 'exporttopdf',
+            data: {
+              
+                "html" : self.$refs.email2.innerHTML
+            },
+            
+            }).then(function (response) {
+              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+              var arrayBufferView = new Uint8Array( response.data.data );
+              var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+              var link=document.createElement('a');
+              link.href=window.URL.createObjectURL(blob);
+              link.download=params.row.Invoice_No == undefined ? "custom_Invoice" : params.row.Invoice_No;
+              link.click();
+            })
           },
           onCancel: () => {
           }
@@ -1613,7 +1907,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'New-settings'
+                      name: 'New Settings'
                   })
               }
             });
@@ -1663,10 +1957,19 @@ export default {
     text-align: -webkit-center;
 }
 tbody.ivu-table-tbody tr.ivu-table-row td.ivu-table-column-center .ivu-table-cell > div > div {
-    margin: 0 9px;
+    margin: 0 6px;
     float: none !important;
 }
+
+
+
 .ivu-icon.ivu-icon-help-circled{
     display: none;
 }
+
+
+#viewDetailInInvoice #accordion {
+  display: none;
+}
 </style>
+
