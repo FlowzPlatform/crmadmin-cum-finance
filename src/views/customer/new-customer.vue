@@ -205,7 +205,7 @@ Vue.use(VueWidgets);
                     content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                     onOk: () => {
                           self.$router.push({
-                              name: 'New Settings'
+                              name: 'Settings'
                           })
                       }
                     });
