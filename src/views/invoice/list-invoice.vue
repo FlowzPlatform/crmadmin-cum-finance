@@ -147,7 +147,7 @@
                     <table style="width: 100%;line-height: inherit;text-align: left;">
                         <tbody><tr>
                             <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-                                <img src="http://res.cloudinary.com/flowz/raw/upload/v1515648324/crm/images/Flowz-logo.png" key="max-logo" style="width:32%;">
+                                <img :src='emailDataCompany.logo' key="max-logo" style="height: 82px;width: 215px;">
                             </td>
                             
                             <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;">
@@ -175,9 +175,11 @@
                             
                             <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;">
                                 <b>From :</b><br>
-                                Acme Corp.<br>
-                                John Doe<br>
-                                
+                                {{emailDataCompany.address.name}}<br>
+                                {{emailDataCompany.address.AddressLine1}}<br>
+                                {{emailDataCompany.address.AddressLine2}}<br>
+                                {{emailDataCompany.address.city}}<br>
+                                {{emailDataCompany.address.country}},{{emailDataCompany.address.PostalCode}}
                             </td>
                         </tr>
                     </tbody></table>
@@ -426,6 +428,7 @@ export default {
       emailDataCustom:'',
       emailData : '',
       emailDataCustomer:'',
+      emailDataCompany: '',
       filterArray : [],
       columns3 : [],
       columns2: [
@@ -1039,7 +1042,7 @@ export default {
       }
       
             res.forEach (obj => { 
-                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                console.log("/////////////////////////////////////////////////////////////////",obj)
                 NameArr.push(obj.Name);
               })
             NameArr.sort();
@@ -1191,12 +1194,26 @@ export default {
             Authorization : Cookies.get('auth_token')
         },
             }).then(function (response) {
-              console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
               self.emailDataCustomer = response.data[0].data[0]
             })
             .catch(function (error) {
               console.log(error);
             });
+    await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'Settings/' + settingID,
+            headers:{
+                Authorization : Cookies.get('auth_token')
+            },
+            }).then(function (response) {
+              console.log("ooooooooooooooooo",response);
+              self.emailDataCompany = response.data
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+            console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
     axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
         headers:{

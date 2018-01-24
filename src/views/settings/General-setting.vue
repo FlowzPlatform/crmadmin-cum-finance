@@ -20,10 +20,10 @@
             <FormItem label="Name" prop="name" id="CustomerName">
                 <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
             </FormItem>
-            <FormItem label="Address">
+            <FormItem label="Address" prop="AddressLine1">
             <Row>
             <Col span="12">
-              <FormItem prop="AddressLine1">
+              <FormItem prop="Address">
                   <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
               </FormItem>
             </Col>
@@ -69,10 +69,23 @@
       </div>
       <div id="toggleUploadLogoContent" class="toggleableDivHeaderContent" style="display: none;">
         <div class="row">
-          <div class="upload-btn-wrapper">
-                      <button class="btn"><Icon type="ios-cloud-upload-outline"></Icon> Upload Logo</button>
-                      <input type="file" id="upload" title="Upload Logo" @change="onFileChange" />
-                    </div>
+           <Form class="form" label-position="left" ref="formData" :model="formData" :label-width="140">
+            <FormItem label="Configuration Name">
+               <Select v-model="formData.configuration" style="width:100%;text-align:left" @on-change="configChange">
+                <Option  value='all'>All</Option>
+                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+              </Select>
+            </FormItem>
+            <FormItem>
+              <Upload id="fileUpload" v-model="formData.logo":before-upload="handleUpload" action=''> 
+                <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+              </Upload>
+              <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
+              <div>
+              <Button type="primary" @click="handleLogoUpload()">Submit</Button>
+              </div>
+            </FormItem>
+            </Form>             
         </div>
       </div>
       <!-- Meta Tags Ends -->
@@ -112,7 +125,6 @@ export default {
     };
     return {
       formValidate: {
-        configuration: 'all',
         name: '',
         mobile : '',
         AddressLine1: '',
@@ -122,6 +134,11 @@ export default {
         country: '',
         PostalCode: ''
       },
+      formData: {
+        configuration: 'all',
+        logo: '',
+      },
+      file: '',
     configs:[],
     ruleValidate: {
         name:[
@@ -153,6 +170,164 @@ export default {
     configChange(data){              
       $('#CustomerName').css("display","block")
       settingId = data;              
+    },
+    async handleUpload (file) {
+      var self = this
+      console.log('file',file)
+      self.file = file
+      return false;
+    },
+    handleLogoUpload () {
+      var self = this;
+      var checkConfig;
+      console.log('**************',this.file)
+      console.log("self.file.type", this.file.type)
+      if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
+
+          console.log('this.file',this.file)
+          var reader = new FileReader();
+          var file = this.file
+          console.log('reader',reader);
+          console.log('IIIIIIIIIIIIIIIIIII',file.name)
+
+          reader.addEventListener("load", function () {
+            console.log('reader------->',reader.result)
+
+          var logoData1 = {'logo': reader.result}
+          console.log('iiiiiiiiiiiiiiiiii',logoData1)
+
+          if(self.formData.configuration === 'all'){ 
+            self.$Modal.confirm({
+              title: '',
+              content: '<h4>This address will be configured for all of your Configuration</h4>',
+              width: 500,
+              okText: 'Agree',
+              cancelText: 'Disagree',
+              onOk: () => {
+                console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',self.formData.configuration)
+                delete self.formData.configuration;
+                self.configs.forEach(item => {
+                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                    axios({
+                      method: 'PATCH',
+                      url: feathersUrl +'settings/'+item.id,
+                      headers:{
+                          Authorization : Cookies.get('auth_token')
+                      },
+                      data: logoData1
+                    })  
+                    .then(function (response) {
+                      console.log('response------------------------>',response)
+                    })
+                    .catch(function (error) {
+                      console.log('error',error)
+                    })
+              })
+              },
+              onCancel: () => {
+              }
+            })                        
+          }
+        else{
+          console.log('this.configs',self.configs)
+          console.log('this.formData.configuration',self.formData.configuration)
+          var data000 = _.filter(self.configs, {'id': self.formData.configuration })
+          console.log("data000----------------------------->",data000)
+          var checkConfig;
+          self.$Modal.confirm({
+                title: '',
+                content: '',
+                width: 500,
+                okText: 'Agree',
+                cancelText: 'Disagree',
+                render: (h) => {
+                    return h('div', {
+                    }, [
+                        h('span', {
+                          style:{
+                            fontSize:'25px'
+                          },
+                        props: {
+                        },
+                        on: {
+                          input: (val) => {
+                          }
+                        }
+                      },'This address will be configured for ' + data000[0].configName),
+                       h('div', {
+                        style:{
+                            height:'50px'
+                          }
+                    }),
+                      h('Checkbox', {
+                        props: {
+                          value: this.value
+                        },
+                        on: {
+                          input: (val) => {
+                            checkConfig = val
+                            console.log("val",checkConfig)
+
+                          }
+                        }
+                      },'Do you want this address for all configartion?')
+                    ])
+                },
+                onOk: () => {
+                console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                if(checkConfig == true){
+                  self.configs.forEach(item => {
+                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                    axios({
+                      method: 'PATCH',
+                      url: feathersUrl +'settings/'+item.id,
+                      headers:{
+                          Authorization : Cookies.get('auth_token')
+                      },
+                      data: logoData1
+                    })  
+                    .then(function (response) {
+                      console.log('response------------------------>',response)
+                    })
+                    .catch(function (error) {
+                      console.log('error',error)
+                    })
+                  })
+                }
+                else{
+                console.log()               
+                  axios({
+                    method: 'PATCH',
+                    url: feathersUrl +'settings/'+self.formData.configuration,
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    },
+                    data: logoData1
+                  })  
+                  .then(function (response) {
+                    console.log('response------------------------>',response)
+                  })
+                  .catch(function (error) {
+                    console.log('error',error)
+                  })
+                }
+              },
+              onCancel: () => {
+              }
+            })
+        }
+          }, false);
+
+          
+          if (file) {
+            console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
+            reader.readAsDataURL(file);
+          }
+
+      }else {
+          self.$Message.error(' Please, attach a .jpg or .png file!');
+        }
+        
     },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
@@ -378,9 +553,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   /*For Collapsing Divs*/
-  .ivu-icon{
+  /*.ivu-icon{
     display: none;
-  }
+  }*/
   .toggleableDivHeaderContent {
       margin-top: 0px;
       margin-bottom: 30px;
@@ -391,14 +566,6 @@ export default {
       padding: 15px;
   }
 
-  input[type="file"] {
-      opacity: 0;
-      width: 100%;
-      padding: 38px;
-      position: absolute;
-      top: 0;
-      height: inherit;
-    }
   
   .toggleableDivHeader {
       height: 35px;
@@ -465,30 +632,5 @@ export default {
     border-color: #e2e2e2;
     border-radius: 4px;
    }
-   .upload-btn-wrapper {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-.btn {
-  border: 1px solid #eff0f1;
-  color: #838893;
-  background-color: transparent;
-  padding: 1px 20px;
-  border-radius: 4px;
-  font-size: 22px;
-  outline: none;
-}
-.upload-btn-wrapper:hover .btn {
-  border: 0.5px solid #2d8cf0;
-  color: #2d8cf0;
-  transition: color 0.5s, border 1s;
-}
-.upload-btn-wrapper input[type=file] {
-  font-size: 100px;
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  outline: none;
-}
+
 </style>
