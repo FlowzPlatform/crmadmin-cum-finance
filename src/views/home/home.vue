@@ -691,7 +691,7 @@ export default {
             })
         },
 
-         init(settingId) {
+         init() {
             
              if(Cookies.get('auth_token')){
                 axios({
@@ -711,6 +711,7 @@ export default {
             }
             let self = this;
             this.name = Cookies.get('user');
+            console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
             var resp;
             axios.get(serviceUrl+"settings", {
                 params: {
@@ -722,7 +723,7 @@ export default {
                 }
             })
             .then(function (response) {
-              
+                
                if (response.data.data.length != 0){
                    
                    let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
@@ -758,18 +759,18 @@ export default {
                 
             })
             .catch(function (error) {
-                console.log(error.response)
+                console.log("errrrroooooooor",error.response)
                 self.disabled = false;
                 if(error.response.status == 401){
                     let location = psl.parse(window.location.hostname)
                     location = location.domain === null ? location.input : location.domain
                     
-                    Cookies.remove('auth_token' ,{domain: location}) 
-                    this.$store.commit('logout', this);
+                    //Cookies.remove('auth_token' ,{domain: location}) 
+                    //self.$store.commit('logout', self);
                     
-                    this.$router.push({
-                        name: 'login'
-                    });
+                    // self.$router.push({
+                    //     name: 'login'
+                    // });
                 }
                 
             });

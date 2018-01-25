@@ -64,7 +64,7 @@ module.exports =  {
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
-        //serviceUrl :            'http://localhost:3037/',
+        // serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
 

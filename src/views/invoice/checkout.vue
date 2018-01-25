@@ -266,8 +266,8 @@ export default {
             }).then(function (response) {
                 console.log(">>>>>>>>>>>>>> response ", response)
                 if(Array.isArray(response.data)){
-                  responseData = response.data[0];
-                
+                  responseData = response.data[0].data;
+                console.log('responseData',responseData)
                 if(responseData.TotalAmt != undefined){
                   paymentAmount = responseData.TotalAmt;
                   self.payDetail.amount = paymentAmount
@@ -276,6 +276,7 @@ export default {
                   paymentAmount = responseData.Total
                   self.payDetail.amount = paymentAmount
                 }
+
                 let paymentInvoiceId;
                 if(responseData.Id != undefined){
                   paymentInvoiceId = responseData.Id
@@ -283,8 +284,8 @@ export default {
                   paymentInvoiceId = responseData.InvoiceID
                 }
                       self.responseDataForPayment = responseData;
-                      self.payDetail.amount = responseData.AmountDue;
                       self.invoiceid = paymentInvoiceId
+                      self.payDetail.amount = responseData.AmountDue;
                       self.name = responseData.Contact.Name
                       self.amountpaid = responseData.AmountPaid
                       self.amountDue = responseData.AmountDue

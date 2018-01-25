@@ -1039,7 +1039,20 @@ export default {
         console.log("this.status", this.status)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
-          return item.Status === self.status;
+          if(item.Status != undefined){
+            return item.Status === self.status;
+          }
+          else{
+            if(self.status == 'AUTHORISED'){
+              if(item.TotalAmt-item.Balance != item.TotalAmt){
+                  return item
+              }
+            }else if(self.status == 'PAID'){
+              if(item.TotalAmt-item.Balance == item.TotalAmt){
+                  return item
+              }
+            }
+          }
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -1053,11 +1066,9 @@ export default {
         console.log("this.dategt", this.dategt)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item.DueDate)
-          var date1 = moment(item.DueDate).format('MM/DD/YYYY');
-          var newdate = moment(self.dategt).format('MM/DD/YYYY');
-          console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyy",date1)
-          console.log("zzzzzzzzzzzzzzzzzzzzzzzz",newdate)
-          return date1 >= newdate;
+          if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+            return item;
+          }   
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -1067,11 +1078,9 @@ export default {
         console.log("this.dategt", this.datelt)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item.DueDate)
-          var date1 = moment(item.DueDate).format('MM/DD/YYYY');
-          var newdate = moment(self.datelt).format('MM/DD/YYYY');
-          console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyy",date1)
-          console.log("zzzzzzzzzzzzzzzzzzzzzzzz",newdate)
-          return date1 <= newdate;
+          if(moment(item.DueDate).diff(moment(self.datelt).format(), 'days') <= 0){
+            return item;
+          }
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -1098,7 +1107,7 @@ export default {
            if(item.Total != undefined){  
             return item.Total <= self.totallt;
           }else{
-            return item.TotalAmt >= self.totallt;
+            return item.TotalAmt <= self.totallt;
           }
         });
          console.log("myarr",this.filterArray)
@@ -1124,9 +1133,9 @@ export default {
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)
           if(item.AmountDue != undefined){
-            return item.AmountDue >=self.duelt
+            return item.AmountDue <=self.duelt
           }else{
-            return item.Balance >= self.duelt;
+            return item.Balance <= self.duelt;
           }
         });
          console.log("myarr",this.filterArray)
@@ -1180,7 +1189,11 @@ export default {
       
             res.forEach (obj => { 
                 console.log("/////////////////////////////////////////////////////////////////",obj)
-                NameArr.push(obj.Name);
+                if(obj.Name == undefined){
+                    NameArr.push(obj.DisplayName)
+                }else{
+                    NameArr.push(obj.Name);
+                }
               })
             NameArr.sort();
 
