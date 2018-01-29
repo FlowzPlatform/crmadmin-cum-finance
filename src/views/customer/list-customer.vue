@@ -31,7 +31,7 @@
                   <div class="panel panel-default">
                       <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
                           data-target="#status"></span>
-                          <label>status</label>
+                          <label>Status</label>
                       </div>
                       <div class="panel-collapse collapse" id="status">
                           <select class="form-control mb-2 mb-sm-0" v-model="status">
