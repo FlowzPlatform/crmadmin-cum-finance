@@ -36,11 +36,11 @@
                               <div class="form-group row panel-collapse collapse" id="date">
                                   <div class="col-xs-3">
                                     <label>From Date</label>
-                                      <input class="form-control" type="date" v-model="dategt"/>
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
                                   </div>
                                   <div class="col-xs-3">
                                     <label>To Date</label>
-                                      <input class="form-control" type="date" v-model="datelt" />
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
                                   </div>
                               </div>
                           </div>
@@ -109,6 +109,7 @@ export default {
         columns3:[],
         columns1: [
           {
+
               title: 'Payment Id',
               key: 'PaymentId',
               sortable: true,
@@ -121,6 +122,7 @@ export default {
         //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
         //   },
        
+
           {
               title: 'Invoice No.',
               key: 'InvoiceNumber',
@@ -138,6 +140,7 @@ export default {
               key: 'Date',
               sortable: true,
               render:(h,{row})=>{ 
+
   
                let date = row.paymentAccounting.Invoice.Date; 
                let initial = date.split(/\//);
@@ -145,6 +148,7 @@ export default {
                 
                 return moment(formatDate).format("ll")
                 
+
               }
           },
           {
@@ -156,6 +160,7 @@ export default {
         ],
         columns2: [
             {
+
               title: 'Payment Id',
               key: 'PaymentId',
               sortable: true,
@@ -168,6 +173,7 @@ export default {
             //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
             // },
             {
+
                 title: 'Account Id',
                 key: 'value',
                 sortable: true,
@@ -190,10 +196,8 @@ export default {
                 key: 'Date',
                 sortable: true,
                 render:(h,{row})=>{ 
-    
-                var date = new Date(row.paymentAccounting.Invoice.Date); 
-                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-                    return date1
+                var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                return date1
                 }
             },
             {
@@ -283,6 +287,9 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
+      }else{
+        console.log("myarr",this.filterArray)
+        this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.invoiceId != ''){
@@ -295,13 +302,13 @@ export default {
          this.list = await this.mockTableData2(1,pageSize)
       }
 
-      if(this.dategt != ''){
+     if(this.dategt != ''){
         console.log("this.dategt", this.dategt)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
-          var newdate = moment(self.dategt).format('DD/MM/YYYY');
-          return itemdate >= newdate;
+          console.log("item",item.paymentAccounting.Invoice.Date)
+          var newdate = moment(self.dategt).format('MM/DD/YYYY');
+          console.log("newdate",newdate)
+          return item.paymentAccounting.Invoice.Date >= newdate;
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -311,11 +318,9 @@ export default {
         console.log("this.datelt", this.datelt)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item.paymentAccounting.Invoice.Date)
-          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
-          var newdate = moment(self.datelt).format('DD/MM/YYYY');
-          console.log("itemdate",itemdate)
+          var newdate = moment(self.datelt).format('MM/DD/YYYY');
           console.log("newdate",newdate)
-          return itemdate <= newdate;
+          return item.paymentAccounting.Invoice.Date <= newdate;
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
@@ -422,13 +427,21 @@ export default {
             self.$Loading.error();
         });
 
-        self.data.forEach (obj => {
-            // console.log("obj------------------->",obj);
-            var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.paymentAccounting.Contact.Name;
-            x.add(option);
-          })   
+        var NameArr = [];
+      
+            self.data.forEach (obj => { 
+                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                NameArr.push(obj.paymentAccounting.Contact.Name);
+              })
+            NameArr.sort();
+
+            NameArr.forEach(item => {
+                var x = document.getElementById("selectCustomer");
+                var option = document.createElement("option");
+                option.text = item;
+                console.log()
+                x.add(option);
+            })
     }
   },
   mounted() {

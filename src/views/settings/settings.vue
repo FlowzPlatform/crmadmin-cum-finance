@@ -1,10 +1,12 @@
 <template>
     <div>
-        
+
+    <Tabs>
+      <TabPane label="Configuration">
+
         <div class="settings_header">
             <Button @click="addNewConfig">Add New Configuration</Button>
         </div>
-
         
     <!-- <RadioGroup v-model="radio7" :on-change="defaultChanged()"> -->
         <div  v-for="(chunk , index) in productChunks">
@@ -168,15 +170,21 @@
                         <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
                     </FormItem>
                     
-                </Form>
-            
+                </Form>            
             
         </Modal>
             </div>
         </div>
         <!-- </RadioGroup> -->
 
-        
+      </TabPane>
+      <TabPane label="General">
+        <customSetting></customSetting>
+      </TabPane>
+      <TabPane label="Online Payment">
+        <onlinePayment></onlinePayment>
+      </TabPane>
+    </Tabs>      
     </div>
 </template>
 
@@ -190,10 +198,16 @@ let config = require("@/config/customConfig.js")
 let feathersUrl =  config.default.serviceUrl;
 import Cookies from 'js-cookie';
 import psl from 'psl';
+import customSetting from './General-setting.vue'
+import onlinePayment from './Online-Payment.vue'
 Vue.use(VueWidgets);
 
 
     export default {
+      components: {
+        customSetting,
+        onlinePayment
+      },
         data () {
             return {
                 editFormItemXero: {
@@ -240,7 +254,6 @@ Vue.use(VueWidgets);
                     }
                 ],
                 data6: [
-                    
                 ]
             }
         },
