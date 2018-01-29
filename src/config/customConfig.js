@@ -50,21 +50,24 @@ module.exports =  {
         linkedInSuccessCallbackUrl: frontEndUrl,
 
 
-        flowzDashboardUrl : 'http://dashboard.'+process.env.domainkey,
-        flowzBuilderUrl : 'http://webbuilder.'+process.env.domainkey ,
-        flowzVmailUrl : 'http://vmail.'+process.env.domainkey ,
-        flowzUploaderUrl : 'http://uploader.'+process.env.domainkey ,
-        flowzDbetlUrl : 'http://dbetl.'+process.env.domainkey ,
 
-        loginWithFacebookUrl : 'http://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'http://auth.'+process.env.domainkey+'/auth/Gplus',
-        loginWithTwitterUrl : 'http://auth.'+process.env.domainkey+'/auth/twitter',
-        loginWithGithubUrl : 'http://auth.'+process.env.domainkey+'/auth/github',
-        loginWithLinkedInUrl : 'http://auth.'+process.env.domainkey+'/auth/linkedin',
-        //serviceUrl :            'http://api.'+process.env.domainkey+'/crm/',
-        serviceUrl :            'http://localhost:3037/',
-        projecturl :            'http://api.'+process.env.domainkey+'/mom/',
-        assigneeapi :           'http://api.'+process.env.domainkey+'/user/alluserdetails/'
+
+        flowzDashboardUrl : 'https://dashboard.'+process.env.domainkey,
+        flowzBuilderUrl : 'https://webbuilder.'+process.env.domainkey ,
+        flowzVmailUrl : 'https://vmail.'+process.env.domainkey ,
+        flowzUploaderUrl : 'https://uploader.'+process.env.domainkey ,
+        flowzDbetlUrl : 'https://dbetl.'+process.env.domainkey ,
+
+        loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
+        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
+        loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
+        loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
+        loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
+        serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
+        // serviceUrl :            'http://localhost:3037/',
+        projecturl :            'https://api.'+process.env.domainkey+'/mom/',
+        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
+
 
     }
 

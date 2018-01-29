@@ -74,8 +74,7 @@ export const otherRouter = {
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
-        
+        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}        
     ]
 };
 
@@ -185,6 +184,36 @@ export const appRouter = [
                 icon: 'ios-list-outline',
                 name: 'Transaction List', 
                 component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
+            }
+        ]
+    },
+     {
+        path: '/my-account',
+        icon: 'person',
+        title: 'MYACCOUNT',
+        name: 'myaccount',
+        component: Main,
+        children: [
+            { 
+                path: 'order-list', 
+                title: 'Order List',
+                icon: 'ios-cart',
+                name: 'Order-list', 
+                component: resolve => { require(['@/views/my-account/order-list.vue'], resolve);}
+            },
+            { 
+                path: 'request-quote', 
+                title: 'Request Quote',
+                icon: 'pull-request',
+                name: 'request-quote', 
+                component: resolve => { require(['@/views/my-account/request-quote.vue'], resolve);}
+            },
+            { 
+                path: 'list-billing', 
+                title: 'List of Bills',
+                icon: 'ios-list-outline',
+                name: 'list-billing', 
+                component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
             }
         ]
     },

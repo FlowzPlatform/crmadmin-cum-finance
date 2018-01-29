@@ -68,6 +68,7 @@
 import config from '@/config/customConfig.js'
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import _ from 'lodash'
 export default {
   name: 'newinvoice',
   data () {
@@ -172,6 +173,7 @@ export default {
       });
       resp.forEach(obj =>{
         self.data3.push(obj.project_name)
+        self.data3.sort();
       })
     },
     configChange(data){
@@ -191,7 +193,10 @@ export default {
         console.log("response >>>>>>>>>>>>>>>>",response)
         if (response.data.data.length != 0)
         {
-          self.configs = response.data.data
+          var newConf = response.data.data
+          console.log("self.configs---------------->before",newConf)
+          self.configs = _.sortBy(newConf, ['configName']);
+          console.log("self.configs---------------->after",self.configs)
         }else
         {
             self.$Modal.warning({
@@ -240,11 +245,15 @@ export default {
                             .then(function (response) {
                               console.log(response)
                               resp = response.data.data
-                              self.data2 = resp
+                              console.log("resp",resp)
+                              self.data2 = _.sortBy(resp, ['Name']);
+                              console.log("self.data2---------------->after",self.data2)
                             })
+
                             .catch(function (error) {
                               console.log(error.response)
                               self.$Message.error(error.response.data.data[0].message)
+
                             });
 
                       }else{
@@ -260,7 +269,9 @@ export default {
                                   }).then(function (response) {
                                   
                                     resp = response.data
-                                    self.data2 = resp[0].data
+                                    console.log("resp",resp[0].data)
+                                    self.data2 = _.sortBy(resp[0].data, ['Name']);
+                                    console.log("self.data2---------------->after",self.data2)
                                   })
                                   .catch(function (error) {
                                     console.log(error);
