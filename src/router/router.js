@@ -74,7 +74,7 @@ export const otherRouter = {
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        {path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
         
     ]
 };
@@ -188,6 +188,38 @@ export const appRouter = [
             }
         ]
     },
+    {
+        path: '/invite',
+        icon: 'cash',
+        title: 'INVITE',
+        name: 'INVITE',
+        component: Main,
+        children: [
+            { 
+                path: 'invite', 
+                title: 'Invite',
+                icon: 'ios-list-outline',
+                name: 'Invite', 
+                component: resolve => { require(['@/views/invite/invite.vue'], resolve);}
+            }
+        ]
+    },
+        // {
+        //     path: '/invite',
+        //     icon: 'cash',
+        //     title: 'INVITE',
+        //     name: 'INVITE',
+        //     component: Main,
+        //     children: [
+        //         { 
+        //             path: 'list-transaction', 
+        //             title: 'List',
+        //             icon: 'ios-list-outline',
+        //             name: 'Transaction List', 
+        //             component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
+        //         }
+        //     ]
+        // },
     // {
     //     path: '/crm',
     //     icon: 'person-stalker',

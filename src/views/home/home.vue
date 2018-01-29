@@ -715,7 +715,7 @@ export default {
             axios.get(serviceUrl+"settings", {
                 params: {
                     isActive : true,
-                    user : Cookies.get('user')
+                    //user : Cookies.get('user')
                 },
                 headers: {
                     Authorization : Cookies.get('auth_token')
@@ -765,11 +765,11 @@ export default {
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
-                    this.$store.commit('logout', this);
+                    //this.$store.commit('logout', self);
                     
-                    this.$router.push({
-                        name: 'login'
-                    });
+                    // self.$router.push({
+                    //     name: 'login'
+                    // });
                 }
                 
             });
