@@ -26,20 +26,20 @@
 console.log("???????????????????????? " ,process.env.domainkey)
 
 //let frontEndUrl = 'http://localhost:8081/#/login';
-let frontEndUrl = 'https://crm.'+process.env.domainkey+'/#/login';
+let frontEndUrl = 'http://crm.'+process.env.domainkey+'/#/login';
 
 module.exports =  {
     default : {
 
-        loginUrl : "https://auth."+process.env.domainkey+"/api/login",
-        ldapLoginUrl : "https://auth."+process.env.domainkey+"/api/ldapauth",
-        registrationUrl : "https://api."+process.env.domainkey+"/serverapi/register",
-        signupUrl:          "https://auth."+process.env.domainkey+"/api/setup",
-        userDetail:             "https://auth."+process.env.domainkey+"/api/userdetails",
-        forgotPasswordUrl :         "https://auth."+process.env.domainkey+"/api/forgetpassword",
-        resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
-        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/serverapi/",
-        varifyEmailUrl :                    "https://auth."+process.env.domainkey+"/api/verifyemail",
+        loginUrl : "http://auth."+process.env.domainkey+"/api/login",
+        ldapLoginUrl : "http://auth."+process.env.domainkey+"/api/ldapauth",
+        registrationUrl : "http://api."+process.env.domainkey+"/serverapi/register",
+        signupUrl:          "http://auth."+process.env.domainkey+"/api/setup",
+        userDetail:             "http://auth."+process.env.domainkey+"/api/userdetails",
+        forgotPasswordUrl :         "http://auth."+process.env.domainkey+"/api/forgetpassword",
+        resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
+        feathersServiceBaseUrl :            "http://api."+process.env.domainkey+"/serverapi/",
+        varifyEmailUrl :                    "http://auth."+process.env.domainkey+"/api/verifyemail",
 
 
 
@@ -67,6 +67,7 @@ module.exports =  {
         // serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
+
 
     }
 

@@ -98,7 +98,7 @@
                     <Tooltip placement="top" content="Toggle active / inactive">
                     <i-switch v-model="product.isActive" :disabled="disabled" @on-change="buttonClicked(product)"></i-switch>
                     </Tooltip>
-                    <ButtonGroup>
+                    <ButtonGroup v-if="product.domain != 'custom'">
                         <Tooltip placement="top" content="Delete">
                         <Button class="ButtonGroup" @click="deleteConfig(product)"   type="ghost" icon="trash-b"></Button>
                         </Tooltip>
@@ -459,33 +459,78 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.$Loading.start()
-           
-            axios({
-                    method:'get',
-                    url:feathersUrl +'settings',
-                    headers:{
-                        Authorization : Cookies.get('auth_token')
-                    },
-                })
-                .then(response => {
-                console.log(response)
-                this.data6 = response.data.data
-                this.$Loading.finish();
-                })
-                .catch(error => {
-                        if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            this.$store.commit('logout', this);
-                            
-                            this.$router.push({
-                                name: 'login'
+            //  async customhandleSubmit (name) {
+
+                let self = this;
+                
+                   
+                        self.loading = true;
+                        let  data = {
+                                    "configName": "Custom Configuration",
+                                    "customer_url" :  feathersUrl+"customcustomer",
+                                    "invoice_url" : feathersUrl+"custominvoice",
+                                    "domain" : 'custom',
+                                    "isActive" : false,
+                                    "isDeleated" : false
+                                }
+                        axios({
+                                method: 'post',
+                                url: feathersUrl +'settings',
+                                headers:{
+                                    Authorization : Cookies.get('auth_token')
+                                },
+                                data: data
+                            })  
+                            .then(function (response) {
+                                console.log(response)
+                                // self.$Message.success('Success!');
+                                 self.loading = false;
+                                 axios({
+                                    method:'get',
+                                    url:feathersUrl +'settings',
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token')
+                                    },
+                                })
+                                .then(response => {
+                                console.log(response)
+                                localStorage.clear();
+                                self.data6 = response.data.data
+                                self.$Loading.finish();
+                                })
+                                .catch(error => {
+                                        if(error.response.status == 401){
+                                            let location = psl.parse(window.location.hostname)
+                                            location = location.domain === null ? location.input : location.domain
+                                            
+                                            Cookies.remove('auth_token' ,{domain: location}) 
+                                            self.$store.commit('logout', self);
+                                            
+                                            self.$router.push({
+                                                name: 'login'
+                                            });
+                                        }
+                                        self.$Loading.error();
+                                });
+                            })
+                            .catch(function (error) {
+                                 if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }
                             });
-                        }
-                        this.$Loading.error();
-                });
+                    
+                
+           // }
+           
+            
         }
     }
 </script>
