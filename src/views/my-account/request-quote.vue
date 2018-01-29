@@ -7,85 +7,40 @@
 <script>
 import axios from 'axios'
 import Cookies from 'js-cookie';
-import eye from '../../images/Eye.png'
+import moment from 'moment'
+import expandRow from './view-request-quote.vue';
 export default {
   name: 'myaccount',
   data () {
-  return {
-    theme3: 'light',
-    eye,
+  return { 
+    components: { expandRow },
     columns1:[
       {
+        type: 'expand',
+        width: 50,
+        render: (h, params) => {
+          return h(expandRow, {
+            props: {
+              row: params.row
+            }
+          })
+        }
+      },
+      {
           "title": "ID",
-          "key": "Name"
+          "key": "id"
       },
       {
         "title": "TOTAL ITEM",
-        "key": "Name"
+        "key": "total_qty"
       },
       {
         "title": "CREATED DATE",
-        "key": "Name"
-      },
-      {
-        "title": "ACTION",
-        render: (h, {row}) => {
-            
-                return h('div', [
-                  h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'View Detail'
-                      },
-                      style:{
-                        cursor:'pointer'
-                      }
-                    }, [
-                      h('img', {
-                        attrs: {
-                          src:this.eye
-                        },
-                        style: {
-                          height:'20px',
-                          width:'20px',
-                          margin: '2px'
-                        },
-                        on: {
-                          click: () => {   
-                            this.viewDetails(row )
-                          }
-                        }
-                      },'')
-                    ]),
-                  h('Tooltip', {
-                      props: {
-                        placement: 'top',
-                        content: 'Delete'
-                      },
-                      style:{
-                        float:'center',
-                        cursor:'pointer'
-                      }
-                    }, [
-                       h('img', {
-                        attrs: {
-                          src :this.eye
-                          },
-                        style: {
-                          height:'20px',
-                          width:'20px',
-                          margin: '2px'
-                        },
-                        on: {
-                          click: () => {   
-                            this.DeleteDetails(row )
-                          }
-                        }
-                      }, '')
-                    ])
-                ])
-              
-            }
+        "key": "created_at",
+        render:(h,{row})=>{ 
+                var date1 = moment(row.created_at).format('DD-MMM-YYYY')
+                return date1
+              }
       }
     ],
     list: []
@@ -110,6 +65,7 @@ export default {
         }).then(async function (response) {
           console.log('response------>',response)
           self.list = response.data.data
+          // console.log('iiiiiiiiiiiiii',self.list)
 
         })
         .catch(function (error) {

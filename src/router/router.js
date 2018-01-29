@@ -195,15 +195,22 @@ export const appRouter = [
         component: Main,
         children: [
             { 
+                path: 'order-list', 
+                title: 'Order List',
+                icon: 'ios-cart',
+                name: 'Order-list', 
+                component: resolve => { require(['@/views/my-account/order-list.vue'], resolve);}
+            },
+            { 
                 path: 'request-quote', 
-                title: 'MY SENT INQUIRIES',
+                title: 'Request Quote',
                 icon: 'pull-request',
                 name: 'request-quote', 
                 component: resolve => { require(['@/views/my-account/request-quote.vue'], resolve);}
             },
             { 
                 path: 'list-billing', 
-                title: 'LIST OF BILLING',
+                title: 'List of Bills',
                 icon: 'ios-list-outline',
                 name: 'list-billing', 
                 component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
