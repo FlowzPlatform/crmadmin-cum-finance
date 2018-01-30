@@ -1,6 +1,10 @@
 <template>
   <div>
-    <Card>
+  <Tabs type="card">
+        <TabPane label="Request-Info"></TabPane>
+        <TabPane label="Request-Quote">hello</TabPane>
+    </Tabs>
+    <!-- <Card>
       <div style="text-align:center">
         <div class="row">
           <div class="col-sm-12 header">
@@ -33,7 +37,6 @@
           PRODUCT
           <p slot="content">
             <label>                            
-        <!-- <div class="container"> -->
           <div class="panel-body">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
@@ -116,139 +119,71 @@
                       </table>
                     </div>
                   </div>
-                      <div class="estimate-tag-block">
-                        <h3 class="">Shipping Method : Ups</h3>
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-6">
+                  <div class="estimate-tag-block" v-for="item in row.shipping_method.shipping_detail">
+                    <h3 class="">Shipping Method</h3>
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                          <div class="estimate-row">Shipping Charge : <span>{{item.shipping_detail.shipping_charge}}</span></div>
                             <div class="estimate-row">
-                                Shipping Charge :                      
-                              <span>90.17</span>
-                            </div>
-                            <div class="estimate-row">
-                              <div>Shipping Address 1 :
-                                                  
+                              <div>Shipping Address :
                                 <br>avcjh,
-                                                                                            
-                                  <br>Ontario                                         
-                                    <br>Ottawa (Alta Vista)                                         
-                                      <br>Canada                                        
-                                      </div>
-                                      <br>
-                                        <div>
-                                                  Postal Code : 
-                                          <span>K0A1B0</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                      <div class="estimate-row">
-                                        <div>Shipping carrier : 
-                                        <span>UPS</span>
-                                        </div>
-                                      </div>
-                                      <div class="estimate-row">
-                                        <div>
-                                                  Ship Method : 
-                                          <span> Next Day Air</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                      <div class="estimate-row">
-                                        <div>
-                                                  Requested In Hand Date : 
-                                          <span> 01/30/2018</span>
-                                        </div>
-                                      </div>
-                                      <div class="estimate-row">
-                                        <div>
-                                                  Ship on my account : 
-                                          <span></span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                  </div>
-                                  <div class="estimate-tag-block">
-                                    <div class="row">
-                                      <div class="col-lg-12 col-md-6 col-sm-6">
-                                        <h3>Print Position: Front Center</h3>
-                                        <div class="estimate-row">
-                                                                            Imprint Method : 
-                                          <span>Deboss</span>
-                                        </div>
-                                        <div class="estimate-row">
-                                                                            How many colours : 
-                                          <span> 2 Colour</span>
-                                        </div>
-                                        <div class="estimate-row">
-                                          <div>
-                                            Colour 1 :
-                                          
-                                            <span> 
-                                            Standard Pantone Yellow
-                                          </span>
-                                          </div>
-                                          <div>
-                                            Colour 2 :
-                                          
-                                            <span>
-                                            Standard pms 253
-                                          </span>
-                                          </div>
-                                        </div>
-                                        <div class="estimate-row">
-                                          <div>
-                                                Send via email : 
-                                            <span> art@keyinnovations.ca</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="col-lg-12 col-md-6 col-sm-6">
-                                        <h3>Print Position: Back Center</h3>
-                                        <div class="estimate-row">
-                                                                            Imprint Method : 
-                                          <span>Deboss</span>
-                                        </div>
-                                        <div class="estimate-row">
-                                                                            How many colours : 
-                                          <span> 2 Colour</span>
-                                        </div>
-                                        <div class="estimate-row">
-                                          <div>
-                                            Colour 1 :
-                                          
-                                            <span> 
-                                            Standard Pms 354
-                                          </span>
-                                          </div>
-                                          <div>
-                                            Colour 2 :
-                                          
-                                            <span>
-                                            Standard pms 469
-                                          </span>
-                                          </div>
-                                        </div>
-                                        <div class="estimate-row">
-                                          <div>
-                                                Send via email : 
-                                            <span> art@keyinnovations.ca</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                            <h3>Special Instructions</h3>
-                                            <div class="estimate-tag-block">
-                                              <div>
-                                                                            test
-                                                                        </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      <!-- </div> -->
+                                <br>Ontario                                         
+                                <br>Ottawa (Alta Vista)                                         
+                                <br>Canada                                        
+                              </div><br>
+                              <div>Postal Code : <span>K0A1B0</span></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                          <div class="estimate-row">
+                            <div>Shipping carrier : <span>{{item.shipping_detail.shipping_carrier}}</span></div>
+                          </div>
+                          <div class="estimate-row">
+                            <div>Ship Method : <span>{{item.shipping_detail.shipping_method}}</span></div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                          <div class="estimate-row">
+                            <div>Requested In Hand Date : <span>{{item.shipping_detail.on_hand_date}}</span></div>
+                          </div>
+                          <div class="estimate-row">
+                            <div>Ship on my account : <span></span></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="estimate-tag-block" v-for="item in row.imprint">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-6 col-sm-6">
+                      <h3>Print Position: {{item.imprint_position_name}}</h3>
+                      <div class="estimate-row">
+                        Imprint Method : 
+                        <span>{{item.imprint_method_name}}</span>
+                      </div>
+                    <div v-if="item.no_of_color">
+                      <div class="estimate-row">
+                         How many colours : 
+                        <span> {{item.no_of_color}} Colour</span>
+                      </div>
+                      <div class="estimate-row" v-for="(i,index) in item.selected_colors">
+                        <div>
+                          Colour {{index+1}} :<span>{{i}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else></div>
+                    </div>
+                  </div>
+                </div>
+              <h3>Special Instructions</h3>
+              <div class="estimate-tag-block">
+                <div>
+                 {{row.special_instruction}}
+                </div>
+              </div>
+              </div>
+            </div>
             </label>
           </p>
         </Panel>
@@ -286,7 +221,7 @@
             </p>
           </Panel>
       </Collapse>
-    </Card>
+    </Card> -->
   </div>
 </template>
 
