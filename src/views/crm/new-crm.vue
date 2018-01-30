@@ -47,8 +47,11 @@
 							        </Select>
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
-										<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
-									<!-- </div> -->
+									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
+										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+									</Select>
+								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
+									 </div> -->
 									<!-- <i-select v-model="finaldata.cname" style="width:100px"><i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option></i-select> -->
 								</p>
 							</div>
@@ -63,7 +66,7 @@
 							</div>
 							<div id="c17019">
 								<p>
-									<label class="col-xs-3" id="c17027">Project</label>
+									<label class="col-xs-3" id="c17027">Project</label> 
 									<Select v-model="finaldata.project" style="width:100px" filterable>
 										<Option v-for="(t, inx) in momdata" :value="t.value" :key="inx">{{ t.label }}</Option>
 									</Select>
@@ -130,15 +133,12 @@
 	import Cookies from 'js-cookie';
 	import axios from 'axios';
 	let _ = require('lodash')
+	var serviceUrl = config.default.serviceUrl;
 	var nextdate;
 	var priceinput;
 	var price;
 	var email;
 	var phone;
-	var serviceUrl = config.default.serviceUrl;
-
-	var apiurl = config.default.serviceUrl + "contacts/";
-	var databaseurl = config.default.serviceUrl + "crm-service/";
 	var result;
 	var result1;
 	var name;
@@ -149,7 +149,6 @@
 	var product_line;
 	var contractdate;
 	var momapi = config.default.projecturl + "project"
-	var databasepost = config.default.serviceUrl + "crm-case/";
 	var assigneeapi = config.default.assigneeapi;
 
 	export default {
@@ -157,6 +156,7 @@
     data() {
       return {
         customerData:[],
+		customCustomerUrl: '',
         crmdata: [],
         loading: false,
         finaldata: {
@@ -183,29 +183,91 @@
     },
     methods: {
     	async calldata() {
-				let self=this;
-				self.customerData = [];
-	    	await $.ajax({
-					type: 'GET',
-					url: serviceUrl +"contacts",
-					data: {
-                    settingId : self.finaldata.config,   
-                },
-					success: function (data) {
-						// console.log("data>>>>>>>>>>>>>> Contacts" , data)
-						data.forEach(function(contacts) {
-							var cnt = contacts.data
-							for (var i=0; i<cnt.length; i++) {
-								// console.log("%%%%%%%%%%",cnt[i].Name)
-								self.customerData.push(cnt[i].Name)
-							}
-						})
+			 let resp
+      let self = this
 
-						// console.log(data)
-					},error: function(err) {
-						console.log("Error",err)
-					}
-				});
+      var settingId = self.finaldata.config
+      await axios({
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingId
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                           await axios({
+                              method: 'get',
+                              url: self.customCustomerUrl,
+                              params : {settingId : response.data.id},
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              console.log(response)
+                              resp = response.data.data
+                              self.customerData = resp
+							  console.log("self.customerData", self.customerData)
+                            })
+                            .catch(function (error) {
+                              console.log(error.response)
+                              self.$Message.error(error.response.data.data[0].message)
+                            });
+
+                      }else{
+                            await axios({
+                                    method: 'get',
+                                    url: config.default.serviceUrl + 'contacts',
+                                    params: {
+                                      settingId : settingId
+                                    },
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token')
+                                    },
+                                  }).then(function (response) {
+                                  
+                                    resp = response.data
+                                    self.customerData = resp[0].data
+                                  })
+                                  .catch(function (error) {
+                                    console.log(error);
+                                  });
+                      }
+                  });
+      
+      
+      console.log("response------>iuy",resp);
+      // resp.forEach(obj =>{
+      //   console.log(obj[0].data)
+     // alert(self.formItem.configuration)
+        
+      //})
+			// 	let self=this;
+			// 	self.customerData = [];
+	    	// await $.ajax({
+			// 		type: 'GET',
+			// 		url: serviceUrl +"contacts",
+			// 		data: {
+            //         settingId : self.finaldata.config,   
+            //     },
+			// 		success: function (data) {
+			// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
+			// 			data.forEach(function(contacts) {
+			// 				var cnt = contacts.data
+			// 				for (var i=0; i<cnt.length; i++) {
+			// 					console.log("%%%%%%%%%%",cnt[i].Name)
+			// 					self.customerData.push(cnt[i].Name)
+			// 				}
+			// 			})
+
+			// 			// console.log(data)
+			// 		},error: function(err) {
+			// 			console.log("Error",err)
+			// 		}
+			// 	});
 	        // console.log("resp data",result);
 	    //     result.forEach(item => {
 					// 	var customer = item.Name;
@@ -242,16 +304,15 @@
 			},
 		configChange(data){
 			console.log(data)
-			$('.ivu-select-single').css("display","inline-block")
+			$('.customer').css("display","inline-block")
 			$('.autoCompleteDropdown').css("display","inline-block")
 			this.calldata(data);
 		},
     	async dbdata() {
     		var self = this
-    		console.log("databaseurl.....url", databaseurl)
     		await $.ajax({
     			type: 'GET',
-			    url: databaseurl,
+			    url: serviceUrl + "crm-service/",
 			    success: function (data) {
 					result1 = data.data[0];
 					console.log("databaseurl data.............." ,data)
@@ -279,7 +340,7 @@
 					    headers: {
 		  					'Authorization': Cookies.get('auth_token')
 		  				},
-					    url: databasepost,
+					    url: serviceUrl  + "crm-case/",
 					    data: this.finaldata,
 					    success: function (data1) {
 					        result = data1;
