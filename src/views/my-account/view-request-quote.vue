@@ -1,10 +1,6 @@
 <template>
   <div>
-  <Tabs type="card">
-        <TabPane label="Request-Info"></TabPane>
-        <TabPane label="Request-Quote">hello</TabPane>
-    </Tabs>
-    <!-- <Card>
+    <Card>
       <div style="text-align:center">
         <div class="row">
           <div class="col-sm-12 header">
@@ -221,7 +217,7 @@
             </p>
           </Panel>
       </Collapse>
-    </Card> -->
+    </Card>
   </div>
 </template>
 
