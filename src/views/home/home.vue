@@ -711,7 +711,7 @@ export default {
             }
             let self = this;
             this.name = Cookies.get('user');
-            console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
+            //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
             var resp;
             axios.get(serviceUrl+"settings", {
                 params: {

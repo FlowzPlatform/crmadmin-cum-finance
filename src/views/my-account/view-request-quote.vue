@@ -6,7 +6,7 @@
           <div class="col-sm-12 header">
             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
               <icon type="eye"></icon>
-              <span>VIEW REQUEST QUOTES DETAILS</span>
+              <span> REQUEST QUOTES DETAILS</span>
             </p>
           </div>
         </div>
@@ -42,7 +42,7 @@
                   </div>
                 </div>
                 <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
-                  <h1 class="heading-2">{{row.product_description.product_name}}</h1>
+                  <h2 class="heading-2">{{row.product_description.product_name}}</h2>
                   <div class="skuprice">
                     <div style="text-align: -webkit-center;background: #f5f5f5;
             padding: 7px 0;">Item Number : 
