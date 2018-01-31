@@ -81,7 +81,10 @@ export default {
         })
         .catch(function (error) {
           console.log("-------",error);
-            self.$Message.error(error)
+            self.$Message.error({
+              content: error,
+              duration: 10
+            })
         });
     },
     listData (val) {
