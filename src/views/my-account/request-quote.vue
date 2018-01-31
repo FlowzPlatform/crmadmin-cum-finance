@@ -68,7 +68,7 @@ export default {
       var self = this;
       await axios({
         method: 'get',
-        url: api,
+        url: api+'?'+self.userid,
         params : {
         },
         headers:{

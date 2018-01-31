@@ -4,7 +4,7 @@
       <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8" id="detail">
-                <Card>
+          <Card style="text-align: left;">
           <p slot="title">
               <Icon type="ios-film-outline"></Icon>
               Invoice Details

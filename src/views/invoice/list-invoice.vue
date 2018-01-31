@@ -1023,8 +1023,10 @@ export default {
         console.log("item",item)
         if(item.Contact != undefined){
           return item.Contact.Name === self.cname;
+        }else if(item.CustomerRef != undefined){
+          return item.CustomerRef.name === self.cname;
         }else{
-          return item.CustomerRef.name === self.cname
+          return item.Name === self.cname;  
         }
       });
        console.log("myarr",this.filterArray)
@@ -1153,14 +1155,18 @@ export default {
       console.log("settingId----------------------->",settingDomain)
       if(settingDomain == 'custom'){
         let customerUrl = this.tabPanes[data].customer_url;
+        console.log('--------iiiiiiiiii------------',customerUrl)
          await axios({
             method: 'get',
             url: customerUrl,
             headers:{
             Authorization : Cookies.get('auth_token')
-        },
+            },
+            params: {
+                settingId : settingId
+              }
             }).then(function (response) {
-              console.log(response)
+              console.log('------------->',response)
               res = response.data.data
             })
             .catch(function (error) {
@@ -1186,6 +1192,9 @@ export default {
               });
         }
       }
+
+
+      console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
       
             res.forEach (obj => { 
                 console.log("/////////////////////////////////////////////////////////////////",obj)
@@ -1563,7 +1572,7 @@ export default {
       .then(async function (response) {
         self.$Loading.finish();
         $('.preload').css("display","none")
-        console.log("response------>iuy",response);
+        console.log("iiiiiiiii------------------>",response);
         self.data6 = response.data.data;
         let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
         let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
