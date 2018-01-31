@@ -74,8 +74,8 @@ export const otherRouter = {
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}},
-        { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
+        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+       // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
         
                 
     ]
