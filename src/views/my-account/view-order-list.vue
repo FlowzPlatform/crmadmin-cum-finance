@@ -254,8 +254,8 @@
                               <td> {{item.product_description.sku}}</td>
                               <td> {{item.product_description.product_name}}</td>
                               <td> {{item.total_qty}}</td>
-                              <td> $ {{item.unit_price}}</td>
-                              <td> $ {{ getMulti(item.total_qty, item.unit_price) }}</td>
+                              <td>  {{ accounting(item.unit_price)}}</td>
+                              <td>  {{ getMulti(item.total_qty, item.unit_price) }}</td>
                             </tr>
                             <tr class="description" :id="'description'+inx" style="display: none;">
                               <td colspan="6">
@@ -317,7 +317,7 @@
                                                 <span v-else> N/A </span>
                                               </td>
                                               <td>
-                                                <span v-if="item.charges">{{item.charges.setup_charge}}</span>
+                                                <span v-if="item.charges">{{ accounting(item.charges.setup_charge)}}</span>
                                                 <span v-else> N/A </span>
                                               </td>
                                             </tr>
@@ -392,15 +392,15 @@
                                     </td>
                                   </tr>
                                   <tr class="item_total">
-                                    <th>Total:  $ {{ getMulti(item.total_qty, item.unit_price) }}</th>
-                                    <th colspan="2">Additional Charges: $ 
-                                      <span v-if="item.charges">{{item.charges.setup_charge}}</span>
-                                      <span v-else> 00 </span>
+                                    <th>Total: {{ getMulti(item.total_qty, item.unit_price) }}</th>
+                                    <th colspan="2">Additional Charges: 
+                                      <span v-if="item.charges">{{ accounting(item.charges.setup_charge)}}</span>
+                                      <span v-else> $00.00 </span>
                                     </th>
-                                    <th>Shipping Charge : $ 00 </th>
-                                    <th>Tax : $ 00 </th>
+                                    <th>Shipping Charge :  $00.00 </th>
+                                    <th>Tax : $00.00  </th>
                                     <th>Sub Total:
-                                      <span style="color:#C11E19"> $ {{ getSubTotal(item.total_qty, item.unit_price, item) }}</span>
+                                      <span style="color:#C11E19"> {{ getSubTotal(item.total_qty, item.unit_price, item) }}</span>
                                     </th>
                                   </tr>
                                 </tbody>
@@ -436,6 +436,7 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     import jQuery from 'jquery';
     import owlCarousel from 'owl.carousel';
+    const accounting = require('accounting-js');
     export default {
         props: {
             row: Object
@@ -450,24 +451,24 @@
         },
         methods: {
             getMulti(a, b) {
-                return a * b;
+              return accounting.formatMoney(a * b);
             },
             getImgUrl (url) {
                 return this.imgurl + url
             },
             getSubTotal (a, b, c) {
                 var res = c.hasOwnProperty('charges')
-                console.log("ccccccccccccc", res)
                 if ( res == false) {
-                console.log("iffffffffffffff", res)
-                    
-                    return a*b
+                    return accounting.formatMoney(a*b)
                 }
                 else {
                 console.log("elsssssssssssseeeeeee", res)
                     
-                    return (a*b + parseInt(c.charges.setup_charge))
+                    return accounting.formatMoney((a*b + parseInt(c.charges.setup_charge)))
                 }
+            },
+            accounting(item){
+              return accounting.formatMoney(item)
             },
             clicked (inx) {
                 console.log("Clickeddddd...............", inx);

@@ -13,6 +13,7 @@
     let axios = require('axios'); 
     let _ = require('lodash');
     var api = "http://172.16.61.160:3032/myOrders";
+    const accounting = require('accounting-js');
     var res;
     export default {
         name: 'orderlist',
@@ -83,7 +84,7 @@
                         title: 'Total Amount',
                         width: 115,
                         align:  'center',
-                        render : (h , {row}) => { return '$' + row.total }
+                        render : (h , {row}) => { return accounting.formatMoney(row.total) }
                     },
                     // {
                     //     title: 'Action',
