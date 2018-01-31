@@ -19,10 +19,10 @@
                 ID : {{row.id}}
               </div>
               <div class="col-lg-3 col-md-4 col-sm-4">
-                Created Date : {{row.created_at}}
+                Requested On : {{created_date}}
               </div>
               <div class="col-lg-2 col-md-4 col-sm-4">
-                Total Items : {{row.total_qty}}
+                Total Items : {{row.productInfo.length}}
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@
                     <div class="col-sm-12">
                       <div class="inquiry-color-block">
                         <ul v-for="i in item.attributes.colors">
-                          <li class="color2" data-original-title="i"></li>
+                          <li class="color2" data-original-title="i" :style="{ backgroundColor: i }"></li>
                         </ul>
                       </div>
                     </div>
@@ -159,6 +159,7 @@
 <script>
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import moment from 'moment';
 // import eye from '../../images/Eye.png'
 export default {
   props: {
@@ -168,7 +169,9 @@ export default {
   data () {
   return {
     imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
-    Desc: ''
+    data: '',
+    created_date: '',
+    colors:[]
     }
   },
   methods: {
@@ -176,13 +179,15 @@ export default {
       return this.imgurl + url
     }
   },
+  computed: {
+    // styles() {
+    //    return {
+    //     'background-color': this.colors[0]
+    //     };
+    // }
+  },
   mounted(){
-    var self = this
-    console.log('row--------->',this.row)
-    // this.row.productInfo.forEach(item => {
-    //   self.Desc = item.description.text();
-    // })
-
+    this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
   }
 }
 </script>
@@ -324,7 +329,7 @@ export default {
 }
 .product-color-price-table {
     margin-bottom: 20px;
-    width: 100%;
+
     border-color: white;
 }
 .product-color-price-table td {
@@ -373,5 +378,8 @@ h3 {
     float: left;
     margin-right: 2px;
     margin-bottom: 2px;
+}
+.panel-body{
+  width: 139%;
 }
 </style>

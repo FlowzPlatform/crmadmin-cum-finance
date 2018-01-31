@@ -139,7 +139,7 @@
 <div>
   
 <div v-if="emailData != ''" ref="email1" style="display:none">
- 
+
 <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
         <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
             <tbody><tr class="top">
@@ -177,7 +177,7 @@
 
                             </td>
                             
-                            <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;">
+                            <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;" v-if = "emailDataCompany.address != undefined">
                                 <b>From :</b><br>
                                 {{emailDataCompany.address.name}}<br>
                                 {{emailDataCompany.address.AddressLine1}}<br>
@@ -386,7 +386,7 @@
                 <td style="padding: 5px;vertical-align: top;"></td>
                 
                 <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
-                   Tax: 0%
+                   Tax: $0
                 </td>
             </tr>
             <tr>
@@ -1023,8 +1023,10 @@ export default {
         console.log("item",item)
         if(item.Contact != undefined){
           return item.Contact.Name === self.cname;
+        }else if(item.CustomerRef != undefined){
+          return item.CustomerRef.name === self.cname;
         }else{
-          return item.CustomerRef.name === self.cname
+          return item.Name === self.cname;  
         }
       });
        console.log("myarr",this.filterArray)
@@ -1153,14 +1155,18 @@ export default {
       console.log("settingId----------------------->",settingDomain)
       if(settingDomain == 'custom'){
         let customerUrl = this.tabPanes[data].customer_url;
+        console.log('--------iiiiiiiiii------------',customerUrl)
          await axios({
             method: 'get',
             url: customerUrl,
             headers:{
             Authorization : Cookies.get('auth_token')
-        },
+            },
+            params: {
+                settingId : settingId
+              }
             }).then(function (response) {
-              console.log(response)
+              console.log('------------->',response)
               res = response.data.data
             })
             .catch(function (error) {
@@ -1186,6 +1192,9 @@ export default {
               });
         }
       }
+
+
+      console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
       
             res.forEach (obj => { 
                 console.log("/////////////////////////////////////////////////////////////////",obj)
@@ -1382,6 +1391,7 @@ export default {
 
       console.log('self.emailDataCustomer',self.emailDataCustomer)
       setTimeout(function(){
+        console.log('self.$refs.email1.innerHTML----->',self.$refs)
         self.$Loading.finish(); 
         self.$Modal.confirm({
           title: '',
@@ -1432,7 +1442,7 @@ export default {
         //       type: "text/html;charset=utf-8"
         //   });
         //   saveAs(blob, filename);
-       }, 2000);
+       }, 5000);
 
     },
 
@@ -1562,7 +1572,7 @@ export default {
       .then(async function (response) {
         self.$Loading.finish();
         $('.preload').css("display","none")
-        console.log("response------>iuy",response);
+        console.log("iiiiiiiii------------------>",response);
         self.data6 = response.data.data;
         let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
         let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );

@@ -91,25 +91,25 @@
                     //     width: 100, 
                     //     align:  'center',
                     //     render: (h, params) => {
-					// 		return h('Button', {
-				    //             props: {
-					// 				type: 'text',
-					// 				size: 'large',
-					// 				icon: 'eye'
-				    //             },
-				    //             style: {
-					// 				marginRight: '3px',
-					// 				padding: '0px',
-					// 				fontSize: '20px',
-					// 				color: '#2d8cf0'
-				    //             },
-				    //             on: {
-				    //                 click: () => {
-				    //                     this.show(params)
-				    //                 }
-				    //             }
-				    //         }, '')
-					// 	}
+                    //      return h('Button', {
+                    //             props: {
+                    //              type: 'text',
+                    //              size: 'large',
+                    //              icon: 'eye'
+                    //             },
+                    //             style: {
+                    //              marginRight: '3px',
+                    //              padding: '0px',
+                    //              fontSize: '20px',
+                    //              color: '#2d8cf0'
+                    //             },
+                    //             on: {
+                    //                 click: () => {
+                    //                     this.show(params)
+                    //                 }
+                    //             }
+                    //         }, '')
+                    //  }
                     // }
                 ],
                 data1: []
@@ -124,9 +124,7 @@
                     }
                 })
                 .then(function (response){
-                    // console.log("response", response.data)
                     var result = _.uniqBy(response.data,'website_id')
-                    // console.log("result", result)
                     self.websiteList = result                   
                 })
             },
