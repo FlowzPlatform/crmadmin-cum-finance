@@ -19,7 +19,7 @@
                 ID : {{row.id}}
               </div>
               <div class="col-lg-3 col-md-4 col-sm-4">
-                Created Date : {{row.created_at}}
+                Requested On : {{createdAt}}
               </div>
               <div class="col-lg-2 col-md-4 col-sm-4">
                 Total Items : {{row.total_qty}}
@@ -224,6 +224,7 @@
 <script>
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import moment from 'moment';
 // import eye from '../../images/Eye.png'
 export default {
   props: {
@@ -232,7 +233,8 @@ export default {
   name: 'list-billing',
   data () {
   return {
-    imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
+    imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+    createdAt: ''
     }
   },
   methods: {
@@ -242,6 +244,7 @@ export default {
   },
   mounted(){
     console.log('row--------->',this.row)
+    this.createdAt = moment(this.row.created_at).format('DD-MMM-YYYY')
   }
 }
 </script>

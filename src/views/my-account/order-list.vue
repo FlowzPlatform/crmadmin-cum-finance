@@ -13,6 +13,7 @@
     let axios = require('axios'); 
     let _ = require('lodash');
     var api = "http://172.16.61.160:3032/myOrders";
+    const accounting = require('accounting-js');
     var res;
     export default {
         name: 'orderlist',
@@ -83,32 +84,32 @@
                         title: 'Total Amount',
                         width: 115,
                         align:  'center',
-                        render : (h , {row}) => { return '$' + row.total }
+                        render : (h , {row}) => { return accounting.formatMoney(row.total) }
                     },
                     // {
                     //     title: 'Action',
                     //     width: 100, 
                     //     align:  'center',
                     //     render: (h, params) => {
-					// 		return h('Button', {
-				    //             props: {
-					// 				type: 'text',
-					// 				size: 'large',
-					// 				icon: 'eye'
-				    //             },
-				    //             style: {
-					// 				marginRight: '3px',
-					// 				padding: '0px',
-					// 				fontSize: '20px',
-					// 				color: '#2d8cf0'
-				    //             },
-				    //             on: {
-				    //                 click: () => {
-				    //                     this.show(params)
-				    //                 }
-				    //             }
-				    //         }, '')
-					// 	}
+                    //      return h('Button', {
+                    //             props: {
+                    //              type: 'text',
+                    //              size: 'large',
+                    //              icon: 'eye'
+                    //             },
+                    //             style: {
+                    //              marginRight: '3px',
+                    //              padding: '0px',
+                    //              fontSize: '20px',
+                    //              color: '#2d8cf0'
+                    //             },
+                    //             on: {
+                    //                 click: () => {
+                    //                     this.show(params)
+                    //                 }
+                    //             }
+                    //         }, '')
+                    //  }
                     // }
                 ],
                 data1: []
@@ -123,9 +124,7 @@
                     }
                 })
                 .then(function (response){
-                    // console.log("response", response.data)
                     var result = _.uniqBy(response.data,'website_id')
-                    // console.log("result", result)
                     self.websiteList = result                   
                 })
             },

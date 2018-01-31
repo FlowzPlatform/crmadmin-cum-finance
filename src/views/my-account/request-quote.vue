@@ -1,10 +1,10 @@
 <template>
   <div>
     <Tabs type="card">
-        <TabPane label="Request-Info">
+        <TabPane label="Requested Info">
           <requestInfo></requestInfo>
         </TabPane>
-        <TabPane label="Request-Quote">
+        <TabPane label="Requested Quote">
           <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
               <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
           </Select>
@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import moment from 'moment'
 import config from '@/config/customConfig'
-import expandRow from './view-request-quote.vue';
+import expandRow from './view-request-info.vue';
 import requestInfo from './request-info.vue'
-import _ from 'lodash'
+import _ from 'lodash';
 var api = "http://172.16.230.181:3032/request-quote";
 export default {
   name: 'myaccount',
