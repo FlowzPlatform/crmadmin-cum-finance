@@ -31,15 +31,15 @@ let frontEndUrl = 'https://crm.'+process.env.domainkey+'/#/login';
 module.exports =  {
     default : {
 
-        loginUrl : "https://auth."+process.env.domainkey+"/api/login",
-        ldapLoginUrl : "https://auth."+process.env.domainkey+"/api/ldapauth",
+        loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
+        ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
         registrationUrl : "https://api."+process.env.domainkey+"/serverapi/register",
-        signupUrl:          "https://auth."+process.env.domainkey+"/api/setup",
-        userDetail:             "https://auth."+process.env.domainkey+"/api/userdetails",
-        forgotPasswordUrl :         "https://auth."+process.env.domainkey+"/api/forgetpassword",
-        resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
+        signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
+        userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
+        forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
+        resetpassword :                 "https://api."+process.env.domainkey+"/auth/api/resetpassword",
         feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/serverapi/",
-        varifyEmailUrl :                    "https://auth."+process.env.domainkey+"/api/verifyemail",
+        varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
 
 
 
@@ -61,8 +61,8 @@ module.exports =  {
         loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
-        serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
-        //serviceUrl :            'https://localhost:3037/',
+         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
+        // serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
 

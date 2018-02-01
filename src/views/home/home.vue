@@ -11,20 +11,20 @@
                         
                     </col>
                     <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
-                        <Select v-model="contacts" clearable style="width:200px;" placeholder="Select Contacts" >
-                            <Option v-for="item in contactData" :value="item.Id" :key="item.Id" >{{ item.Name }}</Option>
-                        </Select>
-                    </col>
-                    <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
-                        <Select v-model="config" clearable style="width:200px;" placeholder="Select Config" @on-change="getContacts">
+                        <Select v-model="config" style="width:200px;" placeholder="Select Config" @on-change="getContacts">
                             <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                         </Select>
                     </col>
                     <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
-                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" format="yyyy/MM/dd"  placeholder="Select date" style="width: 200px" v-model="daterange1"></DatePicker>
+                        <Select v-model="contacts" style="width:200px;" placeholder="Select Contacts" >
+                            <Option v-for="item in contactData" :value="item.Id" :key="item.Id" >{{ item.Name }}</Option>
+                        </Select>
+                    </col>
+                    <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
+                        <DatePicker id="datepicker" type="daterange" :options="dateoptions" placeholder="Select date" style="width: 200px" v-model="daterange1" :clearable="false"></DatePicker>
                     </col>
                     <Col :xs="24" :sm="6" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
-                        <Button type="primary" @click="dateval">Apply</Button>
+                        <Button type="primary" @click="changeFilter">Apply</Button>
                     </col>
                     <Col :xs="24" :sm="1" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
 
@@ -659,54 +659,54 @@ export default {
             console.log("config name inside get contacts",self.config)
             axios.get(serviceUrl+"contacts", {
                 params: {
-                    settingId : self.config,
-                    
+                    settingId : self.config    
                 }
             })
             .then(function(response) {
                 console.log("Contact data",response);
-                response.data.forEach(function(contacts) {
-                   
-                    console.log("%%%%%%%%%%",contacts.data.length)
-                    let cnt;
-                    for (var i=0; i<contacts.data.length; i++) {
-                        if (contacts.data[i].DisplayName) {
-                            cnt = {
-                                Id : contacts.data[i].Id,
-                                Name : contacts.data[i].DisplayName
-                            }
+                let contacts = response.data[0];
+                console.log("%%%%%%%%%%",contacts.data.length)
+                let cnt = {
+                    Id : 'All',
+                    Name : 'All'
+                };
+                self.contactData.push(cnt)
+                for (var i=0; i<contacts.data.length; i++) {
+                    if (contacts.data[i].DisplayName) {
+                        cnt = {
+                            Id : contacts.data[i].Id,
+                            Name : contacts.data[i].DisplayName
                         }
-                        else {
-                            cnt = {
-                                Id : contacts.data[i].Name,
-                                Name : contacts.data[i].Name
-                            }
-                        }
-                        self.contactData.push(cnt)
                     }
-                })
+                    else {
+                        cnt = {
+                            Id : contacts.data[i].Name,
+                            Name : contacts.data[i].Name
+                        }
+                    }
+                    self.contactData.push(cnt)
+                }
+                self.contacts = 'All'
             })
             .catch(function(error) {
                 console.log("Inside getcontact error",error)
             })
         },
 
-         init(settingId) {
+         init() {
             
              if(Cookies.get('auth_token')){
                 axios({
-                            method: 'post',
-                            url: configService.default.userDetail,
-                            headers: {'Authorization': Cookies.get('auth_token')}
-                        })
-                        .then(function(result) {
-                            console.log(">>>>>>>>>>>>>>>> " , result)
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                             Cookies.set('user',  result.data.data.email  , {domain: location});
-                             
-                              
-                        })
+                    method: 'post',
+                    url: configService.default.userDetail,
+                    headers: {'Authorization': Cookies.get('auth_token')}
+                })
+                .then(function(result) {
+                    console.log(">>>>>>>>>>>>>>>> " , result)
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    Cookies.set('user',  result.data.data.email  , {domain: location});    
+                })
 
             }
             let self = this;
@@ -735,7 +735,7 @@ export default {
                 //    arr.push(arr.splice(arr.indexOf(6), 1)[0]);
                     self.mData = response.data.data;
                     self.config = self.mData[0].id;
-                    self.getContacts(self.config)
+                    // self.getContacts(self.config)
                     self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
                     self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config),
@@ -777,15 +777,25 @@ export default {
             
         },
 
-        dateval() {
+        changeFilter() {
             // console.log("daterange",this.daterange1, typeof this.daterange1)
             // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
-            this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
-            this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
-            this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
-            this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
-            this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config,this.contacts)
+
+            if (this.contacts == 'All') {
+                this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+                this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+                this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+                this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config),
+                this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config)
+            }
+            else {
+                this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+                this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+                this.lineChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+                this.waterfallFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,this.contacts),
+                this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config,this.contacts)
+            }
             // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
         }, 
         // selectChange() {

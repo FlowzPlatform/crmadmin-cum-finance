@@ -175,9 +175,11 @@ export default {
       })
     },
     configChange(data){
-      console.log(data)
+      console.log("-------------------configChange data",data)
       $('#CustomerName').css("display","block")
-      this.customerData(data);
+      if (data != '') {
+        this.customerData(data);
+      }
     },
     async settingData () {
       
