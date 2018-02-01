@@ -37,7 +37,7 @@ module.exports =  {
         signupUrl:          "http://auth."+process.env.domainkey+"/api/setup",
         userDetail:             "http://auth."+process.env.domainkey+"/api/userdetails",
         forgotPasswordUrl :         "http://auth."+process.env.domainkey+"/api/forgetpassword",
-        resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
+        changepassword :                 "http://auth."+process.env.domainkey+"/api/changepassword",
         feathersServiceBaseUrl :            "http://api."+process.env.domainkey+"/serverapi/",
         varifyEmailUrl :                    "http://auth."+process.env.domainkey+"/api/verifyemail",
 
