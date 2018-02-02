@@ -653,44 +653,93 @@ export default {
             this.count.totalInv = statsData[4].value
         },
 
-        getContacts() {
+        async getContacts() {
             let self = this;
             self.contactData = [];
             console.log("config name inside get contacts",self.config)
-            axios.get(serviceUrl+"contacts", {
-                params: {
-                    settingId : self.config    
-                }
-            })
-            .then(function(response) {
-                console.log("Contact data",response);
-                let contacts = response.data[0];
-                console.log("%%%%%%%%%%",contacts.data.length)
-                let cnt = {
-                    Id : 'All',
-                    Name : 'All'
-                };
-                self.contactData.push(cnt)
-                for (var i=0; i<contacts.data.length; i++) {
-                    if (contacts.data[i].DisplayName) {
-                        cnt = {
-                            Id : contacts.data[i].Id,
-                            Name : contacts.data[i].DisplayName
+
+
+            await axios({
+                method:'get',
+                url: serviceUrl + 'settings/'+self.config
+                })
+                .then(async function(response) {
+                    console.log("setting response",response)
+                    if(response.data.domain == 'custom'){
+
+                        let customCustomerUrl = response.data.customer_url;
+                        
+                        axios({
+                            method: 'get',
+                            url: customCustomerUrl,
+                            params : {
+                                settingId : response.data.id
+                            },
+                            headers:{
+                                Authorization : Cookies.get('auth_token')
+                            }
+                        })
+                        .then(function (response) {
+                            console.log("customcontact response",response)
+                            let contacts = response.data;
+                            console.log("%%%%%%%%%%",contacts.data.length)
+                            let cnt = {
+                                Id : 'All',
+                                Name : 'All'
+                            };
+                            self.contactData.push(cnt)
+                            for (var i=0; i<contacts.data.length; i++) { 
+                                cnt = {
+                                    Id : contacts.data[i].Name,
+                                    Name : contacts.data[i].Name
+                                }
+                                self.contactData.push(cnt)
+                            }
+                            self.contacts = 'All'
+                            // resp = response.data.data
+                        })
+                        .catch(function (error) {
+                            console.log(error.response)
+                            self.$Message.error(error.response.data.data[0].message)
+                        });
+
+                    }else{
+                        axios.get(serviceUrl+"contacts", {
+                        params: {
+                            settingId : self.config    
                         }
-                    }
-                    else {
-                        cnt = {
-                            Id : contacts.data[i].Name,
-                            Name : contacts.data[i].Name
-                        }
-                    }
-                    self.contactData.push(cnt)
-                }
-                self.contacts = 'All'
-            })
-            .catch(function(error) {
-                console.log("Inside getcontact error",error)
-            })
+                        })
+                        .then(function(response) {
+                            console.log("Contact data",response);
+                            let contacts = response.data[0];
+                            console.log("%%%%%%%%%%",contacts.data.length)
+                            let cnt = {
+                                Id : 'All',
+                                Name : 'All'
+                            };
+                            self.contactData.push(cnt)
+                            for (var i=0; i<contacts.data.length; i++) {
+                                if (contacts.data[i].DisplayName) {
+                                    cnt = {
+                                        Id : contacts.data[i].Id,
+                                        Name : contacts.data[i].DisplayName
+                                    }
+                                }
+                                else {
+                                    cnt = {
+                                        Id : contacts.data[i].Name,
+                                        Name : contacts.data[i].Name
+                                    }
+                                }
+                                self.contactData.push(cnt)
+                            }
+                            self.contacts = 'All'
+                        })
+                        .catch(function(error) {
+                            console.log("Inside getcontact error",error)
+                        })
+                      }
+                });
         },
 
          init() {
