@@ -31,7 +31,7 @@
                   <div class="panel panel-default">
                       <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
                           data-target="#status"></span>
-                          <label>status</label>
+                          <label>Status</label>
                       </div>
                       <div class="panel-collapse collapse" id="status">
                           <select class="form-control mb-2 mb-sm-0" v-model="status">
@@ -192,13 +192,22 @@ export default {
     columns2: [
       {
         "title": "Customer Name",
-        "key": "Name"
+        "key": "DisplayName"
       },
       {
         "title": "Status",
-        "key": "ContactStatus",
+        "key": "Active",
         "width":120,
         "sortable": true,
+        render:(h,{row})=>{
+          if(row.Active == true) 
+            {
+              return "ACTIVE"
+            } 
+            else {
+              return 'INACTIVE'
+          }
+        },
         filters: [
           {
             label: 'ACTIVE',
@@ -220,45 +229,33 @@ export default {
       },
       {
         "title": "Email",
-        "key": "EmailAddress",
+        "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
-          if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
-            {
-              return "Not available"
-            } 
-            else {
-              return row.EmailAddress
-            }
+          return row.PrimaryEmailAddr.Address   
           }
       },
       {
         "title": "Mobile No.",
-        "key": "Phones",
+        "key": "Mobile",
         "sortable": true,
         "align":"center",
         render:(h,{row})=>{
-          if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
-            {
               return "Not available"
-            } 
-            else {
-              return row.Phones[3].PhoneNumber
-            }
           }
       },
       {
         "title": "Phone No.",
-        "key": "click",
+        "key": "PrimaryPhone",
         "sortable": true,
         "align":"center",
-        render:(h,{row})=>{ 
-          if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
+        render:(h,{row})=>{
+          if(row.PrimaryPhone.FreeFormNumber == "'")
             {
               return "Not available"
-            }
-            else{
-              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+            } 
+            else {
+              return row.PrimaryPhone.FreeFormNumber
             }
           }
       },
@@ -267,25 +264,16 @@ export default {
         "key": "active",
         "sortable": true,
         "align":"center",
-        render:(h,{row})=>{ 
-          if(row.Phones[2].PhoneNumber == undefined || row.Phones[2].PhoneNumber == '')
-            {
+        render:(h,{row})=>{
               return "Not available"
-            } 
-          else
-            {
-              return row.Phones[2].PhoneNumber
-            }
           }
       },
       {
         "title": "Address",
-        "key": "Addresses",
+        "key": "BillAddr",
         "sortable": false,
-        render:(h,{row})=>{
-          
-              return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
-          
+        render:(h,{row})=>{         
+              return row.BillAddr.Line1 +", "+row.BillAddr.City         
         }
       }
     ],
@@ -315,17 +303,33 @@ export default {
        console.log("this.cname", this.cname)
        this.filterArray = _.filter(this.filterArray,  function(item){
         console.log("item",item)
-          return item.Name === self.cname;
+          if(item.Name != undefined){
+            return item.Name === self.cname;
+          }else{
+            return item.DisplayName === self.cname;
+          }
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
       }
       if(this.status != ''){
-       console.log("this.status", this.status)
-       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("this.status", this.status)
+        this.filterArray = _.filter(this.filterArray,  function(item){
         console.log("item",item)
-          return item.ContactStatus === self.status;
-      });
+          if(item.ContactStatus != undefined){
+            return item.ContactStatus === self.status;
+          }else{
+            if(self.status == 'ACTIVE'){
+              if(item.Active == true){
+                return item
+              }
+            }else{
+              if(item.Active == false){
+                return item 
+              }
+            }
+          }
+        });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
       }
@@ -333,7 +337,14 @@ export default {
        console.log("this.email", this.email)
        this.filterArray = _.filter(this.filterArray,  function(item){
         console.log("item",item)
+        if(item.EmailAddress != undefined){
           return item.EmailAddress === self.email;
+        }
+        else{         
+        if(item.PrimaryEmailAddr != undefined){
+          return item.PrimaryEmailAddr.Address === self.email;
+        }
+        }
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
@@ -429,19 +440,50 @@ export default {
         });
       }
 
-      
+      var NameArr = [];
+      var EmailArr = [];
 
       self.data6.forEach (obj => {
-            //console.log("obj------------------->",obj);
+            console.log("obj------------------->",obj);
+            if(obj.Name != undefined){
+              NameArr.push(obj.Name);
+              if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
+
+              }else{
+                EmailArr.push(obj.EmailAddress)
+              }
+            }else{
+              NameArr.push(obj.DisplayName)
+              if(obj.PrimaryEmailAddr != undefined){
+                console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+                EmailArr.push(obj.PrimaryEmailAddr.Address)
+              }
+              console.log('EmailArr------------>',EmailArr)
+            }
+          })
+
+          console.log("NameArr----------->before", NameArr);
+          NameArr.sort();
+          console.log("NameArr----------->after", NameArr);
+
+          console.log("EmailArr----------->before", EmailArr);
+          EmailArr.sort();
+          console.log("EmailArr----------->after", EmailArr);
+
+          NameArr.forEach(item => {
             var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
-            option.text = obj.Name;
-            x.add(option);
+            option.text = item;
+            x.add(option); 
+          })
+
+          EmailArr.forEach(item => {
             var y = document.getElementById("selectEmail");
             var option = document.createElement("option");
-            option.text = obj.EmailAddress;
-            y.add(option);
-          })   
+            option.text = item;
+            y.add(option); 
+          })
+
     },          
     async getAllSettings(){
         let self = this;

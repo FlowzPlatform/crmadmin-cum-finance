@@ -287,7 +287,11 @@
 				})
 				.then(function (response) {
 					// console.log("config data list",response)
-					self.mData = response.data.data;
+					// self.mData = response.data.data;
+					var newConf = response.data.data
+	                console.log("self.configs---------------->before",newConf)
+	                self.mData = _.sortBy(newConf, ['configName']);
+	                console.log("self.configs---------------->after",self.mData)
 					// self.config1 = self.mData[0].id;
 					// self.calldata()    
 				})
@@ -317,6 +321,8 @@
 					result1 = data.data[0];
 					console.log("databaseurl data.............." ,data)
 			        self.crmdata = result1
+			        var newarr = self.crmdata.crmStatus;
+			        self.crmdata.crmStatus = _.sortBy(newarr,['name']);
 			    },error: function(err){
 			       console.log("error",err);
 			    }
@@ -379,9 +385,11 @@
 			    success: function (data) {
 					console.log(">>>>>>>>>>>>>>> " , data)
 			        result1 = data;
-			        self.momdata = _.map(result1, (d) => {
+			        var proArr = [];
+			        proArr = _.map(result1, (d) => {
 			        	return {label: d.project_name, value: d.project_name}
 			        })
+			        self.momdata = _.sortBy(proArr, ['value']);
 			    },error: function(err){
 			       console.log("error",err);
 			    }
@@ -410,7 +418,8 @@
 									}
 								}
 			        })
-							self.assigneedata = myarr
+
+							self.assigneedata = _.sortBy(myarr,['value']);
 							// console.log('self.assigneedata', JSON.stringify(self.assigneedata))
 			    },error: function(err){
 			       console.log("error",err);

@@ -31,15 +31,18 @@ let frontEndUrl = 'https://crm.'+process.env.domainkey+'/#/login';
 module.exports =  {
     default : {
 
-        loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
-        ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
-        registrationUrl : "https://api."+process.env.domainkey+"/serverapi/register",
-        signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
-        userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
-        forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
-        resetpassword :                 "https://api."+process.env.domainkey+"/auth/api/resetpassword",
-        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/serverapi/",
-        varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
+
+        loginUrl : "http://auth."+process.env.domainkey+"/api/login",
+        ldapLoginUrl : "http://auth."+process.env.domainkey+"/api/ldapauth",
+        registrationUrl : "http://api."+process.env.domainkey+"/serverapi/register",
+        signupUrl:          "http://auth."+process.env.domainkey+"/api/setup",
+        userDetail:             "http://auth."+process.env.domainkey+"/api/userdetails",
+        forgotPasswordUrl :         "http://auth."+process.env.domainkey+"/api/forgetpassword",
+        // resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
+        changepassword :                    "http://auth."+process.env.domainkey+"/api/changepassword",
+        feathersServiceBaseUrl :            "http://api."+process.env.domainkey+"/serverapi/",
+        varifyEmailUrl :                    "http://auth."+process.env.domainkey+"/api/verifyemail",
+
 
 
 
@@ -48,6 +51,7 @@ module.exports =  {
         twitterSuccessCallbackUrl: frontEndUrl,
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
+
 
 
         flowzDashboardUrl : 'https://dashboard.'+process.env.domainkey,
@@ -61,11 +65,13 @@ module.exports =  {
         loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
-         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
+        serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
         // serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
-        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
-
+        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
+        orderapi :  'http://172.16.61.160:3032/myOrders',
+        requestinfoapi : 'http://172.16.61.160:3032/request-info',
+        requestquoteapi :   'http://172.16.230.181:3032/request-quote'
     }
 
 }

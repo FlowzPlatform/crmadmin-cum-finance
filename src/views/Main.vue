@@ -184,6 +184,7 @@
                 this.shrink = !this.shrink;
             },
             handleClickUserDropdown (name) {
+                console.log('name---------->',name)
                 if (name === 'ownSpace') {
                     util.openNewPage(this, 'ownspace_index');
                     this.$router.push({

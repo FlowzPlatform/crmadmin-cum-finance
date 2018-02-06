@@ -1,7 +1,7 @@
 <template>
     <div>
-        
-        <div class="panel panel-default panel-group" id="accordion">
+
+        <div class="panel panel-default panel-group my-panel" id="accordion">
           <div class="panel-heading">
               <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
           </div>
@@ -36,11 +36,11 @@
                               <div class="form-group row panel-collapse collapse" id="date">
                                   <div class="col-xs-3">
                                     <label>From Date</label>
-                                      <input class="form-control" type="date" v-model="dategt"/>
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
                                   </div>
                                   <div class="col-xs-3">
                                     <label>To Date</label>
-                                      <input class="form-control" type="date" v-model="datelt" />
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
                                   </div>
                               </div>
                           </div>
@@ -58,23 +58,23 @@
                 <Spin size="large"></Spin>
         </div>
         <div v-else>
-            
+
             <Tabs  @on-click="tabClicked" :value="tabIndex">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-                <Table v-if ="tabPane.domain=='QB'"  :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-                <Table v-if ="tabPane.domain=='custom'"  :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="getData()" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='QB'"  :columns="columns2" :data="getData()" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='custom'"  :columns="columns3" :data="getData()" border size="small" ref="table" stripe></Table>
 
                 <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
                         <Page :total="len" :current="1" @on-change="changePage"></Page>
                     </div>
                 </div>
-                
+
             </TabPane>
-            </Tabs>  
+            </Tabs>
         </div>
-       
+
   </div>
 </template>
 
@@ -100,6 +100,7 @@ export default {
   data() {
       return {
        // msg : "weqweq",
+       list1: this.list,
         tabPanes : [],
         //tabIndex: 0,
         spinShow: true,
@@ -109,6 +110,7 @@ export default {
         columns3:[],
         columns1: [
           {
+
               title: 'Payment Id',
               key: 'PaymentId',
               sortable: true,
@@ -120,7 +122,8 @@ export default {
         //       sortable: true,
         //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
         //   },
-       
+
+
           {
               title: 'Invoice No.',
               key: 'InvoiceNumber',
@@ -137,14 +140,16 @@ export default {
               title: 'Date',
               key: 'Date',
               sortable: true,
-              render:(h,{row})=>{ 
-  
-               let date = row.paymentAccounting.Invoice.Date; 
+              render:(h,{row})=>{
+
+
+               let date = row.paymentAccounting.Invoice.Date;
                let initial = date.split(/\//);
                 let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
-                
+
                 return moment(formatDate).format("ll")
-                
+
+
               }
           },
           {
@@ -156,6 +161,7 @@ export default {
         ],
         columns2: [
             {
+
               title: 'Payment Id',
               key: 'PaymentId',
               sortable: true,
@@ -168,6 +174,7 @@ export default {
             //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
             // },
             {
+
                 title: 'Account Id',
                 key: 'value',
                 sortable: true,
@@ -189,11 +196,9 @@ export default {
                 title: 'Date',
                 key: 'Date',
                 sortable: true,
-                render:(h,{row})=>{ 
-    
-                var date = new Date(row.paymentAccounting.Invoice.Date); 
-                var date1 =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-                    return date1
+                render:(h,{row})=>{
+                var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                return date1
                 }
             },
             {
@@ -238,8 +243,8 @@ export default {
                 title: 'Payment Date',
                 key: 'Date',
                 sortable: true,
-                render:(h,{row})=>{ 
-    
+                render:(h,{row})=>{
+
                 return row.paymentAccounting.Invoice.Date
                 }
             },
@@ -258,6 +263,13 @@ export default {
       }
   },
   methods: {
+    getData() {
+      if (this.list1.length <= 0) {
+        return this.list
+      } else {
+        return this.list1
+      }
+    },
     // changeMessage(event) {
     //             this.message = event.target.value;
     //             this.$emit('messageChanged', this.message);
@@ -279,10 +291,13 @@ export default {
        this.filterArray = _.filter(this.filterArray,  function(item){
         console.log("item",item)
           return item.paymentAccounting.Contact.Name === self.cname;
-        
+
       });
        console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+       this.list1 = await this.mockTableData2(1,pageSize)
+      }else{
+        console.log("myarr",this.filterArray)
+        this.list1 = await this.mockTableData2(1,pageSize)
       }
 
       if(this.invoiceId != ''){
@@ -292,33 +307,31 @@ export default {
           return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
         });
          console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
+         this.list1 = await this.mockTableData2(1,pageSize)
       }
 
-      if(this.dategt != ''){
+     if(this.dategt != ''){
         console.log("this.dategt", this.dategt)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
-          var newdate = moment(self.dategt).format('DD/MM/YYYY');
-          return itemdate >= newdate;
+          console.log("item",item.paymentAccounting.Invoice.Date)
+          var newdate = moment(self.dategt).format('MM/DD/YYYY');
+          console.log("newdate",newdate)
+          return item.paymentAccounting.Invoice.Date >= newdate;
         });
          console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
+         this.list1 = await this.mockTableData2(1,pageSize)
       }
 
       if(this.datelt != ''){
         console.log("this.datelt", this.datelt)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item.paymentAccounting.Invoice.Date)
-          var itemdate = moment(item.paymentAccounting.Invoice.Date).format('DD/MM/YYYY');
-          var newdate = moment(self.datelt).format('DD/MM/YYYY');
-          console.log("itemdate",itemdate)
+          var newdate = moment(self.datelt).format('MM/DD/YYYY');
           console.log("newdate",newdate)
-          return itemdate <= newdate;
+          return item.paymentAccounting.Invoice.Date <= newdate;
         });
          console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
+         this.list1 = await this.mockTableData2(1,pageSize)
       }
 
     },
@@ -331,7 +344,7 @@ export default {
     },
     async getAllSettings(){
       let self = this;
-      
+
       axios.get(config.default.serviceUrl + 'settings', {
         params : {
             isActive : true,
@@ -346,12 +359,13 @@ export default {
         self.spinShow = false;
         if (response.data.data.length != 0)
         {
-          
+
           self.tabPanes = response.data.data;
+          console.log('self.tabPanes', self.tabIndex)
           $('.preload').css("display","none")
           let settingId = self.tabPanes[0].id;
-          
-          
+
+
           self.getTransaction(settingId)
 
         }
@@ -369,7 +383,7 @@ export default {
         }
       })
       .catch(function (error) {
-        
+
         console.log("error",error);
         self.spinShow = false;
       });
@@ -377,11 +391,12 @@ export default {
     async tabClicked(data){
       console.log(this.tabPanes)
       console.log(">>>>>>>>>>>>>>>>>> " , data)
+      this.tabIndex = data;
       let settingId = this.tabPanes[data].id
-      
+
       this.getTransaction(settingId);
     },
-   
+
     async mockTableData1 (p,size) {
               this.len = this.data.length
               return this.data.slice((p - 1) * size, p * size);
@@ -391,55 +406,66 @@ export default {
       console.log("not inside",this.filterArray.length)
       if(this.filterArray.length == 0){
         console.log("inside",this.filterArray)
-        this.list = await this.mockTableData1(p,pageSize);
+        this.list1 = await this.mockTableData1(p,pageSize);
       }else{
-        this.list = await this.mockTableData2(p,pageSize);
+        this.list1 = await this.mockTableData2(p,pageSize);
       }
     },
     async getTransaction(settingId) {
-        
-        
+
+
         this.$Loading.start();
         this.data = [];
         let self = this;
-        self.list = [];
+        self.list1 = [];
         await axios.get(config.default.serviceUrl + 'transaction', {
             params : {
-                
+
                 settingId : settingId
             }
         })
         .then(async function (response) {
             console.log("transaction response",response);
-            
+
             self.data = response.data.data;
             self.$Loading.finish();
             $('.preload').css("display","none")
-            self.list = await self.mockTableData1(1,pageSize)
+            if(self.list1.length == 0){
+              self.list1 = await self.mockTableData1(1,pageSize)
+            } else {
+            }
         })
         .catch(function (error) {
             console.log("error",error);
             self.$Loading.error();
         });
 
-        self.data.forEach (obj => {
-            // console.log("obj------------------->",obj);
-            var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = obj.paymentAccounting.Contact.Name;
-            x.add(option);
-          })   
+        var NameArr = [];
+
+            self.data.forEach (obj => {
+                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                NameArr.push(obj.paymentAccounting.Contact.Name);
+              })
+            NameArr.sort();
+
+            NameArr.forEach(item => {
+                var x = document.getElementById("selectCustomer");
+                var option = document.createElement("option");
+                option.text = item;
+                console.log()
+                x.add(option);
+            })
     }
   },
   mounted() {
       this.getAllSettings()
-      
-      
+
+
   },
   watch: {
     '$route': function (id) {
       console.log(id)
-      
+
      // this.activetab = "2"
     }
   }

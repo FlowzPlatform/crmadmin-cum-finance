@@ -4,7 +4,7 @@
       <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8" id="detail">
-                <Card>
+          <Card style="text-align: left;">
           <p slot="title">
               <Icon type="ios-film-outline"></Icon>
               Invoice Details
@@ -267,6 +267,7 @@ export default {
             }).then(function (response) {
                 console.log(">>>>>>>>>>>>>> response ", response)
                 if(Array.isArray(response.data)){
+
                   responseData = response.data[0];
                   if(Array.isArray(responseData.data)) {
                     console.log("!!!!!!!!!!!")
@@ -321,6 +322,7 @@ export default {
                   // self.total = paymentAmount
                   // self.settingId = settingID
                   // self.$Spin.hide();
+
                 }else{
                   responseData = response.data;
                   self.responseDataForPayment = responseData;
