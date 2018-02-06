@@ -32,16 +32,16 @@ module.exports =  {
     default : {
 
 
-        loginUrl : "http://auth."+process.env.domainkey+"/api/login",
-        ldapLoginUrl : "http://auth."+process.env.domainkey+"/api/ldapauth",
-        registrationUrl : "http://api."+process.env.domainkey+"/serverapi/register",
-        signupUrl:          "http://auth."+process.env.domainkey+"/api/setup",
-        userDetail:             "http://auth."+process.env.domainkey+"/api/userdetails",
-        forgotPasswordUrl :         "http://auth."+process.env.domainkey+"/api/forgetpassword",
-        // resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
-        changepassword :                    "http://auth."+process.env.domainkey+"/api/changepassword",
-        feathersServiceBaseUrl :            "http://api."+process.env.domainkey+"/serverapi/",
-        varifyEmailUrl :                    "http://auth."+process.env.domainkey+"/api/verifyemail",
+        loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
+        ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
+        registrationUrl : "https://api."+process.env.domainkey+"/auth/serverapi/register",
+        signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
+        userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
+        forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
+        // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
+        changepassword :                    "https://api."+process.env.domainkey+"/auth/api/changepassword",
+        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/auth/serverapi/",
+        varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
 
 
 
