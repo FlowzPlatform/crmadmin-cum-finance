@@ -695,7 +695,7 @@ export default {
             
              if(Cookies.get('auth_token')){
                 axios({
-                            method: 'post',
+                            method: 'get',
                             url: configService.default.userDetail,
                             headers: {'Authorization': Cookies.get('auth_token')}
                         })
@@ -766,11 +766,11 @@ export default {
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
-                    //this.$store.commit('logout', self);
-                    
-                    // self.$router.push({
-                    //     name: 'login'
-                    // });
+                    self.$store.commit('logout', self);
+                    console.log("navigate to login")
+                    self.$router.push({
+                        name: 'login'
+                    });
                 }
                 
             });

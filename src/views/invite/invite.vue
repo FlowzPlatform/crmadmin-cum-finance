@@ -10,12 +10,12 @@
             <el-input placeholder="Please enter email id" v-model="input"></el-input>
         </div>  
         <div class="col-md-4">
-            <el-select v-model="value" placeholder="Select Role">
+            <el-select v-model="value1" placeholder="Select Role">
             <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.value1"
+            :label="item.label1"
+            :value="item.value1">
             </el-option>
         </el-select>
         </div>
@@ -44,22 +44,20 @@
     import Cookies from 'js-cookie';
     import Vue from 'vue';
     import ElementUI from 'element-ui';
+    import config from '@/config/customConfig.js'
+    let feathersUrl =  config.default.serviceUrl;
     // import locale from 'element-ui/src/locale/lang/en';
     // import 'element-ui/lib/theme-default/index.css';
     Vue.use(ElementUI);
     export default {
         data() {
             return {
-                options: [{
-                    value: 'Admin',
-                    label: 'Admin'
-                }, {
-                    value: 'Accountant',
-                    label: 'Accountant'
-                }],
-                value: '',
+                options: '',
+                value1: '',
                 options2: '',
                 value2: '',
+                roleOption1: '',
+                roleValue1: '',
                 input: ''
             }
         },
@@ -68,60 +66,85 @@
         },
         methods: {
             async getDataOfSubscriptionUser() {
-                let sub_id = []
-                axios.get('http://auth.flowzcluster.tk/api/userdetails', {
+                let sub_id = [];
+                let Role_id = [];
+                axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
+                        // headers: {
+                        //     'Authorization': Cookies.get('auth_token')
+                        // },
+                        params : {module : 'crm'}
+                    })
+                    .then(response => {
+                        //console.log("res.................------>>>>", response)
+                        let new_data = response.data.data;
+                         //console.log(new_data.length)
+                        for (let index = 0; index < new_data.length; index++) {
+                            console.log("data.........", new_data[index].role)
+                            
+                            Role_id.push({
+                                "value1": new_data[index].role,
+                                "label1": new_data[index].role
+                            })
+                        }
+                        //console.log("Role_id..........", Role_id)
+                        
+                        this.options = Role_id
+                    })
+                    axios.get('http://auth.flowzcluster.tk/api/userdetails', {
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         }
                     })
                     .then(response => {
                         console.log("res.................------>>>>", response)
-                        let new_data = JSON.parse(response.data.data.package)
-                        // console.log(new_data.length)
-                        for (let index = 0; index < new_data.length; index++) {
-                            console.log("data.........", new_data[index].subscription_id)
-                            sub_id.push({
-                                "value2": new_data[index].subscription_id,
-                                "label2": new_data[index].subscription_id
+                        let new_data = response.data.data.package;
+                        for (var key in new_data) {
+                            if (new_data.hasOwnProperty(key)) {
+                                console.log( new_data[key].subscriptionId);
+                                sub_id.push({
+                                "value2": new_data[key].subscriptionId,
+                                "label2": new_data[key].subscriptionId
                             })
+                            }
                         }
                         console.log("sub_id..........", sub_id)
                         this.options2 = sub_id
+                        
                     })
 
             },
             async inviteNow() {
                 let new_data;
                 console.log(this.input)
-                console.log(this.value)
+                console.log(this.value1)
                 console.log(this.value2)
                 let userId;
                 let previous_packages;
-                await axios.post('http://api.flowzcluster.tk/auth/api/userdetailsbyemail', {
-                        "email": this.input
-                    })
-                    .then(async (res) => {
-                        console.log(res)
-                        userId = res.data.data[0]._id;
-                        previous_packages = res.data.data[0].package
-                    })
-                previous_packages = JSON.parse(previous_packages)
-                previous_packages.push({
-                    "subscription_id": this.value2,
-                    "role": this.value
-                })
-                previous_packages = JSON.stringify(previous_packages);
-                console.log(previous_packages)
-                await axios.put('http://api.flowzcluster.tk/user/updateuserdetails/' + userId, {
-                        "package": previous_packages
-                    }, {
+                let params = {
+                    "email": this.input,
+                    "subscriptionId": this.value2,  
+                    "role": {
+                        "crm": this.value1
+                    }
+                }
+
+                await axios({
+                        method: 'POST',
+                        url: feathersUrl + 'invite',
                         headers: {
-                            'Authorization': Cookies.get('auth_token')
-                        }
+                            "Authorization": Cookies.get('auth_token'),
+
+                        },
+                        data: params
                     })
-                    .then(async (res) => {
-                        // console.log(res)
+                    .then(function(response) {
+                        console.log('response------------------------>', response)
+                        //self.handleReset();
                     })
+                    .catch(function(error) {
+                        console.log('error', error.response)
+                    })
+
             }
         }
     }

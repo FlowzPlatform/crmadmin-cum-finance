@@ -256,7 +256,7 @@ export default {
                         self.saveFileLoadingLogin = false;
                         
                         axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': response.data.logintoken}
                         })
@@ -359,7 +359,7 @@ export default {
                         console.log(response);
                         self.saveFileLoadingLogin = false;
                         axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': response.data.logintoken}
                         })
@@ -496,7 +496,7 @@ export default {
             let self = this;
             if(Cookies.get('auth_token')){
                 axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': Cookies.get('auth_token')}
                         })
