@@ -17,7 +17,6 @@
     import Cookies from 'js-cookie';
     let axios = require('axios'); 
     let _ = require('lodash');
-    var api = "http://172.16.61.160:3032/myOrders";
     const accounting = require('accounting-js');
     var res;
     export default {
@@ -130,7 +129,8 @@
         methods: {
             init () {
                 var self = this
-                axios.get( api , {
+                console.log("config.default.orderapi", config.default.orderapi)
+                axios.get( config.default.orderapi , {
                     params: {
                         user_id: self.userid
                     }
@@ -146,7 +146,7 @@
                 var self = this
                 var len
                 console.log("val", val)
-                axios.get( api , {
+                axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
                     }

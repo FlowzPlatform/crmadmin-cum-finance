@@ -14,7 +14,6 @@ import moment from 'moment'
 import config from '@/config/customConfig'
 import expandRow from './view-request-info.vue';
 import _ from 'lodash'
-var api = "http://172.16.61.160:3032/request-info";
 export default {
   name: 'myaccount',
   components: { expandRow },
@@ -64,7 +63,7 @@ export default {
       var self = this;
       await axios({
         method: 'get',
-        url: api,
+        url: config.default.requestinfoapi,
         params : {
           userId:self.userid
         },

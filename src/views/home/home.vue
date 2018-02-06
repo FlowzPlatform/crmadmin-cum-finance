@@ -695,7 +695,7 @@ export default {
             
              if(Cookies.get('auth_token')){
                 axios({
-                            method: 'post',
+                            method: 'get',
                             url: configService.default.userDetail,
                             headers: {'Authorization': Cookies.get('auth_token')}
                         })

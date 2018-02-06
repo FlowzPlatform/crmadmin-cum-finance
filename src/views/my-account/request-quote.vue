@@ -22,7 +22,6 @@ import config from '@/config/customConfig'
 import expandRow from './view-request-quote.vue';
 import requestInfo from './request-info.vue'
 import _ from 'lodash';
-var api = "http://172.16.230.181:3032/request-quote";
 export default {
   name: 'myaccount',
   components: { expandRow,requestInfo },
@@ -67,7 +66,7 @@ export default {
   methods: {
     async getReuestQuoteData () {
       var self = this;
-      await axios.get( api, {
+      await axios.get( config.default.requestquoteapi, {
         params : {
           user_id: self.userid
         }
@@ -89,7 +88,7 @@ export default {
       var self = this
       var len
       console.log("val", val)
-      axios.get(api, {
+      axios.get(config.default.requestquoteapi, {
           params: {
               website_id: val,
               // user_id:self.userid

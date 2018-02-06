@@ -67,9 +67,10 @@ module.exports =  {
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
         // serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
-        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
-
-
+        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
+        orderapi :  'http://172.16.61.160:3032/myOrders',
+        requestinfoapi : 'http://172.16.61.160:3032/request-info',
+        requestquoteapi :   'http://172.16.230.181:3032/request-quote'
     }
 
 }
