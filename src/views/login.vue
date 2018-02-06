@@ -257,7 +257,7 @@ export default {
                         self.saveFileLoadingLogin = false;
                         
                         axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': response.data.logintoken}
                         })
@@ -360,12 +360,12 @@ export default {
                         console.log(response);
                         self.saveFileLoadingLogin = false;
                         axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': response.data.logintoken}
                         })
                         .then(function(result) {
-                            console.log(result)
+                            console.log('--------------->>>>',result)
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                              Cookies.set('user',  result.data.data.email  , {domain: location});
@@ -491,7 +491,7 @@ export default {
             let self = this;
             if(Cookies.get('auth_token')){
                 axios({
-                            method: 'post',
+                            method: 'get',
                             url: config.default.userDetail,
                             headers: {'Authorization': Cookies.get('auth_token')}
                         })
