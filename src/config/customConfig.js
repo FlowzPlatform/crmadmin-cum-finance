@@ -39,7 +39,7 @@ module.exports =  {
         forgotPasswordUrl :         "http://auth."+process.env.domainkey+"/api/forgetpassword",
         resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
         feathersServiceBaseUrl :            "http://api."+process.env.domainkey+"/serverapi/",
-        varifyEmailUrl :                    "http://auth."+process.env.domainkey+"/api/verifyemail",
+        varifyEmailUrl :                        "http://auth."+process.env.domainkey+"/api/verifyemail",
 
 
 
@@ -63,8 +63,8 @@ module.exports =  {
         loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
-        serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
-        //serviceUrl :            'http://localhost:3037/',
+        //serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
+        serviceUrl :            'http://localhost:3037/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/'
 

@@ -21,13 +21,13 @@
         </div>
         <div class="col-md-4">
             <el-select v-model="value2" placeholder="Select subscription">
-            <el-option
-            v-for="item in options2"
-            :key="item.value2"
-            :label="item.label2"
-            :value="item.value2">
-            </el-option>
-        </el-select>
+                <el-option
+                v-for="item in options2"
+                :key="item.value2"
+                :label="item.label2"
+                :value="item.value2">
+                </el-option>
+            </el-select>
         <el-button type="primary" @click="inviteNow()">Invite Now</el-button>
         </div>
         </div>
