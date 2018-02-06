@@ -445,6 +445,7 @@ export default {
 
       self.data6.forEach (obj => {
             console.log("obj------------------->",obj);
+
             if(obj.Name != undefined){
               NameArr.push(obj.Name);
               if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
@@ -460,6 +461,7 @@ export default {
               }
               console.log('EmailArr------------>',EmailArr)
             }
+
           })
 
           console.log("NameArr----------->before", NameArr);

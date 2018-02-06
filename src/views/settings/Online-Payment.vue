@@ -252,6 +252,7 @@ export default {
           console.log("self.configs---------------->after",self.configs)
         }else
         {
+
           // self.$Message.warning({
           //       content: 'Please navigate to settings and configure or activate at least one Xero or Quickbook account',
           //       duration: 5
@@ -266,6 +267,7 @@ export default {
           //   })
           //   }
           // });
+
         }
       })
       .catch(function (error) {

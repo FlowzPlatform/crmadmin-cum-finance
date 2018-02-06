@@ -140,10 +140,12 @@ export default {
               title: 'Date',
               key: 'Date',
               sortable: true,
+
               render:(h,{row})=>{
 
 
                let date = row.paymentAccounting.Invoice.Date;
+
                let initial = date.split(/\//);
                 let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
 
@@ -196,7 +198,9 @@ export default {
                 title: 'Date',
                 key: 'Date',
                 sortable: true,
+
                 render:(h,{row})=>{
+
                 var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
                 return date1
                 }
@@ -294,10 +298,12 @@ export default {
 
       });
        console.log("myarr",this.filterArray)
+
        this.list1 = await this.mockTableData2(1,pageSize)
       }else{
         console.log("myarr",this.filterArray)
         this.list1 = await this.mockTableData2(1,pageSize)
+
       }
 
       if(this.invoiceId != ''){
@@ -442,7 +448,9 @@ export default {
 
         var NameArr = [];
 
+
             self.data.forEach (obj => {
+
                 console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                 NameArr.push(obj.paymentAccounting.Contact.Name);
               })

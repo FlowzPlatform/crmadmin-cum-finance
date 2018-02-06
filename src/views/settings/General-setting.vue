@@ -483,6 +483,7 @@ export default {
           })
           self.configs = _.sortBy(newConf, ['configName']);
           console.log("self.configs---------------->after",self.configs)
+
         }
         else
         {
@@ -500,6 +501,7 @@ export default {
           //   })
           //   }
           // });
+
         }
       })
       .catch(function (error) {

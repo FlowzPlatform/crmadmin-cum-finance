@@ -19,6 +19,7 @@
                                   <div class="panel-collapse collapse" id="Customer">
                                       <select class="form-control"  v-model="cname" id="selectCustomer">
                                         <option value="">All</option>
+
                                       </select>
                                   </div>
                               </div>
@@ -110,6 +111,7 @@
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage"></Page>
+
                 </div>
             </div>
              <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -243,6 +245,7 @@
                   <td colspan="3"><hr style="border: #efefef solid 1px;"></td>
               </tr>
               </div>
+
               <tr>
                   <td style="padding: 5px;vertical-align: top;"></td>
                   <td style="padding: 5px;vertical-align: top;"></td>
@@ -360,6 +363,7 @@
                       {{DescriptionPdf}}
                   </td>
 
+
                   <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
                       ${{emailDataCustom.Paid}}
                   </td>
@@ -423,6 +427,7 @@
 
 
 <script>
+
   import config from '@/config/customConfig.js'
   import axios from 'axios'
   import jsPDF from 'jspdf'
@@ -524,6 +529,7 @@
                         props: {
                           placement: 'top',
                           content: 'Make Payment'
+
                         },
                         style:{
                           float:'left',
@@ -686,12 +692,14 @@
                         },
                         style:{
 
+
                           cursor:'pointer'
                         }
                       }, [
                       h('img', {
                         attrs: {
                             src: this.eye
+
                           },
                           style: {
                             hight:'20px',
@@ -962,6 +970,7 @@
                 console.log('this.newTabIndex............', params.index)
                 return h(listtransaction, {
 
+
                   props: {
                     list:this.newList,
                     tabIndex:this.newTabIndex
@@ -995,6 +1004,7 @@
         duegt: '',
         duelt: '',
         DescriptionPdf : ''
+
       }
     },
     components: { listtransaction },
@@ -1005,6 +1015,7 @@
       //             return this.data1.slice((p - 1) * size, p * size);
       // },
       // async changePage (p) {
+
 
       //   this.page = p
       //   this.list = await this.mockTableData1(p,pageSize);
@@ -1028,6 +1039,7 @@
         this.duelt = '';
         this.getAllSettings();
       },
+
 
       async changeData() {
        console.log("this.data6", this.data6)
@@ -1211,6 +1223,7 @@
         }
 
 
+
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
@@ -1360,6 +1373,7 @@
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
         await axios({
+
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1375,6 +1389,7 @@
               .catch(function (error) {
                 console.log(error);
               });
+
       await axios({
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
@@ -1394,17 +1409,20 @@
       axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
           headers:{
               Authorization : Cookies.get('auth_token')
+
           },
           params : {
             settingId : settingID
           }
         })
+
         .then(async function (response) {
           console.log("response-------------->",response);
           self.DescriptionPdf = response.data[0].LineItems;
         })
         .catch(function (error) {
         });
+
 
         console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
@@ -2039,4 +2057,6 @@
   #viewDetailInInvoice #accordion {
     display: none;
   }
+
 </style>
+
