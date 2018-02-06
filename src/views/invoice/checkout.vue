@@ -64,8 +64,9 @@
                             <div>
                               <FormItem prop="gateway">
                                 <Select class="" v-model="payDetail.gateway" autofocus>
-                                  <Option value="stripe">stripe</Option>
-                                  <Option value="auth">authdotnet</Option>
+                                  <Option value="stripe">Stripe</Option>
+                                  <Option value="auth">AuthDotNet</Option>
+                                  <Option value="paypal">PayPal</Option>
                                 </Select> 
                             </FormItem>
                             </div>
@@ -266,43 +267,73 @@ export default {
             }).then(function (response) {
                 console.log(">>>>>>>>>>>>>> response ", response)
                 if(Array.isArray(response.data)){
-                  responseData = response.data[0].data;
-                console.log('responseData',responseData)
-                if(responseData.TotalAmt != undefined){
-                  paymentAmount = responseData.TotalAmt;
-                  self.payDetail.amount = paymentAmount
-                }
-                else{
-                  paymentAmount = responseData.Total
-                  self.payDetail.amount = paymentAmount
-                }
 
-                let paymentInvoiceId;
-                if(responseData.Id != undefined){
-                  paymentInvoiceId = responseData.Id
-                }else {
-                  paymentInvoiceId = responseData.InvoiceID
-                }
-                      self.responseDataForPayment = responseData;
-                      self.invoiceid = paymentInvoiceId
-                      self.payDetail.amount = responseData.AmountDue;
-                      self.name = responseData.Contact.Name
-                      self.amountpaid = responseData.AmountPaid
-                      self.amountDue = responseData.AmountDue
-                      self.total = paymentAmount
-                      self.settingId = settingID
-                      self.$Spin.hide();
+                  responseData = response.data[0];
+                  if(Array.isArray(responseData.data)) {
+                    console.log("!!!!!!!!!!!")
+                    responseData = responseData.data[0]
+
+                    self.responseDataForPayment = responseData;
+                    self.payDetail.amount = responseData.Balance;
+                    self.invoiceid = responseData.Id
+                    self.name = responseData.CustomerRef.name
+                    self.amountpaid = (responseData.TotalAmt - responseData.Balance)
+                    self.amountDue = responseData.Balance
+                    self.total = responseData.TotalAmt
+                    self.settingId = settingID
+                    self.$Spin.hide();
+                  }
+                  else {
+                    responseData = responseData.data;
+                    self.responseDataForPayment = responseData;
+                    self.payDetail.amount = responseData.AmountDue;
+                    self.invoiceid = responseData.InvoiceID;
+                    self.name = responseData.Contact.Name
+                    self.amountpaid = responseData.AmountPaid
+                    self.amountDue = responseData.AmountDue
+                    self.total = paymentAmount
+                    self.settingId = settingID
+                    self.$Spin.hide();
+                  }
+                  // if(responseData.TotalAmt != undefined){
+                  //   console.log("@@@@@@@@",responseData.TotalAmt)
+                  //   paymentAmount = responseData.TotalAmt;
+                  //   self.payDetail.amount = paymentAmount
+                  // }
+                  // else{
+                  //   paymentAmount = responseData.data.Total
+                  //   self.payDetail.amount = paymentAmount
+                  // }
+                  // let paymentInvoiceId;
+                  // if(responseData.Id != undefined){
+                  //   paymentInvoiceId = responseData.Id
+                  // }else {
+                  //   paymentInvoiceId = responseData.InvoiceID
+                  // }
+                  // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",responseData)
+                  // console.log("^^^^^^^^^^^^^^^^^^^",responseData.AmountDue,paymentInvoiceId,responseData.Contact.Name,responseData.AmountPaid,responseData.AmountDue,paymentAmount)
+                  // responseData = responseData.data;
+                  // self.responseDataForPayment = responseData;
+                  // self.payDetail.amount = responseData.AmountDue;
+                  // self.invoiceid = paymentInvoiceId
+                  // self.name = responseData.Contact.Name
+                  // self.amountpaid = responseData.AmountPaid
+                  // self.amountDue = responseData.AmountDue
+                  // self.total = paymentAmount
+                  // self.settingId = settingID
+                  // self.$Spin.hide();
+
                 }else{
                   responseData = response.data;
                   self.responseDataForPayment = responseData;
-                      self.payDetail.amount = responseData.Due;
-                      self.invoiceid = responseData.Invoice_No
-                      self.name = responseData.Name
-                      self.amountpaid = responseData.Paid
-                      self.amountDue = responseData.Due
-                      self.total = responseData.Total
-                      self.settingId = responseData.settingId
-                      self.$Spin.hide();
+                  self.payDetail.amount = responseData.Due;
+                  self.invoiceid = responseData.Invoice_No
+                  self.name = responseData.Name
+                  self.amountpaid = responseData.Paid
+                  self.amountDue = responseData.Due
+                  self.total = responseData.Total
+                  self.settingId = responseData.settingId
+                  self.$Spin.hide();
                 }
                 
                 
@@ -326,11 +357,14 @@ export default {
         console.log("responseData", self.responseDataForPayment)
         
             let paymentInvoiceId;
+            let contactName;
             
             if(self.responseDataForPayment.Id != undefined){
               paymentInvoiceId = self.responseDataForPayment.Id
+              contactName = self.responseDataForPayment.CustomerRef.name
             }else {
               paymentInvoiceId = self.responseDataForPayment.InvoiceID
+              contactName = self.responseDataForPayment.Contact.Name
             }
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
@@ -341,7 +375,7 @@ export default {
               gateway:self.payDetail.gateway,
               id: paymentInvoiceId,
               amount:self.payDetail.amount,
-              Name:self.responseDataForPayment.Contact.Name,
+              Name:contactName,
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,
               expMonth:self.payDetail.expiryMM,
@@ -376,8 +410,8 @@ export default {
               settingId:self.responseDataForPayment.settingId,
               gateway:self.payDetail.gateway,
               id: self.responseDataForPayment.Invoice_No,
-              amount:self.payDetail.amount,
-              cname:self.responseDataForPayment.Name,
+              amount:parseInt(self.payDetail.amount),
+              Name:self.responseDataForPayment.Name,
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,
               expMonth:self.payDetail.expiryMM,

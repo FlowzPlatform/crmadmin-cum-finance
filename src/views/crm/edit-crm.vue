@@ -66,8 +66,11 @@
 									<label id="c22339">Customer</label>
 								</div>
 								<div class="col-xs-8">
-									<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
-									<!-- <select class="form-control" id="customer"><option>Select</option></select> -->
+                  <Select v-model="finaldata.cname" class="customer">
+										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+									</Select>
+								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
+									 <select class="form-control" id="customer"><option>Select</option></select> -->
 								</div>
 							</div>
 						</div>
@@ -265,30 +268,87 @@
         this.calldata();
       },
       async calldata() {
-        let self=this;
-        console.log("self.finaldata.config", self.finaldata.config)
-        self.customerData = [];
-        await $.ajax({
-          type: 'GET',
-          url: serviceUrl +"contacts",
-          data: {
-                    settingId : self.finaldata.config,   
-                },
-          success: function (data) {
-            // console.log("data>>>>>>>>>>>>>> Contacts" , data)
-            data.forEach(function(contacts) {
-              var cnt = contacts.data
-              for (var i=0; i<cnt.length; i++) {
-                // console.log("%%%%%%%%%%",cnt[i].Name)
-                self.customerData.push(cnt[i].Name)
-              }
-            })
+        let resp
+      let self = this
 
-            // console.log(data)
-          },error: function(err) {
-            console.log("Error",err)
-          }
-        });
+      var settingId = self.finaldata.config
+      await axios({
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingId
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                           await axios({
+                              method: 'get',
+                              url: self.customCustomerUrl,
+                              params : {settingId : response.data.id},
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              console.log(response)
+                              resp = response.data.data
+                              self.customerData = resp
+							  console.log("self.customerData", self.customerData)
+                            })
+                            .catch(function (error) {
+                              console.log(error.response)
+                              self.$Message.error(error.response.data.data[0].message)
+                            });
+
+                      }else{
+                            await axios({
+                                    method: 'get',
+                                    url: config.default.serviceUrl + 'contacts',
+                                    params: {
+                                      settingId : settingId
+                                    },
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token')
+                                    },
+                                  }).then(function (response) {
+                                  
+                                    resp = response.data
+                                    self.customerData = resp[0].data
+                                  })
+                                  .catch(function (error) {
+                                    console.log(error);
+                                  });
+                      }
+                  });
+      
+      
+      console.log("response------>iuy",resp);
+        // let self=this;
+        // console.log("self.finaldata.config", self.finaldata.config)
+        // self.customerData = [];
+        // await $.ajax({
+        //   type: 'GET',
+        //   url: serviceUrl +"contacts",
+        //   data: {
+        //             settingId : self.finaldata.config,   
+        //         },
+        //   success: function (data) {
+        //     // console.log("data>>>>>>>>>>>>>> Contacts" , data)
+        //     data.forEach(function(contacts) {
+        //       var cnt = contacts.data
+        //       for (var i=0; i<cnt.length; i++) {
+        //         // console.log("%%%%%%%%%%",cnt[i].Name)
+        //         self.customerData.push(cnt[i].Name)
+        //       }
+        //     })
+
+        //     // console.log(data)
+        //   },error: function(err) {
+        //     console.log("Error",err)
+        //   }
+        // });
         // await $.ajax({
         //   type: 'GET',
         //   url: apiurl,
