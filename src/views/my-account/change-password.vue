@@ -1,30 +1,58 @@
 <template>
   <div>
-    <Card style="height:404px">
+    <Card style="height:404px" class = 'card'>
    <div class="row">
      <div class="col-lg-6 col-md-6 col-sm-6">
-       <h1>
+       <h1 v-if = "!showForgotPassword">
          <i class="fa fa-lock"></i> Change Password
+       </h1>
+       <h1 v-if = "showForgotPassword">
+         <i class="fa fa-key"></i> Forgot Password
        </h1>
      </div>
    </div>
    <div class="col-lg-6 col-md-6 col-sm-6">
-    <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate">
+    <i-form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1">
+      <div v-if = 'showForgotPassword'>
+        <form-item label="Email" prop="email">
+          <Input type="email" v-model="formValidate1.email" placeholder="Enter Email"></Input>
+            <!-- <i-input type="email" v-model="formValidate.email" placeholder="Enter Email"></i-input> -->
+        </form-item>
+      </div>
+      </i-form>
+      <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate">
+      <div v-if = '!showForgotPassword'>
         <form-item label="Current Password" prop="oldpasswd">
-            <i-input type="password" v-model="formValidate.oldpasswd" placeholder="Enter Current Password"></i-input>
-            <!-- <button @click = 'showpassword()'><Icon type="eye"></Icon></button> -->
+            <Input :type="showCurrentpassword" v-model="formValidate.oldpasswd" placeholder="Enter Current Password">
+              <Button slot="append" icon="eye"@click = "showpassword('showCurrentpassword')" ></Button>
+            </Input>
         </form-item>
         <form-item label="New Password" prop="newpasswd">
-            <i-input type="password" v-model="formValidate.newpasswd" placeholder="Enter New Password"></i-input>
+          <Input :type="showNewpassword" v-model="formValidate.newpasswd" placeholder="Enter New Password">
+            <Button slot="append" icon="eye" @click ="showpassword('showNewpassword')" ></Button>
+          </Input>
+            <!-- <i-input type="password" v-model="formValidate.newpasswd" placeholder="Enter New Password"></i-input> -->
         </form-item>
         <form-item label="Confirm Password" prop="confpasswd">
-            <i-input type="password" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password"></i-input>
+          <Input :type="showConfirmpassword" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password">
+            <Button slot="append" icon="eye" @click ="showpassword('showConfirmpassword')" ></Button>
+          </Input>
+            <!-- <i-input type="password" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password"></i-input> -->
         </form-item>
         <form-item>
-            <i-button type="primary" @click="handleSubmit('formValidate')">Submit</i-button>
+            <i-button type="primary" @click="handleSubmit('formValidate')">Save</i-button>
             <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</i-button>
+            <a @click="forgotPassword()">Forgot Password</a>
             <span class="required-field">* Required Fields</span>
         </form-item>
+      </div>
+      <div v-if = 'showForgotPassword'>
+        <form-item>
+          <i-button type="primary" v-if = 'showForgotPassword' @click="forgotPasswordSendEmail('formValidate1')">Submit</i-button>
+          <a @click="backtoLogin()">Back to Change Password</a>
+        </form-item>
+      </div>
+
     </i-form>
 </div>
 </Card>
@@ -53,6 +81,13 @@ export default {
                     newpasswd: '',
                     confpasswd: ''
                 },
+                formValidate1: {
+                  email: ''
+                },
+                showForgotPassword: false,
+                showCurrentpassword: 'password',
+                showNewpassword: 'password',
+                showConfirmpassword: 'password',
                 ruleValidate: {
                     oldpasswd: [
                         { required: true, message: 'Please enter valid current password!', trigger: 'blur' }
@@ -63,25 +98,93 @@ export default {
                     confpasswd: [
                         { required: true, validator: validatePassCheck, trigger: 'blur' }
                     ]
+                },
+                ruleValidate1: {
+                  email:[
+                    { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
+                    { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
+                  ]
+
                 }
     }
   },
   methods: {
-    // showpassword(){
-    //   alert(1)
-    //   var x = document.getElementsByClassName("myInput");
-    //   console.log("xxxxxxxxxxxx", x)
-    // if (x.type == "password") {
-    //     x.innerHTML = '<i-input type="text" class = "myInput" v-model="formValidate.oldpasswd" placeholder="Enter Current Password"></i-input>'
-    // } else {
-    //     x.type = '<i-input type="password" class = "myInput" v-model="formValidate.oldpasswd" placeholder="Enter Current Password"></i-input>';
-    // }
-    // },
+    showpassword(value){
+      console.log('value', value)
+      if(value == "showCurrentpassword"){
+        if(this.showCurrentpassword == "password"){
+          this.showCurrentpassword = "text"
+        } else {
+          this.showCurrentpassword = "password"
+        }
+      } else if(value == "showNewpassword"){
+        if(this.showNewpassword == "password"){
+          this.showNewpassword = "text"
+        } else if(this.showNewpassword == "text") {
+          this.showNewpassword = "password"
+        }
+      } else if(value == "showConfirmpassword"){
+        if(this.showConfirmpassword == "password"){
+          this.showConfirmpassword = "text"
+        } else if(this.showConfirmpassword == "text") {
+          this.showConfirmpassword = "password"
+        }
+      }
+      // if(this.showCurrentpassword == "password"){
+      //   this.showCurrentpassword = "text"
+      // } else if(this.showCurrentpassword == "text") {
+      //   this.showCurrentpassword = "password"
+      // }
+      //
+      // if(this.showNewpassword == "password"){
+      //   this.showNewpassword = "text"
+      // } else if(this.showNewpassword == "text") {
+      //   this.showNewpassword = "password"
+      // }
+
+    },
+    forgotPassword(){
+      this.showForgotPassword = true;
+      $('.card').css("height",'300px');
+    },
+    backtoLogin(){
+      this.showForgotPassword = false;
+      $('.card').css("height",'404px');
+    },
+    forgotPasswordSendEmail(name) {
+      var self = this
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          console.log('config.default.forgotPasswordUrl', config.default.forgotPasswordUrl)
+          console.log('self.formValidate1.email', self.formValidate1.email)
+          axios.post(config.default.forgotPasswordUrl, {
+                  email: self.formValidate1.email.trim(),
+                  url: "http://google.com",
+                  headers: {
+                    "authorization": Cookies.get('auth_token')
+                  }
+              })
+              .then(function(response) {
+                  console.log(response)
+                  if (response.data.code == 200) {
+                      self.$message.success(response.data.message);
+                      self.formValidate1.email = ""
+                  }
+              })
+              .catch(function(error) {
+                  self.$message.error("email  is incorrect");
+              });
+        } else {
+
+        }
+      })
+
+    },
     handleSubmit (name) {
       var self = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                      		var passDetails = {"oldpass":this.formValidate.oldpasswd ,"newpass":this.formValidate.newpasswd};
+                      		var passDetails = {"oldpass":this.formValidate.oldpasswd,"newpass":this.formValidate.newpasswd};
                       		let userToken = Cookies.get('auth_token');
 
                       		$.ajax({
@@ -101,11 +204,12 @@ export default {
                                     content: result.message,
                                     duration: 5
                                 });
+                                self.handleReset(name)
                               }
 
                       			},
                       			error: function(err) {
-                              console.log('err', err)
+                              console.log('err', err.response)
                               self.$Message.error({
                                   content: 'incorrect current password',
                                   duration: 5
@@ -118,6 +222,7 @@ export default {
                 })
             },
             handleReset (name) {
+              alert(1)
                 this.$refs[name].resetFields();
             }
   },

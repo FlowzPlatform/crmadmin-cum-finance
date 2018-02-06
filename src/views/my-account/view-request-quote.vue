@@ -32,7 +32,7 @@
         <Panel name="1">
           PRODUCT
           <p slot="content">
-            <label>                            
+            <label>
           <div class="panel-body">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
@@ -44,7 +44,7 @@
                   <h1 class="heading-2">{{row.product_description.product_name}}</h1>
                   <div class="skuprice">
                     <div style="text-align: -webkit-center;background: #f5f5f5;
-            padding: 7px 0;">Item Number : 
+            padding: 7px 0;">Item Number :
                       <span>{{row.product_description.sku}}</span>
                     </div>
                   </div>
@@ -98,7 +98,7 @@
                       </div>
                       <table class="product-color-price-table">
                         <tbody v-for="(element,inx) in item.color_quantity">
-                        
+
                           <tr>
                             <td>
                               <i class="white-color-box">
@@ -110,7 +110,7 @@
                               <strong>Total : {{element}}</strong>
                             </td>
                           </tr>
-                         
+
                         </tbody>
                       </table>
                     </div>
@@ -123,9 +123,9 @@
                             <div class="estimate-row">
                               <div>Shipping Address :
                                 <br>avcjh,
-                                <br>Ontario                                         
-                                <br>Ottawa (Alta Vista)                                         
-                                <br>Canada                                        
+                                <br>Ontario
+                                <br>Ottawa (Alta Vista)
+                                <br>Canada
                               </div><br>
                               <div>Postal Code : <span>K0A1B0</span></div>
                             </div>
@@ -154,12 +154,12 @@
                     <div class="col-lg-12 col-md-6 col-sm-6">
                       <h3>Print Position: {{item.imprint_position_name}}</h3>
                       <div class="estimate-row">
-                        Imprint Method : 
+                        Imprint Method :
                         <span>{{item.imprint_method_name}}</span>
                       </div>
                     <div v-if="item.no_of_color">
                       <div class="estimate-row">
-                         How many colours : 
+                         How many colours :
                         <span> {{item.no_of_color}} Colour</span>
                       </div>
                       <div class="estimate-row" v-for="(i,index) in item.selected_colors">
@@ -192,13 +192,13 @@
                   <span class="address">Office Address</span>
                   <br>
                     <span style="font-weight:500">
-                      C-112 Girdharpark Soc. 
+                      C-112 Girdharpark Soc.
                     <br>
-                      Near New Era School 
+                      Near New Era School
                     <br>
-                      Opp. Novino Bettery 
+                      Opp. Novino Bettery
                     <br>
-                      Makarpura, Vadodara 
+                      Makarpura, Vadodara
                     </span>
                 </p>
               </label>
@@ -243,7 +243,7 @@ export default {
     }
   },
   mounted(){
-    console.log('row--------->',this.row)
+    console.log('row@@@@@@@@@@@@@@@@@',this.row)
     this.createdAt = moment(this.row.created_at).format('DD-MMM-YYYY')
   }
 }
@@ -286,7 +286,7 @@ export default {
         font-weight: 700
     }
 
-  .quantity-price, 
+  .quantity-price,
   .product-summary {
     background: #f3f2f2;
     border-left: 5px solid #c51327;

@@ -32,7 +32,7 @@
         <Panel name="1">
           PRODUCT
           <p slot="content">
-            <label>                            
+            <label>
           <div class="panel-body" v-for="item in row.productInfo">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
@@ -44,7 +44,7 @@
                   <h1 class="heading-2">{{item.product_name}}</h1>
                   <div class="skuprice">
                     <div style="text-align: -webkit-center;background: #f5f5f5;
-            padding: 7px 0;">Item Number : 
+            padding: 7px 0;">Item Number :
                       <span>{{item.sku}}</span>
                     </div>
                   </div>
@@ -127,13 +127,13 @@
                   <span class="address">Office Address</span>
                   <br>
                     <span style="font-weight:500">
-                      C-112 Girdharpark Soc. 
+                      C-112 Girdharpark Soc.
                     <br>
-                      Near New Era School 
+                      Near New Era School
                     <br>
-                      Opp. Novino Bettery 
+                      Opp. Novino Bettery
                     <br>
-                      Makarpura, Vadodara 
+                      Makarpura, Vadodara
                     </span>
                 </p>
               </label>
@@ -229,7 +229,7 @@ export default {
         font-weight: 700
     }
 
-  .quantity-price, 
+  .quantity-price,
   .product-summary {
     background: #f3f2f2;
     border-left: 5px solid #c51327;

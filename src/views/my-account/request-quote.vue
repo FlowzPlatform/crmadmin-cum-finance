@@ -19,7 +19,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import moment from 'moment'
 import config from '@/config/customConfig'
-import expandRow from './view-request-info.vue';
+import expandRow from './view-request-quote.vue';
 import requestInfo from './request-info.vue'
 import _ from 'lodash';
 var api = "http://172.16.230.181:3032/request-quote";
@@ -27,7 +27,7 @@ export default {
   name: 'myaccount',
   components: { expandRow,requestInfo },
   data () {
-  return { 
+  return {
     websiteList: {},
     website: '',
     userid:'',
@@ -36,6 +36,7 @@ export default {
         type: 'expand',
         width: 50,
         render: (h, params) => {
+          console.log('params--------------->',params)
           return h(expandRow, {
             props: {
               row: params.row
@@ -52,9 +53,9 @@ export default {
         "key": "total_qty"
       },
       {
-        "title": "CREATED DATE",
+        "title": "REQUESTED ON",
         "key": "created_at",
-        render:(h,{row})=>{ 
+        render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
                 return date1
               }
@@ -66,12 +67,9 @@ export default {
   methods: {
     async getReuestQuoteData () {
       var self = this;
-      await axios({
-        method: 'get',
-        url: api+'?'+self.userid,
+      await axios.get( api, {
         params : {
-        },
-        headers:{
+          user_id: self.userid
         }
         }).then(async function (response) {
           console.log('response------>',response)
@@ -110,7 +108,7 @@ export default {
       url: config.default.userDetail,
       headers: {'Authorization': Cookies.get('auth_token')}
       }).then(async function (response) {
-        self.userid = response.data.data._id               
+        self.userid = response.data.data._id
         console.log('user detail response------>',self.userid)
       })
       .catch(function (error) {

@@ -149,7 +149,7 @@
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 					<div class="pull-right">
-						<a class="btn-search pull-right ui-link" href="/en_ca/my-account/address-book/add">Add New Address</a>
+						<a class="btn-search pull-right ui-link" v-on:click='addNewAddressBook()'>Add New Address</a>
 					</div>
 				</div>
 			</div>
@@ -219,22 +219,29 @@
     </div>
 </template>
 <script>
-    let axios = require('axios'); 
+	import config from '../../config/customConfig.js'
+    import Cookies from 'js-cookie';
+	let axios = require('axios'); 
     let _ = require('lodash');
-    var api = "http://172.16.61.112:3032/address-book";
-	var apiurl = "http://172.16.61.112:3032/change-city-state-country";
+    var api = "http://172.16.61.160:3032/address-book";
+	var apiurl = "http://172.16.61.160:3032/change-city-state-country";
     export default {
         name: 'addressbook',
         data() {
             return { 
 				addressbook: [],
-				typedata: []
+				typedata: [],
+				userid: ''
             }
         },
         methods: {
             async init () {
                 var self = this
-                let abc = await axios.get( api )
+                let abc = await axios.get( api , {
+                    params: {
+                        user_id: self.userid
+                    }
+                })
                 .then(function (response){
                     // console.log("response", response.data.data)
                     return response.data.data                  
@@ -288,43 +295,27 @@
             },
 			saveTheThing (id) {
 				console.log("124ahjhdkjs", id)
-				this.$router.push('/address-book/'+id)
+				// this.$router.push('/address-book/'+id)
+			},
+			addNewAddressBook () {
+				// this.$router.push('/new-address-book/')
 			}
         },
-        mounted() {
+        async mounted() {
+			var self = this
+			await axios({
+                method: 'get',
+                url: config.default.userDetail,
+                headers: {'Authorization': Cookies.get('auth_token')}
+                }).then(async function (response) {
+                    self.userid = response.data.data._id               
+                    console.log('user detail response------>',self.userid)
+                })
+                .catch(function (error) {
+                    console.log("-------",error);
+                    self.$Message.error(error)
+            });
             this.init()
-        },
-		filters: {
-			//  async getCountryStateCityById (id, type){
-			// 	//  let type = 3;
-			// 	var resp = await axios({
-			// 		method: 'GET',
-			// 		url: apiurl,
-			// 		params: {
-			// 			'id':id,
-			// 			'type':type
-			// 		}
-			// 		})
-			// 	.then(function (response) {
-			// 		if(response.data != ''){
-			// 			if(type == 1)
-			// 			resp = response.data.country_name;
-			// 			else if (type == 2)
-			// 			resp = response.data.state_name;
-			// 			else if (type == 3)
-			// 			resp = response.data.city_name;
-			// 		}
-			// 		console.log("++++++++",resp)
-			// 			return resp;
-			// 	})
-			// 	.catch(function (error) {
-			// 		// console.log("error",error);
-			// 	});
-			// 	// setTimeout(() => {
-			// 		// console.log("resp++++++",resp);
-			// 		return resp;
-			// 	// }, 500);
-			// }
-		}
+        }
     }
 </script>

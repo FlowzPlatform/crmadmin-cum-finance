@@ -218,13 +218,13 @@ export const appRouter = [
                 name: 'Address book', 
                 component: resolve => { require(['@/views/my-account/address-book.vue'], resolve);}
             },
-            { 
-                path: 'list-billing', 
-                title: 'List of Bills',
-                icon: 'ios-list-outline',
-                name: 'Billing List', 
-                component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
-            },
+           // { 
+             //   path: 'list-billing', 
+               // title: 'List of Bills',
+               // icon: 'ios-list-outline',
+              //  name: 'Billing List', 
+               // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
+           // },
             {
                 path: 'change-password',
                 title: 'Change Password',

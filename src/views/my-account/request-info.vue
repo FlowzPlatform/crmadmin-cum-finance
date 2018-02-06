@@ -14,12 +14,12 @@ import moment from 'moment'
 import config from '@/config/customConfig'
 import expandRow from './view-request-info.vue';
 import _ from 'lodash'
-var api = "http://172.16.61.112:3032/request-info";
+var api = "http://172.16.61.160:3032/request-info";
 export default {
   name: 'myaccount',
   components: { expandRow },
   data () {
-  return { 
+  return {
     websiteList: {},
     website: '',
     userid:'',
@@ -48,9 +48,9 @@ export default {
         }
       },
       {
-        "title": "CREATED DATE",
+        "title": "REQUESTED ON",
         "key": "created_at",
-        render:(h,{row})=>{ 
+        render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
                 return date1
               }
@@ -66,6 +66,7 @@ export default {
         method: 'get',
         url: api,
         params : {
+          userId:self.userid
         },
         headers:{
         }
@@ -99,18 +100,18 @@ export default {
   },
   async mounted(){
     var self = this
-    // await axios({
-    //   method: 'get',
-    //   url: config.default.userDetail,
-    //   headers: {'Authorization': Cookies.get('auth_token')}
-    //   }).then(async function (response) {
-    //     self.userid = response.data.data._id               
-    //     console.log('user detail response------>',self.userid)
-    //   })
-    //   .catch(function (error) {
-    //     console.log("-------",error);
-    //       self.$Message.error(error)
-    //   });
+    await axios({
+      method: 'get',
+      url: config.default.userDetail,
+      headers: {'Authorization': Cookies.get('auth_token')}
+      }).then(async function (response) {
+        self.userid = response.data.data._id
+        console.log('user detail response------>',self.userid)
+      })
+      .catch(function (error) {
+        console.log("-------",error);
+          self.$Message.error(error)
+      });
   this.getReuestQuoteData();
   }
 }
