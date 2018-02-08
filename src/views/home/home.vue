@@ -719,7 +719,8 @@ export default {
                     //user : Cookies.get('user')
                 },
                 headers: {
-                    Authorization : Cookies.get('auth_token')
+                    Authorization : Cookies.get('auth_token'),
+                    subscriptionId : Cookies.get('subscriptionId')
                 }
             })
             .then(function (response) {
@@ -759,18 +760,24 @@ export default {
                 
             })
             .catch(function (error) {
-                console.log("errrrroooooooor",error.response)
+                
                 self.disabled = false;
                 if(error.response.status == 401){
-                    let location = psl.parse(window.location.hostname)
-                    location = location.domain === null ? location.input : location.domain
-                    
-                    Cookies.remove('auth_token' ,{domain: location}) 
-                    self.$store.commit('logout', self);
-                    console.log("navigate to login")
-                    self.$router.push({
-                        name: 'login'
-                    });
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                }else if(error.response.status == 403){
+                                            self.$Notice.error({
+                                                title: error.response.statusText,
+                                                desc: error.response.data.message,
+                                                duration: 0
+                                            });
                 }
                 
             });

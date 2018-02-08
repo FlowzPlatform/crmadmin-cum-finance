@@ -9,8 +9,8 @@
         <div class="col-md-4">
             <el-input placeholder="Please enter email id" v-model="input"></el-input>
         </div>  
-        <div class="col-md-4">
-            <el-select v-model="value1" placeholder="Select Role">
+        <div class="col-md-4" >
+            <el-select v-model="value1" placeholder="Select Role" style="width:38   0px">
             <el-option
             v-for="item in options"
             :key="item.value1"
@@ -31,6 +31,16 @@
         <el-button type="primary" @click="inviteNow()">Invite Now</el-button>
         </div>
         </div>
+
+        <Tabs  style="margin-top: 20px">
+            <TabPane label="Own Subscription">
+                <Table :columns="columns3" :data="data3" stripe></Table>
+            </TabPane>
+            <TabPane label="Assigned Subscription">
+                <Table :columns="columns2" :data="data2" stripe></Table>
+            </TabPane>
+           
+        </Tabs>
     </div>
     </div>
     
@@ -46,10 +56,13 @@
     import ElementUI from 'element-ui';
     import config from '@/config/customConfig.js'
     let feathersUrl =  config.default.serviceUrl;
+    let subscriptionUrl = config.default.subscriptionUrl
+    import expandRow from './assigned_invite_table-expand.vue';
     // import locale from 'element-ui/src/locale/lang/en';
     // import 'element-ui/lib/theme-default/index.css';
     Vue.use(ElementUI);
     export default {
+        components: { expandRow },
         data() {
             return {
                 options: '',
@@ -58,7 +71,68 @@
                 value2: '',
                 roleOption1: '',
                 roleValue1: '',
-                input: ''
+                input: '',
+                data2:[],
+                data3: [],
+                assigned_Arr2 : [],
+                assigned_Arr3 : [],
+                columns2: [
+                    {
+                        title: 'Subscription Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Subscription Id',
+                        key: 'subscriptionId'
+                    },
+                    {
+                        title: 'Module',
+                        key: 'role',
+                        render: (h, params) => {
+                            return h('div', [
+                               // console.log(params)
+                                h('p', Object.keys(params.row.role))
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Role',
+                        key: 'role',
+                        render: (h, params) => {
+                            return h('div', [
+                                //console.log(params)
+                                //let obj= Object.keys(params.row.role);
+                                h('strong', params.row.role[Object.keys(params.row.role)])
+                            ]);
+                        }
+                    }
+                ],
+                 columns3: [
+                     {
+                        type: 'expand',
+                        width: 50,
+                        render: (h, params) => {
+                            return h(expandRow, {
+                                props: {
+                                    row: params.row
+                                }
+                            })
+                        }
+                    },
+                    {
+                        title: 'Subscription Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Subscription Id',
+                        key: 'subscriptionId'
+                    },
+                    {
+                        title: 'Role',
+                        key: 'role',
+                        
+                    }
+                ],
             }
         },
         mounted() {
@@ -68,7 +142,10 @@
             async getDataOfSubscriptionUser() {
                 let sub_id = [];
                 let Role_id = [];
-                axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
+                
+               // axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
+                    
+                    axios.get(subscriptionUrl + 'register-roles', {
                         // headers: {
                         //     'Authorization': Cookies.get('auth_token')
                         // },
@@ -100,15 +177,28 @@
                         let new_data = response.data.data.package;
                         for (var key in new_data) {
                             if (new_data.hasOwnProperty(key)) {
-                                console.log( new_data[key].subscriptionId);
-                                sub_id.push({
-                                "value2": new_data[key].subscriptionId,
-                                "label2": new_data[key].subscriptionId
-                            })
+                                
+                                if (new_data[key].role == "admin") {
+                                    sub_id.push({
+                                        "value2": new_data[key].subscriptionId,
+                                        "label2": new_data[key].name
+                                    })
+                                    this.assigned_Arr3.push(new_data[key])
+                                }else{
+                                    console.log( "new_data[key].subscriptionId " ,  new_data[key]);
+                                    this.assigned_Arr2.push(new_data[key])
+                                    
+                                    console.log(this.assigned_Arr2) 
+                                }
+                                
                             }
                         }
                         console.log("sub_id..........", sub_id)
-                        this.options2 = sub_id
+                                    console.log(this.assigned_Arr3) 
+                        
+                        this.data2 = this.assigned_Arr2 ;
+                        this.data3 = this.assigned_Arr3;
+                        this.options2 = sub_id;
                         
                     })
 
@@ -121,16 +211,18 @@
                 let userId;
                 let previous_packages;
                 let params = {
-                    "email": this.input,
+                    "toEmail": this.input,
                     "subscriptionId": this.value2,  
                     "role": {
                         "crm": this.value1
-                    }
+                    },
+                    "fromEmail" : Cookies.get('user')
                 }
 
                 await axios({
                         method: 'POST',
-                        url: feathersUrl + 'invite',
+                         url: subscriptionUrl + 'invite',
+                       // url: 'http://172.16.230.86:3030/invite',
                         headers: {
                             "Authorization": Cookies.get('auth_token'),
 
@@ -139,10 +231,13 @@
                     })
                     .then(function(response) {
                         console.log('response------------------------>', response)
-                        //self.handleReset();
+                        if(response.data.status == 404 ){
+                             alert(response.data.data)
+                            //self.$message.warning(response.data.data);
+                        }
                     })
                     .catch(function(error) {
-                        console.log('error', error.response)
+                        console.log('error', error)
                     })
 
             }

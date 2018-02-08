@@ -31,7 +31,7 @@
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
                     <div style="float:right;margin-top:-26px;">
-                         <el-select v-model="value2" placeholder="Select subscription">
+                         <el-select style="width: 240px;" @change="changeSubscription()" v-model="value2" placeholder="Select subscription">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -129,6 +129,7 @@
     import axios from 'axios'
     import ElementUI from 'element-ui';
     import Vue from 'vue';
+    let subscriptionUrl = config.default.subscriptionUrl
     Vue.use(ElementUI);
 
     export default {
@@ -184,10 +185,15 @@
             }
         },
         methods: {
+
+            async changeSubscription(){
+                
+                Cookies.set("subscriptionId" , this.value2)
+            },
             async getDataOfSubscriptionUser() {
                 let sub_id = [];
                 let Role_id = [];
-                axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
+                axios.get(subscriptionUrl+'register-roles', {
                         // headers: {
                         //     'Authorization': Cookies.get('auth_token')
                         // },
@@ -222,12 +228,17 @@
                                 console.log( new_data[key].subscriptionId);
                                 sub_id.push({
                                 "value2": new_data[key].subscriptionId,
-                                "label2": new_data[key].subscriptionId
+                                "label2": new_data[key].name
                             })
                             }
                         }
                         console.log("sub_id..........", sub_id)
-                        this.options2 = sub_id
+                        this.options2 = sub_id;
+                        if(!Cookies.get("subscriptionId") || Cookies.get("subscriptionId") == undefined || Cookies.get("subscriptionId") == ""){
+                            this.value2 = sub_id[0].value2
+                            Cookies.set("subscriptionId" , this.value2)
+                        }
+                        
                         
                     })
 
@@ -264,7 +275,8 @@
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
-                    Cookies.remove('user' ,{domain: location}) 
+                    Cookies.remove('user' ,{domain: location})
+                    Cookies.remove('subscriptionId' ,{domain: location})  
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
@@ -336,6 +348,10 @@
         mounted () {
             this.getDataOfSubscriptionUser();
             this.init();
+            if(Cookies.get("subscriptionId") && Cookies.get("subscriptionId") != undefined){
+                this.value2 = Cookies.get("subscriptionId")
+            }
+             
         },
         created () {
 

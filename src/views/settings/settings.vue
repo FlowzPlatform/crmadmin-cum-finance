@@ -477,7 +477,8 @@ Vue.use(VueWidgets);
                                 method: 'post',
                                 url: feathersUrl +'settings',
                                 headers:{
-                                    Authorization : Cookies.get('auth_token')
+                                    Authorization : Cookies.get('auth_token'),
+                                    subscriptionId : Cookies.get('subscriptionId')
                                 },
                                 data: data
                             })  
@@ -489,7 +490,8 @@ Vue.use(VueWidgets);
                                     method:'get',
                                     url:feathersUrl +'settings',
                                     headers:{
-                                        Authorization : Cookies.get('auth_token')
+                                        Authorization : Cookies.get('auth_token'),
+                                        subscriptionId : Cookies.get('subscriptionId')
                                     },
                                 })
                                 .then(response => {
@@ -499,6 +501,7 @@ Vue.use(VueWidgets);
                                 self.$Loading.finish();
                                 })
                                 .catch(error => {
+                                    
                                         if(error.response.status == 401){
                                             let location = psl.parse(window.location.hostname)
                                             location = location.domain === null ? location.input : location.domain
@@ -509,11 +512,18 @@ Vue.use(VueWidgets);
                                             self.$router.push({
                                                 name: 'login'
                                             });
+                                        }else if(error.response.status == 403){
+                                            self.$Notice.open({
+                                                 title: error.response.statusText,
+                                                desc: error.response.data.message,
+                                                duration: 0
+                                            });
                                         }
                                         self.$Loading.error();
                                 });
                             })
                             .catch(function (error) {
+                                console.log(error.response)
                                  if(error.response.status == 401){
                                     let location = psl.parse(window.location.hostname)
                                     location = location.domain === null ? location.input : location.domain
@@ -524,7 +534,13 @@ Vue.use(VueWidgets);
                                     this.$router.push({
                                         name: 'login'
                                     });
-                                }
+                                }else if(error.response.status == 403){
+                                            self.$Notice.error({
+                                                title: error.response.statusText,
+                                                desc: error.response.data.message,
+                                                duration: 0
+                                            });
+                                        }
                             });
                     
                 
