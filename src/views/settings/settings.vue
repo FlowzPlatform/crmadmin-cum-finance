@@ -470,7 +470,7 @@ Vue.use(VueWidgets);
                                     "customer_url" :  feathersUrl+"customcustomer",
                                     "invoice_url" : feathersUrl+"custominvoice",
                                     "domain" : 'custom',
-                                    "isActive" : false,
+                                    "isActive" : true,
                                     "isDeleated" : false
                                 }
                         axios({

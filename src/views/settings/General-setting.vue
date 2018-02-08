@@ -483,12 +483,15 @@ export default {
           })
           self.configs = _.sortBy(newConf, ['configName']);
           console.log("self.configs---------------->after",self.configs)
-        }else
+
+        }
+        else
         {
           self.$Message.warning({
                 content: 'Configure or activate at least one Xero , Quickbook or custom account',
                 duration: 5
             });
+
         }
       })
       .catch(function (error) {

@@ -392,8 +392,10 @@ export default {
                             
                             self.$message.error("The server encountered a temporary error and could not complete your request");
                                
-                        }else {
-                            self.$message.error(error.response.data);
+
+                        }else if(error.response.status == 401){
+                            self.$message.error("email or password is incorrect");
+
                         }
                         
                     });

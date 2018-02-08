@@ -252,16 +252,14 @@ export default {
           console.log("self.configs---------------->after",self.configs)
         }else
         {
+
           // self.$Modal.warning({
           // title: 'No Configuration available',
           // okText : "Go to Settings",
           // content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
           // onOk: () => {
           //   self.$router.push({
-          //     name: 'newsettings'
-          //   })
-          //   }
-          // });
+
         }
       })
       .catch(function (error) {

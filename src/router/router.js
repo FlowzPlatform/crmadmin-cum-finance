@@ -75,7 +75,11 @@ export const otherRouter = {
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
         { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
+
+       // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
         
+                
+
     ]
 };
 
@@ -199,22 +203,36 @@ export const appRouter = [
                 path: 'order-list', 
                 title: 'Order List',
                 icon: 'ios-cart',
-                name: 'Order-list', 
+                name: 'Ordered List', 
                 component: resolve => { require(['@/views/my-account/order-list.vue'], resolve);}
             },
             { 
                 path: 'request-quote', 
                 title: 'Request Quote',
                 icon: 'pull-request',
-                name: 'request-quote', 
+                name: 'Requested Quotes', 
                 component: resolve => { require(['@/views/my-account/request-quote.vue'], resolve);}
             },
             { 
-                path: 'list-billing', 
-                title: 'List of Bills',
-                icon: 'ios-list-outline',
-                name: 'list-billing', 
-                component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
+                path: 'address-book', 
+                title: 'Address Book',
+                icon: 'ios-compose',
+                name: 'Address book', 
+                component: resolve => { require(['@/views/my-account/address-book.vue'], resolve);}
+            },
+           // { 
+             //   path: 'list-billing', 
+               // title: 'List of Bills',
+               // icon: 'ios-list-outline',
+              //  name: 'Billing List', 
+               // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
+           // },
+            {
+                path: 'change-password',
+                title: 'Change Password',
+                icon: 'locked',
+                name: 'Change Password',
+                component: resolve => { require(['@/views/my-account/change-password.vue'], resolve);}
             }
         ]
     },

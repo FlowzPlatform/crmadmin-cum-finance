@@ -6,7 +6,7 @@
           <div class="col-sm-12 header">
             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
               <icon type="eye"></icon>
-              <span> REQUEST QUOTES DETAILS</span>
+              <span>VIEW REQUEST INFO DETAILS</span>
             </p>
           </div>
         </div>
@@ -19,10 +19,10 @@
                 ID : {{row.id}}
               </div>
               <div class="col-lg-3 col-md-4 col-sm-4">
-                Requested On : {{createdAt}}
+                Requested On : {{created_date}}
               </div>
               <div class="col-lg-2 col-md-4 col-sm-4">
-                Total Items : {{row.total_qty}}
+                Total Items : {{row.productInfo.length}}
               </div>
             </div>
           </div>
@@ -33,25 +33,25 @@
           PRODUCT
           <p slot="content">
             <label>
-          <div class="panel-body">
+          <div class="panel-body" v-for="item in row.productInfo">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
                 <div class="detail-image">
-                  <img alt="" :src="getImgUrl(row.product_description.default_image)" id="order_product_image_0" class="img-responsive">
+                  <img alt="" :src="getImgUrl(item.default_image)" id="order_product_image_0" class="img-responsive">
                   </div>
                 </div>
                 <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
-                  <h2 class="heading-2">{{row.product_description.product_name}}</h2>
+                  <h1 class="heading-2">{{item.product_name}}</h1>
                   <div class="skuprice">
                     <div style="text-align: -webkit-center;background: #f5f5f5;
             padding: 7px 0;">Item Number :
-                      <span>{{row.product_description.sku}}</span>
+                      <span>{{item.sku}}</span>
                     </div>
                   </div>
                 </div>
             </div>
-            <div v-for="item in row.product_description.pricing">
-              <div v-if="item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global'">
+            <div v-for="i in item.pricing">
+              <div v-if="i.price_type == 'regular' && i.type == 'decorative' && i.global_price_type == 'global'">
                 <h3 class="quantity-price">Quantity Price</h3>
                 <div class="quantity-table">
                   <div class="quantity-table-title" style="float: left;width: 23%;">
@@ -60,7 +60,7 @@
                   </div>
                   <div class="quantity-table-disc">
                     <div class="quantity-table-col owl-carousel owl-theme" style="opacity: 1; display: block;">
-                      <div class="owl-wrapper-outer" v-for="element in item.price_range">
+                      <div class="owl-wrapper-outer" v-for="element in i.price_range">
                         <ul class="owl-wrapper" style="width: 808px; left: 0px; display: block; transition: all 0ms ease; transform: translate3d(0px, 0px, 0px);">
                           <li class="owl-item" style="width: 101px;">
                             <div>
@@ -88,94 +88,29 @@
                 </div>
               </div>
             </div>
-            <h3 class="product-summary">Product Summary</h3>
+            <h3 class="product-summary">Colours</h3>
               <div class="estimate-detail product-section-box">
                 <div class="estimate-tag-block border-bottom">
-                  <div class="row"  v-for="(item,index) in row.shipping_method.shipping_detail">
-                    <div class="col-sm-12">
-                     <div class="estimate-row heading">
-                        <span>Quantity {{index+1}}</span>
-                      </div>
-                      <table class="product-color-price-table">
-                        <tbody v-for="(element,inx) in item.color_quantity">
-
-                          <tr>
-                            <td>
-                              <i class="white-color-box">
-                                <img src="">
-                              </i>
-                            </td>
-                            <td>{{inx}}</td>
-                            <td>
-                              <strong>Total : {{element}}</strong>
-                            </td>
-                          </tr>
-
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="estimate-tag-block" v-for="item in row.shipping_method.shipping_detail">
-                    <h3 class="">Shipping Method</h3>
-                      <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                          <div class="estimate-row">Shipping Charge : <span>{{item.shipping_detail.shipping_charge}}</span></div>
-                            <div class="estimate-row">
-                              <div>Shipping Address :
-                                <br>avcjh,
-                                <br>Ontario
-                                <br>Ottawa (Alta Vista)
-                                <br>Canada
-                              </div><br>
-                              <div>Postal Code : <span>K0A1B0</span></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                          <div class="estimate-row">
-                            <div>Shipping carrier : <span>{{item.shipping_detail.shipping_carrier}}</span></div>
-                          </div>
-                          <div class="estimate-row">
-                            <div>Ship Method : <span>{{item.shipping_detail.shipping_method}}</span></div>
-                          </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                          <div class="estimate-row">
-                            <div>Requested In Hand Date : <span>{{item.shipping_detail.on_hand_date}}</span></div>
-                          </div>
-                          <div class="estimate-row">
-                            <div>Ship on my account : <span></span></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-                <div class="estimate-tag-block" v-for="item in row.imprint">
                   <div class="row">
-                    <div class="col-lg-12 col-md-6 col-sm-6">
-                      <h3>Print Position: {{item.imprint_position_name}}</h3>
-                      <div class="estimate-row">
-                        Imprint Method :
-                        <span>{{item.imprint_method_name}}</span>
+                    <div class="col-sm-12">
+                      <div class="inquiry-color-block">
+                        <ul v-for="i in item.attributes.colors">
+                          <li class="color2" data-original-title="i" :style="{ backgroundColor: i }"></li>
+                        </ul>
                       </div>
-                    <div v-if="item.no_of_color">
-                      <div class="estimate-row">
-                         How many colours :
-                        <span> {{item.no_of_color}} Colour</span>
-                      </div>
-                      <div class="estimate-row" v-for="(i,index) in item.selected_colors">
-                        <div>
-                          Colour {{index+1}} :<span>{{i}}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else></div>
                     </div>
                   </div>
+                  <div class="estimate-tag-block">
+                    <h3 class="">Product Description</h3>
+                      <div class="row">
+                        <div class="estimate-row" v-html="item.description"></div>
+                      </div>
+                    </div>
                 </div>
               <h3>Special Instructions</h3>
               <div class="estimate-tag-block">
                 <div>
-                 {{row.special_instruction}}
+                 {{row.instruction}}
                 </div>
               </div>
               </div>
@@ -185,7 +120,7 @@
         </Panel>
         <Panel name="2">
           MY INFORMATION
-            <p slot="content">
+           <!--  <p slot="content">
               <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12">
                 <h4>Dweep Patel</h4>
                 <p>
@@ -214,7 +149,7 @@
                   </li>
                 </ul>
               </label>
-            </p>
+            </p> -->
           </Panel>
       </Collapse>
     </Card>
@@ -234,7 +169,9 @@ export default {
   data () {
   return {
     imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
-    createdAt: ''
+    data: '',
+    created_date: '',
+    colors:[]
     }
   },
   methods: {
@@ -242,9 +179,15 @@ export default {
       return this.imgurl + url
     }
   },
+  computed: {
+    // styles() {
+    //    return {
+    //     'background-color': this.colors[0]
+    //     };
+    // }
+  },
   mounted(){
-    console.log('row@@@@@@@@@@@@@@@@@',this.row)
-    this.createdAt = moment(this.row.created_at).format('DD-MMM-YYYY')
+    this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
   }
 }
 </script>
@@ -386,7 +329,7 @@ export default {
 }
 .product-color-price-table {
     margin-bottom: 20px;
-    width: 100%;
+
     border-color: white;
 }
 .product-color-price-table td {
@@ -427,5 +370,16 @@ h3 {
 }
 .product-color-price-table>tr>td{
   border: none;
+}
+.inquiry-color-block ul li {
+    border: 2px solid #ccc;
+    width: 25px;
+    height: 25px;
+    float: left;
+    margin-right: 2px;
+    margin-bottom: 2px;
+}
+.panel-body{
+  width: 139%;
 }
 </style>
