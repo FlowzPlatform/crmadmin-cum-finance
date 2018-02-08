@@ -219,7 +219,7 @@
                                         <tr>
                                             <th> ORDER ID : {{row.id}} </th>
                                             <th> ORDER TYPE : {{item.order_type | upper}} </th>
-                                            <th> SHIPPING : STANDARD </th>
+                                            <th> SHIPPING : {{item.shipping_method.shipping_type | upper}} </th>
                                             <th> <a @click="clicked(inx)">
                                                 <Icon type="eye" size="20"></Icon></a> </th>
                                         </tr>
@@ -356,10 +356,10 @@
                                                                                                 <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                 <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                             </td>
-                                                                                            <td style="width:18%">
+                                                                                            <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                 <span style="float: left">Shipping Type: </span> {{item.shipping_method.shipping_type}} <br>
-                                                                                                <span style="float: left">Shipping Carrier: </span> - <br>
-                                                                                                <span style="float: left">Method:  </span> - <br>
+                                                                                                <span style="float: left">Shipping Carrier: </span> <span v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
+                                                                                                <span style="float: left">Method: </span> <span  v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                 <span style="float: left">In Hand Date : </span> -
                                                                                             </td>
                                                                                             <td style="width:16%">
@@ -379,14 +379,14 @@
                                                 </table>
                                             </td>
                                         </tr>
-                                        <tr class="item_total">
+                                        <tr class="item_total" v-for="(i, j) in item.shipping_method.shipping_detail">
                                             <th>Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
                                             <th colspan="2">Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                 <span v-else> $00.00 </span> 
                                             </th>
-                                            <th>Shipping Charge :$00.00 </th>
+                                            <th>Shipping Charge : <span v-if="i.shipping_detail.shipping_charge"> {{ getShippingCharge(i.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span> </th>
                                             <th>Tax : $00.00 </th>
-                                            <th>Sub Total:<span style="color:#C11E19">  {{ getSubTotal(item.total_qty, item.unit_price, item) }}</span></th>
+                                            <th>Sub Total:<span style="color:#C11E19" v-if="i.shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, i.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> </th>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -454,8 +454,6 @@
         data() {
             return {
                  value1: '1',
-                 billinfo: false,
-                 billData: [],
                  orderDate: '',
                  moment: moment,
                  imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
@@ -465,16 +463,23 @@
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
+            getShippingCharge(item){
+                var sum = 0;
+                sum = sum + item;
+                return accounting.formatMoney(sum)
+            },
             getImgUrl (url) {
                 return this.imgurl + url
             },
-            getSubTotal (a, b, c) {
+            getSubTotal (a, b, c, d) {
+                var sum = 0;
+                sum = sum + d;
                 var res = c.hasOwnProperty('charges')
                 if ( res == false) {
-                    return accounting.formatMoney(a*b)
+                    return accounting.formatMoney((a*b) + parseFloat(sum))
                 }
                 else {
-                    return accounting.formatMoney((a*b + parseInt(c.charges.setup_charge)))
+                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
                 }
             },
             accounting(item){
