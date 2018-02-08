@@ -5,7 +5,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
-        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
+        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'206px', overflow: shrink ? 'visible' : 'auto'}">
             <shrinkable-menu
                 :shrink="shrink"
                 @on-change="handleSubmenuChange"
@@ -30,11 +30,24 @@
                     <div class="main-breadcrumb">
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
+                    <div style="float:right;margin-top:-26px;">
+                         <el-select style="width: 240px;" @change="changeSubscription()" v-model="value2" placeholder="Select subscription">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value2"
+                            :label="item.label2"
+                            :value="item.value2">
+                            </el-option>
+                        </el-select>
+                    </div>
                 </div>
                 <div class="header-avator-con">
+                     
                     <div class="headerMenu">
+                       
                     <Menu mode="horizontal"  active-name="1">
                         <Submenu name="3">
+
                             <template slot="title">
                                 <Icon type="grid" size="large" style="font-size: 23px;padding-top: 21px;"></Icon>
                             </template>
@@ -112,7 +125,13 @@
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
     import psl from 'psl';
-    import config from '@/config/customConfig'
+    import config from '@/config/customConfig';
+    import axios from 'axios'
+    import ElementUI from 'element-ui';
+    import Vue from 'vue';
+    let subscriptionUrl = config.default.subscriptionUrl
+    Vue.use(ElementUI);
+
     export default {
         
         components: {
@@ -134,7 +153,9 @@
                 flowzBuilderUrl : config.default.flowzBuilderUrl ,
                 flowzVmailUrl : config.default.flowzVmailUrl ,
                 flowzUploaderUrl : config.default.flowzUploaderUrl ,
-                flowzDbetlUrl : config.default.flowzDbetlUrl 
+                flowzDbetlUrl : config.default.flowzDbetlUrl,
+                options2: '',
+                value2: '' 
             };
         },
         computed: {
@@ -164,6 +185,64 @@
             }
         },
         methods: {
+
+            async changeSubscription(){
+                
+                Cookies.set("subscriptionId" , this.value2)
+            },
+            async getDataOfSubscriptionUser() {
+                let sub_id = [];
+                let Role_id = [];
+                axios.get(subscriptionUrl+'register-roles', {
+                        // headers: {
+                        //     'Authorization': Cookies.get('auth_token')
+                        // },
+                        params : {module : 'crm'}
+                    })
+                    .then(response => {
+                        //console.log("res.................------>>>>", response)
+                        let new_data = response.data.data;
+                         //console.log(new_data.length)
+                        for (let index = 0; index < new_data.length; index++) {
+                            console.log("data.........", new_data[index].role)
+                            
+                            Role_id.push({
+                                "value1": new_data[index].role,
+                                "label1": new_data[index].role
+                            })
+                        }
+                        //console.log("Role_id..........", Role_id)
+                        
+                        this.options = Role_id
+                    })
+                    axios.get('http://auth.flowzcluster.tk/api/userdetails', {
+                        headers: {
+                            'Authorization': Cookies.get('auth_token')
+                        }
+                    })
+                    .then(response => {
+                        console.log("res.................------>>>>", response)
+                        let new_data = response.data.data.package;
+                        for (var key in new_data) {
+                            if (new_data.hasOwnProperty(key)) {
+                                console.log( new_data[key].subscriptionId);
+                                sub_id.push({
+                                "value2": new_data[key].subscriptionId,
+                                "label2": new_data[key].name
+                            })
+                            }
+                        }
+                        console.log("sub_id..........", sub_id)
+                        this.options2 = sub_id;
+                        if(!Cookies.get("subscriptionId") || Cookies.get("subscriptionId") == undefined || Cookies.get("subscriptionId") == ""){
+                            this.value2 = sub_id[0].value2
+                            Cookies.set("subscriptionId" , this.value2)
+                        }
+                        
+                        
+                    })
+
+            },
             init () {
                 let self = this;
                 
@@ -196,7 +275,8 @@
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
-                    Cookies.remove('user' ,{domain: location}) 
+                    Cookies.remove('user' ,{domain: location})
+                    Cookies.remove('subscriptionId' ,{domain: location})  
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
                     this.$router.push({
@@ -266,8 +346,12 @@
             }
         },
         mounted () {
-            
+            this.getDataOfSubscriptionUser();
             this.init();
+            if(Cookies.get("subscriptionId") && Cookies.get("subscriptionId") != undefined){
+                this.value2 = Cookies.get("subscriptionId")
+            }
+             
         },
         created () {
 

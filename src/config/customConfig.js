@@ -32,6 +32,7 @@ module.exports =  {
     default : {
 
 
+
         loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
         ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
         registrationUrl : "https://api."+process.env.domainkey+"/auth/serverapi/register",
@@ -42,6 +43,7 @@ module.exports =  {
         changepassword :                    "https://api."+process.env.domainkey+"/auth/api/changepassword",
         feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/auth/serverapi/",
         varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
+
 
 
 
@@ -66,7 +68,8 @@ module.exports =  {
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
-        // serviceUrl :            'http://localhost:3037/',
+        //serviceUrl :            'http://localhost:3037/',
+        subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
         orderapi :  'http://172.16.61.160:3032/myOrders',

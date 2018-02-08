@@ -253,20 +253,12 @@ export default {
         }else
         {
 
-          // self.$Message.warning({
-          //       content: 'Please navigate to settings and configure or activate at least one Xero or Quickbook account',
-          //       duration: 5
-          //   });
           // self.$Modal.warning({
           // title: 'No Configuration available',
           // okText : "Go to Settings",
           // content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
           // onOk: () => {
           //   self.$router.push({
-          //     name: 'New Settings'
-          //   })
-          //   }
-          // });
 
         }
       })

@@ -7,7 +7,6 @@
       <div class="mainBody">
         <vue-particles color="#dedede"></vue-particles>
       <div v-if="!isSocialLogin" class="loginContainer">
-          
          <div class="success">
             <p id="text_mess" v-if="errmsg!=''">{{errmsg}}</p>
          </div>
@@ -368,8 +367,8 @@ export default {
                             console.log('--------------->>>>',result)
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
-                             Cookies.set('user',  result.data.data.email  , {domain: location});
-                              Cookies.set('auth_token', response.data.logintoken , {domain: location});
+                            Cookies.set('user',  result.data.data.email  , {domain: location});
+                            Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
                             Cookies.set('email', response.data.email , {domain: location}) ;
                             Cookies.set('password', '123456');
@@ -393,8 +392,10 @@ export default {
                             
                             self.$message.error("The server encountered a temporary error and could not complete your request");
                                
+
                         }else if(error.response.status == 401){
                             self.$message.error("email or password is incorrect");
+
                         }
                         
                     });
@@ -444,10 +445,16 @@ export default {
             })
             .catch(function (error) {
                 // this.login.password = ''
-                 console.log(error);
-                self.saveFileLoading = false;
+                 console.log(error.response);
+                //self.saveFileLoading = false;
                 //alert(error);
-                self.$message.error("Something went wrong , Please try again later");
+                
+                if(error.response.status == 409){
+                    self.$message.error(error.response.data);
+                }else{
+                    self.$message.error("Something went wrong , Please try again later");   
+                }
+
             });
            }
           },

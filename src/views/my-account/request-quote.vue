@@ -52,7 +52,9 @@ export default {
         "key": "total_qty"
       },
       {
+
         "title": "REQUESTED ON",
+
         "key": "created_at",
         render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')

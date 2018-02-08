@@ -267,6 +267,8 @@
                   <td style="padding: 5px;vertical-align: top;"></td>
 
 
+
+
                   <td style="border-top: 1px solid #eee;font-weight: bold;padding: 5px;">
                       <div class="col-sm-6" style="text-align: -webkit-right;">Total:</div>
                       <div class="col-sm-6">${{emailData.row.Total}}</div>
@@ -277,6 +279,7 @@
               <tr>
                   <td style="padding: 5px;vertical-align: top;"></td>
                   <td style="padding: 5px;vertical-align: top;"></td>
+
 
                   <td style="border-top: 1px solid #eee;font-weight: bold;background: rgb(238, 238, 238);padding: 5px;
   ">
@@ -405,6 +408,7 @@
 
   </div>
   <div id="editor"></div>
+
 
 
 
@@ -986,6 +990,7 @@
               }
             }
 
+
         ],
 
 
@@ -1011,6 +1016,7 @@
         duegt: '',
         duelt: '',
         DescriptionPdf : ''
+
       }
     },
     components: { listtransaction },
@@ -1226,6 +1232,7 @@
         }
 
 
+
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
@@ -1375,6 +1382,7 @@
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
         await axios({
+
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1390,6 +1398,7 @@
               .catch(function (error) {
                 console.log(error);
               });
+
       await axios({
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
@@ -1403,6 +1412,7 @@
               .catch(function (error) {
                 console.log(error);
               });
+
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
@@ -1418,9 +1428,11 @@
           console.log('response>>>>>>>>>>>>>>', response)
           self.DescriptionPdf = response.data[0].data.LineItems;
 
+
         })
         .catch(function (error) {
         });
+
 
         console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
@@ -1464,6 +1476,7 @@
 
 
             },
+
             onCancel: () => {
             }
           })
@@ -1487,6 +1500,7 @@
         // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
         if(params.InvoiceID != undefined){
           this.$router.push('/checkout/' + params.InvoiceID+"?settingId="+this.settingIdForPayment)
+
         }else{
           this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
         }

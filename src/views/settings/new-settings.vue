@@ -228,25 +228,36 @@ Vue.use(VueWidgets);
                                 method: 'post',
                                 url: feathersUrl +'settings',
                                 headers:{
-                                    Authorization : Cookies.get('auth_token')
+                                    Authorization : Cookies.get('auth_token'),
+                                    subscriptionId : Cookies.get('subscriptionId')
                                 },
                                 data: data
                             })  
                             .then(function (response) {
-                                console.log(response)
-                                 self.$Message.success('Success!');
+                                console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
+                                 
                                  self.loading = false;
                                  self.$Message.success('Success!');
                                  self.handleReset('XeroformValidate')
                             })
                             .catch(function (error) {
-                                Cookies.remove('auth_token') 
-                                self.$Message.error('Auth Error!');
-                                self.loading = false;
-                                  self.$store.commit('logout', this); 
-                                   self.$router.push({
-                                    name: 'login'
-                                })
+                                if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }else if(error.response.status == 403){
+                                            self.$Notice.error({
+                                                title: error.response.statusText,
+                                                desc: error.response.data.message,
+                                                duration: 0
+                                            });
+                                        }
                                
                             });
                           }, false);
@@ -282,7 +293,8 @@ Vue.use(VueWidgets);
                                 method: 'post',
                                 url: feathersUrl +'settings',
                                 headers:{
-                                    Authorization : Cookies.get('auth_token')
+                                    Authorization : Cookies.get('auth_token'),
+                                    subscriptionId : Cookies.get('subscriptionId')
                                 },
                                 data: data
                             })  
@@ -294,13 +306,23 @@ Vue.use(VueWidgets);
                                  self.handleReset('QBformValidate')
                             })
                             .catch(function (error) {
-                                Cookies.remove('auth_token') 
-                                self.$Message.error('Auth Error!');
-                                self.loading = false;
-                                  self.$store.commit('logout', this); 
-                                   self.$router.push({
-                                    name: 'login'
-                                })
+                                if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }else if(error.response.status == 403){
+                                            self.$Notice.error({
+                                                title: error.response.statusText,
+                                                desc: error.response.data.message,
+                                                duration: 0
+                                            });
+                                        }
                                
                             });
                         
