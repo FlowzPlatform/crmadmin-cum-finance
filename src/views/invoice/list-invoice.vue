@@ -19,7 +19,6 @@
                                   <div class="panel-collapse collapse" id="Customer">
                                       <select class="form-control"  v-model="cname" id="selectCustomer">
                                         <option value="">All</option>
-
                                       </select>
                                   </div>
                               </div>
@@ -104,14 +103,13 @@
 
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-            <Table @on-expand="viewDetails" accordion v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-            <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-            <Table v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
+            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+            <Table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage"></Page>
-
                 </div>
             </div>
              <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -144,7 +142,8 @@
 
   <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
           <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
-              <tbody><tr class="top">
+              <tbody>
+                <tr class="top">
                   <td colspan="3" style="padding: 5px;vertical-align: top;">
                       <table style="width: 100%;line-height: inherit;text-align: left;">
                           <tbody><tr>
@@ -164,7 +163,8 @@
                   </td>
               </tr>
 
-              <tr style="background: rgb(238, 238, 238);">
+              <!-- <tr style="background: rgb(238, 238, 238);"> -->
+              <tr>
               <td colspan="3" style="padding: 13px;vertical-align: top;">
                       <table style="width: 100%;line-height: inherit;text-align: left;">
                           <tbody><tr>
@@ -178,7 +178,6 @@
                                   {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}
 
                               </td>
-
                               <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;" v-if = "emailDataCompany.address != undefined">
                                   <b>From :</b><br>
                                   {{emailDataCompany.address.name}}<br>
@@ -196,56 +195,55 @@
                   </td>
               </tr>
               <div v-for="item in DescriptionPdf">
-              <tr>
-              <td colspan="3" style="padding: 5px;vertical-align: top;">
-                      <table style="width: 100%;line-height: inherit;text-align: left;">
-                          <tbody>
-                          <tr  v-if='item.Title'>
-                              <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
-                                  <b>Item :</b><br>
-                                  {{item.Description}}
-                              </td>
-                          </tr>
-                           <tr>
-                              <td style="vertical-align: top;">
-                                  <b>Item Description :</b><br>
-                                  {{item.Description}}
-                              </td>
-                          </tr>
-                      </tbody></table>
-                  </td>
-              </tr>
-               <tr>
-                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                      Quantity
-                  </td>
+                <tr>
+                <td colspan="3" style="padding: 5px;vertical-align: top;">
+                        <table style="width: 100%;line-height: inherit;text-align: left;">
+                            <tbody>
+                            <tr  v-if='item.Title'>
+                                <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                    <b>Item :</b><br>
+                                    {{item.Description}}
+                                </td>
+                            </tr>
+                             <tr>
+                                <td style="vertical-align: top;">
+                                    <b>Item Description :</b><br>
+                                    <div v-html="item.Description"></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </td>
+                </tr>
+                 <tr>
+                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                        Quantity
+                    </td>
 
-                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                      Unit Amount
-                  </td>
+                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                        Unit Amount
+                    </td>
 
-                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center;width:32%;">
-                      Line Amount
-                  </td>
-              </tr>
+                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center;width:32%;">
+                        Line Amount
+                    </td>
+                </tr>
 
-              <tr>
-                  <td style="padding: 5px;vertical-align: top;text-align:center">
-                      {{item.Quantity}}
-                  </td>
+                <tr>
+                    <td style="padding: 5px;vertical-align: top;text-align:center">
+                        {{item.Quantity}}
+                    </td>
 
-                  <td style="padding: 5px;vertical-align: top;text-align:center">
-                      ${{item.UnitAmount}}
-                  </td>
-                  <td style="text-align:center;padding: 5px;vertical-align: top;">
-                      ${{item.LineAmount}}
-                  </td>
-              </tr>
-              <tr>
-                  <td colspan="3"><hr style="border: #efefef solid 1px;"></td>
-              </tr>
+                    <td style="padding: 5px;vertical-align: top;text-align:center">
+                        ${{item.UnitAmount}}
+                    </td>
+                    <td style="text-align:center;padding: 5px;vertical-align: top;">
+                        ${{item.LineAmount}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><hr style="border: #efefef solid 1px;"></td>
+                </tr>
               </div>
-
               <tr>
                   <td style="padding: 5px;vertical-align: top;"></td>
                   <td style="padding: 5px;vertical-align: top;"></td>
@@ -363,7 +361,6 @@
                       {{DescriptionPdf}}
                   </td>
 
-
                   <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
                       ${{emailDataCustom.Paid}}
                   </td>
@@ -427,7 +424,6 @@
 
 
 <script>
-
   import config from '@/config/customConfig.js'
   import axios from 'axios'
   import jsPDF from 'jspdf'
@@ -529,7 +525,6 @@
                         props: {
                           placement: 'top',
                           content: 'Make Payment'
-
                         },
                         style:{
                           float:'left',
@@ -684,37 +679,50 @@
                           }
                         }
                       }, '')
-                    ]),
-                    h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'View Detailed Transaction'
-                        },
-                        style:{
-
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: this.eye
-
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            // this.viewDetails(params)
-                          }
-                        }
-                      }, '')
                     ])
+                    // h('Tooltip', {
+                    //     props: {
+                    //       placement: 'top',
+                    //       content: 'View Detailed Transaction'
+                    //     },
+                    //     style:{
+                    //
+                    //       cursor:'pointer'
+                    //     }
+                    //   }, [
+                    //   h('img', {
+                    //     attrs: {
+                    //         src: this.eye
+                    //       },
+                    //       style: {
+                    //         hight:'20px',
+                    //         width:'20px',
+                    //         margin: '2px'
+                    //       },
+                    //     on: {
+                    //       click: () => {
+                    //         // this.viewDetails(params)
+                    //       }
+                    //     }
+                    //   }, '')
+                    // ])
                   ])
                 }
+              }
+            },
+            {
+              type: 'expand',
+              width: 50,
+              render: (h, params) => {
+                console.log('params--------------->',this.newList)
+                console.log('this.newTabIndex............', this.newTabIndex)
+                return h(listtransaction, {
+
+                  props: {
+                    list:this.newList,
+                    tabIndex:this.newTabIndex
+                  }
+                })
               }
             }
 
@@ -932,32 +940,32 @@
                         }
                       }, '')
                     ]),
-                    h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'View Detailed Transaction'
-                        },
-                        style:{
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: this.eye
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            // this.viewDetails(params)
-                          }
-                        }
-                      }, '')
-                    ])
+                    // h('Tooltip', {
+                    //     props: {
+                    //       placement: 'top',
+                    //       content: 'View Detailed Transaction'
+                    //     },
+                    //     style:{
+                    //
+                    //       cursor:'pointer'
+                    //     }
+                    //   }, [
+                    //   h('img', {
+                    //     attrs: {
+                    //         src: this.eye
+                    //       },
+                    //       style: {
+                    //         hight:'20px',
+                    //         width:'20px',
+                    //         margin: '2px'
+                    //       },
+                    //     on: {
+                    //       click: () => {
+                    //         // this.viewDetails(params)
+                    //       }
+                    //     }
+                    //   }, '')
+                    // ])
                   ])
                 }
               }
@@ -967,9 +975,8 @@
               width: 50,
               render: (h, params) => {
                 console.log('params--------------->',this.newList)
-                console.log('this.newTabIndex............', params.index)
+                console.log('this.newTabIndex............', this.newTabIndex)
                 return h(listtransaction, {
-
 
                   props: {
                     list:this.newList,
@@ -1004,7 +1011,6 @@
         duegt: '',
         duelt: '',
         DescriptionPdf : ''
-
       }
     },
     components: { listtransaction },
@@ -1015,7 +1021,6 @@
       //             return this.data1.slice((p - 1) * size, p * size);
       // },
       // async changePage (p) {
-
 
       //   this.page = p
       //   this.list = await this.mockTableData1(p,pageSize);
@@ -1039,7 +1044,6 @@
         this.duelt = '';
         this.getAllSettings();
       },
-
 
       async changeData() {
        console.log("this.data6", this.data6)
@@ -1096,8 +1100,8 @@
         if(this.dategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item.DueDate)
             if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+              console.log('item>>>>>>>>>>>>>>>>>>>>', item)
               return item;
             }
           });
@@ -1213,7 +1217,6 @@
                 Authorization : Cookies.get('auth_token')
             },
                 }).then(function (response) {
-
                   res = response.data[0].data
                 })
                 .catch(function (error) {
@@ -1221,7 +1224,6 @@
                 });
           }
         }
-
 
 
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
@@ -1373,7 +1375,6 @@
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
         await axios({
-
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1389,7 +1390,6 @@
               .catch(function (error) {
                 console.log(error);
               });
-
       await axios({
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
@@ -1409,20 +1409,18 @@
       axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
           headers:{
               Authorization : Cookies.get('auth_token')
-
           },
           params : {
             settingId : settingID
           }
         })
-
         .then(async function (response) {
-          console.log("response-------------->",response);
-          self.DescriptionPdf = response.data[0].LineItems;
+          console.log('response>>>>>>>>>>>>>>', response)
+          self.DescriptionPdf = response.data[0].data.LineItems;
+
         })
         .catch(function (error) {
         });
-
 
         console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
@@ -1575,6 +1573,8 @@
       async tabClicked(data){
         console.log(data)
         this.tabIndex = data;
+        this.newList = [];
+        this.newTabIndex = '';
         let settingId = this.tabPanes[data].id;
         let settingDomain = this.tabPanes[data].domain;
         this.settingIdForPayment = settingId;
@@ -1709,33 +1709,33 @@
                           }
                         }
                       }, '')
-                    ]),
-                    h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'View Detailed Transaction'
-                        },
-                        style:{
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: self.eye
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            self.viewDetailsCustom(params ,settingId, settingDomain)
-                          }
-                        }
-                      }, '')
                     ])
+                    // h('Tooltip', {
+                    //     props: {
+                    //       placement: 'top',
+                    //       content: 'View Detailed Transaction'
+                    //     },
+                    //     style:{
+                    //
+                    //       cursor:'pointer'
+                    //     }
+                    //   }, [
+                    //   h('img', {
+                    //     attrs: {
+                    //         src: self.eye
+                    //       },
+                    //       style: {
+                    //         hight:'20px',
+                    //         width:'20px',
+                    //         margin: '2px'
+                    //       },
+                    //     on: {
+                    //       click: () => {
+                    //         self.viewDetailsCustom(params ,settingId, settingDomain)
+                    //       }
+                    //     }
+                    //   }, '')
+                    // ])
                   ])
 
               },
@@ -1746,7 +1746,7 @@
               width: 50,
               render: (h, params) => {
                 console.log('params--------------->',self.newList)
-                console.log('this.newTabIndex............', params.index)
+                console.log('this.newTabIndex............',self.newTabIndex)
                 return h(listtransaction, {
                   props: {
                     list:self.newList,
@@ -1780,6 +1780,7 @@
           self.data6 = response.data[0].data.reverse();
           self.$Loading.finish();
           $('.preload').css("display","none")
+          self.filterArray = []
           self.list = await self.mockTableData1(1,pageSize)
         })
         .catch(function (error) {
@@ -1799,26 +1800,37 @@
 
       },
 
-      async viewDetailsCustom(params ,settingIdForPayment, domain){
+      async viewDetailsCustom(params ,status){
+        // async viewDetailsCustom(params ,settingIdForPayment, domain){
 
         //this.$router.push('/transaction/list-transaction/'+ params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
-        this.viewDetailModal = true;
+        // this.viewDetailModal = true;
         // console.log(this)
         //alert(this.tabIndex);
-
+        setTimeout(function(){
+          $('.my-panel').css('display','none')
+        },0)
+        if (!status) return
+        // $('.el-table__expand-icon.el-table__expand-icon--expanded').click()
+        $('.ivu-table-cell-expand-expanded').click()
         let self = this;
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
-                  settingId : params.row.settingId,
-                  InvoiceNumber : params.row.Invoice_No
+                  settingId : params.settingId,
+                  InvoiceNumber : params.Invoice_No
               }
           })
           .then(function (response) {
               console.log("transaction response",response);
               //alert(self.tabPanes[self.tabIndex].configName)
               self.newTabIndex = self.tabIndex
-              self.newList = response.data.data;
-
+              if(response.data.data.length == 0){
+                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""}}]
+                // console.log("self.newList>>>>>>>>>>>>>", self.newList)
+                self.newList = [{key : "No transaction has been made for this Invoice"}]
+              } else {
+                self.newList = response.data.data;
+              }
               // self.$Loading.finish();
               // $('.preload').css("display","none")
               // self.newList = await self.mockTableData1(1,pageSize)
@@ -1836,14 +1848,12 @@
         setTimeout(function(){
           $('.my-panel').css('display','none')
         },100)
-
-        // ivu-table-cell-expand-expanded
         if (!status) return
-      // $('.el-table__expand-icon.el-table__expand-icon--expanded').click()
         $('.ivu-table-cell-expand-expanded').click()
 
         let self = this;
-
+        console.log('settingId>>>>>>>>>>>>>>>>>>', self.tabPanes[self.tabIndex].id)
+        console.log('InvoiceID>>>>>>>>>>>>>>>>>>', params.InvoiceID)
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
                   settingId : self.tabPanes[self.tabIndex].id,
@@ -1852,14 +1862,15 @@
           })
           .then(function (response) {
               console.log("transaction response",response);
-              //alert(self.tabPanes[self.tabIndex].configName)
-              // self.newList = ''
               self.newTabIndex = self.tabIndex
-              self.newList = response.data.data;
-
-              // self.$Loading.finish();
-              // $('.preload').css("display","none")
-              // self.newList = await self.mockTableData1(1,pageSize)
+              console.log(response.data.data.length)
+              if(response.data.data.length == 0){
+                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""}}]
+                // console.log("self.newList>>>>>>>>>>>>>", self.newList)
+                self.newList = [{key : "No transaction has been made for this Invoice"}]
+              } else {
+                self.newList = response.data.data;
+              }
           })
           .catch(function (error) {
               console.log("error",error);
@@ -1875,6 +1886,7 @@
         var date = new Date();
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
         this.dueDate =  params.row.DueDate
+        console.log('self.$refs.email2.innerHTML', self.$refs.email2.innerHTML)
         setTimeout(function(){
           self.$Modal.confirm({
             title: '',
@@ -1886,7 +1898,6 @@
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
               data: {
-
                   "html" : self.$refs.email2.innerHTML
               },
 
@@ -2057,6 +2068,4 @@
   #viewDetailInInvoice #accordion {
     display: none;
   }
-
 </style>
-
