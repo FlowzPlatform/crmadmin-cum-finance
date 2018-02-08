@@ -179,6 +179,7 @@
             },
             async download() {
                 var self = this
+		self.$Loading.start()
                 await axios({
                     method: 'post',
                     url: config.default.serviceUrl + 'exporttopdf',
@@ -188,6 +189,7 @@
                     },
                     
                     }).then(function (response) {
+		    self.$Loading.finish()
                     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
                     var arrayBufferView = new Uint8Array( response.data.data );
