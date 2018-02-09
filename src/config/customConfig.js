@@ -39,10 +39,12 @@ module.exports =  {
         signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
         userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
         forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
+
         // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
         changepassword :                    "https://api."+process.env.domainkey+"/auth/api/changepassword",
         feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/auth/serverapi/",
         varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
+
 
 
 
@@ -62,11 +64,11 @@ module.exports =  {
         flowzUploaderUrl : 'https://uploader.'+process.env.domainkey ,
         flowzDbetlUrl : 'https://dbetl.'+process.env.domainkey ,
 
-        loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
-        loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
-        loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
-        loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
+        loginWithFacebookUrl : 'https://auth.flowzservice.tk/auth/facebook',
+        loginWithGoogleUrl : 'https://auth.flowzservice.tk/auth//Gplus',
+        loginWithTwitterUrl : 'https://auth.flowzservice.tk/auth//twitter',
+        loginWithGithubUrl : 'https://auth.flowzservice.tk/auth//github',
+        loginWithLinkedInUrl : 'https://auth.flowzservice.tk/auth//linkedin',
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
         //serviceUrl :            'http://localhost:3037/',
         subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
