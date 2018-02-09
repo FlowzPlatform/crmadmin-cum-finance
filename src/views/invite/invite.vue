@@ -28,7 +28,7 @@
                 :value="item.value2">
                 </el-option>
             </el-select>
-        <el-button type="primary" @click="inviteNow()">Invite Now</el-button>
+        <el-button type="primary" :loading="loading" @click="inviteNow()">Invite Now</el-button>
         </div>
         </div>
 
@@ -38,6 +38,9 @@
             </TabPane>
             <TabPane label="Assigned Subscription">
                 <Table :columns="columns2" :data="data2" stripe></Table>
+            </TabPane>
+            <TabPane label="Assigned History">
+                <Table :columns="columns4" :data="data4" stripe></Table>
             </TabPane>
            
         </Tabs>
@@ -58,6 +61,8 @@
     let feathersUrl =  config.default.serviceUrl;
     let subscriptionUrl = config.default.subscriptionUrl
     import expandRow from './assigned_invite_table-expand.vue';
+    import moment from 'moment';
+    import _ from 'lodash'
     // import locale from 'element-ui/src/locale/lang/en';
     // import 'element-ui/lib/theme-default/index.css';
     Vue.use(ElementUI);
@@ -72,10 +77,13 @@
                 roleOption1: '',
                 roleValue1: '',
                 input: '',
+                loading :false,
                 data2:[],
                 data3: [],
+                data4: [],
                 assigned_Arr2 : [],
                 assigned_Arr3 : [],
+                assigned_Arr4 : [],
                 columns2: [
                     {
                         title: 'Subscription Name',
@@ -133,12 +141,107 @@
                         
                     }
                 ],
+                columns4: [
+                     
+                    {
+                        title: 'Subscription Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Subscription Id',
+                        key: 'subscriptionId'
+                    },
+                    {
+                        title: 'Role',
+                        key: 'role',
+                        render: (h, params) => {
+                            return h('div', [
+                                //console.log(params)
+                                //let obj= Object.keys(params.row.role);
+                                h('strong', params.row.role[Object.keys(params.row.role)])
+                            ]);
+                        }
+                        
+                    },
+                    {
+                        title: 'Module',
+                        key: 'role',
+                        render: (h, params) => {
+                            return h('div', [
+                               // console.log(params)
+                                h('p', Object.keys(params.row.role))
+                            ]);
+                        }
+                        
+                    },
+                    {
+                        title: 'Assigned By',
+                        key: 'fromEmail'
+                        
+                    },
+                    {
+                        title: 'Assigned Date',
+                        key: 'assignDate',
+                         render: (h, params) => {
+                            
+                                var date1 = moment(params.assignDate).format('DD-MMM-YYYY')
+                                return date1
+                            
+                        }
+                        
+                    },
+                    {
+                        title: 'Un-Assigned Date',
+                        key: 'unassignDate',
+                         render: (h, params) => {
+                            
+                                var date1 = moment(params.unassignDate).format('DD-MMM-YYYY')
+                                return date1
+                            
+                        }
+                        
+                    },
+                    {
+                        title: 'Assign Period',
+                        key: '',
+                        render: (h, params) => {
+                                // console.log("params....", params)
+                                // var date1 = moment(params.unassignDate).format('DD-MMM-YYYY')
+                                // return date1
+                                var now = moment(params.assignDate); 
+                                var end = moment(params.unassignDate); 
+                                var duration = moment.duration(now.diff(end));
+                                var days = duration.asDays();
+                                //console.log(days)
+                                return days + ' Days';    
+                        }
+                        
+                    }
+                ]
             }
         },
         mounted() {
             this.getDataOfSubscriptionUser();
+            this.getHistory();
         },
         methods: {
+
+            async getHistory(){
+                axios.get(subscriptionUrl+'subscription-invitation', {
+                        headers: {
+                            'Authorization': Cookies.get('auth_token')
+                        },
+                        params : {isDeleted : true}
+                    })
+                    .then(response => {
+                        console.log(response)
+                        
+                        // this.data2 = this.assigned_Arr2 ;
+                         this.data4 = response.data.data;
+                        // this.options2 = sub_id;
+                        
+                    })
+            },
             async getDataOfSubscriptionUser() {
                 let sub_id = [];
                 let Role_id = [];
@@ -167,7 +270,7 @@
                         
                         this.options = Role_id
                     })
-                    axios.get('http://auth.flowzcluster.tk/api/userdetails', {
+                    axios.get(config.default.userDetail, {
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         }
@@ -204,15 +307,26 @@
 
             },
             async inviteNow() {
-                let new_data;
-                console.log(this.input)
-                console.log(this.value1)
-                console.log(this.value2)
+                
+                if(this.value2 == undefined || this.value2 == '' || this.value1 == ''){
+                    this.$message.warning("Please select both subscription & role for invitation");
+                }else{
+                    this.loading = true;
+                    let new_data;
+                let self = this;
+                
+                let obj =_.find(this.options2, {value2:this.value2});
+               
+                
+                // console.log(this.input)
+                // console.log(this.value1)
+                // console.log(this.value2)
                 let userId;
                 let previous_packages;
                 let params = {
                     "toEmail": this.input,
-                    "subscriptionId": this.value2,  
+                    "subscriptionId": this.value2,
+                    "name" : obj.label2,  
                     "role": {
                         "crm": this.value1
                     },
@@ -221,8 +335,8 @@
 
                 await axios({
                         method: 'POST',
-                         url: subscriptionUrl + 'invite',
-                       // url: 'http://172.16.230.86:3030/invite',
+                          url: subscriptionUrl + 'invite',
+                       // url: "http://172.16.230.86:3030/" + 'invite',
                         headers: {
                             "Authorization": Cookies.get('auth_token'),
 
@@ -230,15 +344,26 @@
                         data: params
                     })
                     .then(function(response) {
+                        self.loading = false
                         console.log('response------------------------>', response)
                         if(response.data.status == 404 ){
-                             alert(response.data.data)
-                            //self.$message.warning(response.data.data);
+                             //alert(response.data.data)
+                            self.$message.warning(response.data.data);
+                        }else if(response.data.code == '201'){
+                            // self.$message.success(response.data.message);
+                            self.$message.success("User assigned successfully");
+                        }else if(response.data.code == '200'){
+                            // self.$message.success(response.data.message);
+                            self.$message.warning("User already assigned for this subscription with same role");
                         }
                     })
                     .catch(function(error) {
-                        console.log('error', error)
+                        self.loading = false
+                        console.log('error', error.response)
+                        self.$message.warning("Something went wrong , please try again later ");
                     })
+                }
+                
 
             }
         }

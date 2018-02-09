@@ -12,7 +12,7 @@
         </div>
         <div v-else style="text-align:center;color:#fd5e5e">
             <!-- <h5>{{assignee}}</h5> -->
-            <h5>No data found for this Invoice</h5>
+            <h5>No one is assigned</h5>
         </div>
     </div>
 </template>
@@ -20,6 +20,8 @@
     import axios from "axios"
     import config from '@/config/customConfig.js'
     let subscriptionUrl = config.default.subscriptionUrl
+    import Cookies from 'js-cookie';
+    import moment from 'moment'
     export default {
         props: {
             row: Object,
@@ -52,6 +54,16 @@
                                 //let obj= Object.keys(params.row.role);
                                 h('strong', params.row.role[Object.keys(params.row.role)])
                             ]);
+                        }
+                    },
+                    {
+                        title: 'Assigned Date',
+                        key: 'assignDate',
+                        render: (h, params) => {
+                            
+                                var date1 = moment(params.assignDate).format('DD-MMM-YYYY')
+                                return date1
+                            
                         }
                     },
                     {
@@ -98,24 +110,48 @@
                 
             },
             remove (params) {
+
+                this.$Modal.confirm({
+                    title: 'Title',
+                    content: '<p>Do you really want to Un-assign this user ?</p><p> You Can not Undo this action</p>',
+                    onOk: () => {
+                        let self = this;
+                        let module = [Object.keys(params.row.role)]
+                        let paramss = {
+                                subscriptionId : params.row.subscriptionId ,
+                                toEmail: params.row.toEmail,
+                                role: module, 
+                                fromEmail: params.row.fromEmail, 
+                                subscription_invitation_id:params.row.id
+                            }
+                        console.log(params)
+                        axios({
+                            method:'delete',
+                            url: subscriptionUrl+'invite',
+                            params : paramss,
+                            headers : {
+                                "Authorization": Cookies.get('auth_token'),
+                            }
+                            })
+                            .then(function(response) {
+                                console.log(response)
+                                self.data6.splice(params.index, 1);
+                            }).catch(function(err){
+                                console.log(err)
+                            });
+                    },
+                    onCancel: () => {
+                       
+                    }
+                });
                 //this.data6.splice(index, 1);
-                console.log(params)
-                // axios({
-                //     method:'delete',
-                //     url:'172.16.230.86:3030/invite',
-                //     params : {subscriptionId : },
-                //     responseType:'stream'
-                //     })
-                //     .then(function(response) {
-                //         console.log(response)
-                //     }).catch(function(err){
-                //         console.log(err)
-                //     });
+                
             },
             init(){
                 let self = this
                 console.log(this.row)
-                axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
+                 //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
+                    axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                     if(result.data.data.length == 0){
                         self.assignee = "No assignee found for this subscription"
                     }else{
