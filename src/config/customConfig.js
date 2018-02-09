@@ -32,16 +32,20 @@ module.exports =  {
     default : {
 
 
+
         loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
         ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
         registrationUrl : "https://api."+process.env.domainkey+"/auth/serverapi/register",
         signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
         userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
         forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
-        // resetpassword :                 "http://auth."+process.env.domainkey+"/api/resetpassword",
+
+        // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
         changepassword :                    "https://api."+process.env.domainkey+"/auth/api/changepassword",
-        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/serverapi/",
+        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/auth/serverapi/",
         varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
+
+
 
 
 
@@ -66,7 +70,8 @@ module.exports =  {
         loginWithGithubUrl : 'https://auth.flowzservice.tk/auth//github',
         loginWithLinkedInUrl : 'https://auth.flowzservice.tk/auth//linkedin',
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
-        // serviceUrl :            'http://localhost:3037/',
+        //serviceUrl :            'http://localhost:3037/',
+        subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
         orderapi :  'http://172.16.61.160:3032/myOrders',

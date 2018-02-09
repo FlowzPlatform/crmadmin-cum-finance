@@ -4,9 +4,17 @@
             <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
         </Select>
         <Table stripe  border  :columns="columns1" :data="data1"></Table>
-        <div v-if="orderList != ''" id="orderList" style="display:none">
-            
-        </div>
+
+        <Modal
+            v-model="modal1"
+            title="Preview Order Details"
+            width="45%"
+            ok-text= "Download PDF"
+            @on-ok="download"
+            @on-cancel="cancel">
+            <downloadOrderList id="orderList" :row="orderList"></downloadOrderList>
+        </Modal>
+
     </div>
 </template>
 
@@ -14,20 +22,26 @@
     import moment from 'moment';
     import config from '../../config/customConfig.js'
     import expandRow from './view-order-list.vue';
+
+    import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
     let axios = require('axios'); 
     let _ = require('lodash');
+
     const accounting = require('accounting-js');
     var res;
     export default {
         name: 'orderlist',
-        components: { expandRow },
+        components: { expandRow , downloadOrderList},
         data() {
             return { 
                 value1: '1',
+
+                modal1: false,
+
                 websiteList: {},
                 website: '',
-                orderList: '',
+                orderList: {},
                 orderDate: '',
                 userid: '',
                 columns1: [
@@ -159,14 +173,21 @@
             show (params) {
                 var self = this
                 console.log("params", params.row) 
+
+                self.modal1 = true
                 self.orderList = params.row
                 self.orderDate = moment(self.orderList.products[0].createdAt).format('DD-MMM-YYYY')
-                setTimeout(function(){console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
-                    self.download()
-                },100)
+                // setTimeout(function(){console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
+                //     self.download()
+                // },100)
+            },
+            async cancel() {
+                self.modal1 = false
             },
             async download() {
                 var self = this
+		self.$Loading.start()
+
                 await axios({
                     method: 'post',
                     url: config.default.serviceUrl + 'exporttopdf',
@@ -176,6 +197,9 @@
                     },
                     
                     }).then(function (response) {
+
+		    self.$Loading.finish()
+
                     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
                     var arrayBufferView = new Uint8Array( response.data.data );

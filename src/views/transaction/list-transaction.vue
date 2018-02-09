@@ -59,9 +59,9 @@
         </div>
         <div v-else>
 
-            <Tabs  @on-click="tabClicked" :value="tabIndex">
+            <Tabs  @on-click="tabClicked" :value="tabIndex" class="my-tab">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="getData()" border size="small" ref="table" stripe></Table>
+                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="getData()" :no-data-text="nodataMsg" border size="small" ref="table" stripe></Table>
                 <Table v-if ="tabPane.domain=='QB'"  :columns="columns2" :data="getData()" border size="small" ref="table" stripe></Table>
                 <Table v-if ="tabPane.domain=='custom'"  :columns="columns3" :data="getData()" border size="small" ref="table" stripe></Table>
 
@@ -100,6 +100,7 @@ export default {
   data() {
       return {
        // msg : "weqweq",
+       nodataMsg: 'No Data',
        list1: this.list,
         tabPanes : [],
         //tabIndex: 0,
@@ -140,12 +141,10 @@ export default {
               title: 'Date',
               key: 'Date',
               sortable: true,
-
               render:(h,{row})=>{
 
 
                let date = row.paymentAccounting.Invoice.Date;
-
                let initial = date.split(/\//);
                 let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
 
@@ -198,9 +197,7 @@ export default {
                 title: 'Date',
                 key: 'Date',
                 sortable: true,
-
                 render:(h,{row})=>{
-
                 var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
                 return date1
                 }
@@ -298,12 +295,10 @@ export default {
 
       });
        console.log("myarr",this.filterArray)
-
        this.list1 = await this.mockTableData2(1,pageSize)
       }else{
         console.log("myarr",this.filterArray)
         this.list1 = await this.mockTableData2(1,pageSize)
-
       }
 
       if(this.invoiceId != ''){
@@ -319,6 +314,10 @@ export default {
      if(this.dategt != ''){
         console.log("this.dategt", this.dategt)
         this.filterArray = _.filter(this.filterArray,  function(item){
+          // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+          //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+          //   return item;
+          // }
           console.log("item",item.paymentAccounting.Invoice.Date)
           var newdate = moment(self.dategt).format('MM/DD/YYYY');
           console.log("newdate",newdate)
@@ -367,10 +366,11 @@ export default {
         {
 
           self.tabPanes = response.data.data;
-          console.log('self.tabPanes', self.tabIndex)
           $('.preload').css("display","none")
-          let settingId = self.tabPanes[0].id;
-
+          console.log('this.tabPanes', self.tabPanes)
+          console.log('this.tabIndex', self.tabIndex)
+          let settingId = self.tabPanes[self.tabIndex].id;
+          // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
 
           self.getTransaction(settingId)
 
@@ -426,19 +426,26 @@ export default {
         self.list1 = [];
         await axios.get(config.default.serviceUrl + 'transaction', {
             params : {
-
                 settingId : settingId
             }
         })
         .then(async function (response) {
             console.log("transaction response",response);
-
             self.data = response.data.data;
             self.$Loading.finish();
             $('.preload').css("display","none")
-            if(self.list1.length == 0){
+            if(self.list.length == 0){
               self.list1 = await self.mockTableData1(1,pageSize)
             } else {
+              if(self.list[0].key){
+
+                self.list = []
+                // self.data = []
+              } else {
+              }
+              console.log("self )))))))))))))))))) " , self.list)
+              // self.show = false
+              $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
             }
         })
         .catch(function (error) {
@@ -448,9 +455,7 @@ export default {
 
         var NameArr = [];
 
-
             self.data.forEach (obj => {
-
                 console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                 NameArr.push(obj.paymentAccounting.Contact.Name);
               })
@@ -467,7 +472,6 @@ export default {
   },
   mounted() {
       this.getAllSettings()
-
 
   },
   watch: {

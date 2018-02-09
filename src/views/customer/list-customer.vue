@@ -54,7 +54,7 @@
       <Spin size="large"></Spin>
     </div>
     <div v-else>
-      <Tabs  @on-click="tabClicked">
+      <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
         <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
         <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
@@ -67,7 +67,7 @@
         <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
           <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button> -->
       </TabPane>
-      </Tabs>  
+      </Tabs>
     </div>
   </div>
 </template>
@@ -84,6 +84,7 @@ export default {
   name: 'list-customer',
   data () {
   return {
+    tabIndex: 0,
     tabPanes : [],
     spinShow: true,
     page: 1,
@@ -127,7 +128,7 @@ export default {
           if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
             {
               return "Not available"
-            } 
+            }
             else {
               return row.EmailAddress
             }
@@ -142,7 +143,7 @@ export default {
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
               return "Not available"
-            } 
+            }
             else {
               return row.Phones[3].PhoneNumber
             }
@@ -153,13 +154,13 @@ export default {
         "key": "click",
         "align":"center",
         "sortable": true,
-        render:(h,{row})=>{ 
+        render:(h,{row})=>{
           if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
               return "Not available"
             }
             else{
-              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
             }
           }
       },
@@ -168,12 +169,12 @@ export default {
         "key": "active",
         "sortable": true,
         "align":"center",
-        render:(h,{row})=>{ 
+        render:(h,{row})=>{
           console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
           if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
               return "Not available"
-            } 
+            }
           else
             {
               return row.Phones[2].PhoneNumber
@@ -185,7 +186,7 @@ export default {
         "key": "Addresses",
         "sortable": false,
         render:(h,{row})=>{
-          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;      
+          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
         }
       }
     ],
@@ -200,10 +201,10 @@ export default {
         "width":120,
         "sortable": true,
         render:(h,{row})=>{
-          if(row.Active == true) 
+          if(row.Active == true)
             {
               return "ACTIVE"
-            } 
+            }
             else {
               return 'INACTIVE'
           }
@@ -232,7 +233,7 @@ export default {
         "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
-          return row.PrimaryEmailAddr.Address   
+          return row.PrimaryEmailAddr.Address
           }
       },
       {
@@ -253,7 +254,7 @@ export default {
           if(row.PrimaryPhone.FreeFormNumber == "'")
             {
               return "Not available"
-            } 
+            }
             else {
               return row.PrimaryPhone.FreeFormNumber
             }
@@ -272,8 +273,8 @@ export default {
         "title": "Address",
         "key": "BillAddr",
         "sortable": false,
-        render:(h,{row})=>{         
-              return row.BillAddr.Line1 +", "+row.BillAddr.City         
+        render:(h,{row})=>{
+              return row.BillAddr.Line1 +", "+row.BillAddr.City
         }
       }
     ],
@@ -325,7 +326,7 @@ export default {
               }
             }else{
               if(item.Active == false){
-                return item 
+                return item
               }
             }
           }
@@ -340,7 +341,7 @@ export default {
         if(item.EmailAddress != undefined){
           return item.EmailAddress === self.email;
         }
-        else{         
+        else{
         if(item.PrimaryEmailAddr != undefined){
           return item.PrimaryEmailAddr.Address === self.email;
         }
@@ -373,6 +374,7 @@ export default {
     },
     async tabClicked(data){
       console.log(data)
+      this.tabIndex = data;
       let settingId = this.tabPanes[data].id
       let settingDomain = this.tabPanes[data].domain;
       this.getContactBySettingId(settingId ,settingDomain , data)
@@ -409,7 +411,7 @@ export default {
                       title: columnArray[i],
                       key : columnArray[i],
                       sortable: true
-                      
+
                   });
               }
               self.list = await self.mockTableData1(1,pageSize)
@@ -445,7 +447,6 @@ export default {
 
       self.data6.forEach (obj => {
             console.log("obj------------------->",obj);
-
             if(obj.Name != undefined){
               NameArr.push(obj.Name);
               if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
@@ -461,7 +462,6 @@ export default {
               }
               console.log('EmailArr------------>',EmailArr)
             }
-
           })
 
           console.log("NameArr----------->before", NameArr);
@@ -476,17 +476,17 @@ export default {
             var x = document.getElementById("selectCustomer");
             var option = document.createElement("option");
             option.text = item;
-            x.add(option); 
+            x.add(option);
           })
 
           EmailArr.forEach(item => {
             var y = document.getElementById("selectEmail");
             var option = document.createElement("option");
             option.text = item;
-            y.add(option); 
+            y.add(option);
           })
 
-    },          
+    },
     async getAllSettings(){
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
@@ -496,13 +496,14 @@ export default {
         })
         .then(function (response) {
             console.log("response------>iuy",response);
+            console.log('this.tabIndex', self.tabIndex)
             self.spinShow = false;
             if (response.data.data.length != 0)
             {
               self.tabPanes = response.data.data;
             $('.preload').css("display","none")
-            let settingId = self.tabPanes[0].id
-            let settingDomain = self.tabPanes[0].domain;
+            let settingId = self.tabPanes[self.tabIndex].id
+            let settingDomain = self.tabPanes[self.tabIndex].domain;
             self.getContactBySettingId(settingId , settingDomain , 0)
             }else
             {
@@ -517,7 +518,7 @@ export default {
                   }
                 });
             }
-            
+
         })
         .catch(function (error) {
             console.log("error",error);
@@ -535,8 +536,8 @@ export default {
                         filename: 'Sorting and filtering data',
                         original: false
                     });
-                } 
-    } 
+                }
+    }
   },
   mounted(){
     this.getAllSettings();
