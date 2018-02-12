@@ -193,8 +193,10 @@
         methods: {
 
             async changeSubscription(){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
                 
-                Cookies.set("subscriptionId" , this.value2)
+                Cookies.set("subscriptionId" , this.value2 , {domain: location})
                 location.reload();
             },
             async getDataOfSubscriptionUser() {
@@ -242,8 +244,10 @@
                         console.log("sub_id..........", sub_id)
                         this.options2 = sub_id;
                         if(!Cookies.get("subscriptionId") || Cookies.get("subscriptionId") == undefined || Cookies.get("subscriptionId") == ""){
-                            this.value2 = sub_id[0].value2
-                            Cookies.set("subscriptionId" , this.value2)
+                            this.value2 = sub_id[0].value2;
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            Cookies.set("subscriptionId" , this.value2 , {domain: location})
                             
                         }
                         
