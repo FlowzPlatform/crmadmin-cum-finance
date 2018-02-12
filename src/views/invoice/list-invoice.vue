@@ -267,8 +267,6 @@
                   <td style="padding: 5px;vertical-align: top;"></td>
 
 
-
-
                   <td style="border-top: 1px solid #eee;font-weight: bold;padding: 5px;">
                       <div class="col-sm-6" style="text-align: -webkit-right;">Total:</div>
                       <div class="col-sm-6">${{emailData.row.Total}}</div>
@@ -279,7 +277,6 @@
               <tr>
                   <td style="padding: 5px;vertical-align: top;"></td>
                   <td style="padding: 5px;vertical-align: top;"></td>
-
 
                   <td style="border-top: 1px solid #eee;font-weight: bold;background: rgb(238, 238, 238);padding: 5px;
   ">
@@ -408,7 +405,6 @@
 
   </div>
   <div id="editor"></div>
-
 
 
 
@@ -990,7 +986,6 @@
               }
             }
 
-
         ],
 
 
@@ -1016,7 +1011,6 @@
         duegt: '',
         duelt: '',
         DescriptionPdf : ''
-
       }
     },
     components: { listtransaction },
@@ -1232,7 +1226,6 @@
         }
 
 
-
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
@@ -1382,7 +1375,6 @@
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
         await axios({
-
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1398,7 +1390,6 @@
               .catch(function (error) {
                 console.log(error);
               });
-
       await axios({
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
@@ -1412,7 +1403,6 @@
               .catch(function (error) {
                 console.log(error);
               });
-
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
@@ -1428,11 +1418,9 @@
           console.log('response>>>>>>>>>>>>>>', response)
           self.DescriptionPdf = response.data[0].data.LineItems;
 
-
         })
         .catch(function (error) {
         });
-
 
         console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
@@ -1476,7 +1464,6 @@
 
 
             },
-
             onCancel: () => {
             }
           })
@@ -1500,7 +1487,6 @@
         // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
         if(params.InvoiceID != undefined){
           this.$router.push('/checkout/' + params.InvoiceID+"?settingId="+this.settingIdForPayment)
-
         }else{
           this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
         }
@@ -1828,6 +1814,9 @@
         // $('.el-table__expand-icon.el-table__expand-icon--expanded').click()
         $('.ivu-table-cell-expand-expanded').click()
         let self = this;
+        setTimeout(function(){
+          $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
+        },1000)
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
                   settingId : params.settingId,
@@ -1839,9 +1828,7 @@
               //alert(self.tabPanes[self.tabIndex].configName)
               self.newTabIndex = self.tabIndex
               if(response.data.data.length == 0){
-                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""}}]
-                // console.log("self.newList>>>>>>>>>>>>>", self.newList)
-                self.newList = [{key : "No transaction has been made for this Invoice"}]
+                self.newList = []
               } else {
                 self.newList = response.data.data;
               }
@@ -1858,16 +1845,16 @@
       async viewDetails(params,status){
         // console.log(this.previous)
         // if(this.previous == true){
-        console.log('status', status)
+        // console.log('status', status)
         setTimeout(function(){
           $('.my-panel').css('display','none')
         },100)
         if (!status) return
         $('.ivu-table-cell-expand-expanded').click()
-
+        setTimeout(function(){
+          $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
+        },1000)
         let self = this;
-        console.log('settingId>>>>>>>>>>>>>>>>>>', self.tabPanes[self.tabIndex].id)
-        console.log('InvoiceID>>>>>>>>>>>>>>>>>>', params.InvoiceID)
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
                   settingId : self.tabPanes[self.tabIndex].id,
@@ -1875,13 +1862,13 @@
               }
           })
           .then(function (response) {
-              console.log("transaction response",response);
               self.newTabIndex = self.tabIndex
               console.log(response.data.data.length)
               if(response.data.data.length == 0){
-                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""}}]
-                // console.log("self.newList>>>>>>>>>>>>>", self.newList)
-                self.newList = [{key : "No transaction has been made for this Invoice"}]
+                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
+                console.log("self.newList>>>>>>>>>>>>>", self.newList)
+                // self.newList = [{key : "No transaction has been made for this Invoice"}]
+                self.newList = []
               } else {
                 self.newList = response.data.data;
               }
