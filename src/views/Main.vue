@@ -215,7 +215,7 @@
                         
                         this.options = Role_id
                     })
-                    axios.get('http://auth.flowzcluster.tk/api/userdetails', {
+                    axios.get(config.default.userDetail, {
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         }
