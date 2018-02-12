@@ -263,7 +263,24 @@ export default {
         }
       })
       .catch(function (error) {
-        console.log("error",error);
+        console.log("error",error.response);
+        if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }else if(error.response.status == 403){
+                                            self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
+                                        }
       });
       
     },

@@ -4,6 +4,7 @@
 </style>
 <template>
     <div class="home-main">
+         
         <Row :gutter="10">
             <Col :md="24" :lg="24" :sm="12">
                 <Row :style="{border: '1px solid #ddd', borderRadius: '5px', backgroundColor: 'whitesmoke'}">
@@ -661,7 +662,11 @@ export default {
 
             await axios({
                 method:'get',
-                url: serviceUrl + 'settings/'+self.config
+                url: serviceUrl + 'settings/'+self.config,
+                headers:{
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
+                            }
                 })
                 .then(async function(response) {
                     console.log("setting response",response)
@@ -742,7 +747,7 @@ export default {
                 });
         },
 
-         init() {
+         async init() {
             
              if(Cookies.get('auth_token')){
                 axios({
@@ -763,6 +768,7 @@ export default {
 
 
             }
+            
             let self = this;
             this.name = Cookies.get('user');
             //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
@@ -827,11 +833,13 @@ export default {
                                         name: 'login'
                                     });
                 }else if(error.response.status == 403){
-                                            self.$Notice.error({
-                                                title: error.response.statusText,
-                                                desc: error.response.data.message,
-                                                duration: 0
-                                            });
+                                           self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
+
+
                 }
                 
             });
@@ -882,6 +890,7 @@ export default {
     async mounted() {
         
         
+       
         this.daterange1 = await this.getDate(92);
         console.log("daterange1",this.daterange1)
         console.log("daterange1",this.daterange1[0])

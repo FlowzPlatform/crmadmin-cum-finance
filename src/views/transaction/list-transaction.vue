@@ -61,10 +61,17 @@
 
             <Tabs  @on-click="tabClicked" :value="tabIndex" class="my-tab">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-                <Table v-if ="tabPane.domain=='Xero'"  :columns="columns1" :data="getData()" :no-data-text="nodataMsg" border size="small" ref="table" stripe></Table>
-                <Table v-if ="tabPane.domain=='QB'"  :columns="columns2" :data="getData()" border size="small" ref="table" stripe></Table>
-                <Table v-if ="tabPane.domain=='custom'"  :columns="columns3" :data="getData()" border size="small" ref="table" stripe></Table>
-
+                <div v-if ="tabPane.domain=='Xero'">
+                  <div v-if=" list.length > 0"><Table :columns="columns1" :data="list" :no-data-text="nodataMsg" border size="small" ref="table" stripe></Table></div>
+                  <div v-else style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>
+                </div>
+                <div v-if ="tabPane.domain=='QB'">
+                  <Table :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+                </div>
+                <div v-if ="tabPane.domain=='custom'">
+                  <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" border size="small" ref="table" stripe></Table></div>
+                  <div v-else>No transaction has been made for this Invoice</div>
+                </div>
                 <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
                         <Page :total="len" :current="1" @on-change="changePage"></Page>
@@ -101,7 +108,7 @@ export default {
       return {
        // msg : "weqweq",
        nodataMsg: 'No Data',
-       list1: this.list,
+       // list1: this.list,
         tabPanes : [],
         //tabIndex: 0,
         spinShow: true,
@@ -264,13 +271,13 @@ export default {
       }
   },
   methods: {
-    getData() {
-      if (this.list1.length <= 0) {
-        return this.list
-      } else {
-        return this.list1
-      }
-    },
+    // getData() {
+    //   if (this.list1.length <= 0) {
+    //     return this.list
+    //   } else {
+    //     return this.list1
+    //   }
+    // },
     // changeMessage(event) {
     //             this.message = event.target.value;
     //             this.$emit('messageChanged', this.message);
@@ -295,10 +302,10 @@ export default {
 
       });
        console.log("myarr",this.filterArray)
-       this.list1 = await this.mockTableData2(1,pageSize)
+       this.list = await this.mockTableData2(1,pageSize)
       }else{
         console.log("myarr",this.filterArray)
-        this.list1 = await this.mockTableData2(1,pageSize)
+        this.list = await this.mockTableData2(1,pageSize)
       }
 
       if(this.invoiceId != ''){
@@ -308,7 +315,7 @@ export default {
           return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
         });
          console.log("myarr",this.filterArray)
-         this.list1 = await this.mockTableData2(1,pageSize)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
      if(this.dategt != ''){
@@ -319,24 +326,26 @@ export default {
           //   return item;
           // }
           console.log("item",item.paymentAccounting.Invoice.Date)
-          var newdate = moment(self.dategt).format('MM/DD/YYYY');
+          var newdate = moment(self.dategt).format('DD/MM/YYYY');
           console.log("newdate",newdate)
+          console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
           return item.paymentAccounting.Invoice.Date >= newdate;
         });
          console.log("myarr",this.filterArray)
-         this.list1 = await this.mockTableData2(1,pageSize)
+         this.list = await this.mockTableData2(1,pageSize)
+
       }
 
       if(this.datelt != ''){
         console.log("this.datelt", this.datelt)
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item.paymentAccounting.Invoice.Date)
-          var newdate = moment(self.datelt).format('MM/DD/YYYY');
+          var newdate = moment(self.datelt).format('DD/MM/YYYY');
           console.log("newdate",newdate)
           return item.paymentAccounting.Invoice.Date <= newdate;
         });
          console.log("myarr",this.filterArray)
-         this.list1 = await this.mockTableData2(1,pageSize)
+         this.list = await this.mockTableData2(1,pageSize)
       }
 
     },
@@ -361,6 +370,7 @@ export default {
       })
       .then(function (response) {
         // console.log("setting response",response);
+        self.list = self.list
         self.spinShow = false;
         if (response.data.data.length != 0)
         {
@@ -412,9 +422,9 @@ export default {
       console.log("not inside",this.filterArray.length)
       if(this.filterArray.length == 0){
         console.log("inside",this.filterArray)
-        this.list1 = await this.mockTableData1(p,pageSize);
+        this.list = await this.mockTableData1(p,pageSize);
       }else{
-        this.list1 = await this.mockTableData2(p,pageSize);
+        this.list = await this.mockTableData2(p,pageSize);
       }
     },
     async getTransaction(settingId) {
@@ -423,7 +433,7 @@ export default {
         this.$Loading.start();
         this.data = [];
         let self = this;
-        self.list1 = [];
+        self.list = [];
         await axios.get(config.default.serviceUrl + 'transaction', {
             params : {
                 settingId : settingId
@@ -435,17 +445,14 @@ export default {
             self.$Loading.finish();
             $('.preload').css("display","none")
             if(self.list.length == 0){
-              self.list1 = await self.mockTableData1(1,pageSize)
+              self.list = await self.mockTableData1(1,pageSize)
             } else {
-              if(self.list[0].key){
+              // if(self.list[0].key){
+              //   self.list = []
+              // } else {
+              // }
+              // $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
 
-                self.list = []
-                // self.data = []
-              } else {
-              }
-              console.log("self )))))))))))))))))) " , self.list)
-              // self.show = false
-              $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
             }
         })
         .catch(function (error) {
