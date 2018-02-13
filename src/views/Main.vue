@@ -197,7 +197,7 @@
                 location = location.domain === null ? location.input : location.domain
                 
                 Cookies.set("subscriptionId" , this.value2 , {domain: location})
-                location.reload();
+                window.location.reload();
             },
             async getDataOfSubscriptionUser() {
                 let sub_id = [];
