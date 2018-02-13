@@ -513,17 +513,17 @@ Vue.use(VueWidgets);
                                                 name: 'login'
                                             });
                                         }else if(error.response.status == 403){
-                                            self.$Notice.open({
-                                                 title: error.response.statusText,
-                                                desc: error.response.data.message,
-                                                duration: 0
-                                            });
+                                            self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
                                         }
                                         self.$Loading.error();
                                 });
                             })
                             .catch(function (error) {
-                                console.log(error.response)
+                                console.log(error)
                                  if(error.response.status == 401){
                                     let location = psl.parse(window.location.hostname)
                                     location = location.domain === null ? location.input : location.domain
@@ -535,11 +535,11 @@ Vue.use(VueWidgets);
                                         name: 'login'
                                     });
                                 }else if(error.response.status == 403){
-                                            self.$Notice.error({
-                                                title: error.response.statusText,
-                                                desc: error.response.data.message,
-                                                duration: 0
-                                            });
+                                            self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
                                         }
                             });
                     

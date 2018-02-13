@@ -5,6 +5,7 @@
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
+        
         <div class="sidebar-menu-con" :style="{width: shrink?'60px':'206px', overflow: shrink ? 'visible' : 'auto'}">
             <shrinkable-menu
                 :shrink="shrink"
@@ -20,6 +21,11 @@
             </shrinkable-menu>
         </div>
         <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
+
+            <!-- <alert type="success" show-icon closable>
+            A success prompt
+            <span slot="desc">Content of prompt. Content of prompt. Content of prompt. Content of prompt. </span>
+        </alert> -->
             <div class="main-header">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
@@ -187,13 +193,16 @@
         methods: {
 
             async changeSubscription(){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
                 
-                Cookies.set("subscriptionId" , this.value2)
+                Cookies.set("subscriptionId" , this.value2 , {domain: location})
+                location.reload();
             },
             async getDataOfSubscriptionUser() {
                 let sub_id = [];
                 let Role_id = [];
-                axios.get(subscriptionUrl+'register-roles', {
+                await axios.get(subscriptionUrl+'register-roles', {
                         // headers: {
                         //     'Authorization': Cookies.get('auth_token')
                         // },
@@ -215,7 +224,7 @@
                         
                         this.options = Role_id
                     })
-                    axios.get(config.default.userDetail, {
+                    await axios.get(config.default.userDetail, {
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         }
@@ -235,8 +244,11 @@
                         console.log("sub_id..........", sub_id)
                         this.options2 = sub_id;
                         if(!Cookies.get("subscriptionId") || Cookies.get("subscriptionId") == undefined || Cookies.get("subscriptionId") == ""){
-                            this.value2 = sub_id[0].value2
-                            Cookies.set("subscriptionId" , this.value2)
+                            this.value2 = sub_id[0].value2;
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            Cookies.set("subscriptionId" , this.value2 , {domain: location})
+                            
                         }
                         
                         
