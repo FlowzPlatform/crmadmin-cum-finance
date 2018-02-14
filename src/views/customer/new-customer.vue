@@ -103,7 +103,7 @@ Vue.use(VueWidgets);
             let patt = new RegExp('^[0-9]+$')
             let _res = patt.test(value)
             if (!_res) {
-              callback(new Error('Not Allowed Special Character'))
+              callback(new Error('Not Allowed Special Character or string'))
             } else {
               callback();
             }
