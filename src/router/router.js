@@ -73,6 +73,8 @@ export const otherRouter = {
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        { path: 'General-settings', title: 'General Settings', name: 'General Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
+        { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
         { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
 
