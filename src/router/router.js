@@ -193,10 +193,10 @@ export const appRouter = [
         ]
     },
     {
-        path: '/my-account',
+        path: '/admin-account',
         icon: 'person',
-        title: 'MY ACCOUNT',
-        name: 'myaccount',
+        title: 'ADMIN ACCOUNT',
+        name: 'adminaccount',
         component: Main,
         children: [
             { 
@@ -204,21 +204,21 @@ export const appRouter = [
                 title: 'Order List',
                 icon: 'ios-cart',
                 name: 'Ordered List', 
-                component: resolve => { require(['@/views/my-account/order-list.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
             },
             { 
                 path: 'request-quote', 
                 title: 'Request Quote',
                 icon: 'pull-request',
                 name: 'Requested Quotes', 
-                component: resolve => { require(['@/views/my-account/request-quote.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
             },
             { 
                 path: 'address-book', 
                 title: 'Address Book',
                 icon: 'ios-compose',
                 name: 'Address book', 
-                component: resolve => { require(['@/views/my-account/address-book.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
             },
            // { 
              //   path: 'list-billing', 
@@ -232,7 +232,7 @@ export const appRouter = [
                 title: 'Change Password',
                 icon: 'locked',
                 name: 'Change Password',
-                component: resolve => { require(['@/views/my-account/change-password.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
             }
         ]
     },

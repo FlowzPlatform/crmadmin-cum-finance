@@ -146,14 +146,19 @@
                 console.log("config.default.orderapi", config.default.orderapi)
                 axios.get( config.default.orderapi , {
                     params: {
-                        user_id: self.userid
-                    }
+                      owner_id: self.userid
+                    },
+                    // headers: {
+                    //   'Authorization': Cookies.get('auth_token'),
+                    //   // 'subscriptionId': Cookies.get('subscriptionId')
+                    // } 
                 })
                 .then(function (response){
                     console.log("response", response.data)
                     var result = _.uniqBy(response.data.data,'website_id')
                     console.log("result", result)
-                    self.websiteList = result                   
+                    self.websiteList = result
+                    // self.website = self.websiteList[0].website_id                  
                 })
             },
             listData (val) {
@@ -163,7 +168,11 @@
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
-                    }
+                    },
+                    // headers: {
+                    //   'Authorization': Cookies.get('auth_token'),
+                    //   // 'subscriptionId': Cookies.get('subscriptionId')
+                    // }
                 })
                 .then(function (response){
                     console.log("response val", response.data)
