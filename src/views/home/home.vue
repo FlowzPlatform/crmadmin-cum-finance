@@ -827,9 +827,9 @@ export default {
                                     location = location.domain === null ? location.input : location.domain
                                     
                                     Cookies.remove('auth_token' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
+                                    self.$store.commit('logout', self);
                                     
-                                    this.$router.push({
+                                    self.$router.push({
                                         name: 'login'
                                     });
                 }else if(error.response.status == 403){
@@ -890,14 +890,17 @@ export default {
     async mounted() {
         
         
-       
+        let self = this
         this.daterange1 = await this.getDate(92);
         console.log("daterange1",this.daterange1)
         console.log("daterange1",this.daterange1[0])
         // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
         // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
+        setTimeout(function() {
+        self.init()
+        }, 1000);
+
         
-        this.init()
     }
 
 };
