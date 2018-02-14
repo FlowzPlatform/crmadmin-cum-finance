@@ -7,7 +7,7 @@
       <div class="panel-collapse collapse" id="collapseTwo">
         <div class="panel-body">
           <form>
-              <div class="collapse-maindiv maindiv" >
+              <div class="collapse-maindiv maindiv" style="text-align: left;">
                   <div class="panel panel-default">
                       <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                           <label>Customer Name</label>
@@ -443,7 +443,9 @@ export default {
       }
 
       var NameArr = [];
+      $('#selectCustomer').children('option:not(:first)').remove();
       var EmailArr = [];
+      $('#selectEmail').children('option:not(:first)').remove();
 
       self.data6.forEach (obj => {
             console.log("obj------------------->",obj);
@@ -491,7 +493,8 @@ export default {
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
             headers:{
-                Authorization : Cookies.get('auth_token')
+                Authorization : Cookies.get('auth_token'),
+                subscriptionId : Cookies.get('subscriptionId')
             },
         })
         .then(function (response) {
@@ -523,6 +526,13 @@ export default {
         .catch(function (error) {
             console.log("error",error);
             self.spinShow = false;
+            if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
         });
     },
     exportData (type) {

@@ -81,9 +81,10 @@ module.exports =  {
         subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
-        orderapi :  'http://172.16.61.160:3032/myOrders',
-        requestinfoapi : 'http://172.16.61.160:3032/request-info',
+        orderapi :  'http://172.16.61.112:3032/myOrders',
+        requestinfoapi : 'http://172.16.61.112:3032/request-info',
         requestquoteapi :   'http://172.16.230.181:3032/request-quote'
     }
 
 }
+

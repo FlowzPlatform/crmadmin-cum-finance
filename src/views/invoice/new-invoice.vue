@@ -188,7 +188,8 @@ export default {
       let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
-                   Authorization : Cookies.get('auth_token')
+                   Authorization : Cookies.get('auth_token'),
+                   subscriptionId : Cookies.get('subscriptionId')
                  },
       })
       .then(function (response) {
@@ -216,6 +217,13 @@ export default {
       })
       .catch(function (error) {
         console.log("error",error);
+        if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
       });
       
     },
@@ -279,6 +287,17 @@ export default {
                                     console.log(error);
                                   });
                       }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
                   });
       
       
@@ -308,7 +327,11 @@ export default {
       
       await axios({
                     method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice
+                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
+                    headers:{
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    },
                   })
                     .then(async function(response) {
                       console.log(response)
@@ -385,6 +408,17 @@ export default {
                             });
 
                       }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
                   });
 
 

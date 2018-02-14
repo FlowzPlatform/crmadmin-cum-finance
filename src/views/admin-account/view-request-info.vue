@@ -120,9 +120,9 @@
         </Panel>
         <Panel name="2">
           MY INFORMATION
-           <!--  <p slot="content">
+            <!-- <p slot="content">
               <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12">
-                <h4>Dweep Patel</h4>
+                <h4>{{row.user_info.fullname}}</h4>
                 <p>
                   <span class="address">Office Address</span>
                   <br>
@@ -145,7 +145,7 @@
                   </li>
                   <li>
                     <Icon type="ios-email" size="15"></Icon>
-                    <label style="font-weight:500">dweepp@officebrain.com</label>
+                    <label style="font-weight:500">{{row.user_info.email}}</label>
                   </li>
                 </ul>
               </label>
