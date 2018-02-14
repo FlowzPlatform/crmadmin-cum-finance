@@ -25,7 +25,7 @@
 <template>
 
     <Widget>
-      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true" :Editable='false'></WidgetHeading>
       <WidgetBody>
         <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
         <FormItem label="Configuration Name" prop="configuration">
@@ -147,8 +147,11 @@ Vue.use(VueWidgets);
                     { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
-                    { required: true, message: 'The Postal Code cannot be empty', trigger: 'blur' },
-                    { validator: validateNum, trigger: 'blur' }
+                    { required: true, message: 'The Zip Code cannot be empty', trigger: 'blur' },
+                    { validator: validateNum, trigger: 'blur' },
+                    {
+                        max: 6 ,min:6, message: 'Please Enter 6 digit Zip Code', trigger: 'blur' 
+                    }
                   ],
                   mail: [
                       { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
