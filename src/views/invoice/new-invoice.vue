@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="col-sm-12">      
-    <Form :model="formItem" label-position="left" :label-width="100"  :rules="rulesValidation" ref="formItem">
+    <Form :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem">
          <!-- <FormItem label="configure" prop="config">
              <Select v-model="formItem.config" style="width:100%">
                <Option v-for="item in data4" :value="item.value" :key="item.label">{{ item.label }} </Option>
@@ -18,7 +18,7 @@
                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
             </Select>
         </FormItem>
-        <FormItem label="Contact Name" prop="name">
+        <FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
              <Select v-model="formItem.name" style="width:100%">
                <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
             </Select>
@@ -39,8 +39,8 @@
         <FormItem label="Unit Amount" :input-width="40">
             <Row>
               <Col span="12">
-                <FormItem prop="amount">
-                <Input v-model="formItem.amount" placeholder="Enter Amount"></Input>
+                <FormItem prop="amount1">
+                <Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
                 </FormItem>
               </Col>
               <Col span="12">
@@ -68,6 +68,7 @@
 import config from '@/config/customConfig.js'
 import axios from 'axios'
 import Cookies from 'js-cookie';
+import _ from 'lodash'
 export default {
   name: 'newinvoice',
   data () {
@@ -81,6 +82,8 @@ export default {
       }
     };
     return {
+      customCustomerUrl:"",
+      customInvoiceUrl:"",
       formItem: {
         domain: 'Xero',
         name: '',
@@ -88,7 +91,8 @@ export default {
         config: '',
         description: '',
         qty: '',
-        amount: '',
+        amount:'',
+        amount1: '',
         selectamount: '',
         selectProject: ''
       },
@@ -117,7 +121,7 @@ export default {
               { required: true, message: 'Quantity cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
-          amount: [
+          amount1: [
               { required: true, message: 'Amount cannot be empty', trigger: 'blur' },
               { validator: validateNum, trigger: 'blur' }
           ],
@@ -169,25 +173,33 @@ export default {
       });
       resp.forEach(obj =>{
         self.data3.push(obj.project_name)
+        self.data3.sort();
       })
     },
     configChange(data){
-      console.log(data)
-      this.customerData(data);
+      console.log("-------------------configChange data",data)
+      $('#CustomerName').css("display","block")
+      if (data != '') {
+        this.customerData(data);
+      }
     },
     async settingData () {
       
       let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
-                   Authorization : Cookies.get('auth_token')
+                   Authorization : Cookies.get('auth_token'),
+                   subscriptionId : Cookies.get('subscriptionId')
                  },
       })
       .then(function (response) {
         console.log("response >>>>>>>>>>>>>>>>",response)
         if (response.data.data.length != 0)
         {
-          self.configs = response.data.data
+          var newConf = response.data.data
+          console.log("self.configs---------------->before",newConf)
+          self.configs = _.sortBy(newConf, ['configName']);
+          console.log("self.configs---------------->after",self.configs)
         }else
         {
             self.$Modal.warning({
@@ -196,7 +208,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                   self.$router.push({
-                      name: 'newsettings'
+                      name: 'Settings'
                   })
               }
             });
@@ -205,34 +217,95 @@ export default {
       })
       .catch(function (error) {
         console.log("error",error);
+        if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
       });
       
     },
     async customerData (settingId) {
-      
+
       let resp
       let self = this
+
+      
       await axios({
-            method: 'get',
-            url: config.default.serviceUrl + 'contacts',
-            params: {
-              settingId : settingId
-            },
-            headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-            }).then(function (response) {
-             
-              resp = response.data
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingId
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                           await axios({
+                              method: 'get',
+                              url: self.customCustomerUrl,
+                              params : {settingId : response.data.id},
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              console.log(response)
+                              resp = response.data.data
+                              console.log("resp",resp)
+                              self.data2 = _.sortBy(resp, ['Name']);
+                              console.log("self.data2---------------->after",self.data2)
+                            })
+
+                            .catch(function (error) {
+                              console.log(error.response)
+                              self.$Message.error(error.response.data.data[0].message)
+
+                            });
+
+                      }else{
+                            await axios({
+                                    method: 'get',
+                                    url: config.default.serviceUrl + 'contacts',
+                                    params: {
+                                      settingId : settingId
+                                    },
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token')
+                                    },
+                                  }).then(function (response) {
+                                  
+                                    resp = response.data
+                                    console.log("resp",resp[0].data)
+                                    self.data2 = _.sortBy(resp[0].data, ['Name']);
+                                    console.log("self.data2---------------->after",self.data2)
+                                  })
+                                  .catch(function (error) {
+                                    console.log(error);
+                                  });
+                      }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
+                  });
+      
+      
       console.log("response------>iuy",resp);
       // resp.forEach(obj =>{
       //   console.log(obj[0].data)
      // alert(self.formItem.configuration)
-        self.data2 = resp[0].data
+        
       //})
     },
     async formData (name) {
@@ -247,35 +320,115 @@ export default {
       })
     },
     async newInvoice () {
-      let self = this
-      this.formItem.amount = parseInt(this.formItem.amount)
-      let postData = {
-        // domain: this.formItem.domain,
-        settingId : this.formItem.configuration,
-        name: this.formItem.name,
-        description: this.formItem.description,
-        qty: this.formItem.qty,
-        amount: this.formItem.amount
-      }
-      console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",this.formItem)
+
+      let self = this;
+      let settingIdForInvoice = this.formItem.configuration
+      
+      
       await axios({
-          method: 'post',
-          url: config.default.serviceUrl + 'invoice',
-          data: postData,
-           headers:{
-                   Authorization : Cookies.get('auth_token')
-                 },
-        })
-        .then(function (res) {
-          console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
-          self.$Message.success('invoice created successfully');
-          self.Cancel();
-        })
-        .catch(function (err) {
-          console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
-          self.$Message.error('invoice error')
-        });
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
+                    headers:{
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    },
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+                       // alert(self.formItem.configuration)
+                        let postData1 = {
+                            // domain: this.formItem.domain,
+                            settingId : self.formItem.configuration,
+                            Name: self.formItem.name,
+                            DueDate:self.formItem.duedate,
+                            Products:[
+                                {
+                                  description: self.formItem.description,
+                                  qty: self.formItem.qty,
+                                  amount: self.formItem.amount1
+                                }
+                            ]
+                            
+                          }
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                            axios({
+                              method: 'post',
+                              url: self.customInvoiceUrl,
+                              data: postData1,
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              self.$Message.success('invoice created successfully');
+                              self.Cancel();
+                            })
+                            .catch(function (error) {
+                              console.log("error",error);
+                              self.$Message.error('invoice creation error');
+                            });
+
+                      }else{
+                        
+                          self.formItem.amount = parseInt(self.formItem.amount1)
+                          let postData = {
+                            // domain: self.formItem.domain,
+                            settingId : self.formItem.configuration,
+                            Name: self.formItem.name,
+                            DueDate: self.formItem.duedate,
+                            products:[
+                                {
+                                  description: self.formItem.description,
+                                  qty: self.formItem.qty,
+                                  amount: self.formItem.amount
+                                }
+                            ]
+                            
+                          }
+                          await axios({
+                              method: 'post',
+                              url: config.default.serviceUrl + 'invoice',
+                              data: postData,
+                              headers:{
+                                      Authorization : Cookies.get('auth_token')
+                                    },
+                            })
+                            .then(function (res) {
+                              console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
+                              self.$Message.success('invoice created successfully');
+                              self.Cancel();
+                            })
+                            .catch(function (err) {
+                              console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
+                              self.$Message.error('invoice creation error')
+                            });
+
+                      }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
+                  });
+
+
+
+      
     },
+
+
+
+
     Cancel(name){
       this.$refs['formItem'].resetFields();
     } 

@@ -1,14 +1,16 @@
 <template>
     <div>
-        
+
+    <Tabs>
+      <TabPane label="Configuration">
+
         <div class="settings_header">
             <Button @click="addNewConfig">Add New Configuration</Button>
         </div>
-
         
     <!-- <RadioGroup v-model="radio7" :on-change="defaultChanged()"> -->
         <div  v-for="(chunk , index) in productChunks">
-            <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px">
+            <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px;height:340px;">
             <Widget>
                 <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
                 <WidgetBody>
@@ -32,11 +34,19 @@
                             </Input>                            
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client ID </td>
                         <td>
                              <Input :type="client_idType" readonly :value='product.client_id'>
                                 <Button slot="append" icon="eye" @click="showSecret" ></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Customer Url </td>
+                        <td>
+                             <Input  readonly :value='product.customer_url'>
+                                
                             </Input>
                         </td>
                     </tr>
@@ -49,11 +59,18 @@
                             </Input>
                         </td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Client secret </td>
                         <td>
                             <Input :type="client_secretType" readonly :value='product.client_secret'>
                                 <Button slot="append" icon="eye" @click="showSecret"></Button>
+                            </Input>
+                        </td>
+                    </tr>
+                    <tr v-if="product.domain == 'custom'">
+                        <td >Invoice Url </td>
+                        <td>
+                             <Input  readonly :value='product.invoice_url'>
                             </Input>
                         </td>
                     </tr>
@@ -62,7 +79,7 @@
                         <td >User agent</td>
                         <td >{{ product.useragent}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >realmId </td>
                         <td >{{product.realmId}}</td>
                     </tr>
@@ -71,7 +88,7 @@
                         <td >Certificate </td>
                         <td >{{ product.pem}}</td>
                     </tr>
-                    <tr v-else>
+                    <tr v-if="product.domain == 'QB'">
                         <td >Refresh Token: </td>
                         <td >{{product.refresh_token}}</td>
                     </tr>
@@ -81,7 +98,7 @@
                     <Tooltip placement="top" content="Toggle active / inactive">
                     <i-switch v-model="product.isActive" :disabled="disabled" @on-change="buttonClicked(product)"></i-switch>
                     </Tooltip>
-                    <ButtonGroup>
+                    <ButtonGroup v-if="product.domain != 'custom'">
                         <Tooltip placement="top" content="Delete">
                         <Button class="ButtonGroup" @click="deleteConfig(product)"   type="ghost" icon="trash-b"></Button>
                         </Tooltip>
@@ -125,7 +142,7 @@
                         <div v-else>Uploaded file: {{ editData.pem }} </div>
                     </FormItem>
                 </Form>
-                <Form :model="editFormItemQB" :label-width="60" v-else>
+                <Form :model="editFormItemQB" :label-width="60" v-if='editFormType == "QB"'>
                     <FormItem label="Config Name">
                         <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
                     </FormItem>
@@ -142,14 +159,32 @@
                         <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
                     </FormItem>
                 </Form>
-            
+                <Form :model="editFormItemCustom" :label-width="60" v-if='editFormType == "custom"'>
+                    <FormItem label="Config Name">
+                        <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                    </FormItem>
+                    <FormItem label="Customer Url">
+                        <Input v-model="editData.customer_url" placeholder="Customer Url"></Input>
+                    </FormItem>
+                    <FormItem label="Invoice Url">
+                        <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
+                    </FormItem>
+                    
+                </Form>            
             
         </Modal>
             </div>
         </div>
         <!-- </RadioGroup> -->
 
-        
+      </TabPane>
+      <TabPane label="General">
+        <customSetting></customSetting>
+      </TabPane>
+      <TabPane label="Online Payment">
+        <onlinePayment></onlinePayment>
+      </TabPane>
+    </Tabs>      
     </div>
 </template>
 
@@ -162,16 +197,26 @@ import axios from "axios"
 let config = require("@/config/customConfig.js")
 let feathersUrl =  config.default.serviceUrl;
 import Cookies from 'js-cookie';
+import psl from 'psl';
+import customSetting from './General-setting.vue'
+import onlinePayment from './Online-Payment.vue'
 Vue.use(VueWidgets);
 
 
     export default {
+      components: {
+        customSetting,
+        onlinePayment
+      },
         data () {
             return {
                 editFormItemXero: {
                     input: ''
                 },
                 editFormItemQB: {
+                    input: ''
+                },
+                editFormItemCustom :{
                     input: ''
                 },
                 file:'',
@@ -209,7 +254,6 @@ Vue.use(VueWidgets);
                     }
                 ],
                 data6: [
-                    
                 ]
             }
         },
@@ -226,7 +270,7 @@ Vue.use(VueWidgets);
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'newsettings'
+                        name: 'New Settings'
                     });
             },
             defaultChanged(e){
@@ -257,12 +301,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                       this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
                 
             },
@@ -295,12 +344,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         this.disabled = false;
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
             },
             async editedData (){
@@ -384,12 +438,17 @@ Vue.use(VueWidgets);
                 .catch(error => {
                         console.log(error)
                         this.disabled = false;
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }
                 });
             }
         },
@@ -399,26 +458,95 @@ Vue.use(VueWidgets);
         }
         },
         mounted(){
+            this.$Loading.start()
+            //  async customhandleSubmit (name) {
+
+                let self = this;
+                
+                   
+                        self.loading = true;
+                        let  data = {
+                                    "configName": "Custom Configuration",
+                                    "customer_url" :  feathersUrl+"customcustomer",
+                                    "invoice_url" : feathersUrl+"custominvoice",
+                                    "domain" : 'custom',
+                                    "isActive" : true,
+                                    "isDeleated" : false
+                                }
+                        axios({
+                                method: 'post',
+                                url: feathersUrl +'settings',
+                                headers:{
+                                    Authorization : Cookies.get('auth_token'),
+                                    subscriptionId : Cookies.get('subscriptionId')
+                                },
+                                data: data
+                            })  
+                            .then(function (response) {
+                                console.log(response)
+                                // self.$Message.success('Success!');
+                                 self.loading = false;
+                                 axios({
+                                    method:'get',
+                                    url:feathersUrl +'settings',
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token'),
+                                        subscriptionId : Cookies.get('subscriptionId')
+                                    },
+                                })
+                                .then(response => {
+                                console.log(response)
+                                localStorage.clear();
+                                self.data6 = response.data.data
+                                self.$Loading.finish();
+                                })
+                                .catch(error => {
+                                    
+                                        if(error.response.status == 401){
+                                            let location = psl.parse(window.location.hostname)
+                                            location = location.domain === null ? location.input : location.domain
+                                            
+                                            Cookies.remove('auth_token' ,{domain: location}) 
+                                            self.$store.commit('logout', self);
+                                            
+                                            self.$router.push({
+                                                name: 'login'
+                                            });
+                                        }else if(error.response.status == 403){
+                                            self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
+                                        }
+                                        self.$Loading.error();
+                                });
+                            })
+                            .catch(function (error) {
+                                console.log(error)
+                                 if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }else if(error.response.status == 403){
+                                            self.$Notice.error(
+                                               {duration:0, 
+                                               title: error.response.statusText,
+                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                               );
+                                        }
+                            });
+                    
+                
+           // }
+           
             
-            axios({
-                    method:'get',
-                    url:feathersUrl +'settings',
-                    headers:{
-                        Authorization : Cookies.get('auth_token')
-                    },
-                })
-                .then(response => {
-                console.log(response)
-                this.data6 = response.data.data
-                })
-                .catch(error => {
-                        Cookies.remove('auth_token') 
-                        this.$Message.error('Auth Error!');
-                        this.$store.commit('logout', this); 
-                        this.$router.push({
-                        name: 'login'
-                    })
-                });
         }
     }
 </script>

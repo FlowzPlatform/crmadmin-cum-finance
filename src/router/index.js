@@ -9,49 +9,48 @@ Vue.use(VueRouter);
 
 // 路由配置
 const RouterConfig = {
-    // mode: 'history',
-    routes: routers
+     // mode: 'history',
+    routes: routers,
+    hashbang: false,
+   
+    saveScrollPosition: true
 };
 
 export const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
+    
     Util.title(to.meta.title);
     
-    if (Cookies.get('locking') === '1' && to.name !== 'locking') { // 判断当前是否是锁定状态
-        next({
-            replace: true,
-            name: 'locking'
-        });
-    } else if (Cookies.get('locking') === '0' && to.name === 'locking') {
-        next(false);
-    } else {
-        if (!Cookies.get('user') && to.name !== 'login') { // 判断是否已经登录且前往的页面不是登录页
+    
+        if (!Cookies.get('auth_token') && to.name !== 'login') { // Determine if you have already logged in and the page you are visiting is not a login page
+            
             next({
                 name: 'login'
             });
-        } else if (Cookies.get('user') && to.name === 'login') { // 判断是否已经登录且前往的是登录页
+        } else if (Cookies.get('auth_token') && to.name === 'login') { // Determine if you are logged in and go to the login page
             Util.title();
+            
             next({
-                name: 'home_index'
+                name: 'Dashboard'
             });
         } else {
             const curRouterObj = Util.getRouterObjByName([otherRouter, ...appRouter], to.name);
-            if (curRouterObj && curRouterObj.access !== undefined) { // 需要判断权限的路由
+            if (curRouterObj && curRouterObj.access !== undefined) { // Need to determine the permissions of the route
                 if (curRouterObj.access === parseInt(Cookies.get('access'))) {
-                    Util.toDefaultPage([otherRouter, ...appRouter], to.name, router, next); // 如果在地址栏输入的是一级菜单则默认打开其第一个二级菜单的页面
+                    Util.toDefaultPage([otherRouter, ...appRouter], to.name, router, next); // If you enter in the address bar is a menu is the default to open the page of the first two menu
                 } else {
                     next({
                         replace: true,
                         name: 'error-403'
                     });
                 }
-            } else { // 没有配置权限的路由, 直接通过
+            } else { // No allocation of routing authority, directly
                 Util.toDefaultPage([...routers], to.name, router, next);
             }
         }
-    }
+   
 });
 
 router.afterEach((to) => {

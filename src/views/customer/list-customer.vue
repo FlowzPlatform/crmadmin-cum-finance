@@ -1,32 +1,73 @@
-<style >
-   
-</style>
-
 <template>
   <div>
-    <!-- <Table :columns="columns8" :data="listData" stripe border ref="table"></Table>
-    <div style="margin: 10px;overflow: hidden">
-        <div style="float: right;">
-            <Page :total="len" :current="1" @on-change="changePage"></Page>
+    <div class="panel panel-default panel-group" id="accordion">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+      </div>
+      <div class="panel-collapse collapse" id="collapseTwo">
+        <div class="panel-body">
+          <form>
+              <div class="collapse-maindiv maindiv" style="text-align: left;">
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                          <label>Customer Name</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="Customer">
+                          <select class="form-control"  v-model="cname" id="selectCustomer">
+                            <option value="">All</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Email"></span>
+                          <label>Email Address</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="Email">
+                          <select class="form-control"  v-model="email" id="selectEmail">
+                            <option value="">All</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="panel panel-default">
+                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
+                          data-target="#status"></span>
+                          <label>Status</label>
+                      </div>
+                      <div class="panel-collapse collapse" id="status">
+                          <select class="form-control mb-2 mb-sm-0" v-model="status">
+                              <option value="">All</option>
+                              <option value="ACTIVE">ACTIVE</option>
+                              <option value="INACTIVE">INACTIVE</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div style="margin-top: 5px;">
+                    <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                    <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                  </div>
+              </div>
+          </form>
         </div>
+      </div>
     </div>
-    <br> -->
     <div v-if="spinShow">
       <Spin size="large"></Spin>
     </div>
     <div v-else>
-      <Tabs  @on-click="tabClicked">
+      <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
         <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-        <Table v-else :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-        
+        <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
+        <Table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" border size="small" ref="table" stripe></Table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage"></Page>
             </div>
         </div>
+        <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
+          <Button type="primary" size="large" @click="exportData(2)"><Icon type="ios-download-outline"></Icon> Export sorting and filtered data</Button> -->
       </TabPane>
-      </Tabs>  
+      </Tabs>
     </div>
   </div>
 </template>
@@ -43,6 +84,7 @@ export default {
   name: 'list-customer',
   data () {
   return {
+    tabIndex: 0,
     tabPanes : [],
     spinShow: true,
     page: 1,
@@ -51,13 +93,14 @@ export default {
     pageSize: pageSize,
     columns1: [
       {
-        "title": "Name",
-        "key": "Name",
+        "title": "Customer Name",
+        "key": "Name"
       },
       {
         "title": "Status",
         "key": "ContactStatus",
         "sortable": true,
+        "width":120,
         filters: [
           {
             label: 'ACTIVE',
@@ -85,49 +128,53 @@ export default {
           if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
             {
               return "Not available"
-            } 
+            }
             else {
               return row.EmailAddress
             }
           }
       },
       {
-        "title": "Mobile",
+        "title": "Mobile No.",
         "key": "Phones",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
               return "Not available"
-            } 
+            }
             else {
               return row.Phones[3].PhoneNumber
             }
           }
       },
       {
-        "title": "Phone",
+        "title": "Phone No.",
         "key": "click",
+        "align":"center",
         "sortable": true,
-        render:(h,{row})=>{ 
-          if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+        render:(h,{row})=>{
+          if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
               return "Not available"
             }
             else{
-              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
             }
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
-        render:(h,{row})=>{ 
-          if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
+        "align":"center",
+        render:(h,{row})=>{
+          console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
+          if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
               return "Not available"
-            } 
+            }
           else
             {
               return row.Phones[2].PhoneNumber
@@ -139,29 +186,29 @@ export default {
         "key": "Addresses",
         "sortable": false,
         render:(h,{row})=>{
-          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;      
+          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
         }
-      },
-      {
-        "title": "isCustomer",
-        "key": "IsCustomer",
-        "sortable": true
-      },
-      {
-        "title": "isSupplier",
-        "key": "IsSupplier",
-        "sortable": true
       }
     ],
     columns2: [
       {
-        "title": "Name",
-        "key": "Name",
+        "title": "Customer Name",
+        "key": "DisplayName"
       },
       {
         "title": "Status",
-        "key": "ContactStatus",
+        "key": "Active",
+        "width":120,
         "sortable": true,
+        render:(h,{row})=>{
+          if(row.Active == true)
+            {
+              return "ACTIVE"
+            }
+            else {
+              return 'INACTIVE'
+          }
+        },
         filters: [
           {
             label: 'ACTIVE',
@@ -183,139 +230,284 @@ export default {
       },
       {
         "title": "Email",
-        "key": "EmailAddress",
+        "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
-          if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
-            {
-              return "Not available"
-            } 
-            else {
-              return row.EmailAddress
-            }
+          return row.PrimaryEmailAddr.Address
           }
       },
       {
-        "title": "Mobile",
-        "key": "Phones",
+        "title": "Mobile No.",
+        "key": "Mobile",
         "sortable": true,
+        "align":"center",
         render:(h,{row})=>{
-          if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
-            {
               return "Not available"
-            } 
-            else {
-              return row.Phones[3].PhoneNumber
-            }
           }
       },
       {
-        "title": "Phone",
-        "key": "click",
+        "title": "Phone No.",
+        "key": "PrimaryPhone",
         "sortable": true,
-        render:(h,{row})=>{ 
-          if((row.Phones[1].PhoneCountryCode != undefined || row.Phones[1].PhoneNumber != undefined) || (row.Phones[1].PhoneCountryCode != '' || row.Phones[1].PhoneNumber != ''))
+        "align":"center",
+        render:(h,{row})=>{
+          if(row.PrimaryPhone.FreeFormNumber == "'")
             {
               return "Not available"
             }
-            else{
-              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber 
+            else {
+              return row.PrimaryPhone.FreeFormNumber
             }
           }
       },
       {
-        "title": "Fax",
+        "title": "Fax No.",
         "key": "active",
         "sortable": true,
-        render:(h,{row})=>{ 
-          if(row.Phones[2].PhoneNumber != undefined || row.Phones[2].PhoneNumber != '')
-            {
+        "align":"center",
+        render:(h,{row})=>{
               return "Not available"
-            } 
-          else
-            {
-              return row.Phones[2].PhoneNumber
-            }
           }
       },
       {
         "title": "Address",
-        "key": "Addresses",
+        "key": "BillAddr",
         "sortable": false,
         render:(h,{row})=>{
-          
-              return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
-          
+              return row.BillAddr.Line1 +", "+row.BillAddr.City
         }
-      },
-      {
-        "title": "isCustomer",
-        "key": "IsCustomer",
-        "sortable": true
-      },
-      {
-        "title": "isSupplier",
-        "key": "IsSupplier",
-        "sortable": true
       }
     ],
+    column3:[],
     data6: [],
-    listData: []
+    data7: [],
+    filterArray: [],
+    listData: [],
+    cname: '',
+    status:'',
+    email: ''
     }
   },
   methods: {
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.email = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data6", this.data6)
+      this.filterArray = this.data6
+      var self = this
+
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          if(item.Name != undefined){
+            return item.Name === self.cname;
+          }else{
+            return item.DisplayName === self.cname;
+          }
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+      if(this.status != ''){
+        console.log("this.status", this.status)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          if(item.ContactStatus != undefined){
+            return item.ContactStatus === self.status;
+          }else{
+            if(self.status == 'ACTIVE'){
+              if(item.Active == true){
+                return item
+              }
+            }else{
+              if(item.Active == false){
+                return item
+              }
+            }
+          }
+        });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+      if(this.email != ''){
+       console.log("this.email", this.email)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+        if(item.EmailAddress != undefined){
+          return item.EmailAddress === self.email;
+        }
+        else{
+        if(item.PrimaryEmailAddr != undefined){
+          return item.PrimaryEmailAddr.Address === self.email;
+        }
+        }
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
     async mockTableData1 (p,size) {
       this.len = this.data6.length
-      return this.data6.slice((p - 1) * size, p * size);
+      return this.data6.slice((p - 1) * size, p * size).reverse();
     },
     async changePage (p) {
       this.page = p
-      this.list = await this.mockTableData1(p,pageSize);
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
     },
     async tabClicked(data){
       console.log(data)
+      this.tabIndex = data;
       let settingId = this.tabPanes[data].id
-      this.getContactBySettingId(settingId)
+      let settingDomain = this.tabPanes[data].domain;
+      this.getContactBySettingId(settingId ,settingDomain , data)
     },
-    async getContactBySettingId(settingId){
+    async getContactBySettingId(settingId , settingDomain , data){
       this.$Loading.start();
       this.data6 = [];
       let self = this;
       self.list = [];
-      await axios.get(feathersUrl +'contacts', {
-         headers:{
-          Authorization : Cookies.get('auth_token')
-      },
-      params : {
-      settingId : settingId
+
+      if(settingDomain == 'custom'){
+        console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
+        let customerUrl = this.tabPanes[data].customer_url;
+         await axios({
+            method: 'get',
+            url: customerUrl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
+            headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+            }).then(async function (response) {
+              self.$Loading.finish();
+              console.log(response)
+              self.data6 = response.data.data.reverse();
+
+              let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+              let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
+              let arr = [];
+              let len = columnArray.length;
+              for (let i = 0; i < len; i++) {
+                  arr.push({
+                      title: columnArray[i],
+                      key : columnArray[i],
+                      sortable: true
+
+                  });
+              }
+              self.list = await self.mockTableData1(1,pageSize)
+              self.column3 = arr;
+            })
+            .catch(function (error) {
+              self.$Loading.error();
+              console.log(error);
+            });
+      }else{
+        await axios.get(feathersUrl +'contacts', {
+          headers:{
+            Authorization : Cookies.get('auth_token')
+        },
+        params : {
+        settingId : settingId
+        }
+        }).then(async function (response) {
+
+          console.log("$$$$$$$$$$$$$$$$$$$",response)
+            self.data6 = response.data[0].data.reverse();
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.list = await self.mockTableData1(1,pageSize)
+        }).catch(function (error) {
+          console.log("error",error);
+            self.$Loading.error();
+        });
       }
-      }).then(async function (response) {
-        console.log("$$$$$$$$$$$$$$$$$$$",response)
-        self.data6 = response.data[0].data;
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
-      }).catch(function (error) {
-        console.log("error",error);
-          self.$Loading.error();
-      });   
-    },          
+
+      var NameArr = [];
+      $('#selectCustomer').children('option:not(:first)').remove();
+      var EmailArr = [];
+      $('#selectEmail').children('option:not(:first)').remove();
+
+      self.data6.forEach (obj => {
+            console.log("obj------------------->",obj);
+            if(obj.Name != undefined){
+              NameArr.push(obj.Name);
+              if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
+
+              }else{
+                EmailArr.push(obj.EmailAddress)
+              }
+            }else{
+              NameArr.push(obj.DisplayName)
+              if(obj.PrimaryEmailAddr != undefined){
+                console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+                EmailArr.push(obj.PrimaryEmailAddr.Address)
+              }
+              console.log('EmailArr------------>',EmailArr)
+            }
+          })
+
+          console.log("NameArr----------->before", NameArr);
+          NameArr.sort();
+          console.log("NameArr----------->after", NameArr);
+
+          console.log("EmailArr----------->before", EmailArr);
+          EmailArr.sort();
+          console.log("EmailArr----------->after", EmailArr);
+
+          NameArr.forEach(item => {
+            var x = document.getElementById("selectCustomer");
+            var option = document.createElement("option");
+            option.text = item;
+            x.add(option);
+          })
+
+          EmailArr.forEach(item => {
+            var y = document.getElementById("selectEmail");
+            var option = document.createElement("option");
+            option.text = item;
+            y.add(option);
+          })
+
+    },
     async getAllSettings(){
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
             headers:{
-                Authorization : Cookies.get('auth_token')
+                Authorization : Cookies.get('auth_token'),
+                subscriptionId : Cookies.get('subscriptionId')
             },
         })
         .then(function (response) {
             console.log("response------>iuy",response);
+            console.log('this.tabIndex', self.tabIndex)
             self.spinShow = false;
             if (response.data.data.length != 0)
             {
               self.tabPanes = response.data.data;
             $('.preload').css("display","none")
-            let settingId = self.tabPanes[0].id
-            self.getContactBySettingId(settingId)
+            let settingId = self.tabPanes[self.tabIndex].id
+            let settingDomain = self.tabPanes[self.tabIndex].domain;
+            self.getContactBySettingId(settingId , settingDomain , 0)
             }else
             {
                 self.$Modal.warning({
@@ -324,18 +516,38 @@ export default {
                 content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                 onOk: () => {
                       self.$router.push({
-                          name: 'newsettings'
+                          name: 'Settings'
                       })
                   }
                 });
             }
-            
+
         })
         .catch(function (error) {
             console.log("error",error);
             self.spinShow = false;
+            if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
         });
-    } 
+    },
+    exportData (type) {
+                if (type === 1) {
+                  console.log(this.$refs);
+                    this.$refs.table[0].exportCsv({
+                        filename: 'The original data'
+                    });
+                } else if (type === 2) {
+                    this.$refs.table[0].exportCsv({
+                        filename: 'Sorting and filtering data',
+                        original: false
+                    });
+                }
+    }
   },
   mounted(){
     this.getAllSettings();
@@ -349,6 +561,10 @@ export default {
 }
 .ivu-table th{
   background-color: #d9edf7;
+}
+.ivu-spin-main {
+    width: 100%;
+    text-align: -webkit-center;
 }
 .ivu-table-border th {
     border-right: 1px solid #ddd;

@@ -7,7 +7,7 @@ let util = {
 
 };
 util.title = function (title) {
-    title = title || 'iView admin';
+    title = title || 'crm';
     window.document.title = title;
 };
 
@@ -97,20 +97,20 @@ util.setCurrentPath = function (vm, name) {
         }
     });
     let currentPathArr = [];
-    if (name === 'home_index') {
+    if (name === 'Dashboard') {
         currentPathArr = [
             {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'Dashboard')),
                 path: '',
-                name: 'home_index'
+                name: 'Dashboard'
             }
         ];
-    } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'home_index') {
+    } else if ((name.indexOf('_index') >= 0 || isOtherRouter) && name !== 'Dashboard') {
         currentPathArr = [
             {
-                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'home_index')),
+                title: util.handleTitle(vm, util.getRouterObjByName(vm.$store.state.app.routers, 'Dashboard')),
                 path: '/home',
-                name: 'home_index'
+                name: 'Dashboard'
             },
             {
                 title: title,
@@ -140,7 +140,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 }
             ];
         } else if (currentPathObj.children.length <= 1 && currentPathObj.name !== 'home') {
@@ -148,7 +148,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '/home',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 },
                 {
                     title: currentPathObj.title,
@@ -164,7 +164,7 @@ util.setCurrentPath = function (vm, name) {
                 {
                     title: 'Home',
                     path: '/home',
-                    name: 'home_index'
+                    name: 'Dashboard'
                 },
                 {
                     title: currentPathObj.title,
@@ -252,18 +252,18 @@ util.fullscreenEvent = function (vm) {
 };
 
 util.checkUpdate = function (vm) {
-    axios.get('https://api.github.com/repos/iview/iview-admin/releases/latest').then(res => {
-        let version = res.data.tag_name;
-        vm.$Notice.config({
-            duration: 0
-        });
-        if (semver.lt(packjson.version, version)) {
-            vm.$Notice.info({
-                title: 'iview-admin更新啦',
-                desc: '<p>iView-admin更新到了' + version + '了，去看看有哪些变化吧</p><a style="font-size:13px;" href="https://github.com/iview/iview-admin/releases" target="_blank">前往github查看</a>'
-            });
-        }
-    });
+    // axios.get('https://api.github.com/repos/iview/iview-admin/releases/latest').then(res => {
+    //     let version = res.data.tag_name;
+    //     vm.$Notice.config({
+    //         duration: 0
+    //     });
+    //     if (semver.lt(packjson.version, version)) {
+    //         vm.$Notice.info({
+    //             title: 'iview-admin更新啦',
+    //             desc: '<p>iView-admin更新到了' + version + '了，去看看有哪些变化吧</p><a style="font-size:13px;" href="https://github.com/iview/iview-admin/releases" target="_blank">前往github查看</a>'
+    //         });
+    //     }
+    // });
 };
 
 export default util;

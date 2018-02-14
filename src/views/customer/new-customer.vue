@@ -1,22 +1,39 @@
 <style>
-   .form{
-       width: 70%
+  .vw-widget-body {
+    text-align: -webkit-center;
+  }
+  .form {
+    width: 70%;
+  }
+
+  #state{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
+   }
+   #country{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
    }
 </style>
 
 <template>
 
     <Widget>
-      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
+      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true" :Editable='false'></WidgetHeading>
       <WidgetBody>
-            
-      <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
+        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
         <FormItem label="Configuration Name" prop="configuration">
-           <Select v-model="formValidate.configuration" style="width:100%" @on-change="configChange">
+           <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
              <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
           </Select>
         </FormItem>
-        <FormItem label="Name" prop="name">
+        <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
             <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
         </FormItem>
         <FormItem label="E-mail" prop="mail">
@@ -36,14 +53,18 @@
         </Col>
         </Row>
         </FormItem>
-        <FormItem label="City" prop="city">
-            <Input v-model="formValidate.city" placeholder="Enter city"></Input>
-        </FormItem>
          <FormItem label="Country" prop="country">
-            <Input v-model="formValidate.country" placeholder="Enter country"></Input>
+            <select v-model="formValidate.country" id="country" name ="country">
+            </select>
         </FormItem>
-         <FormItem label="Postal code" prop="PostalCode">
-            <Input v-model="formValidate.PostalCode" placeholder="Enter PostalCode"></Input>
+        <FormItem label="State" prop="state" class="state1" style="display:none">
+          <select v-model="formValidate.state" name ="state" id ="state" ></select>
+        </FormItem>
+        <FormItem label="City" prop="city">
+         <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
+        </FormItem>
+         <FormItem label="Zip Code" prop="PostalCode">
+            <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
         </FormItem>
         <FormItem label="Mobile" prop="mobile">
             <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
@@ -54,8 +75,10 @@
          <FormItem label="Fax" prop="fax">
             <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
         </FormItem> -->
+        <div style="text-align:center;">
           <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</Button>
+          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+          </div>
         </FormItem>
     </Form>
         </WidgetBody>
@@ -70,6 +93,7 @@ import Cookies from 'js-cookie';
 import Vue from 'vue'
 import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
+import _ from 'lodash'
 var settingId
 Vue.use(VueWidgets);
   export default {
@@ -85,6 +109,8 @@ Vue.use(VueWidgets);
             }
           };
           return {
+              customCustomerUrl:'',
+              customInvoiceUrl: '',
               formValidate: {
                   configuration: '',
                   name: '',
@@ -93,6 +119,7 @@ Vue.use(VueWidgets);
                   AddressLine1: '',
                   AddressLine2 : '',
                   city: '',
+                  state: '',
                   country: '',
                   PostalCode: ''
               },
@@ -113,20 +140,29 @@ Vue.use(VueWidgets);
                   city:[
                     { required: true, message: 'The city cannot be empty', trigger: 'blur' }
                   ],
+                  state: [
+                    { required: true, message: 'Please select state', trigger: 'blur' }
+                  ],
                   country:[
-                    { required: true, message: 'The country cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
-                    { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
-                    { validator: validateNum, trigger: 'blur' }
+                    { required: true, message: 'The Zip Code cannot be empty', trigger: 'blur' },
+                    { validator: validateNum, trigger: 'blur' },
+                    {
+                        max: 6 ,min:6, message: 'Please Enter 6 digit Zip Code', trigger: 'blur' 
+                    }
                   ],
                   mail: [
                       { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
                       { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                   ],
                   mobile: [
-                      { required: true, message: 'Mobile no cannot be empty', trigger: 'blur' },
-                      { validator: validateNum, trigger: 'blur' }
+                      { required: true, message: 'Mobile number can not be empty', trigger: 'blur' },
+                      { validator: validateNum, trigger: 'blur' },
+                      {
+                        max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' 
+                      }
                   ],
                   phone: [
                       { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
@@ -143,10 +179,11 @@ Vue.use(VueWidgets);
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('Success!');
+                        //this.$Message.success('Success!');
                         this.createCustomer();
                     } else {
-                        this.$Message.error('Fail!');
+                        
+                        this.$Message.error('Please fill up all the fields correctly');
                     }
                 })
             },
@@ -157,7 +194,8 @@ Vue.use(VueWidgets);
               let self = this
               await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
                 headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
                 }
               })
               .then(function (response) {
@@ -166,7 +204,10 @@ Vue.use(VueWidgets);
                 
                 if (response.data.data.length != 0)
                 {
-                  self.configs = response.data.data
+                  var newConf = response.data.data
+                  console.log("self.configs---------------->before",newConf)
+                  self.configs = _.sortBy(newConf, ['configName']);
+                  console.log("self.configs---------------->after",self.configs)
                 }else
                 {
                     self.$Modal.warning({
@@ -175,7 +216,7 @@ Vue.use(VueWidgets);
                     content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
                     onOk: () => {
                           self.$router.push({
-                              name: 'newsettings'
+                              name: 'Settings'
                           })
                       }
                     });
@@ -183,49 +224,121 @@ Vue.use(VueWidgets);
               })
               .catch(function (error) {
                 console.log("error",error);
+                if(error.response.status == 403){
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
               
             },
             configChange(data){
-              console.log("data--------------->",data)
-              settingId = data
+              
+              $('#CustomerName').css("display","block")
+              settingId = data;
+              
             },
           async createCustomer () {
             var self = this
-            console.log("settingId-------->",settingId)
-            var params = {
-              settingId : settingId,
-              Name: this.formValidate.name,
-              ContactStatus: 'ACTIVE',
-              EmailAddress:this.formValidate.mail,
-              AddressLine1:this.formValidate.AddressLine1,
-              AddressLine2:this.formValidate.AddressLine2,
-              City:this.formValidate.city,
-              Country:this.formValidate.country,
-              PostalCode:this.formValidate.PostalCode,
-              PhoneNumber:this.formValidate.mobile
-            }
-            console.log("params",params)
+            
+
+            console.log(">>>>>>>>>>> " , settingId)
             await axios({
-            method: 'post',
-            url: config.default.serviceUrl + 'contacts',
-            data: params,
-            headers:{
-              Authorization : Cookies.get('auth_token')
-            }
-            })
-            .then(function (response) {
-              console.log("response >>>>>>>>>>>>>>>>",response)
-              self.$Message.success('created customer successfully');
-            })
-            .catch(function (error) {
-              console.log("error",error);
-              self.$Message.error('error in create customer')
-            });
+                    method:'get',
+                    url: config.default.serviceUrl + 'settings/'+settingId,
+                    headers:{
+                      Authorization : Cookies.get('auth_token'),
+                      subscriptionId : Cookies.get('subscriptionId')
+                    },
+                  })
+                    .then(async function(response) {
+                      console.log(response)
+                      if(response.data.domain == 'custom'){
+
+                        var params = {
+                          settingId : settingId,
+                          Name: self.formValidate.name,
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:self.formValidate.mail,
+                          Address: self.formValidate.AddressLine1+","+self.formValidate.AddressLine2+","+self.formValidate.city+","+self.formValidate.state+","+self.formValidate.PostalCode+","+self.formValidate.country,
+                          
+                          PhoneNumber:self.formValidate.mobile
+                        }
+
+                            self.customCustomerUrl = response.data.customer_url;
+                            self.customInvoiceUrl = response.data.invoice_url;
+                            
+                            axios({
+                              method: 'post',
+                              url: self.customCustomerUrl,
+                              data: params,
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              self.$Message.success('created customer successfully');
+                              self.$refs['formValidate'].resetFields();
+                            })
+                            .catch(function (error) {
+                              console.log("error",error);
+                            });
+
+                      }else{
+                        var params1 = {
+                          settingId : settingId,
+                          Name: self.formValidate.name,
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:self.formValidate.mail,
+                          AddressLine1:self.formValidate.AddressLine1,
+                          AddressLine2:self.formValidate.AddressLine2,
+                          City:self.formValidate.city,
+                          Country:self.formValidate.country,
+                          PostalCode:self.formValidate.PostalCode,
+                          PhoneNumber:self.formValidate.mobile
+                        }
+                            axios({
+                              method: 'post',
+                              url: config.default.serviceUrl + 'contacts',
+                              data: params1,
+                              headers:{
+                                Authorization : Cookies.get('auth_token')
+                              }
+                            })
+                            .then(function (response) {
+                              self.$Message.success('created customer successfully');
+                              self.$refs['formValidate'].resetFields();
+                            })
+                            .catch(function (error) {
+                              console.log("error",error);
+                              self.$Message.error('error in create customer')
+                            });
+                      }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    if(error.response.status == 403){
+                     self.$Notice.error(
+                         {duration:0, 
+                         title: error.response.statusText,
+                         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                         );
+                      }
+                  });     
+            
           }
         },
         mounted(){
             this.settingData ();
+            populateCountries("country", "state");
+            $("#country").on("change",function() {
+            // $('#country').change(function(){ 
+                // var value = $(this).val();
+                console.log("Hii")
+                $('.state1').css("display","block")
+            });
         }
     }
 </script>

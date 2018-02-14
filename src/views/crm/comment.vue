@@ -8,8 +8,8 @@
     display: block;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: auto;
+    max-height: 365px;
     background: #eee;
   }
   .chat .message {
@@ -270,63 +270,82 @@
     color: rgb(255, 255, 255);
     width: auto !important;
   }
-</style> 
-
- 
+</style>
 <template>
-   <div class="chat">
-      <div id="block" style="text-align:right;width:100%">
-         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
-         <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
-         <button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
-      </div>
-      <textarea style="display:none" id="editor2" name="editor2" ></textarea>
-      <div style="margin-bottom: 10px;margin-right: 10px;">
-         <div class="message">
-            <Row>
-               <Col span="24" >
-               <!-- <div v-for="(item, index) in commentData"> -->
-               <div >
-                  <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
-                  <!-- <p class="emailText">{{item.Text}}</p> -->
-                  <p class="emailText">I am here </p>
-                  <span class="receivedDate">
-                     <!-- <span>{{getDate(item.date)}}</span> -->
-                     <span>1 day ago</span>
-                  </span>
-               </div>
-               </Col>
-            </Row>
-         </div>
-         <div class="message me" >
-            <Row>
-               <Col span="24" >
-               <div v-for="(item, index) in commentData">
-                  <img :src="src" />
-                  <p class="emailText">{{item.comment}}</p>
-                  <span class="sentDate">
-                  <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span>|
-                  <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
-                  <span>{{getDate(item.created_at)}}</span>
-                  </span>
-               </div>
-               </Col>
-            </Row>
-         </div>
-      </div>
-   </div>
-</template>
+	<div class="chat">
+		<div id="block" style="text-align:right;width:100%;display:inline-block">
+			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
+			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
+			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
+		</div>
 
+		<textarea style="display:none" id="editor2" name="editor2" ></textarea>
+		<div v-for="(item, index) in commentData" style="margin-bottom: 10px;margin-right: 10px;">
+			<div class="message"  v-if="item.user_id != userId">
+				<Row>
+					<Col span="24" >
+						<!-- <div v-for="(item, index) in commentData"> -->
+						<div >
+							<img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
+							<!-- <p class="emailText">{{item.Text}}</p> -->
+							<!-- <p class="emailText">I am here </p> -->
+              <p class="emailText">{{item.comment}}</p>
+							<span class="receivedDate">
+								<!-- <span>{{getDate(item.date)}}</span> -->
+								<!-- <span>1 day ago</span> -->
+                <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
+                <!-- <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> || -->
+                    
+                <!-- <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
+                <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+                <span v-else>{{getDate(item.created_at)}}</span>
+                <span v-if="item.isEdited">{{item.edited_by}}</span>
+                <span v-else>{{item.created_by}}</span>
+							</span>
+						</div>
+					</Col>
+				</Row>
+			</div>
+			<div v-else class="message me" >
+				<Row>
+					<Col span="24" >
+						<div  >
+							<img :src="src" />
+							<p class="emailText">{{item.comment}}</p>
+							<span class="sentDate">
+								<span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span>
+								<span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
+                    
+								<span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
+								<span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+								<span v-else>{{getDate(item.created_at)}}</span>
+								<span v-if="item.isEdited">{{item.edited_by}}</span>
+								<span v-else>{{item.created_by}}</span>
+							</span>
+						</div>
+					</Col>
+				</Row>
+			</div>
+		</div>
+	</div>
+</template>
 <script>
+  import Cookies from 'js-cookie';
   import gravatar from 'gravatar'
   import moment from 'moment'
   import axios from 'axios'
   import config from '../../config/customConfig.js'
+  var userid
+  var crm_id
+  var created_date
+  var new_comment
   var relationshipcomments = config.default.serviceUrl
   export default {
     data() {
       return { 
         isActive:false,
+        userId: '',
+        // isEdit:false,
         src : '',
         commentData: []
       }
@@ -337,25 +356,44 @@
         editor.destroy();
         this.isActive = !this.isActive
         document.getElementById("editor2").style.display = "none";
-        document.getElementById("block").style.display = "inline";
+        document.getElementById("block").style.display = "inline-block";
       },
       deleteItem (item) {
         var itemId = item.id
         console.log('deleteItem', item)
         let self = this
-        axios({
-          method:'delete',
-          url: relationshipcomments + 'relationshipcomments/' + itemId
-        })
-        .then(function(response) {
-          console.log("delete response.....",response)
-          for(let i=0;i<self.commentData.length;i++){
-            console.log("for..................",self.commentData[i])
-            if(response.data.id == self.commentData[i].id){
-              self.commentData.splice(i,1)
+        this.$Modal.confirm({
+          okText: 'OK',
+          cancelText: 'Cancel',
+          title: 'Title',
+          content: '<p>Are you sure to delete?<p>',
+          onOk: () => {
+            var userid = Cookies.get('user')
+            var data1= {
+              "isDeleted": true,
+              "deleted_by": userid,
+              "deleted_at": new Date()
             }
+            axios({
+              method:'patch',
+              url: relationshipcomments + 'relationshipcomments/' + itemId,
+              data: data1
+            })
+            .then(function(response) {
+              console.log("delete response.....",response)
+              for(let i=0;i
+			<self.commentData.length;i++){
+                console.log("for..................",self.commentData[i])
+                if(response.data.id == self.commentData[i].id){
+                  self.commentData.splice(i,1)
+                }
+              }
+            });
+          },
+          onCancel: () => {
+            this.$Message.info('Clicked cancel');
           }
-        });
+        })
       },
       clicked (item, index) {
         var itemId = item.id
@@ -364,12 +402,13 @@
         let comment1
         console.log("************",itemId)
         this.$Modal.confirm({
+          okText: 'OK',
+          cancelText: 'Cancel',
           render: (h) => {
             return h('Input', {
               props: {
                 value: comment,
-                autofocus: true,
-                placeholder: 'Please enter your name...'
+                autofocus: true
               },
               on: {
                 input: (val) => {
@@ -380,22 +419,37 @@
             })
           },
           onOk: () => {
+            var self = this
+            var userid = Cookies.get('user')
             console.log("comment....",comment)
             this.$Message.info('Clicked ok');
             this.commentData[index].comment = comment1
             this.commentData[index].created_at = new Date() 
             data1 = {
               "comment": comment1,
-              "created_at": new Date()
+              "edited_by": userid,
+              "edited_at": new Date(),
+              "isEdited": true
+              // "created_at": created_date,
+              // "created_by": userid,
+              // "crm_id": crm_id,
+              // "user_id": userid,
+              // "isDeleted": false,
+              // "deleted_by": "",
+              // "deleted_at": ""
             }
             axios({
-              method:'put',
+              method:'patch',
               url: relationshipcomments + 'relationshipcomments/' + itemId,
               data: data1
             })
             .then(function(response) {
               console.log("update response.....",response)
+              self.commentData[index].edited_at = new Date() 
+              self.commentData[index].isEdited = true
+              self.commentData[index].edited_by = userid
             });
+            
           },
           onCancel: () => {
             this.$Message.info('Clicked cancel');
@@ -409,25 +463,40 @@
         var editor = CKEDITOR.instances.editor2
         if (!this.isActive) {
           CKEDITOR.replace("editor2")
+          CKEDITOR.instances.editor2.setData("")
           this.isActive = !this.isActive
           document.getElementById("block").style.display = "inline-block";
         } 
         else {
+          this.$Notice.success({
+            title: 'Comment Saved',
+            duration: 4.5
+          });
+          // this.$Message.success('Comment Saved')
           var data1
           var self = this
           console.log('else')
           var content = CKEDITOR.instances['editor2'].getData();
-          var text = $(content).text();
-          var date = new Date();
-          var crm_id = self.$route.params.id
-          console.log("text.....",text,"date.....",date)
+          new_comment = $(content).text();
+          created_date = new Date();
+          crm_id = self.$route.params.id
+          userid = Cookies.get('user')
+          console.log("text.....",new_comment,"date.....",created_date)
           console.log("Save called", this.commentData)
           // this.commentData.forEach(function(element) {
             // console.log(element);
             data1 = {
-              "comment": text,
-              "created_at": date,
-              "crm_id": crm_id
+              "comment": new_comment,
+              "created_at": created_date,
+              "created_by": userid,
+              "crm_id": crm_id,
+              "user_id": userid,
+              "isEdited": false,
+              "isDeleted": false,
+              "deleted_by": "",
+              "deleted_at": "",
+              "edited_by": "",
+              "edited_at": "",
             }
           // });
           console.log('data1', data1)
@@ -437,33 +506,36 @@
             data: data1
           })
           .then(function(response) {
-            self.commentData.push({comment: text, created_at: date, id: response.data.id})
             console.log("save response.....",response)
+            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
             console.log("this.commentData", self.commentData)
           });
+          
           editor.destroy();
           this.isActive = !this.isActive
           document.getElementById("editor2").style.display = "none";
-          document.getElementById("block").style.display = "inline";
+          document.getElementById("block").style.display = "inline-block";
         }
         console.log('outer',this.isActive)
       },
       getData () {
         var self = this
         var crm_id = self.$route.params.id
+        this.userId = Cookies.get('user')
         axios({
           method:'GET',
           url: relationshipcomments + 'relationshipcomments',
         })
         .then(function(response) {
           response.data.data.forEach(function(item,index){
-            if (item.crm_id == crm_id){
-              self.commentData.push(item)
+            if (item.crm_id == crm_id && item.isDeleted == false){
+            // if (item.crm_id == crm_id){
+              self.commentData.push(item);
             }
           })          
           
-          console.log("++++++++++++++",self.commentData)
-          console.log("save response.....",response.data.data)
+          console.log("++++++++++++++self.commentData",self.commentData)
+          self.commentData = _.sortBy(self.commentData, 'created_at')
         });
       }
     },
@@ -472,4 +544,5 @@
       this.getData()
     }
   }
-</script>
+
+			</script>

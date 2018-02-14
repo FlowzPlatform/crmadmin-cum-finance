@@ -28,7 +28,7 @@ export default {
         },
         goHome () {
             this.$router.push({
-                name: 'home_index'
+                name: 'Dashboard'
             });
         }
     }
