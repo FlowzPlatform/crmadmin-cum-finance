@@ -1,8 +1,8 @@
 <template>
   <div>
-      <!-- <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+      <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
           <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
-      </Select> -->
+      </Select>
       <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
   </div>
 </template>
@@ -64,53 +64,60 @@ export default {
       await axios({
         method: 'get',
         url: config.default.requestinfoapi,
-        params : {
-          userId:self.userid
-        },
+        // params : {
+        //   userId:self.userid,
+        // },
         headers:{
+          'Authorization': Cookies.get('auth_token'),
+          // 'subscriptionId': Cookies.get('subscriptionId')    
         }
         }).then(async function (response) {
           console.log('response------>',response)
           self.list = response.data.data
-          // var result = _.uniqBy(response.data.data,'website_id')
-          // self.websiteList = result
-          // self.website = self.websiteList[0].website_id
+          var result = _.uniqBy(response.data.data,'website_id')
+          self.websiteList = result
+          self.website = self.websiteList[0].website_id
         })
         .catch(function (error) {
           console.log("-------",error);
             self.$Message.error(error)
         });
     },
-    // listData (val) {
-    //   var self = this
-    //   var len
-    //   console.log("val", val)
-    //   axios.get(api, {
-    //       params: {
-    //           website_id: val,
-    //           // user_id:self.userid
-    //       }
-    //   })
-    //   .then(function (response){
-    //       console.log("response val", response.data)
-    //       self.list = response.data.data
-    //   })
-    // },
+    listData (val) {
+      var self = this
+      var len
+      console.log("val", val)
+      axios.get({
+          method: 'get',
+          url: config.default.requestinfoapi,
+          params: {
+              website_id: val
+          },
+          headers:{
+            'Authorization': Cookies.get('auth_token'),
+            // 'subscriptionId': Cookies.get('subscriptionId')    
+          }
+      })
+      .then(function (response){
+          console.log("response val", response.data)
+          self.list = response.data.data
+      })
+    },
   },
   async mounted(){
-    var self = this
-    await axios({
-      method: 'get',
-      url: config.default.userDetail,
-      headers: {'Authorization': Cookies.get('auth_token')}
-      }).then(async function (response) {
-        self.userid = response.data.data._id
-        console.log('user detail response------>',self.userid)
-      })
-      .catch(function (error) {
-        console.log("-------",error);
-          self.$Message.error(error)
-      });
+    // var self = this
+    // await axios({
+    //   method: 'get',
+    //   url: config.default.userDetail,
+    //   headers: {'Authorization': Cookies.get('auth_token')}
+    //   }).then(async function (response) {
+    //     self.userid = response.data.data._id
+    //     console.log('user detail response------>',self.userid)
+    //   })
+    //   .catch(function (error) {
+    //     console.log("-------",error);
+    //       self.$Message.error(error)
+    //   });
   this.getReuestQuoteData();
   }
 }

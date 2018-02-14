@@ -189,7 +189,12 @@
       var settingId = self.finaldata.config
       await axios({
                     method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId
+                    url: config.default.serviceUrl + 'settings/'+settingId,
+                    headers:{
+                    	Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    }
+
                   })
                     .then(async function(response) {
                       console.log(response)
@@ -236,8 +241,18 @@
                                     console.log(error);
                                   });
                       }
-                  });
-      
+                  })
+                  .catch(function (error) {
+			            console.log("error",error)
+			            if(error.response.status == 403){
+			               self.$Notice.error(
+			                   {duration:0, 
+			                   title: error.response.statusText,
+			                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+			                   );
+			                }
+			        });
+			      
       
       console.log("response------>iuy",resp);
       // resp.forEach(obj =>{
@@ -282,7 +297,8 @@
 						user : Cookies.get('user')
 					},
 					headers: {
-						Authorization : Cookies.get('auth_token')
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
 					}
 				})
 				.then(function (response) {
@@ -298,12 +314,13 @@
 				.catch(function (error) {
 					console.log(error)
 					self.disabled = false;
-					//Cookies.remove('auth_token') 
-					self.$Message.error('Auth Error!');
-					//self.$store.commit('logout', self); 
-					// self.$router.push({
-					//     name: 'login'
-					// })
+			        if(error.response.status == 403){
+		               self.$Notice.error(
+		                   {duration:0, 
+		                   title: error.response.statusText,
+		                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+		                   );
+		            }			        
 				});
 			},
 		configChange(data){

@@ -1,14 +1,14 @@
 <template>
   <div>
     <Tabs type="card">
-        <TabPane label="Requested Info">
-          <requestInfo></requestInfo>
-        </TabPane>
         <TabPane label="Requested Quote">
           <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
               <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
           </Select>
           <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+        </TabPane>
+        <TabPane label="Requested Info">
+          <requestInfo></requestInfo>
         </TabPane>
     </Tabs>
     <Modal
@@ -141,11 +141,15 @@ export default {
     async getReuestQuoteData () {
       var self = this;
       await axios.get( api, {
-        params : {
-          user_id: self.userid
-        }
+        // params : {
+        //   owner_id: self.userid
+        // },
+        headers: {
+          'Authorization': Cookies.get('auth_token'),
+          // 'subscriptionId': Cookies.get('subscriptionId')
+        } 
         }).then(async function (response) {
-          console.log('response------>',response)
+          console.log('response request quote>',response)
           var result = _.uniqBy(response.data.data,'website_id')
           self.websiteList = result
           self.website = self.websiteList[0].website_id
@@ -165,8 +169,11 @@ export default {
       axios.get(api, {
           params: {
               website_id: val,
-              // user_id:self.userid
-          }
+          },
+           headers: {
+            'Authorization': Cookies.get('auth_token'),
+            // 'subscriptionId': Cookies.get('subscriptionId')
+          } 
       })
       .then(function (response){
           console.log("response val", response.data)
@@ -175,19 +182,19 @@ export default {
     },
   },
   async mounted(){
-    var self = this
-    await axios({
-      method: 'get',
-      url: config.default.userDetail,
-      headers: {'Authorization': Cookies.get('auth_token')}
-      }).then(async function (response) {
-        self.userid = response.data.data._id
-        console.log('user detail response------>',self.userid)
-      })
-      .catch(function (error) {
-        console.log("-------",error);
-          self.$Message.error(error)
-      });
+    // var self = this
+    // await axios({
+    //   method: 'get',
+    //   url: config.default.userDetail,
+    //   headers: {'Authorization': Cookies.get('auth_token')}
+    //   }).then(async function (response) {
+    //     self.userid = response.data.data._id
+    //     console.log('user detail response------>',self.userid)
+    //   })
+    //   .catch(function (error) {
+    //     console.log("-------",error);
+    //       self.$Message.error(error)
+    //   });
   this.getReuestQuoteData();
   }
 }

@@ -155,8 +155,11 @@ Vue.use(VueWidgets);
                       { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                   ],
                   mobile: [
-                      { required: true, message: 'Mobile no cannot be empty', trigger: 'blur' },
-                      { validator: validateNum, trigger: 'blur' }
+                      { required: true, message: 'Mobile number can not be empty', trigger: 'blur' },
+                      { validator: validateNum, trigger: 'blur' },
+                      {
+                        max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' 
+                      }
                   ],
                   phone: [
                       { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
@@ -188,7 +191,8 @@ Vue.use(VueWidgets);
               let self = this
               await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
                 headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
                 }
               })
               .then(function (response) {
@@ -217,6 +221,13 @@ Vue.use(VueWidgets);
               })
               .catch(function (error) {
                 console.log("error",error);
+                if(error.response.status == 403){
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
               
             },
@@ -233,7 +244,11 @@ Vue.use(VueWidgets);
             console.log(">>>>>>>>>>> " , settingId)
             await axios({
                     method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId
+                    url: config.default.serviceUrl + 'settings/'+settingId,
+                    headers:{
+                      Authorization : Cookies.get('auth_token'),
+                      subscriptionId : Cookies.get('subscriptionId')
+                    },
                   })
                     .then(async function(response) {
                       console.log(response)
@@ -266,7 +281,6 @@ Vue.use(VueWidgets);
                             })
                             .catch(function (error) {
                               console.log("error",error);
-                              self.$Message.error('error in create customer')
                             });
 
                       }else{
@@ -299,10 +313,17 @@ Vue.use(VueWidgets);
                               self.$Message.error('error in create customer')
                             });
                       }
-                  });
-
-            
-            
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    if(error.response.status == 403){
+                     self.$Notice.error(
+                         {duration:0, 
+                         title: error.response.statusText,
+                         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                         );
+                      }
+                  });     
             
           }
         },

@@ -365,7 +365,8 @@ export default {
             user : Cookies.get('user')
         },
         headers:{
-            Authorization : Cookies.get('auth_token')
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
         },
       })
       .then(function (response) {
@@ -402,6 +403,13 @@ export default {
 
         console.log("error",error);
         self.spinShow = false;
+        if(error.response.status == 403){
+         self.$Notice.error(
+             {duration:0, 
+             title: error.response.statusText,
+             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+             );
+          }
       });
     },
     async tabClicked(data){
