@@ -431,7 +431,7 @@ export default {
               console.log("payment done success", res)
               self.$Message.success('payment done successfully');
               self.loading = false
-              this.backFunction()
+              self.backFunction()
             })
             .catch(function (err) {
               self.loading = false

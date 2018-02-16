@@ -70,7 +70,7 @@
                 </div>
                 <div v-if ="tabPane.domain=='custom'">
                   <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" border size="small" ref="table" stripe></Table></div>
-                  <div v-else>No transaction has been made for this Invoice</div>
+                  <div v-else style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>
                 </div>
                 <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">

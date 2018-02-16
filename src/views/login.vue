@@ -43,8 +43,9 @@
         </form>
          <div class="frontbox">
             <div class="login">
-               <h2>LOG IN</h2>
-               <form  v-on:submit.prevent="handleLoginSubmit" action="#" method="post">
+               <h2 v-if="!showForgotPassword">LOG IN</h2>
+               <h2 v-else> Forgot Password </h2>
+               <form  v-on:submit.prevent="handleLoginSubmit" action="#" method="post" id="form">
                 <el-tabs type="card" v-model="activeName" @tab-click="tabsClicked">
                     <el-tab-pane label="Standard" name="1">
                         <div class="lconun">
@@ -60,7 +61,7 @@
                            </div>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="LDAP" name="2">
+                    <el-tab-pane v-if="!showForgotPassword" label="LDAP" name="2">
                         <div class="lconun">
                            <div class="lrinp">
                               <label class="email">* </label><label>Email</label>
@@ -112,7 +113,7 @@
             <div class="signup hide">
                <h2>SIGN UP</h2>
                <div class="inputbox">
-                  <form  v-on:submit.prevent="signupUser" action="#" method="post">
+                  <form  v-on:submit.prevent="signupUser" action="#" method="post" id="form1">
                      <div class="lrinp">
                         <label>Username</label>
                         <input type="text" v-model="signup.username" placeholder="Enter username (Required)">
@@ -157,15 +158,12 @@ import axios from 'axios'
 import config from '../config/customConfig'
 import 'element-ui/lib/theme-chalk/index.css'
 import psl from 'psl';
-
 Vue.use(ElementUI)
 var $loginMsg = $('.loginMsg'),
             $login = $('.login'),
             $signupMsg = $('.signupMsg'),
             $signup = $('.signup'),
             $frontbox = $('.frontbox');
-
-
 //let location = psl.parse(window.location.hostname)
 export default {
     data () {
@@ -238,7 +236,6 @@ export default {
         //         }
         //     });
         // }
-
        async  getTokenFromSocialLogin(){
                 let self = this
                 let valid = await this.validateEmail(this.varifyEmail); ;
@@ -294,8 +291,7 @@ export default {
              let params = new URLSearchParams(document.location.href);
         console.log(params)
         let name = params.get("ob_id"); // is the string "Jonathan"
-
-        alert(name)
+        // alert(name)
             this.showForgotPassword = true;
         },
         backtoLogin(){
@@ -339,7 +335,6 @@ export default {
             let self = this;
             let emailValidator = await this.validateEmail(self.login.email);
             console.log(emailValidator);
-
             if (self.login.email == "") {
                 $(".email").css("color", "red");
                 self.$message.warning("email field is required");
@@ -371,7 +366,7 @@ export default {
                             Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
                             Cookies.set('email', response.data.email , {domain: location}) ;
-                            // Cookies.set('password', '123456');
+                            Cookies.set('password', '123456');
                             self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
                             if (self.form.email === 'iview_admin') {
                                 Cookies.set('access', 0);
@@ -392,10 +387,8 @@ export default {
                             
                             self.$message.error("The server encountered a temporary error and could not complete your request");
                                
-
                         }else if(error.response.status == 401){
                             self.$message.error("email or password is incorrect");
-
                         }
                         
                     });
@@ -403,6 +396,11 @@ export default {
         },
           signupUser:async function(){
             let self = this;
+            var $loginMsg = $('.loginMsg'),
+                $login = $('.login'),
+                $signupMsg = $('.signupMsg'),
+                $signup = $('.signup'),
+                $frontbox = $('.frontbox');
            let emailValidator = await this.validateEmail(self.signup.email);
            console.log(emailValidator)
           if(self.signup.username == ""){
@@ -429,7 +427,7 @@ export default {
                         message : response.data.message,
                         type: 'success'
                     });
-                    
+                    $("#form1")[0].reset();                    
                     $loginMsg.toggleClass("visibility");
                     $frontbox.removeClass("moving");
                     $signupMsg.toggleClass("visibility");
@@ -454,7 +452,6 @@ export default {
                 }else{
                     self.$message.error("Something went wrong , Please try again later");   
                 }
-
             });
            }
           },
@@ -463,7 +460,6 @@ export default {
             let self = this;
             let emailValidator = await this.validateEmail(self.login.email);
             console.log(emailValidator);
-
             if (self.login.email == "") {
                 self.$message.warning("email field is required");
             } else if (emailValidator == false) {
@@ -472,7 +468,7 @@ export default {
                 self.saveFileLoadingLogin = true;
                 axios.post(config.default.forgotPasswordUrl, {
                         email: self.login.email.trim(),
-                        url: "http://google.com"
+                        url: config.default.resetPasswordRedirectUrl
                     })
                     .then(function(response) {
                         self.saveFileLoadingLogin = false;
@@ -485,8 +481,7 @@ export default {
                     .catch(function(error) {
                         console.log("error-->", error)
                         self.saveFileLoadingLogin = false;
-                        self.$message.error("email  is incorrect");
-
+                        self.$message.error(error.response.data);
                     });
             }
         },
@@ -518,11 +513,8 @@ export default {
                                 name: 'Dashboard'
                             });
                         })
-
             }
-
         }
-
     },
     watch: {
         // // whenever question changes, this function will run
@@ -567,7 +559,6 @@ export default {
             
         }
        
-
     },
     mounted() {
     //   if(Cookies.get("auth_token") != undefined){
@@ -583,6 +574,7 @@ export default {
             $signup = $('.signup'),
             $frontbox = $('.frontbox');
         $('#switch1').on('click', function() {
+            $("#form1")[0].reset();
             $loginMsg.toggleClass("visibility");
             $frontbox.addClass("moving");
             $signupMsg.toggleClass("visibility");
@@ -590,6 +582,7 @@ export default {
             $login.toggleClass('hide');
         })
         $('#switch2').on('click', function() {
+            $("#form")[0].reset();
             $loginMsg.toggleClass("visibility");
             $frontbox.removeClass("moving");
             $signupMsg.toggleClass("visibility");
