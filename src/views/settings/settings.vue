@@ -271,7 +271,7 @@
                                     <p slot="title">{{item.configName}}</p>
                                     <p>
                                         <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
-                                            <TabPane v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
+                                            <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
                                                 <div class="schema-form ivu-table-wrapper">
                                                     <div class="ivu-table ivu-table-border">
                                                         <div v-if="v.length > 0" class="ivu-table-body">
@@ -309,6 +309,7 @@
                                                                             </div>
                                                                         </td>
                                                                     </tr>
+                                                                    
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -564,7 +565,7 @@ Vue.use(VueWidgets);
                             id : configId,
                             rowIndex : rowinx,
                             online_payment : {
-                                [tabname] : [self.exData]
+                                [tabname] : self.exData
                             }
                         };
                         console.log("patchData",patchData)
@@ -1017,10 +1018,14 @@ Vue.use(VueWidgets);
                     for (let [inx, item] of self.data6.entries()) {
                         if (item.hasOwnProperty('online_payment')) {
                             let i = 0
+                            // console.log('item:: ', item.online_payment)
                             for (let k in item.online_payment) {
-                                if (i === 0) {
-                                    self.tabarr.push({activetab : k+inx})
-                                    i++
+                                item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+                                if (item.online_payment[k].length > 0) {
+                                    if (i === 0) {
+                                        self.tabarr.push({activetab : k+inx})
+                                        i++
+                                    }
                                 }
                             }
                         } else {

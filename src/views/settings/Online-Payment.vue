@@ -16,10 +16,7 @@
 						<Option value='paypal'>PayPal</Option>
 						</Select>
 					</FormItem>
-					<FormItem label="x_api_token" v-if="formValidate.gateway == 'stripe'">
-						<Input v-model="formValidate.x_api_token" placeholder="Enter x_api_token"></Input>
-					</FormItem>
-					<FormItem label="x_api_token" v-if="formValidate.gateway == 'auth' || formValidate.gateway == 'paypal'">
+					<FormItem label="x_api_token" v-if="formValidate.gateway">
 						<Input v-model="formValidate.x_api_token" placeholder="Enter x_api_token"></Input>
 					</FormItem>
 					<FormItem label="x_api_login" v-if="formValidate.gateway == 'auth' || formValidate.gateway == 'paypal'">
@@ -54,20 +51,14 @@
 				},
 				configs: [],
 				ruleValidate: {
-					name:[
-						{ required: true, message: 'The name cannot be empty', trigger: 'blur' }
-					],
-					gateway:[
+					gateway: [
 						{ required: true, message: 'Please select gateway', trigger: 'blur' }
 					],
-					transaction:[
-						{ required: true, message: 'The transaction cannot be empty', trigger: 'blur' }
+					x_api_login: [
+						{ required: true, message: 'The x_api_login cannot be empty', trigger: 'blur' }
 					],
-					signature:[
-						{ required: true, message: 'The signature cannot be empty', trigger: 'blur' }
-					],
-					secret: [
-						{ required: true, message: 'The secret cannot be empty', trigger: 'blur' }
+					x_api_token: [
+						{ required: true, message: 'The x_api_token cannot be empty', trigger: 'blur' }
 					]
 				}
 			}
@@ -87,20 +78,21 @@
 								cancelText: 'Disagree',
 								onOk: () => {
 									var configId = this.formValidate.configuration
-									delete this.formValidate.configuration;
+									let patchData = _.cloneDeep(this.formValidate)
+									delete patchData.configuration;
 									if (this.formValidate.gateway == 'stripe') {
-										delete this.formValidate.x_api_login
+										delete patchData.x_api_login
 									}
 									let gateway = this.formValidate.gateway;
 									console.log("gateway",gateway);
 									var params = {'online_payment': {},'id' : configId}
-									delete this.formValidate.gateway;
-									this.formValidate['isDefault'] = true;
-									this.formValidate['isDeleted'] = false;
-									params.online_payment[gateway] = this.formValidate;
+									delete patchData.gateway;
+									patchData['isDefault'] = true;
+									patchData['isDeleted'] = false;
+									params.online_payment[gateway] = patchData;
 									console.log("---------------------params online payment",params);
 									this.configs.forEach(item => {
-										console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+										// console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
 										axios({
 											method: 'PATCH',
 											url: feathersUrl +'settings/'+item.id,
@@ -169,17 +161,18 @@
 								},
 								onOk: () => {
 									var configId = this.formValidate.configuration
-									delete this.formValidate.configuration;
+									let patchData = _.cloneDeep(this.formValidate)
+									delete patchData.configuration;
 									if (this.formValidate.gateway == 'stripe') {
-										delete this.formValidate.x_api_login
+										delete patchData.x_api_login
 									}
 									let gateway = this.formValidate.gateway;
 									console.log("gateway",gateway);
 									var params = {'online_payment': {},'id' : configId}
-									delete this.formValidate.gateway;
-									this.formValidate['isDefault'] = true;
-									this.formValidate['isDeleted'] = false;
-									params.online_payment[gateway] = this.formValidate;
+									delete patchData.gateway;
+									patchData['isDefault'] = true;
+									patchData['isDeleted'] = false;
+									params.online_payment[gateway] = patchData;
 									console.log("---------------------params online payment",params);
 									// console.log("one configuration",this.formValidate)
 
