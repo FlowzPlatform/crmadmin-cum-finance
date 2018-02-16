@@ -519,7 +519,7 @@
               align: 'center',
               width: 210,
               render: (h, {row}) => {
-                if(row.TotalAmt-row.Balance != 0){
+                if(row.TotalAmt-row.Balance != row.TotalAmt){
                   return h('div', [
                     h('Tooltip', {
                         props: {
