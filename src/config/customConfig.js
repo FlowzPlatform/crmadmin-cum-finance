@@ -1,4 +1,3 @@
-
 // console.log(process.env.domainkey)
 // module.exports =  {
 //     default : {
@@ -23,27 +22,27 @@
 // }
 
 
-console.log("???????????????????????? " ,process.env.domainkey)
+console.log("???????????????????????? ", process.env.domainkey)
 
 //let frontEndUrl = 'https://localhost:8081/#/login';
-let frontEndUrl = 'https://crm.'+process.env.domainkey+'/#/login';
+let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
 
-module.exports =  {
-    default : {
+module.exports = {
+    default: {
 
 
 
-        loginUrl : "https://api."+process.env.domainkey+"/auth/api/login",
-        ldapLoginUrl : "https://api."+process.env.domainkey+"/auth/api/ldapauth",
-        registrationUrl : "https://api."+process.env.domainkey+"/auth/serverapi/register",
-        signupUrl:          "https://api."+process.env.domainkey+"/auth/api/setup",
-        userDetail:             "https://api."+process.env.domainkey+"/auth/api/userdetails",
-        forgotPasswordUrl :         "https://api."+process.env.domainkey+"/auth/api/forgetpassword",
+        loginUrl: "https://api." + process.env.domainkey + "/auth/api/login",
+        ldapLoginUrl: "https://api." + process.env.domainkey + "/auth/api/ldapauth",
+        registrationUrl: "https://api." + process.env.domainkey + "/auth/serverapi/register",
+        signupUrl: "https://api." + process.env.domainkey + "/auth/api/setup",
+        userDetail: "https://api." + process.env.domainkey + "/auth/api/userdetails",
+        forgotPasswordUrl: "https://api." + process.env.domainkey + "/auth/api/forgetpassword",
 
         // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
-        changepassword :                    "https://api."+process.env.domainkey+"/auth/api/changepassword",
-        feathersServiceBaseUrl :            "https://api."+process.env.domainkey+"/auth/serverapi/",
-        varifyEmailUrl :                    "https://api."+process.env.domainkey+"/auth/api/verifyemail",
+        changepassword: "https://api." + process.env.domainkey + "/auth/api/changepassword",
+        feathersServiceBaseUrl: "https://api." + process.env.domainkey + "/auth/serverapi/",
+        varifyEmailUrl: "https://api." + process.env.domainkey + "/auth/api/verifyemail",
 
 
 
@@ -58,11 +57,11 @@ module.exports =  {
 
 
 
-        flowzDashboardUrl : 'https://dashboard.'+process.env.domainkey,
-        flowzBuilderUrl : 'https://webbuilder.'+process.env.domainkey ,
-        flowzVmailUrl : 'https://vmail.'+process.env.domainkey ,
-        flowzUploaderUrl : 'https://uploader.'+process.env.domainkey ,
-        flowzDbetlUrl : 'https://dbetl.'+process.env.domainkey ,
+        flowzDashboardUrl: 'https://dashboard.' + process.env.domainkey,
+        flowzBuilderUrl: 'https://webbuilder.' + process.env.domainkey,
+        flowzVmailUrl: 'https://vmail.' + process.env.domainkey,
+        flowzUploaderUrl: 'https://uploader.' + process.env.domainkey,
+        flowzDbetlUrl: 'https://dbetl.' + process.env.domainkey,
 
         // loginWithFacebookUrl : 'https://auth.flowzservice.tk/auth/facebook',
         // loginWithGoogleUrl : 'https://auth.flowzservice.tk/auth//Gplus',
@@ -70,21 +69,21 @@ module.exports =  {
         // loginWithGithubUrl : 'https://auth.flowzservice.tk/auth//github',
         // loginWithLinkedInUrl : 'https://auth.flowzservice.tk/auth//linkedin',
 
-        loginWithFacebookUrl : 'https://auth.flowzcluster.tk/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.flowzcluster.tk/auth/Gplus',
-        loginWithTwitterUrl : 'https://auth.flowzcluster.tk/auth/twitter',
-        loginWithGithubUrl : 'https://auth.flowzcluster.tk/auth/github',
-        loginWithLinkedInUrl : 'https://auth.flowzcluster.tk/auth/linkedin',
+        loginWithFacebookUrl: 'https://auth.flowzcluster.tk/auth/facebook',
+        loginWithGoogleUrl: 'https://auth.flowzcluster.tk/auth/Gplus',
+        loginWithTwitterUrl: 'https://auth.flowzcluster.tk/auth/twitter',
+        loginWithGithubUrl: 'https://auth.flowzcluster.tk/auth/github',
+        loginWithLinkedInUrl: 'https://auth.flowzcluster.tk/auth/linkedin',
 
-        serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
+        serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
         //serviceUrl :            'http://localhost:3037/',
-        subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
-        projecturl :            'https://api.'+process.env.domainkey+'/mom/',
-        assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
-        orderapi :  'http://172.16.61.112:3032/myOrders',
-        requestinfoapi : 'http://172.16.61.112:3032/request-info',
-        requestquoteapi :   'http://172.16.230.181:3032/request-quote'
+        subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
+        projecturl: 'https://api.' + process.env.domainkey + '/mom/',
+        assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
+        orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',
+
+        requestinfoapi: 'http://172.16.61.112:3032/request-info',
+        requestquoteapi: 'http://172.16.230.181:3032/request-quote'
     }
 
 }
-
