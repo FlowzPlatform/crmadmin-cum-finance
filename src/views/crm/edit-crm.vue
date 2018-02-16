@@ -192,6 +192,7 @@
   import comment from './comment.vue'
   import config from '../../config/customConfig.js'
   import Cookies from 'js-cookie';
+  import moment from 'moment';
   let axios = require('axios'); 
   let _ = require('lodash');
   var nextdate;
@@ -252,9 +253,12 @@
 
         var self = this
         // var result = await (
-          axios.get(databasepost  + this.$route.params.id).then(res => {
+          await axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
             self.finaldata = res.data
+            self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
+            self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
+            CKEDITOR.instances.editor1.setData(self.finaldata.description)
            // return res.data
           }).catch(err => {
             console.log('Error >>>>>>>>>>>>>>', err)
@@ -269,155 +273,105 @@
       },
       async calldata() {
         let resp
-      let self = this
+        let self = this
 
-      var settingId = self.finaldata.config
-      await axios({
-                    method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId,
-                    headers:{
-                      Authorization : Cookies.get('auth_token'),
-                      subscriptionId : Cookies.get('subscriptionId')
-                    }
-                  })
-                    .then(async function(response) {
-                      console.log(response)
-                      if(response.data.domain == 'custom'){
+        var settingId = self.finaldata.config
+        await axios({
+          method:'get',
+          url: config.default.serviceUrl + 'settings/'+settingId,
+          headers:{
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
+          }
+        })
+        .then(async function(response) {
+          console.log(response)
+          if(response.data.domain == 'custom'){
+            self.customCustomerUrl = response.data.customer_url;
+            self.customInvoiceUrl = response.data.invoice_url;
+            
+            await axios({
+              method: 'get',
+              url: self.customCustomerUrl,
+              params : {settingId : response.data.id},
+              headers:{
+                Authorization : Cookies.get('auth_token')
+              }
+            })
+            .then(function (response) {
+              console.log(response)
+              resp = response.data.data
+              self.customerData = resp
+              console.log("self.customerData", self.customerData)
+            })
+            .catch(function (error) {
+              console.log(error.response)
+              self.$Message.error(error.response.data.data[0].message)
+            });
 
-                            self.customCustomerUrl = response.data.customer_url;
-                            self.customInvoiceUrl = response.data.invoice_url;
-                            
-                           await axios({
-                              method: 'get',
-                              url: self.customCustomerUrl,
-                              params : {settingId : response.data.id},
-                              headers:{
-                                Authorization : Cookies.get('auth_token')
-                              }
-                            })
-                            .then(function (response) {
-                              console.log(response)
-                              resp = response.data.data
-                              self.customerData = resp
-							  console.log("self.customerData", self.customerData)
-                            })
-                            .catch(function (error) {
-                              console.log(error.response)
-                              self.$Message.error(error.response.data.data[0].message)
-                            });
-
-                      }else{
-                            await axios({
-                                    method: 'get',
-                                    url: config.default.serviceUrl + 'contacts',
-                                    params: {
-                                      settingId : settingId
-                                    },
-                                    headers:{
-                                        Authorization : Cookies.get('auth_token')
-                                    },
-                                  }).then(function (response) {
-                                  
-                                    resp = response.data
-                                    self.customerData = resp[0].data
-                                  })
-                                  .catch(function (error) {
-                                    console.log(error);
-                                  });
-                      }
-                  })
-                  .catch(function (error) {
-                              console.log("error",error);
-                              if(error.response.status == 403){
-                               self.$Notice.error(
-                                   {duration:0, 
-                                   title: error.response.statusText,
-                                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                                   );
-                              }   
-                            });
-      
-      
-      console.log("response------>iuy",resp);
-        // let self=this;
-        // console.log("self.finaldata.config", self.finaldata.config)
-        // self.customerData = [];
-        // await $.ajax({
-        //   type: 'GET',
-        //   url: serviceUrl +"contacts",
-        //   data: {
-        //             settingId : self.finaldata.config,   
-        //         },
-        //   success: function (data) {
-        //     // console.log("data>>>>>>>>>>>>>> Contacts" , data)
-        //     data.forEach(function(contacts) {
-        //       var cnt = contacts.data
-        //       for (var i=0; i<cnt.length; i++) {
-        //         // console.log("%%%%%%%%%%",cnt[i].Name)
-        //         self.customerData.push(cnt[i].Name)
-        //       }
-        //     })
-
-        //     // console.log(data)
-        //   },error: function(err) {
-        //     console.log("Error",err)
-        //   }
-        // });
-        // await $.ajax({
-        //   type: 'GET',
-        //   url: apiurl,
-        //   async: true,
-        //   dataType: 'json',
-        //   headers: {
-        //   'authorization':  Cookies.get('auth_token')
-        //   },
-        //   success: function (data) {
-        //     console.log("Customer-data>>>>>>>>>>>>>> " , data)
-        //     data.forEach(function(contacts) {
-        //       var cnt = contacts.data
-        //       console.log("%%%%%%%%%%",cnt.length)
-        //       for (var i=0; i<cnt.length; i++) {
-        //         self.customerData.push(cnt[i].Name)
-        //       }
-        //     })
-
-        //     // console.log(data)
-        //   },error: function(err) {
-        //     console.log("Error",err)
-        //   }
-        // });
+          }else{
+            await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingId
+              },
+              headers:{
+                  Authorization : Cookies.get('auth_token')
+              },
+            })
+            .then(function (response) {
+              resp = response.data
+              self.customerData = resp[0].data
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          }
+        })
+        .catch(function (error) {
+          console.log("error",error);
+          if(error.response.status == 403){
+            self.$Notice.error(
+                {duration:0, 
+                title: error.response.statusText,
+                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                );
+          }   
+        });
+        console.log("response------>iuy",resp);
       },
       async dbdata() {
-      var self = this
-      await $.ajax({
-        url: serviceUrl + "crm-service/",
-        success: function (data) {
-            result1 = data.data[0];
-            self.crmdata = result1
-        },error: function(err){
-           console.log("error",err);
-        }
-      });
-      console.log("json data databaseurl",result1);
+        var self = this
+        await $.ajax({
+          url: serviceUrl + "crm-service/",
+          success: function (data) {
+              result1 = data.data[0];
+              self.crmdata = result1
+          },error: function(err){
+            console.log("error",err);
+          }
+        });
+        console.log("json data databaseurl",result1);
       },
       async projectlist() {
-      var self = this
-      await $.ajax({
-          url: momapi,
-          success: function (data) {
-          console.log(">>>>>>>>>>>>>>> " , data)
-              result1 = data;
-              self.momdata = _.map(result1, (d) => {
-                return {label: d.project_name, value: d.project_name}
-              })
-          },error: function(err){
-             console.log("error",err);
-          }
-      });
+        var self = this
+        await $.ajax({
+            url: momapi,
+            success: function (data) {
+            console.log(">>>>>>>>>>>>>>> " , data)
+                result1 = data;
+                self.momdata = _.map(result1, (d) => {
+                  return {label: d.project_name, value: d.project_name}
+                })
+            },error: function(err){
+              console.log("error",err);
+            }
+        });
       },
       async assigneelist() {
-      var self = this
-      await $.ajax({
+        var self = this
+        await $.ajax({
           headers: {
             'Authorization': Cookies.get('auth_token')
           },
@@ -431,21 +385,24 @@
 									if (d.fullname !== undefined) {
 										if (d.fullname !== null) {
 											if (d.fullname.trim() !== '') {
-												myarr.push({label: d.fullname, value: d.fullname})
+												let checkname = _.findIndex(myarr,{value: d.fullname})
+												if (checkname === -1) {
+												  myarr.push({label: d.fullname, value: d.fullname})
+                        }
 											}
 										}
 									}
 								}
 			        })
-							self.assigneedata = myarr
+							self.assigneedata = _.sortBy(myarr,['value']);
           },error: function(err){
              console.log("error",err);
           }
-      });
+        });
       },  
-      filterMethod (value, option) {
-        return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-      },
+      // filterMethod (value, option) {
+      //   return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+      // },
       async postdata() {
         let self = this
         let desc = CKEDITOR.instances.editor1.getData()
@@ -470,7 +427,7 @@
                 duration: 4.5
                     });
               console.log("json data******123",result);
-              self.$router.push("list-relationship")
+              self.$router.push("/relationship/list-relationship")
             },error: function(err){
               self.loading = false,
                 console.log("error",err);
@@ -484,8 +441,8 @@
         let self = this;
         axios.get(serviceUrl+"settings", {
           params: {
-            isActive : true,
-            user : Cookies.get('user')
+            isActive : true
+            // user : Cookies.get('user')
           },
           headers: {
             Authorization : Cookies.get('auth_token'),
@@ -522,9 +479,9 @@
       this.projectlist()
       this.assigneelist()
     },
-     watch(){
-        $route: {
-            alert('route change');
+     watch: {
+        '$route': {
+            // alert('route change');
         }
     }
 }

@@ -10,8 +10,7 @@
 						<div class="panel" id="c16913">
 							<p id="c16917">
 								<i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
-								<label
-                          id="c16925">Basic attributes:</label>
+								<label id="c16925">Basic attributes:</label>
 							</p>
 							<p>
 								<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
@@ -19,8 +18,7 @@
 							</p>
 							<textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
 							<!-- <p id="c16943"> -->
-							<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/"
-                      	style="padding-top:15px">
+							<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="padding-top:15px">
 								<div style="padding: 20px 0">
 									<icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
 									<p>Click or drag files here to upload</p>
@@ -293,8 +291,8 @@
 				let self = this;
 				axios.get(serviceUrl+"settings", {
 					params: {
-						isActive : true,
-						user : Cookies.get('user')
+						isActive : true
+						// user : Cookies.get('user')
 					},
 					headers: {
 						Authorization : Cookies.get('auth_token'),
@@ -347,8 +345,7 @@
 	    },
     	async postdata() {
 				let desc = CKEDITOR.instances.editor1.getData()
-				this.finaldata.description = desc
-				
+				this.finaldata.description = $(desc).text();				
 				let self = this
 				var re = /\S+@\S+\.\S+/;
 				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
@@ -429,7 +426,10 @@
 									if (d.fullname !== undefined) {
 										if (d.fullname !== null) {
 											if (d.fullname.trim() !== '') {
-												myarr.push({label: d.fullname, value: d.fullname})
+												let checkname = _.findIndex(myarr,{value: d.fullname})
+												if (checkname === -1) {
+												  myarr.push({label: d.fullname, value: d.fullname})
+                        						}
 											}
 										}
 									}
@@ -437,7 +437,6 @@
 			        })
 
 							self.assigneedata = _.sortBy(myarr,['value']);
-							// console.log('self.assigneedata', JSON.stringify(self.assigneedata))
 			    },error: function(err){
 			       console.log("error",err);
 			    }

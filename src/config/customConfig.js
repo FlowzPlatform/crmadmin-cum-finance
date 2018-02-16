@@ -40,11 +40,14 @@ module.exports = {
         forgotPasswordUrl: "https://api." + process.env.domainkey + "/auth/api/forgetpassword",
 
         // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
+        resetPasswordRedirectUrl :          "https://crm."+process.env.domainkey+"/#/reset-password",
+        resetPasswordUrl :                  "https://api."+process.env.domainkey+"/auth/api/resetpassword",
         changepassword: "https://api." + process.env.domainkey + "/auth/api/changepassword",
         feathersServiceBaseUrl: "https://api." + process.env.domainkey + "/auth/serverapi/",
         varifyEmailUrl: "https://api." + process.env.domainkey + "/auth/api/verifyemail",
 
-
+        filterColorUrl: "https://api."+process.env.domainkey+"/pdmnew/filters/colors",
+        colorTableUrl: "https://api."+process.env.domainkey+"/serverapi/color-table",
 
 
 
@@ -75,8 +78,8 @@ module.exports = {
         loginWithGithubUrl: 'https://auth.flowzcluster.tk/auth/github',
         loginWithLinkedInUrl: 'https://auth.flowzcluster.tk/auth/linkedin',
 
-        serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
-        //serviceUrl :            'http://localhost:3037/',
+         serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
+        // serviceUrl :            'http://localhost:3037/',
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
         projecturl: 'https://api.' + process.env.domainkey + '/mom/',
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',

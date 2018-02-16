@@ -11,6 +11,16 @@ export const loginRouter = {
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
 
+export const resetPasswordRouter = {
+    path: '/reset-password',
+    name: 'resetpassword',
+    
+    meta: {
+        title: 'ResetPassword'
+    },
+    component: resolve => { require(['@/views/reset-password.vue'], resolve) }
+};
+
 export const varifyEmailRouter = {
     path: '/varifyEmail',
     name: 'varifyEmail',
@@ -215,13 +225,13 @@ export const appRouter = [
                 name: 'Requested Quotes', 
                 component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
             },
-            { 
-                path: 'address-book', 
-                title: 'Address Book',
-                icon: 'ios-compose',
-                name: 'Address book', 
-                component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
-            },
+            // { 
+            //     path: 'address-book', 
+            //     title: 'Address Book',
+            //     icon: 'ios-compose',
+            //     name: 'Address book', 
+            //     component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
+            // },
            // { 
              //   path: 'list-billing', 
                // title: 'List of Bills',
@@ -235,6 +245,13 @@ export const appRouter = [
                 icon: 'locked',
                 name: 'Change Password',
                 component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
+            },
+            {
+                path: 'set-swatches',
+                title: 'Set Swatches',
+                icon: 'android-color-palette',
+                name: 'Set Swatches',
+                component: resolve => { require(['@/views/admin-account/set-swatches.vue'], resolve);}
             }
         ]
     },
@@ -435,6 +452,7 @@ export const appRouter = [
 export const routers = [
     loginRouter,
     varifyEmailRouter,
+    resetPasswordRouter,
     otherRouter,
     preview,
     locking,

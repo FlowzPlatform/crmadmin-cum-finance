@@ -188,7 +188,7 @@
                         <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Collapse="true"></WidgetHeading>
                         <WidgetBody>
                             
-                            <table id="t01" v-if="product.address != ''">
+                            <table id="t01" v-if="product.address && product.address != ''">
                                 <tr>
                                     <td>Name</td>
                                     <td>{{ product.address.name}}</td>

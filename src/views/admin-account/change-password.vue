@@ -159,7 +159,7 @@ export default {
           console.log('self.formValidate1.email', self.formValidate1.email)
           axios.post(config.default.forgotPasswordUrl, {
                   email: self.formValidate1.email.trim(),
-                  url: "http://google.com",
+                  url: config.default.resetPasswordRedirectUrl,
                   headers: {
                     "authorization": Cookies.get('auth_token')
                   }
