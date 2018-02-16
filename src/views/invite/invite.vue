@@ -227,11 +227,14 @@
         methods: {
 
             async getHistory(){
-                axios.get(subscriptionUrl+'subscription-invitation', {
+                 axios.get(subscriptionUrl+'subscription-invitation', {
+
+                   // axios.get('http://172.16.230.86:3030/subscription-invitation', {
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         },
-                        params : {isDeleted : true}
+                        params : {isDeleted : true, own : false},
+                       
                     })
                     .then(response => {
                         console.log(response)
