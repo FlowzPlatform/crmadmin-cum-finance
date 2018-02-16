@@ -1394,7 +1394,8 @@
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
               headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -1402,6 +1403,13 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.response.status == 403){
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1979,7 +1987,8 @@
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
-              Authorization : Cookies.get('auth_token')
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
           },
         })
         .then(function (response) {
@@ -2013,6 +2022,13 @@
 
           console.log("error",error);
           self.spinShow = false;
+            if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
         });
       }
 

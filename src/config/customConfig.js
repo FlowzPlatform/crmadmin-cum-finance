@@ -64,19 +64,27 @@ module.exports =  {
         flowzUploaderUrl : 'https://uploader.'+process.env.domainkey ,
         flowzDbetlUrl : 'https://dbetl.'+process.env.domainkey ,
 
-        loginWithFacebookUrl : 'https://auth.flowzservice.tk/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.flowzservice.tk/auth//Gplus',
-        loginWithTwitterUrl : 'https://auth.flowzservice.tk/auth//twitter',
-        loginWithGithubUrl : 'https://auth.flowzservice.tk/auth//github',
-        loginWithLinkedInUrl : 'https://auth.flowzservice.tk/auth//linkedin',
+        // loginWithFacebookUrl : 'https://auth.flowzservice.tk/auth/facebook',
+        // loginWithGoogleUrl : 'https://auth.flowzservice.tk/auth//Gplus',
+        // loginWithTwitterUrl : 'https://auth.flowzservice.tk/auth//twitter',
+        // loginWithGithubUrl : 'https://auth.flowzservice.tk/auth//github',
+        // loginWithLinkedInUrl : 'https://auth.flowzservice.tk/auth//linkedin',
+
+        loginWithFacebookUrl : 'https://auth.flowzcluster.tk/auth/facebook',
+        loginWithGoogleUrl : 'https://auth.flowzcluster.tk/auth/Gplus',
+        loginWithTwitterUrl : 'https://auth.flowzcluster.tk/auth/twitter',
+        loginWithGithubUrl : 'https://auth.flowzcluster.tk/auth/github',
+        loginWithLinkedInUrl : 'https://auth.flowzcluster.tk/auth/linkedin',
+
         serviceUrl :            'https://api.'+process.env.domainkey+'/crm/',
         //serviceUrl :            'http://localhost:3037/',
         subscriptionUrl :        'https://api.'+process.env.domainkey+'/subscription/',
         projecturl :            'https://api.'+process.env.domainkey+'/mom/',
         assigneeapi :           'https://api.'+process.env.domainkey+'/user/alluserdetails/',
-        orderapi :  'http://172.16.61.160:3032/myOrders',
-        requestinfoapi : 'http://172.16.61.160:3032/request-info',
+        orderapi :  'http://172.16.61.112:3032/myOrders',
+        requestinfoapi : 'http://172.16.61.112:3032/request-info',
         requestquoteapi :   'http://172.16.230.181:3032/request-quote'
     }
 
 }
+
