@@ -154,7 +154,7 @@
                  //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                     //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
-                        axios.get(subscriptionUrl +'/subscription-invitation', {
+                        axios.get(subscriptionUrl +'subscription-invitation', {
                         params: {
                             subscriptionId: this.row.subscriptionId,
                             own : true
