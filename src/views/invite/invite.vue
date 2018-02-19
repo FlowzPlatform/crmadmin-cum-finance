@@ -10,7 +10,7 @@
             <el-input placeholder="Please enter email id" v-model="input"></el-input>
         </div>  
         <div class="col-md-4" >
-            <el-select v-model="value1" placeholder="Select Role" style="width:38   0px">
+            <el-select no-data-text="No Role Found" v-model="value1" placeholder="Select Role" style="width:38   0px">
             <el-option
             v-for="item in options"
             :key="item.value1"
@@ -20,7 +20,7 @@
         </el-select>
         </div>
         <div class="col-md-4">
-            <el-select v-model="value2" placeholder="Select subscription">
+            <el-select no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
                 <el-option
                 v-for="item in options2"
                 :key="item.value2"
@@ -297,7 +297,7 @@
                             }
                         }
                         console.log("sub_id..........", sub_id)
-                                    console.log(this.assigned_Arr3) 
+                                    console.log(this.assigned_Arr2) 
                         
                         this.data2 = this.assigned_Arr2 ;
                         this.data3 = this.assigned_Arr3;

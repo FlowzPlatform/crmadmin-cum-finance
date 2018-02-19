@@ -38,7 +38,7 @@
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
                     <div style="float:right;margin-top:-26px;">
-                         <el-select style="width: 240px;" @change="changeSubscription()" v-model="value2" placeholder="Select subscription">
+                         <el-select style="width: 240px;" @change="changeSubscription()" no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -295,6 +295,7 @@
                     this.$router.push({
                         name: 'login'
                     });
+                    this.$Message.success({content:'You have Succesfully Logged Out',duration:3})
                 }
             },
             checkTag (name) {
