@@ -24,66 +24,73 @@
 
 <template>
 
-    <Widget>
-      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true"></WidgetHeading>
-      <WidgetBody>
-        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-        <FormItem label="Configuration Name" prop="configuration">
-           <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
-             <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
-            <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
-        </FormItem>
-        <FormItem label="E-mail" prop="mail">
-            <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
-        </FormItem>
-        <FormItem label="Address">
-        <Row>
-        <Col span="12">
-          <FormItem prop="AddressLine1">
-              <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
-          </FormItem>
-        </Col>
-        <Col span="12">
-          <FormItem  prop="AddressLine2">
-            <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
-          </FormItem>
-        </Col>
-        </Row>
-        </FormItem>
-         <FormItem label="Country" prop="country">
-            <select v-model="formValidate.country" id="country" name ="country">
-            </select>
-        </FormItem>
-        <FormItem label="State" prop="state" class="state1" style="display:none">
-          <select v-model="formValidate.state" name ="state" id ="state" ></select>
-        </FormItem>
-        <FormItem label="City" prop="city">
-         <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
-        </FormItem>
-         <FormItem label="Zip Code" prop="PostalCode">
-            <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
-        </FormItem>
-        <FormItem label="Mobile" prop="mobile">
-            <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
-        </FormItem>
-         <!-- <FormItem label="Phone" prop="phone">
-            <Input v-model="formValidate.phone" placeholder="Enter your Phone No"></Input>
-        </FormItem>
-         <FormItem label="Fax" prop="fax">
-            <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
-        </FormItem> -->
-        <div style="text-align:center;">
-          <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
-          </div>
-        </FormItem>
-    </Form>
-        </WidgetBody>
-    </Widget>
-    
+    <!--<Widget>
+      <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true" :Editable='false'></WidgetHeading>
+      <WidgetBody>-->
+  <Row>
+    <Col span="12" offset="6">
+      <Card style="padding:10px;">
+        <p slot="title">Add New Customer</p>
+          <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140" style="width:100%">
+            <FormItem label="Configuration Name" prop="configuration">
+              <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
+                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
+                <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
+            </FormItem>
+            <FormItem label="E-mail" prop="mail">
+                <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
+            </FormItem>
+            <FormItem label="Address">
+              <Row>
+                <Col span="12">
+                  <FormItem prop="AddressLine1">
+                      <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
+                  </FormItem>
+                </Col>
+                <Col span="12">
+                  <FormItem  prop="AddressLine2">
+                    <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
+                  </FormItem>
+                </Col>
+              </Row>
+            </FormItem>
+            <FormItem label="Country" prop="country">
+                <select v-model="formValidate.country" id="country" name ="country">
+                </select>
+            </FormItem>
+            <FormItem label="State" prop="state" class="state1" style="display:none">
+              <select v-model="formValidate.state" name ="state" id ="state" ></select>
+            </FormItem>
+            <FormItem label="City" prop="city">
+              <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
+            </FormItem>
+            <FormItem label="Zip Code" prop="PostalCode">
+              <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
+            </FormItem>
+            <FormItem label="Mobile" prop="mobile">
+              <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
+            </FormItem>
+            <!-- <FormItem label="Phone" prop="phone">
+              <Input v-model="formValidate.phone" placeholder="Enter your Phone No"></Input>
+            </FormItem>
+            <FormItem label="Fax" prop="fax">
+                <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
+            </FormItem> -->
+            <div style="text-align:center;">
+              <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+              <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+            </div>
+            </FormItem>
+          </Form>
+          <!--</WidgetBody>
+          </Widget>-->
+      </Card>
+    </Col>
+  </Row>
+
 </template>
 
 <script>
@@ -103,7 +110,7 @@ Vue.use(VueWidgets);
             let patt = new RegExp('^[0-9]+$')
             let _res = patt.test(value)
             if (!_res) {
-              callback(new Error('Not Allowed Special Character'))
+              callback(new Error('Not Allowed Special Character or string'))
             } else {
               callback();
             }
@@ -147,16 +154,22 @@ Vue.use(VueWidgets);
                     { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
-                    { required: true, message: 'The Postal Code cannot be empty', trigger: 'blur' },
-                    { validator: validateNum, trigger: 'blur' }
+                    { required: true, message: 'The Zip Code cannot be empty', trigger: 'blur' },
+                    { validator: validateNum, trigger: 'blur' },
+                    {
+                        max: 6 ,min:6, message: 'Please Enter 6 digit Zip Code', trigger: 'blur' 
+                    }
                   ],
                   mail: [
                       { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
                       { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                   ],
                   mobile: [
-                      { required: true, message: 'Mobile no cannot be empty', trigger: 'blur' },
-                      { validator: validateNum, trigger: 'blur' }
+                      { required: true, message: 'Mobile number can not be empty', trigger: 'blur' },
+                      { validator: validateNum, trigger: 'blur' },
+                      {
+                        max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' 
+                      }
                   ],
                   phone: [
                       { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
@@ -188,7 +201,8 @@ Vue.use(VueWidgets);
               let self = this
               await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
                 headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
                 }
               })
               .then(function (response) {
@@ -217,6 +231,13 @@ Vue.use(VueWidgets);
               })
               .catch(function (error) {
                 console.log("error",error);
+                if(error.response.status == 403){
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
               
             },
@@ -233,7 +254,11 @@ Vue.use(VueWidgets);
             console.log(">>>>>>>>>>> " , settingId)
             await axios({
                     method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId
+                    url: config.default.serviceUrl + 'settings/'+settingId,
+                    headers:{
+                      Authorization : Cookies.get('auth_token'),
+                      subscriptionId : Cookies.get('subscriptionId')
+                    },
                   })
                     .then(async function(response) {
                       console.log(response)
@@ -266,7 +291,6 @@ Vue.use(VueWidgets);
                             })
                             .catch(function (error) {
                               console.log("error",error);
-                              self.$Message.error('error in create customer')
                             });
 
                       }else{
@@ -299,10 +323,17 @@ Vue.use(VueWidgets);
                               self.$Message.error('error in create customer')
                             });
                       }
-                  });
-
-            
-            
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    if(error.response.status == 403){
+                     self.$Notice.error(
+                         {duration:0, 
+                         title: error.response.statusText,
+                         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                         );
+                      }
+                  });     
             
           }
         },

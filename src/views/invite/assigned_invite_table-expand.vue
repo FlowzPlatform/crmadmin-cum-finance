@@ -127,7 +127,8 @@
                         console.log(params)
                         axios({
                             method:'delete',
-                            url: subscriptionUrl+'invite',
+                             url: subscriptionUrl+'invite',
+                            //url: "http://172.16.230.86:3030/" + 'invite',
                             params : paramss,
                             headers : {
                                 "Authorization": Cookies.get('auth_token'),
@@ -151,7 +152,18 @@
                 let self = this
                 console.log(this.row)
                  //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
-                    axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
+                    //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
+                        // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
+                        axios.get(subscriptionUrl +'subscription-invitation', {
+                        params: {
+                            subscriptionId: this.row.subscriptionId,
+                            own : true
+                        },
+                        headers : {
+                            Authorization : Cookies.get('auth_token')
+                        }
+                    })
+                        .then(function(result){
                     if(result.data.data.length == 0){
                         self.assignee = "No assignee found for this subscription"
                     }else{

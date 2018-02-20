@@ -381,8 +381,7 @@
             })
             .then(function(response) {
               console.log("delete response.....",response)
-              for(let i=0;i
-			<self.commentData.length;i++){
+              for(let i=0;i<self.commentData.length;i++){
                 console.log("for..................",self.commentData[i])
                 if(response.data.id == self.commentData[i].id){
                   self.commentData.splice(i,1)

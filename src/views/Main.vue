@@ -15,8 +15,9 @@
                 :open-names="openedSubmenuArr"
                 :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <img v-show="!shrink"  src="../images/logo.svg" key="max-logo" />
-                    <img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" />
+
+                    <img v-show="!shrink" src="../images/flowz-logo2.png" key="max-logo" />
+                    <img v-show="shrink" src="../images/flowz-logo2.png" key="min-logo" style="height: 22px;" /
                 </div>
             </shrinkable-menu>
         </div>
@@ -37,7 +38,7 @@
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
                     <div style="float:right;margin-top:-26px;">
-                         <el-select style="width: 240px;" @change="changeSubscription()" v-model="value2" placeholder="Select subscription">
+                         <el-select style="width: 240px;" @change="changeSubscription()" no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
                             <el-option
                             v-for="item in options2"
                             :key="item.value2"
@@ -294,6 +295,7 @@
                     this.$router.push({
                         name: 'login'
                     });
+                    this.$Message.success({content:'You have Succesfully Logged Out',duration:3})
                 }
             },
             checkTag (name) {

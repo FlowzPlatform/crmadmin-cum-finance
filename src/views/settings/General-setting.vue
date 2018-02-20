@@ -1,5 +1,8 @@
 <template>
   <div class="GeneralSettings">
+     <div class="settings_header">
+            <Button @click="goToSettingsList">All Settings</Button>
+        </div>
     <div class="container" style="margin-top: 2%; margin-bottom: 2%;">
       <!-- Address Settings Section -->
       <div class="collapsingDivWrapper row">
@@ -167,6 +170,11 @@ export default {
     }
   },
   methods: {
+    goToSettingsList(){
+                this.$router.push({
+                        name: 'Settings'
+                    });
+            },
     configChange(data){              
       $('#CustomerName').css("display","block")
       settingId = data;              
@@ -212,7 +220,8 @@ export default {
                       method: 'PATCH',
                       url: feathersUrl +'settings/'+item.id,
                       headers:{
-                          Authorization : Cookies.get('auth_token')
+                          Authorization : Cookies.get('auth_token'),
+                          subscriptionId : Cookies.get('subscriptionId')
                       },
                       data: logoData1
                     })  
@@ -282,7 +291,8 @@ export default {
                       method: 'PATCH',
                       url: feathersUrl +'settings/'+item.id,
                       headers:{
-                          Authorization : Cookies.get('auth_token')
+                          Authorization : Cookies.get('auth_token'),
+                          subscriptionId : Cookies.get('subscriptionId')
                       },
                       data: logoData1
                     })  
@@ -300,7 +310,8 @@ export default {
                     method: 'PATCH',
                     url: feathersUrl +'settings/'+self.formData.configuration,
                     headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
                     },
                     data: logoData1
                   })  
@@ -349,7 +360,8 @@ export default {
                       method: 'PATCH',
                       url: feathersUrl +'settings/'+item.id,
                       headers:{
-                          Authorization : Cookies.get('auth_token')
+                          Authorization : Cookies.get('auth_token'),
+                          subscriptionId : Cookies.get('subscriptionId')
                       },
                       data: params
                     })  
@@ -423,7 +435,8 @@ export default {
                       method: 'PATCH',
                       url: feathersUrl +'settings/'+item.id,
                       headers:{
-                          Authorization : Cookies.get('auth_token')
+                          Authorization : Cookies.get('auth_token'),
+                          subscriptionId : Cookies.get('subscriptionId')
                       },
                       data: params
                     })  
@@ -441,7 +454,8 @@ export default {
                     method: 'PATCH',
                     url: feathersUrl +'settings/'+this.formValidate.configuration,
                     headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
                     },
                     data: params
                   })  
@@ -469,7 +483,8 @@ export default {
       let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
-          Authorization : Cookies.get('auth_token')
+          Authorization : Cookies.get('auth_token'),
+          subscriptionId : Cookies.get('subscriptionId')
         }
       })
       .then(function (response) {
@@ -629,5 +644,12 @@ export default {
     border-color: #e2e2e2;
     border-radius: 4px;
    }
+   .settings_header{
+    padding : 10px;
+    text-align:right;
+    background: #cacaca;
+    width:100%;
+    margin:14px 2px;
+}
 
 </style>

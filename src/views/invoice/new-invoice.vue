@@ -1,67 +1,56 @@
 <template>
-<div class="container-fluid">
-  <div class="row" style="padding-top: 10px;">
-    <div class="col-sm-12">
-      <div class="panel" id="panel">
-        <label>New Invoice</label>
-      </div>
-    </div>
-    <div class="col-sm-12">      
-    <Form :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem">
-         <!-- <FormItem label="configure" prop="config">
-             <Select v-model="formItem.config" style="width:100%">
-               <Option v-for="item in data4" :value="item.value" :key="item.label">{{ item.label }} </Option>
-            </Select>
-        </FormItem> -->
-        <FormItem label="Configuration Name" prop="configuration">
-             <Select v-model="formItem.configuration" style="width:100%" @on-change="configChange">
-               <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
-            </Select>
-        </FormItem>
-        <FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
-             <Select v-model="formItem.name" style="width:100%">
-               <Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
-            </Select>
-        </FormItem>
-        <FormItem label="Project">
-            <AutoComplete v-model="formItem.selectProject" :data="data3" :filter-method="filterMethod" placeholder="input here" clearable>
-            </AutoComplete>
-        </FormItem>
-        <FormItem label="Description" prop="description">
-            <Input v-model="formItem.description" type="textarea"  placeholder="Enter Description"></Input>
-        </FormItem>
-        <FormItem label="Due Date" prop="duedate">
-            <DatePicker type="date" placeholder="Select date" v-model="formItem.duedate"></DatePicker>
-        </FormItem>
-        <FormItem label="Quantity" prop="qty">
-            <Input v-model="formItem.qty" placeholder="Enter Quantity" style="width:100%"></Input>
-        </FormItem>
-        <FormItem label="Unit Amount" :input-width="40">
-            <Row>
-              <Col span="12">
-                <FormItem prop="amount1">
-                <Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
-                </FormItem>
-              </Col>
-              <Col span="12">
-                <FormItem prop="selectamount">
-                <Select v-model="formItem.selectamount">
-                   <Option v-for="item in currency" :value="item.value" :key="item.value">{{ item.label}}</Option>
-                </Select>
-                </FormItem>
-              </Col>
-            </Row>        
-        </FormItem>
-      <div  class="col-sm-12 mainform panel" id="panel" style="text-align: -webkit-center;">
-        <FormItem style="text-align: -webkit-center;margin-top: 10px;">
-            <Button type="primary" @click="formData('formItem')">Submit</Button>
-            <Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Cancel</Button>
-        </FormItem>
-      </div>
-      </Form>
-    </div>
-    </div>
-</div>
+	<Row>
+		<Col span="12" offset="6">
+			<Card style="padding:10px;">
+				<p slot="title">Add New Invoice</p>
+				<Form :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem">
+					<FormItem label="Configuration Name" prop="configuration">
+						<Select v-model="formItem.configuration" style="width:100%" @on-change="configChange">
+						<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+						</Select>
+					</FormItem>
+					<FormItem label="Contact Name" prop="name" id="CustomerName" style="display:none;">
+						<Select v-model="formItem.name" style="width:100%">
+						<Option v-for="item in data2" :value="item.Name" :key="item">{{ item.Name }}</Option>
+						</Select>
+					</FormItem>
+					<FormItem label="Project">
+						<AutoComplete v-model="formItem.selectProject" :data="data3" :filter-method="filterMethod" placeholder="input here" clearable>
+						</AutoComplete>
+					</FormItem>
+					<FormItem label="Description" prop="description">
+						<Input v-model="formItem.description" type="textarea"  placeholder="Enter Description"></Input>
+					</FormItem>
+					<FormItem label="Due Date" prop="duedate">
+						<DatePicker type="date" placeholder="Select date" v-model="formItem.duedate"></DatePicker>
+					</FormItem>
+					<FormItem label="Quantity" prop="qty">
+						<Input v-model="formItem.qty" placeholder="Enter Quantity" style="width:100%"></Input>
+					</FormItem>
+					<FormItem label="Unit Amount" :input-width="40">
+						<Row>
+						<Col span="12">
+							<FormItem prop="amount1">
+							<Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="selectamount">
+							<Select v-model="formItem.selectamount">
+							<Option v-for="item in currency" :value="item.value" :key="item.value">{{ item.label}}</Option>
+							</Select>
+							</FormItem>
+						</Col>
+						</Row>        
+					</FormItem>
+					<div style="text-align:center;">
+						<Button type="primary" @click="formData('formItem')">Submit</Button>
+						<Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Cancel</Button>
+					</div>
+				</Form>
+			</Card>
+		</Col>
+	</Row>
 </template>
 
 <script>
@@ -188,7 +177,8 @@ export default {
       let self = this
       await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
         headers:{
-                   Authorization : Cookies.get('auth_token')
+                   Authorization : Cookies.get('auth_token'),
+                   subscriptionId : Cookies.get('subscriptionId')
                  },
       })
       .then(function (response) {
@@ -216,6 +206,13 @@ export default {
       })
       .catch(function (error) {
         console.log("error",error);
+        if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
       });
       
     },
@@ -279,6 +276,17 @@ export default {
                                     console.log(error);
                                   });
                       }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
                   });
       
       
@@ -308,7 +316,11 @@ export default {
       
       await axios({
                     method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice
+                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
+                    headers:{
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    },
                   })
                     .then(async function(response) {
                       console.log(response)
@@ -385,6 +397,17 @@ export default {
                             });
 
                       }
+                  })
+                  .catch(function (error) {
+                    console.log("error",error);
+                    self.spinShow = false;
+                      if(error.response.status == 403){
+                         self.$Notice.error(
+                             {duration:0, 
+                             title: error.response.statusText,
+                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                             );
+                          }
                   });
 
 

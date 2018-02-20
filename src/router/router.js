@@ -11,6 +11,16 @@ export const loginRouter = {
     component: resolve => { require(['@/views/login.vue'], resolve); }
 };
 
+export const resetPasswordRouter = {
+    path: '/reset-password',
+    name: 'resetpassword',
+    
+    meta: {
+        title: 'ResetPassword'
+    },
+    component: resolve => { require(['@/views/reset-password.vue'], resolve) }
+};
+
 export const varifyEmailRouter = {
     path: '/varifyEmail',
     name: 'varifyEmail',
@@ -73,6 +83,8 @@ export const otherRouter = {
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
         { path: 'new-settings', title: 'New Settings', name: 'New Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
+        { path: 'General-settings', title: 'General Settings', name: 'General Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
+        { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
         { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
 
@@ -193,10 +205,10 @@ export const appRouter = [
         ]
     },
     {
-        path: '/my-account',
+        path: '/admin-account',
         icon: 'person',
-        title: 'MY ACCOUNT',
-        name: 'myaccount',
+        title: 'ADMIN ACCOUNT',
+        name: 'adminaccount',
         component: Main,
         children: [
             { 
@@ -204,22 +216,22 @@ export const appRouter = [
                 title: 'Order List',
                 icon: 'ios-cart',
                 name: 'Ordered List', 
-                component: resolve => { require(['@/views/my-account/order-list.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
             },
             { 
                 path: 'request-quote', 
                 title: 'Request Quote',
                 icon: 'pull-request',
                 name: 'Requested Quotes', 
-                component: resolve => { require(['@/views/my-account/request-quote.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
             },
-            { 
-                path: 'address-book', 
-                title: 'Address Book',
-                icon: 'ios-compose',
-                name: 'Address book', 
-                component: resolve => { require(['@/views/my-account/address-book.vue'], resolve);}
-            },
+            // { 
+            //     path: 'address-book', 
+            //     title: 'Address Book',
+            //     icon: 'ios-compose',
+            //     name: 'Address book', 
+            //     component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
+            // },
            // { 
              //   path: 'list-billing', 
                // title: 'List of Bills',
@@ -232,7 +244,14 @@ export const appRouter = [
                 title: 'Change Password',
                 icon: 'locked',
                 name: 'Change Password',
-                component: resolve => { require(['@/views/my-account/change-password.vue'], resolve);}
+                component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
+            },
+            {
+                path: 'set-swatches',
+                title: 'Set Swatches',
+                icon: 'android-color-palette',
+                name: 'Set Swatches',
+                component: resolve => { require(['@/views/admin-account/set-swatches.vue'], resolve);}
             }
         ]
     },
@@ -433,6 +452,7 @@ export const appRouter = [
 export const routers = [
     loginRouter,
     varifyEmailRouter,
+    resetPasswordRouter,
     otherRouter,
     preview,
     locking,

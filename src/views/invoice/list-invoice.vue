@@ -519,7 +519,7 @@
               align: 'center',
               width: 210,
               render: (h, {row}) => {
-                if(row.TotalAmt-row.Balance != 0){
+                if(row.TotalAmt-row.Balance != row.TotalAmt){
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -1100,7 +1100,12 @@
         if(this.dategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+            var a = moment(self.dategt, 'YYYY/MM/DD');
+            var b = moment(item.DueDate, 'YYYY/MM/DD');
+            var days = b.diff(a, 'days');
+
+
+            if(days >= 0){
               console.log('item>>>>>>>>>>>>>>>>>>>>', item)
               return item;
             }
@@ -1113,7 +1118,11 @@
           console.log("this.dategt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item.DueDate)
-            if(moment(item.DueDate).diff(moment(self.datelt).format(), 'days') <= 0){
+            var a = moment(self.datelt, 'YYYY/MM/DD');
+            var b = moment(item.DueDate, 'YYYY/MM/DD');
+            var days = b.diff(a, 'days');
+            console.log('iiiiiiiiiiiiiiii',days);
+            if(days <= 0){
               return item;
             }
           });
@@ -1394,7 +1403,8 @@
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
               headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -1402,6 +1412,13 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.response.status == 403){
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1979,7 +1996,8 @@
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
-              Authorization : Cookies.get('auth_token')
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
           },
         })
         .then(function (response) {
@@ -2013,6 +2031,13 @@
 
           console.log("error",error);
           self.spinShow = false;
+            if(error.response.status == 403){
+               self.$Notice.error(
+                   {duration:0, 
+                   title: error.response.statusText,
+                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                   );
+                }
         });
       }
 
