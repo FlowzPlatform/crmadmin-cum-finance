@@ -518,7 +518,8 @@ Vue.use(VueWidgets);
                             url:feathersUrl +'settings/'+configId,
                             data: patchData,
                             headers:{
-                                Authorization : Cookies.get('auth_token')
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
                             console.log("++++++++++++------------response",response);
@@ -535,6 +536,7 @@ Vue.use(VueWidgets);
                                     location = location.domain === null ? location.input : location.domain
                                     
                                     Cookies.remove('auth_token' ,{domain: location}) 
+                                    Cookies.remove('subscriptionId' ,{domain: location}) 
                                     this.$store.commit('logout', this);
                                     
                                     this.$router.push({
@@ -574,7 +576,8 @@ Vue.use(VueWidgets);
                             url:feathersUrl +'settings/'+configId,
                             data: patchData,
                             headers:{
-                                Authorization : Cookies.get('auth_token')
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
                             if(response.status == 200){
@@ -588,7 +591,8 @@ Vue.use(VueWidgets);
                                     let location = psl.parse(window.location.hostname)
                                     location = location.domain === null ? location.input : location.domain
                                     
-                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    Cookies.remove('auth_token' ,{domain: location})
+                                    Cookies.remove('subscriptionId' ,{domain: location})  
                                     this.$store.commit('logout', this);
                                     
                                     this.$router.push({
@@ -655,7 +659,8 @@ Vue.use(VueWidgets);
                     url:feathersUrl +'settings/'+data.id,
                     data:{isDeleated : true },
                     headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
                     },
                 }).then(response => {
                     if(response.status == 200){
@@ -675,6 +680,7 @@ Vue.use(VueWidgets);
                             location = location.domain === null ? location.input : location.domain
                             
                             Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
                             this.$store.commit('logout', this);
                             
                             this.$router.push({
@@ -698,7 +704,8 @@ Vue.use(VueWidgets);
                             url:feathersUrl +'settings/'+data.id,
                             data: this.editData,
                             headers:{
-                                Authorization : Cookies.get('auth_token')
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
                             if(response.status == 200){
@@ -714,6 +721,7 @@ Vue.use(VueWidgets);
                                     location = location.domain === null ? location.input : location.domain
                                     
                                     Cookies.remove('auth_token' ,{domain: location}) 
+                                    Cookies.remove('subscriptionId' ,{domain: location}) 
                                     this.$store.commit('logout', this);
                                     
                                     this.$router.push({
@@ -776,7 +784,8 @@ Vue.use(VueWidgets);
                     url:feathersUrl +'settings/'+this.editData.id,
                     data: patchData,
                     headers: {
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
                     },
                 })
                 .then(response => {
@@ -792,7 +801,8 @@ Vue.use(VueWidgets);
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                             
-                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('auth_token' ,{domain: location})
+                            Cookies.remove('subscriptionId' ,{domain: location})  
                             this.$store.commit('logout', this);
                             
                             this.$router.push({
@@ -819,7 +829,8 @@ Vue.use(VueWidgets);
                         url:feathersUrl +'settings/'+self.editData.id,
                         data: patchData,
                         headers:{
-                            Authorization : Cookies.get('auth_token')
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
                         },
                     }).then(response => {
                         if(response.status == 200){
@@ -835,6 +846,7 @@ Vue.use(VueWidgets);
                                 location = location.domain === null ? location.input : location.domain
                                 
                                 Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
                                 self.$store.commit('logout', self);
                                 
                                 self.$router.push({
@@ -946,7 +958,8 @@ Vue.use(VueWidgets);
                     url:feathersUrl +'settings/'+data.id,
                     data:{isActive : data.isActive },
                     headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
                     },
                 }).then(response => {
                     if(response.status == 200){
@@ -962,6 +975,7 @@ Vue.use(VueWidgets);
                             location = location.domain === null ? location.input : location.domain
                             
                             Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
                             this.$store.commit('logout', this);
                             
                             this.$router.push({
@@ -987,7 +1001,8 @@ Vue.use(VueWidgets);
                 "invoice_url" : feathersUrl+"custominvoice",
                 "domain" : 'custom',
                 "isActive" : true,
-                "isDeleated" : false
+                "isDeleated" : false,
+                "subscriptionId" : Cookies.get('subscriptionId')    
             }
             axios({
                 method: 'post',
@@ -1041,6 +1056,7 @@ Vue.use(VueWidgets);
                         location = location.domain === null ? location.input : location.domain
                         
                         Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
                         self.$store.commit('logout', self);
                         
                         self.$router.push({
@@ -1063,6 +1079,7 @@ Vue.use(VueWidgets);
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
+                    Cookies.remove('subscriptionId' ,{domain: location}) 
                     this.$store.commit('logout', this);
                     
                     this.$router.push({
