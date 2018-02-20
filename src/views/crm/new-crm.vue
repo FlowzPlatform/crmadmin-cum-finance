@@ -53,7 +53,7 @@
 										 <div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
-										<div v-if="domainConfig=='Custom'">
+										<div v-if="domainConfig=='custom'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
