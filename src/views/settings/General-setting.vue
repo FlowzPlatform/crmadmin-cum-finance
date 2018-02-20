@@ -1,5 +1,8 @@
 <template>
   <div class="GeneralSettings">
+     <div class="settings_header">
+            <Button @click="goToSettingsList">All Settings</Button>
+        </div>
     <div class="container" style="margin-top: 2%; margin-bottom: 2%;">
       <!-- Address Settings Section -->
       <div class="collapsingDivWrapper row">
@@ -167,6 +170,11 @@ export default {
     }
   },
   methods: {
+    goToSettingsList(){
+                this.$router.push({
+                        name: 'Settings'
+                    });
+            },
     configChange(data){              
       $('#CustomerName').css("display","block")
       settingId = data;              
@@ -636,5 +644,12 @@ export default {
     border-color: #e2e2e2;
     border-radius: 4px;
    }
+   .settings_header{
+    padding : 10px;
+    text-align:right;
+    background: #cacaca;
+    width:100%;
+    margin:14px 2px;
+}
 
 </style>

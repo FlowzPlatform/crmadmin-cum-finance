@@ -1,5 +1,8 @@
 <template>
 	<div class="container" style="background: white;">
+		<div class="settings_header">
+            <Button @click="goToSettingsList">All Settings</Button>
+        </div>
 		<div class="row">
 			<div class="col-md-12" style="margin-top: 20px;">
 				<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
@@ -64,6 +67,11 @@
 			}
 		},
 		methods: {
+			goToSettingsList(){
+                this.$router.push({
+                        name: 'Settings'
+                    });
+            },
 			handleSubmit (name) {
 				var self = this
 				this.$refs[name].validate((valid) => {
@@ -296,4 +304,11 @@
 </script>
 
 <style scoped>
+.settings_header{
+    padding : 10px;
+    text-align:right;
+    background: #cacaca;
+    width:100%;
+    margin:14px 2px;
+}
 </style>

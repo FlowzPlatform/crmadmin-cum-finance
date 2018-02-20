@@ -50,7 +50,16 @@
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
 									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
-										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										 <div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='Custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
+
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
 									 </div> -->
@@ -161,6 +170,7 @@
 				customCustomerUrl: '',
 				crmdata: [],
 				loading: false,
+				domainConfig: "",
 				file: '',
 				finaldata: {
 					name: '',
@@ -206,6 +216,7 @@
 								},
 							})
 								.then(async function(response) {
+									self.domainConfig=response.data.domain
 								console.log(response)
 								if(response.data.domain == 'custom'){
 
