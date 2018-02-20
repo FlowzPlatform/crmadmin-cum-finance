@@ -24,66 +24,73 @@
 
 <template>
 
-    <Widget>
+    <!--<Widget>
       <WidgetHeading :id="1" :Title="'Add New Customer'" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Expand="true" :Collapse="true" :Editable='false'></WidgetHeading>
-      <WidgetBody>
-        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-        <FormItem label="Configuration Name" prop="configuration">
-           <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
-             <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
-            <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
-        </FormItem>
-        <FormItem label="E-mail" prop="mail">
-            <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
-        </FormItem>
-        <FormItem label="Address">
-        <Row>
-        <Col span="12">
-          <FormItem prop="AddressLine1">
-              <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
-          </FormItem>
-        </Col>
-        <Col span="12">
-          <FormItem  prop="AddressLine2">
-            <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
-          </FormItem>
-        </Col>
-        </Row>
-        </FormItem>
-         <FormItem label="Country" prop="country">
-            <select v-model="formValidate.country" id="country" name ="country">
-            </select>
-        </FormItem>
-        <FormItem label="State" prop="state" class="state1" style="display:none">
-          <select v-model="formValidate.state" name ="state" id ="state" ></select>
-        </FormItem>
-        <FormItem label="City" prop="city">
-         <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
-        </FormItem>
-         <FormItem label="Zip Code" prop="PostalCode">
-            <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
-        </FormItem>
-        <FormItem label="Mobile" prop="mobile">
-            <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
-        </FormItem>
-         <!-- <FormItem label="Phone" prop="phone">
-            <Input v-model="formValidate.phone" placeholder="Enter your Phone No"></Input>
-        </FormItem>
-         <FormItem label="Fax" prop="fax">
-            <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
-        </FormItem> -->
-        <div style="text-align:center;">
-          <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-          <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
-          </div>
-        </FormItem>
-    </Form>
-        </WidgetBody>
-    </Widget>
-    
+      <WidgetBody>-->
+  <Row>
+    <Col span="12" offset="6">
+      <Card style="padding:10px;">
+        <p slot="title">Add New Customer</p>
+          <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140" style="width:100%">
+            <FormItem label="Configuration Name" prop="configuration">
+              <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
+                <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+              </Select>
+            </FormItem>
+            <FormItem label="Name" prop="name" style="display:none;" id="CustomerName">
+                <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
+            </FormItem>
+            <FormItem label="E-mail" prop="mail">
+                <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
+            </FormItem>
+            <FormItem label="Address">
+              <Row>
+                <Col span="12">
+                  <FormItem prop="AddressLine1">
+                      <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
+                  </FormItem>
+                </Col>
+                <Col span="12">
+                  <FormItem  prop="AddressLine2">
+                    <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
+                  </FormItem>
+                </Col>
+              </Row>
+            </FormItem>
+            <FormItem label="Country" prop="country">
+                <select v-model="formValidate.country" id="country" name ="country">
+                </select>
+            </FormItem>
+            <FormItem label="State" prop="state" class="state1" style="display:none">
+              <select v-model="formValidate.state" name ="state" id ="state" ></select>
+            </FormItem>
+            <FormItem label="City" prop="city">
+              <Input v-model="formValidate.city" placeholder="Enter your city"></Input>
+            </FormItem>
+            <FormItem label="Zip Code" prop="PostalCode">
+              <Input v-model="formValidate.PostalCode" placeholder="Enter Zip Code"></Input>
+            </FormItem>
+            <FormItem label="Mobile" prop="mobile">
+              <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
+            </FormItem>
+            <!-- <FormItem label="Phone" prop="phone">
+              <Input v-model="formValidate.phone" placeholder="Enter your Phone No"></Input>
+            </FormItem>
+            <FormItem label="Fax" prop="fax">
+                <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
+            </FormItem> -->
+            <div style="text-align:center;">
+              <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+              <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+            </div>
+            </FormItem>
+          </Form>
+          <!--</WidgetBody>
+          </Widget>-->
+      </Card>
+    </Col>
+  </Row>
+
 </template>
 
 <script>
