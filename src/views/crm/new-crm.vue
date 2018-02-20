@@ -18,14 +18,18 @@
 							</p>
 							<textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
 							<!-- <p id="c16943"> -->
-							<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="padding-top:15px">
+							<!--<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="padding-top:15px">
 								<div style="padding: 20px 0">
 									<icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
 									<p>Click or drag files here to upload</p>
 								</div>
-							</upload>
+							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
+							<Upload multiple id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action=''> 
+								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+							</Upload>
+							<div v-if="file !== null">Uploaded file: {{ file.name }} </div>
 						</div>
 					</div>
 				</div>
@@ -150,149 +154,145 @@
 	var assigneeapi = config.default.assigneeapi;
 
 	export default {
-    name: 'newcrm',
-    data() {
-      return {
-        customerData:[],
-		customCustomerUrl: '',
-        crmdata: [],
-        loading: false,
-        finaldata: {
-        	name: '',
-			cname: '',
-      		project: '',
-			status: '',
-			assignee: [],
-			product_line: '',
-			contractdate: '',
-			nextdate: '',
-			priceinput: '',
-			price: '',
-			email: '',
-			phone: '',
-			config: '', 
-        },
-				momdata: [],
-				mData: [],
-				// config1: '',
-				description:'',
-		    assigneedata: []
-     	}
-    },
-    methods: {
-    	async calldata() {
-			 let resp
-      let self = this
+		name: 'newcrm',
+		data() {
+			return {
+				customerData:[],
+				customCustomerUrl: '',
+				crmdata: [],
+				loading: false,
+				file: '',
+				finaldata: {
+					name: '',
+					cname: '',
+					project: '',
+					status: '',
+					fileupload: '',
+					assignee: [],
+					product_line: '',
+					contractdate: '',
+					nextdate: '',
+					priceinput: '',
+					price: '',
+					email: '',
+					phone: '',
+					config: '', 
+				},
+						momdata: [],
+						mData: [],
+						// config1: '',
+						description:'',
+					assigneedata: []
+				}
+			},
+		methods: {
+			async handleUpload (file) {
+				var self = this
+				console.log('file',file)
+				self.file = file
+				return false;
+			},
+			async calldata() {
+				let resp
+				let self = this
 
-      var settingId = self.finaldata.config
-      await axios({
-                    method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId,
-                    headers:{
-                    	Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    }
+				var settingId = self.finaldata.config
+				await axios({
+								method:'get',
+								url: config.default.serviceUrl + 'settings/'+settingId,
+								headers:{
+									Authorization : Cookies.get('auth_token'),
+									subscriptionId : Cookies.get('subscriptionId')
+								},
+							})
+								.then(async function(response) {
+								console.log(response)
+								if(response.data.domain == 'custom'){
 
-                  })
-                    .then(async function(response) {
-                      console.log(response)
-                      if(response.data.domain == 'custom'){
+										self.customCustomerUrl = response.data.customer_url;
+										self.customInvoiceUrl = response.data.invoice_url;
+										
+									await axios({
+										method: 'get',
+										url: self.customCustomerUrl,
+										params : {settingId : response.data.id},
+										headers:{
+											Authorization : Cookies.get('auth_token')
+										}
+										})
+										.then(function (response) {
+										console.log(response)
+										resp = response.data.data
+										self.customerData = resp
+										console.log("self.customerData", self.customerData)
+										})
+										.catch(function (error) {
+										console.log(error.response)
+										self.$Message.error(error.response.data.data[0].message)
+										});
 
-                            self.customCustomerUrl = response.data.customer_url;
-                            self.customInvoiceUrl = response.data.invoice_url;
-                            
-                           await axios({
-                              method: 'get',
-                              url: self.customCustomerUrl,
-                              params : {settingId : response.data.id},
-                              headers:{
-                                Authorization : Cookies.get('auth_token')
-                              }
-                            })
-                            .then(function (response) {
-                              console.log(response)
-                              resp = response.data.data
-                              self.customerData = resp
-							  console.log("self.customerData", self.customerData)
-                            })
-                            .catch(function (error) {
-                              console.log(error.response)
-                              self.$Message.error(error.response.data.data[0].message)
-                            });
+								}else{
+										await axios({
+												method: 'get',
+												url: config.default.serviceUrl + 'contacts',
+												params: {
+												settingId : settingId
+												},
+												headers:{
+													Authorization : Cookies.get('auth_token')
+												},
+											}).then(function (response) {
+											
+												resp = response.data
+												self.customerData = resp[0].data
+											})
+											.catch(function (error) {
+												console.log(error);
+											});
+								}
+							});
+				
+				
+				console.log("response------>iuy",resp);
+				// resp.forEach(obj =>{
+				//   console.log(obj[0].data)
+					// alert(self.formItem.configuration)
+					
+				//})
+				// 	let self=this;
+				// 	self.customerData = [];
+				// await $.ajax({
+				// 		type: 'GET',
+				// 		url: serviceUrl +"contacts",
+				// 		data: {
+				//         settingId : self.finaldata.config,   
+				//     },
+				// 		success: function (data) {
+				// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
+				// 			data.forEach(function(contacts) {
+				// 				var cnt = contacts.data
+				// 				for (var i=0; i<cnt.length; i++) {
+				// 					console.log("%%%%%%%%%%",cnt[i].Name)
+				// 					self.customerData.push(cnt[i].Name)
+				// 				}
+				// 			})
 
-                      }else{
-                            await axios({
-                                    method: 'get',
-                                    url: config.default.serviceUrl + 'contacts',
-                                    params: {
-                                      settingId : settingId
-                                    },
-                                    headers:{
-                                        Authorization : Cookies.get('auth_token')
-                                    },
-                                  }).then(function (response) {
-                                  
-                                    resp = response.data
-                                    self.customerData = resp[0].data
-                                  })
-                                  .catch(function (error) {
-                                    console.log(error);
-                                  });
-                      }
-                  })
-                  .catch(function (error) {
-			            console.log("error",error)
-			            if(error.response.status == 403){
-			               self.$Notice.error(
-			                   {duration:0, 
-			                   title: error.response.statusText,
-			                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-			                   );
-			                }
-			        });
-			      
-      
-      console.log("response------>iuy",resp);
-      // resp.forEach(obj =>{
-      //   console.log(obj[0].data)
-     // alert(self.formItem.configuration)
-        
-      //})
-			// 	let self=this;
-			// 	self.customerData = [];
-	    	// await $.ajax({
-			// 		type: 'GET',
-			// 		url: serviceUrl +"contacts",
-			// 		data: {
-            //         settingId : self.finaldata.config,   
-            //     },
-			// 		success: function (data) {
-			// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
-			// 			data.forEach(function(contacts) {
-			// 				var cnt = contacts.data
-			// 				for (var i=0; i<cnt.length; i++) {
-			// 					console.log("%%%%%%%%%%",cnt[i].Name)
-			// 					self.customerData.push(cnt[i].Name)
-			// 				}
-			// 			})
-
-			// 			// console.log(data)
-			// 		},error: function(err) {
-			// 			console.log("Error",err)
-			// 		}
-			// 	});
-	        // console.log("resp data",result);
-	    //     result.forEach(item => {
-					// 	var customer = item.Name;
-					// 	this.data.push(customer)
-					// })
-    	},
+				// 			// console.log(data)
+				// 		},error: function(err) {
+				// 			console.log("Error",err)
+				// 		}
+				// 	});
+				// console.log("resp data",result);
+				//     result.forEach(item => {
+						// 	var customer = item.Name;
+						// 	this.data.push(customer)
+						// })
+			},
 			init() {
 				let self = this;
 				axios.get(serviceUrl+"settings", {
 					params: {
 						isActive : true
-						// user : Cookies.get('user')
 					},
 					headers: {
 						Authorization : Cookies.get('auth_token'),
@@ -303,158 +303,168 @@
 					// console.log("config data list",response)
 					// self.mData = response.data.data;
 					var newConf = response.data.data
-	                console.log("self.configs---------------->before",newConf)
-	                self.mData = _.sortBy(newConf, ['configName']);
-	                console.log("self.configs---------------->after",self.mData)
+					console.log("self.configs---------------->before",newConf)
+					self.mData = _.sortBy(newConf, ['configName']);
+					console.log("self.configs---------------->after",self.mData)
 					// self.config1 = self.mData[0].id;
 					// self.calldata()    
 				})
 				.catch(function (error) {
 					console.log(error)
 					self.disabled = false;
-			        if(error.response.status == 403){
-		               self.$Notice.error(
-		                   {duration:0, 
-		                   title: error.response.statusText,
-		                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-		                   );
-		            }			        
+					//Cookies.remove('auth_token') 
+					self.$Message.error('Auth Error!');
+					//self.$store.commit('logout', self); 
+					// self.$router.push({
+					//     name: 'login'
+					// })
 				});
 			},
-		configChange(data){
-			console.log(data)
-			$('.customer').css("display","inline-block")
-			$('.autoCompleteDropdown').css("display","inline-block")
-			this.calldata(data);
-		},
-    	async dbdata() {
-    		var self = this
-    		await $.ajax({
-    			type: 'GET',
-			    url: serviceUrl + "crm-service/",
-			    success: function (data) {
-					result1 = data.data[0];
-					console.log("databaseurl data.............." ,data)
-			        self.crmdata = result1
-			        var newarr = self.crmdata.crmStatus;
-			        self.crmdata.crmStatus = _.sortBy(newarr,['name']);
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-				});
-	    },
-    	async postdata() {
-				let desc = CKEDITOR.instances.editor1.getData()
-				this.finaldata.description = $(desc).text();				
-				let self = this
-				var re = /\S+@\S+\.\S+/;
-				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
-				var phone = phone_re.test(self.finaldata.phone);
-    		var mail = re.test(self.finaldata.email);
-
-    		if (mail != false && phone != false) {
-    			this.loading = true
-					console.log("json data******123this.finaldata",this.finaldata);
-    			await $.ajax({
-						type: 'POST',
-					    headers: {
-		  					'Authorization': Cookies.get('auth_token')
-		  				},
-					    url: serviceUrl  + "crm-case/",
-					    data: this.finaldata,
-					    success: function (data1) {
-					        result = data1;
-							console.log("json data******123",result);
-							self.loading = false,
-							self.$Notice.success({
-            					title: 'Sucess',
-            					desc: 'New CRM case is Saved. ',
-								duration: 4.5
-          					});
-							self.$router.push( "list-relationship")
-					    },error: function(err){
-					    	self.loading = false,
-					       console.log("error",err);
-					    }
+			configChange(data){
+				console.log(data)
+				$('.customer').css("display","inline-block")
+				$('.autoCompleteDropdown').css("display","inline-block")
+				this.calldata(data);
+			},
+			async dbdata() {
+				var self = this
+				await $.ajax({
+					type: 'GET',
+					url: serviceUrl + "crm-service/",
+					success: function (data) {
+						result1 = data.data[0];
+						console.log("databaseurl data.............." ,data)
+						self.crmdata = result1
+						var newarr = self.crmdata.crmStatus;
+						self.crmdata.crmStatus = _.sortBy(newarr,['name']);
+					},error: function(err){
+						console.log("error",err);
+					}
 					});
-    		} else {
-    			// alert("Enter Valid Email Address OR Phone Number")
-					this.$Notice.error({
-            title: 'Error',
-            desc: 'Enter Valid Email Address OR Phone Number. ',
-						duration: 4.5
-          });
-    		}
+			},
+			async postdata() {
+					let desc = CKEDITOR.instances.editor1.getData()
+					this.finaldata.description = $(desc).text();
+					
+					let self = this
+					var re = /\S+@\S+\.\S+/;
+					var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
+					var phone = phone_re.test(self.finaldata.phone);
+					var mail = re.test(self.finaldata.email);
 
-				
-    },
-    filterMethod (value, option) {
-      return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-  	},
-  	async projectlist() {
-  		var self = this
-  		await $.ajax({
-  				type: 'GET',
-			    url: momapi,
-			    success: function (data) {
-					console.log(">>>>>>>>>>>>>>> " , data)
-			        result1 = data;
-			        var proArr = [];
-			        proArr = _.map(result1, (d) => {
-			        	return {label: d.project_name, value: d.project_name}
-			        })
-			        self.momdata = _.sortBy(proArr, ['value']);
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-			});
-  	},
-  	async assigneelist() {
-  		var self = this
-  		await $.ajax({
-  				type: 'GET',
-  				headers: {
-  					'Authorization': Cookies.get('auth_token')
-  				},
-			    url: assigneeapi,
-			    success: function (data) {
-			        result1 = data.data;
-			        console.log(data)
-					var myarr = []
-			        _.forEach(result1, (d) => {
-								if (d.hasOwnProperty('fullname')) {
-									if (d.fullname !== undefined) {
-										if (d.fullname !== null) {
-											if (d.fullname.trim() !== '') {
-												let checkname = _.findIndex(myarr,{value: d.fullname})
-												if (checkname === -1) {
-												  myarr.push({label: d.fullname, value: d.fullname})
-                        						}
+					if (mail != false && phone != false) {
+						this.loading = true
+						var reader = new FileReader();
+						var file = this.file
+						console.log('uuuuuu',file)
+						reader.readAsDataURL(file);
+						// console.log('reader',reader);
+					  	reader.addEventListener("load", async function () {
+							self.finaldata.fileupload = reader.result;
+							await $.ajax({
+								type: 'POST',
+								headers: {
+									'Authorization': Cookies.get('auth_token')
+								},
+								url: serviceUrl  + "crm-case/",
+								data: self.finaldata,
+								success: function (data1) {
+									result = data1;
+									console.log("json data******123",result);
+									self.loading = false,
+									self.$Notice.success({
+										title: 'Sucess',
+										desc: 'New CRM case is Saved. ',
+										duration: 4.5
+									});
+									self.$router.push( "list-relationship")
+								},error: function(err){
+									self.loading = false,
+								console.log("error",err);
+								}
+							});
+						});
+							// var params = self.finaldata
+							// console.log("json data******123this.finaldata",params);
+
+						
+					} else {
+						// alert("Enter Valid Email Address OR Phone Number")
+							this.$Notice.error({
+					title: 'Error',
+					desc: 'Enter Valid Email Address OR Phone Number. ',
+								duration: 4.5
+				});
+				}			
+			},
+			filterMethod (value, option) {
+				return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+			},
+			async projectlist() {
+				var self = this
+				await $.ajax({
+						type: 'GET',
+						url: momapi,
+						success: function (data) {
+							console.log(">>>>>>>>>>>>>>> " , data)
+							result1 = data;
+							var proArr = [];
+							proArr = _.map(result1, (d) => {
+								return {label: d.project_name, value: d.project_name}
+							})
+							self.momdata = _.sortBy(proArr, ['value']);
+						},error: function(err){
+						console.log("error",err);
+						}
+					});
+			},
+			async assigneelist() {
+				var self = this
+				await $.ajax({
+						type: 'GET',
+						headers: {
+							'Authorization': Cookies.get('auth_token')
+						},
+						url: assigneeapi,
+						success: function (data) {
+							result1 = data.data;
+							console.log(data)
+							var myarr = []
+							_.forEach(result1, (d) => {
+										if (d.hasOwnProperty('fullname')) {
+											if (d.fullname !== undefined) {
+												if (d.fullname !== null) {
+													if (d.fullname.trim() !== '') {
+														let checkname = _.findIndex(myarr,{value: d.fullname})
+														if (checkname === -1) {
+															myarr.push({label: d.fullname, value: d.fullname})
+														}
+													}
+												}
 											}
 										}
-									}
-								}
-			        })
-
-							self.assigneedata = _.sortBy(myarr,['value']);
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-			});
-  	}
-    },
-    mounted() {
-		this.finaldata.price = "$";
-    	CKEDITOR.replace("editor1"),
-    	this.init(),
-    	this.dbdata()
-    	this.projectlist()
-    	this.assigneelist()
+							})
+									self.assigneedata = _.sortBy(myarr,['value']);
+									console.log('self.assigneedata', self.assigneedata)
+						},error: function(err){
+						console.log("error",err);
+						}
+					});
+			}
+		},
+		mounted() {
+			this.finaldata.price = "$";
+			CKEDITOR.replace("editor1"),
+			this.init(),
+			this.dbdata()
+			this.projectlist()
+			this.assigneelist()
+		}
 	}
-}
 
-	</script>
-	<style scoped>
+</script>
+
+<style scoped>
 	* {
 	    box-sizing: border-box;
 	}

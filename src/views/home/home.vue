@@ -86,7 +86,7 @@
                             
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="4" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true" :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="4" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true" :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
                             <div id="chart1_content" style="height: 300px;">
@@ -103,7 +103,7 @@
                     <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="2" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="2" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
                                 <div id="chart2_content" style="height: 300px;">
@@ -121,7 +121,7 @@
                 <draggable :options="{group:'chart'}">
                         <!-- BEGIN PORTLET-->
                         <Widget>
-                        <WidgetHeading :id="3" :Title="'Invoice Amount'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
+                        <WidgetHeading :id="3" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                         <WidgetBody>                                    
                             <div class="portlet-body">
                                 <div id="chart3_content" style="height: 300px;">
@@ -137,7 +137,7 @@
                 <draggable :options="{group:'chart'}">
                     <!-- BEGIN PORTLET-->
                     <Widget>
-                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
+                    <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
                     <WidgetBody>                                    
                         <div class="portlet-body">
                             <div id="chart4_content" style="height: 300px;">

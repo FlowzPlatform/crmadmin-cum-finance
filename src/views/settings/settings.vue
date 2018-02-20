@@ -1,340 +1,340 @@
 <template>
     <div>
+        <Tabs>
+            <TabPane label="Configuration">
 
-    <Tabs>
-        <TabPane label="Configuration">
+                <div class="settings_header">
+                    <Button @click="addNewConfig">Add New Configuration</Button>
+                </div>
 
-            <div class="settings_header">
-                <Button @click="addNewConfig">Add New Configuration</Button>
-            </div>
-            
-            <div  v-for="(chunk , index) in productChunks">
-                <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px;">
-                    <Widget>
-                        <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Expand="true" :Collapse="true"></WidgetHeading>
-                        <WidgetBody>
-                            
-                            <table id="t01">
-                        
-                            <tr>
-                                <td>User</td>
-                                <td>{{ product.user}}</td>
-                            </tr>
-                            <tr>
-                                <td>Domain</td>
-                                <td>{{ product.domain}}</td>
-                            </tr>
+                <div>
+                    <Row>
+                        <div v-for="(item, inx) in data6">
+                            <Col :span="12">
+                                <div style="padding: 5px;">
+                                    <Card style="padding:10px;height: 365px;">
+                                        <p slot="title">{{item.configName}}</p>
+                                        <table id="t01">
+                                            <tr>
+                                                <td>User</td>
+                                                <td>{{ item.user}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Domain</td>
+                                                <td>{{ item.domain}}</td>
+                                            </tr>
 
-                            <tr v-if="product.domain == 'Xero'">
-                                <td >Consumer key </td>
-                                <td>
-                                    <Input :type="consumerKeyType" readonly :value='product.consumerKey'>
-                                        <Button slot="append" icon="eye" @click="showSecret(product)"></Button>
-                                    </Input>                            
-                                </td>
-                            </tr>
-                            <tr v-if="product.domain == 'QB'">
-                                <td >Client ID </td>
-                                <td>
-                                    <Input :type="client_idType" readonly :value='product.client_id'>
-                                        <Button slot="append" icon="eye" @click="showSecret" ></Button>
-                                    </Input>
-                                </td>
-                            </tr>
-                            <tr v-if="product.domain == 'custom'">
-                                <td >Customer Url </td>
-                                <td>
-                                    <Input  readonly :value='product.customer_url'>
+                                            <tr v-if="item.domain == 'Xero'">
+                                                <td >Consumer key </td>
+                                                <td>
+                                                    <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
+                                                        <Button slot="append" icon="eye" @click="showSecret(item)"></Button>
+                                                    </Input>                            
+                                                </td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'QB'">
+                                                <td >Client ID </td>
+                                                <td>
+                                                    <Input :type="client_idType" readonly :value='item.client_id'>
+                                                        <Button slot="append" icon="eye" @click="showSecret" ></Button>
+                                                    </Input>
+                                                </td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'custom'">
+                                                <td >Customer Url </td>
+                                                <td>
+                                                    <Input  readonly :value='item.customer_url'>
+                                                        
+                                                    </Input>
+                                                </td>
+                                            </tr>
+
+                                            <tr v-if="item.domain == 'Xero'">
+                                                <td >Consumer secret </td>
+                                                <td>
+                                                    <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
+                                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                                    </Input>
+                                                </td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'QB'">
+                                                <td >Client secret </td>
+                                                <td>
+                                                    <Input :type="client_secretType" readonly :value='item.client_secret'>
+                                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                                    </Input>
+                                                </td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'custom'">
+                                                <td >Invoice Url </td>
+                                                <td>
+                                                    <Input  readonly :value='item.invoice_url'>
+                                                    </Input>
+                                                </td>
+                                            </tr>
+
+                                            <tr v-if="item.domain == 'Xero'">
+                                                <td >User agent</td>
+                                                <td >{{ item.useragent}}</td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'QB'">
+                                                <td >realmId </td>
+                                                <td >{{item.realmId}}</td>
+                                            </tr>
+
+                                            <tr v-if="item.domain == 'Xero'">
+                                                <td >Certificate </td>
+                                                <td >{{ item.pem}}</td>
+                                            </tr>
+                                            <tr v-if="item.domain == 'QB'">
+                                                <td >Refresh Token: </td>
+                                                <td >{{item.refresh_token}}</td>
+                                            </tr>
+                                        </table>
+                                        <div class="actionDiv">
+                                            <Tooltip placement="top" content="Toggle active / inactive">
+                                                <i-switch v-model="item.isActive" :disabled="disabled" @on-change="buttonClicked(item)"></i-switch>
+                                            </Tooltip>
+                                            <ButtonGroup v-if="item.domain != 'custom'">
+                                                <Tooltip placement="top" content="Delete">
+                                                    <Button class="ButtonGroup" @click="deleteConfig(item)"   type="ghost" icon="trash-b"></Button>
+                                                </Tooltip>
+                                                <Tooltip placement="top" content="Edit">
+                                                    <Button class="ButtonGroup" @click="editConfig(item)" type="ghost" icon="edit"></Button>
+                                                </Tooltip>
+                                            </ButtonGroup>
+                                        </div>
+                                    </Card>
+                                    <Modal
+                                        v-model="modal1"
+                                        title="Edit Configuration"
+                                        ok-text="Save"
+                                        cancel-text="Cancel"
+                                        @on-ok="ok"
+                                        @on-cancel="cancel">
                                         
-                                    </Input>
-                                </td>
-                            </tr>
-
-                            <tr v-if="product.domain == 'Xero'">
-                                <td >Consumer secret </td>
-                                <td>
-                                    <Input :type="consumerSecretType" readonly :value='product.consumerSecret'>
-                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
-                                    </Input>
-                                </td>
-                            </tr>
-                            <tr v-if="product.domain == 'QB'">
-                                <td >Client secret </td>
-                                <td>
-                                    <Input :type="client_secretType" readonly :value='product.client_secret'>
-                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
-                                    </Input>
-                                </td>
-                            </tr>
-                            <tr v-if="product.domain == 'custom'">
-                                <td >Invoice Url </td>
-                                <td>
-                                    <Input  readonly :value='product.invoice_url'>
-                                    </Input>
-                                </td>
-                            </tr>
-
-                            <tr v-if="product.domain == 'Xero'">
-                                <td >User agent</td>
-                                <td >{{ product.useragent}}</td>
-                            </tr>
-                            <tr v-if="product.domain == 'QB'">
-                                <td >realmId </td>
-                                <td >{{product.realmId}}</td>
-                            </tr>
-
-                            <tr v-if="product.domain == 'Xero'">
-                                <td >Certificate </td>
-                                <td >{{ product.pem}}</td>
-                            </tr>
-                            <tr v-if="product.domain == 'QB'">
-                                <td >Refresh Token: </td>
-                                <td >{{product.refresh_token}}</td>
-                            </tr>
-                            </table>
-                            
-                            <div class="actionDiv">
-                            <Tooltip placement="top" content="Toggle active / inactive">
-                            <i-switch v-model="product.isActive" :disabled="disabled" @on-change="buttonClicked(product)"></i-switch>
-                            </Tooltip>
-                            <ButtonGroup v-if="product.domain != 'custom'">
-                                <Tooltip placement="top" content="Delete">
-                                <Button class="ButtonGroup" @click="deleteConfig(product)"   type="ghost" icon="trash-b"></Button>
-                                </Tooltip>
-                                <Tooltip placement="top" content="Edit">
-                                <Button class="ButtonGroup" @click="editConfig(product)" type="ghost" icon="edit"></Button>
-                                </Tooltip>
-                            </ButtonGroup>
-                            </div>
-                        </WidgetBody>
-                    </Widget>
-                    <Modal
-                        v-model="modal1"
-                        title="Edit Configuration"
-                        ok-text="Save"
-                        cancel-text="Cancel"
-                        @on-ok="ok"
-                        @on-cancel="cancel">
-                        
-                        <Form :model="editFormItemXero" :label-width="60" v-if='editFormType == "Xero"'>
-                            <FormItem label="Config Name">
-                                <Input v-model="editData.configName" placeholder="Enter something for QB..."></Input>
-                            </FormItem>
-                            <FormItem label="User Agent">
-                                <Input v-model="editData.useragent"  placeholder="User Agent"></Input>
-                            </FormItem>
-                            <FormItem label="Consumer Key">
-                                <Input v-model="editData.consumerKey"  placeholder="Consumer Key"></Input>
-                            </FormItem>
-                            <FormItem label="Consumer Secret">
-                                <Input v-model="editData.consumerSecret"  placeholder="Consumer Secret"></Input>
-                            </FormItem>
-                            <FormItem label="Private Key" >
-                                <!-- <Input v-model="XeroformValidate.privateKey" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
-                                -->
-                                <Upload v-model="editData.privateKey"
-                                    :before-upload="handleUpload"
-                                    action="">
-                                    <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
-                                </Upload>
-                                <div v-if="file !== ''">Uploaded file: {{ file.name }} </div>
-                                <div v-else>Uploaded file: {{ editData.pem }} </div>
-                            </FormItem>
-                        </Form>
-                        <Form :model="editFormItemQB" :label-width="60" v-if='editFormType == "QB"'>
-                            <FormItem label="Config Name">
-                                <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
-                            </FormItem>
-                            <FormItem label="Client ID">
-                                <Input v-model="editData.client_id" placeholder="Client ID"></Input>
-                            </FormItem>
-                            <FormItem label="Client Secret">
-                                <Input v-model="editData.client_secret" placeholder="Client Secret"></Input>
-                            </FormItem>
-                            <FormItem label="Realm ID">
-                                <Input v-model="editData.realmId" placeholder="Realm ID"></Input>
-                            </FormItem>
-                            <FormItem label="Refresh Token">
-                                <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
-                            </FormItem>
-                        </Form>
-                        <Form :model="editFormItemCustom" :label-width="60" v-if='editFormType == "custom"'>
-                            <FormItem label="Config Name">
-                                <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
-                            </FormItem>
-                            <FormItem label="Customer Url">
-                                <Input v-model="editData.customer_url" placeholder="Customer Url"></Input>
-                            </FormItem>
-                            <FormItem label="Invoice Url">
-                                <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
-                            </FormItem>
-                            
-                        </Form>            
-                    
-                    </Modal>
+                                        <Form :model="editFormItemXero" :label-width="60" v-if='editFormType == "Xero"'>
+                                            <FormItem label="Config Name">
+                                                <Input v-model="editData.configName" placeholder="Enter something for QB..."></Input>
+                                            </FormItem>
+                                            <FormItem label="User Agent">
+                                                <Input v-model="editData.useragent"  placeholder="User Agent"></Input>
+                                            </FormItem>
+                                            <FormItem label="Consumer Key">
+                                                <Input v-model="editData.consumerKey"  placeholder="Consumer Key"></Input>
+                                            </FormItem>
+                                            <FormItem label="Consumer Secret">
+                                                <Input v-model="editData.consumerSecret"  placeholder="Consumer Secret"></Input>
+                                            </FormItem>
+                                            <FormItem label="Private Key" >
+                                                <!-- <Input v-model="XeroformValidate.privateKey" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+                                                -->
+                                                <Upload v-model="editData.privateKey"
+                                                    :before-upload="handleUpload"
+                                                    action="">
+                                                    <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+                                                </Upload>
+                                                <div v-if="file !== ''">Uploaded file: {{ file.name }} </div>
+                                                <div v-else>Uploaded file: {{ editData.pem }} </div>
+                                            </FormItem>
+                                        </Form>
+                                        <Form :model="editFormItemQB" :label-width="60" v-if='editFormType == "QB"'>
+                                            <FormItem label="Config Name">
+                                                <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                                            </FormItem>
+                                            <FormItem label="Client ID">
+                                                <Input v-model="editData.client_id" placeholder="Client ID"></Input>
+                                            </FormItem>
+                                            <FormItem label="Client Secret">
+                                                <Input v-model="editData.client_secret" placeholder="Client Secret"></Input>
+                                            </FormItem>
+                                            <FormItem label="Realm ID">
+                                                <Input v-model="editData.realmId" placeholder="Realm ID"></Input>
+                                            </FormItem>
+                                            <FormItem label="Refresh Token">
+                                                <Input v-model="editData.refresh_token" placeholder="Refresh Token"></Input>
+                                            </FormItem>
+                                        </Form>
+                                        <Form :model="editFormItemCustom" :label-width="60" v-if='editFormType == "custom"'>
+                                            <FormItem label="Config Name">
+                                                <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
+                                            </FormItem>
+                                            <FormItem label="Customer Url">
+                                                <Input v-model="editData.customer_url" placeholder="Customer Url"></Input>
+                                            </FormItem>
+                                            <FormItem label="Invoice Url">
+                                                <Input v-model="editData.invoice_url" placeholder="Invoice Url"></Input>
+                                            </FormItem>
+                                            
+                                        </Form>            
+                                    
+                                    </Modal>
+                                </div>
+                            </Col>
+                        </div>
+                    </Row>
                 </div>
-            </div>
-            <!-- </RadioGroup> -->
+            </TabPane>
 
-        </TabPane>
-
-        <TabPane label="General">
-            <div class="settings_header">
-                <Button @click="addNewGeneralSettings">Add New General Configuration</Button>
-            </div>
-            <div  v-for="(chunk , index) in productChunks">
-                <div  v-for="(product, inx) in chunk" style="float:left;width:50%;padding:10px;">
-                    <Widget>
-                        <WidgetHeading :id='index+""+inx' :Title= "product.configName" :HeaderEditable="false" :TextColor="true" :DeleteButton="false" :ColorBox="true" :Fullscreen="false" :Collapse="true"></WidgetHeading>
-                        <WidgetBody>
-                            
-                            <table id="t01" v-if="product.address && product.address != ''">
-                                <tr>
-                                    <td>Name</td>
-                                    <td>{{ product.address.name}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Address</td>
-                                    <td>{{ product.address.AddressLine1}}, {{ product.address.AddressLine2}}, {{ product.address.city}}, {{ product.address.state}}, {{ product.address.country}}, {{ product.address.PostalCode}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Logo</td>
-                                    <td><img style="height:50px" :src="product.logo" alt="No Image Available"/></td>
-                                </tr>
-                            </table>
-                            
-                            <div class="actionDiv">
-                                <Tooltip placement="top" content="Delete">
-                                    <Button class="ButtonGroup" @click="deleteGeneralConfig(product)" type="ghost" icon="trash-b"></Button>
-                                </Tooltip>
-                                <Tooltip placement="top" content="Edit">
-                                    <Button class="ButtonGroup" @click="editGeneralConfig(product)" type="ghost" icon="edit"></Button>
-                                </Tooltip>
-                            </div>
-                        </WidgetBody>
-                    </Widget>
-                    <Modal
-                        v-model="model2"
-                        title="Edit Configuration"
-                        ok-text="Save"
-                        cancel-text="Cancel"
-                        @on-ok="okGeneral"
-                        @on-cancel="cancel">
-                        
-                        <Form :model="editGeneral" :label-width="100">
-                            <FormItem label="AddressLine1">
-                                <Input v-model="editGeneralData.AddressLine1" placeholder="AddressLine1"></Input>
-                            </FormItem>
-                            <FormItem label="AddressLine2">
-                                <Input v-model="editGeneralData.AddressLine2" placeholder="AddressLine2"></Input>
-                            </FormItem>
-                            <FormItem label="Country" prop="country">
-                                <!--<select v-model="country" id="country" name ="country" placeholder="Select Country">
-                                </select> -->                         
-                                <Input v-model="editGeneralData.country" placeholder="Country"></Input>
-                            </FormItem>
-                            <FormItem label="State">
-                                <!-- <select v-model="state" id="state" name ="state" placeholder="Select State">
-                                </select> -->
-                                <Input v-model="editGeneralData.state" placeholder="State"></Input>
-                            </FormItem>
-                            <FormItem label="City">
-                                <Input v-model="editGeneralData.city" placeholder="City"></Input>
-                            </FormItem>
-                            <FormItem label="Postal Code">
-                                <Input v-model="editGeneralData.PostalCode" placeholder="PostalCode"></Input>
-                            </FormItem>
-                            <FormItem label="Logo">
-                                <img style="height:50px" :src="editData.logo" alt="No Image Available"/>
-                                <Upload id="fileUpload" v-model="editData.logo" :before-upload="handleUpload" action=''> 
-                                    <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
-                                </Upload>
-                                <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
-                            </FormItem>
-                        </Form>            
-                    
-                    </Modal>
+            <TabPane label="General">
+                <div class="settings_header">
+                    <Button @click="addNewGeneralSettings">Add New General Configuration</Button>
                 </div>
-            </div>
-        </TabPane>
+                <div>
+                    <Row>
+                        <div v-for="(item, inx) in data6">
+                            <Col :span="12">
+                                <div v-if="item.address && item.address != ' '" style="padding: 5px">
+                                    <Card style="padding:10px;height: 365px;">
+                                        <p slot="title">{{item.configName}}</p>
+                                        <table id="t01">
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>{{ item.address.name}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Address</td>
+                                                <td>{{ item.address.AddressLine1}}, {{ item.address.AddressLine2}}, {{ item.address.city}}, {{ item.address.state}}, {{ item.address.country}}, {{ item.address.PostalCode}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Logo</td>
+                                                <td><img style="height:50px" :src="item.logo" alt="No Image Available"/></td>
+                                            </tr>
+                                        </table>
+                                        <div class="actionDiv">
+                                            <Tooltip placement="top" content="Delete">
+                                                <Button class="ButtonGroup" @click="deleteGeneralConfig(item)" type="ghost" icon="trash-b"></Button>
+                                            </Tooltip>
+                                            <Tooltip placement="top" content="Edit">
+                                                <Button class="ButtonGroup" @click="editGeneralConfig(item)" type="ghost" icon="edit"></Button>
+                                            </Tooltip>
+                                        </div>
+                                    </Card>
+                                    <Modal
+                                        v-model="model2"
+                                        title="Edit Configuration"
+                                        ok-text="Save"
+                                        cancel-text="Cancel"
+                                        @on-ok="okGeneral"
+                                        @on-cancel="cancel">
+                                        
+                                        <Form :model="editGeneral" :label-width="100">
+                                            <FormItem label="AddressLine1">
+                                                <Input v-model="editGeneralData.AddressLine1" placeholder="AddressLine1"></Input>
+                                            </FormItem>
+                                            <FormItem label="AddressLine2">
+                                                <Input v-model="editGeneralData.AddressLine2" placeholder="AddressLine2"></Input>
+                                            </FormItem>
+                                            <FormItem label="Country" prop="country">
+                                                <!--<select v-model="country" id="country" name ="country" placeholder="Select Country">
+                                                </select> -->                         
+                                                <Input v-model="editGeneralData.country" placeholder="Country"></Input>
+                                            </FormItem>
+                                            <FormItem label="State">
+                                                <!-- <select v-model="state" id="state" name ="state" placeholder="Select State">
+                                                </select> -->
+                                                <Input v-model="editGeneralData.state" placeholder="State"></Input>
+                                            </FormItem>
+                                            <FormItem label="City">
+                                                <Input v-model="editGeneralData.city" placeholder="City"></Input>
+                                            </FormItem>
+                                            <FormItem label="Postal Code">
+                                                <Input v-model="editGeneralData.PostalCode" placeholder="PostalCode"></Input>
+                                            </FormItem>
+                                            <FormItem label="Logo">
+                                                <img style="height:50px" :src="editData.logo" alt="No Image Available"/>
+                                                <Upload id="fileUpload" v-model="editData.logo" :before-upload="handleUpload" action=''> 
+                                                    <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+                                                </Upload>
+                                                <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
+                                            </FormItem>
+                                        </Form>            
+                                    
+                                    </Modal>
+                                </div>
+                            </Col>
+                        </div>
+                    </Row>
+                </div>
+            </TabPane>
 
-        <TabPane label="Online Payment">
-            <div class="settings_header">
-                <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
-            </div>
-            <div class="dashboard">
-                <Row>
-                    <div v-for="(item, inx) in data6">
-                        <Col :span="12">
-                            <div v-if="item.online_payment && item.online_payment != ' '" style="padding: 5px">
-                                <Card style="padding:10px;">
-                                    <p slot="title">{{item.configName}}</p>
-                                    <p>
-                                        <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
-                                            <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
-                                                <div class="schema-form ivu-table-wrapper">
-                                                    <div class="ivu-table ivu-table-border">
-                                                        <div v-if="v.length > 0" class="ivu-table-body">
-                                                            <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
-                                                                            <div class="ivu-table-cell">
-                                                                                <span>{{key}}</span>
-                                                                            </div>
-                                                                        </th>
-                                                                        <th class="ivu-table-column-center">
-                                                                            <div class="ivu-table-cell"><span>Action</span>
-                                                                            </div>
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="ivu-table-tbody">
-                                                                    <tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
-                                                                        <td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
-                                                                            <div class="ivu-table-cell">
-                                                                                {{row[key]}}
-                                                                            </div>
-                                                                        </td>
-                                                                        <td class="ivu-table-column-center" style="padding:3px;">
-                                                                            <div class="ivu-table-cell">
-                                                                            <Tooltip content="Edit" placement="top">
-                                                                                <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
-                                                                                <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
-                                                                            </Tooltip>
-                                                                            <Tooltip content="Remove" placement="top">
-                                                                                <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
-                                                                                <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
-                                                                            </Tooltip>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                        <div v-else class="ivu-table-tip" style="display: none;">
-                                                            <table cellspacing="0" cellpadding="0" border="0">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><span>No Data</span></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
+            <TabPane label="Online Payment">
+                <div class="settings_header">
+                    <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
+                </div>
+                <div class="dashboard">
+                    <Row>
+                        <div v-for="(item, inx) in data6">
+                            <Col :span="12">
+                                <div v-if="item.online_payment && item.online_payment != ' '" style="padding: 5px">
+                                    <Card style="padding:10px;">
+                                        <p slot="title">{{item.configName}}</p>
+                                        <p>
+                                            <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
+                                                <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
+                                                    <div class="schema-form ivu-table-wrapper">
+                                                        <div class="ivu-table ivu-table-border">
+                                                            <div v-if="v.length > 0" class="ivu-table-body">
+                                                                <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
+                                                                                <div class="ivu-table-cell">
+                                                                                    <span>{{key}}</span>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="ivu-table-column-center">
+                                                                                <div class="ivu-table-cell"><span>Action</span>
+                                                                                </div>
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody class="ivu-table-tbody">
+                                                                        <tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
+                                                                            <td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
+                                                                                <div class="ivu-table-cell">
+                                                                                    {{row[key]}}
+                                                                                </div>
+                                                                            </td>
+                                                                            <td class="ivu-table-column-center" style="padding:3px;">
+                                                                                <div class="ivu-table-cell">
+                                                                                <Tooltip content="Edit" placement="top">
+                                                                                    <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
+                                                                                    <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
+                                                                                </Tooltip>
+                                                                                <Tooltip content="Remove" placement="top">
+                                                                                    <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
+                                                                                    <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
+                                                                                </Tooltip>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div v-else class="ivu-table-tip" style="display: none;">
+                                                                <table cellspacing="0" cellpadding="0" border="0">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><span>No Data</span></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </TabPane>
-                                        </Tabs>
-                                    </p>
-                                </Card>
-                            </div>
-                        </Col>
-                    </div>
-                </Row>
-            </div>
-        </TabPane>
-    </Tabs>      
+                                                </TabPane>
+                                            </Tabs>
+                                        </p>
+                                    </Card>
+                                </div>
+                            </Col>
+                        </div>
+                    </Row>
+                </div>
+            </TabPane>
+        </Tabs>      
     </div>
 </template>
 
@@ -909,7 +909,7 @@ Vue.use(VueWidgets);
                 return false;
             },
             showSecret(data){
-                console.log(this)
+                console.log("----------=================",this)
                 //if(data == show[0].id){
                 
                 if(this.client_idType == "password" ){
