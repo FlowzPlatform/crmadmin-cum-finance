@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Tabs>
-            <TabPane label="Configuration">
+        <Tabs v-model="activetabs">
+            <TabPane label="Configuration" name="Configuration">
 
                 <div class="settings_header">
                     <Button @click="addNewConfig">Add New Configuration</Button>
@@ -176,7 +176,7 @@
                 </div>
             </TabPane>
 
-            <TabPane label="General">
+            <TabPane label="General" name="General">
                 <div class="settings_header">
                     <Button @click="addNewGeneralSettings">Add New General Configuration</Button>
                 </div>
@@ -258,7 +258,7 @@
                 </div>
             </TabPane>
 
-            <TabPane label="Online Payment">
+            <TabPane label="Online Payment" name="Online Payment">
                 <div class="settings_header">
                     <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
                 </div>
@@ -339,26 +339,27 @@
 </template>
 
 <script>
-import _ from 'lodash'
-import Vue from 'vue'
-import VueWidgets from 'vue-widgets'
-import 'vue-widgets/dist/styles/vue-widgets.css'
-import axios from "axios"
-let config = require("@/config/customConfig.js")
-let feathersUrl =  config.default.serviceUrl;
-import Cookies from 'js-cookie';
-import psl from 'psl';
-// import customSetting from './General-setting.vue'
-// import onlinePayment from './Online-Payment.vue'
-Vue.use(VueWidgets);
+    import _ from 'lodash'
+    import Vue from 'vue'
+    import VueWidgets from 'vue-widgets'
+    import 'vue-widgets/dist/styles/vue-widgets.css'
+    import axios from "axios"
+    let config = require("@/config/customConfig.js")
+    let feathersUrl =  config.default.serviceUrl;
+    import Cookies from 'js-cookie';
+    import psl from 'psl';
+    // import customSetting from './General-setting.vue'
+    // import onlinePayment from './Online-Payment.vue'
+    Vue.use(VueWidgets);
 
 
     export default {
-      components: {
-        
-      },
+        components: {
+            
+        },
         data () {
             return {
+                activetabs: '',
                 current: '',
                 tabValue: '',
                 exData: '',
@@ -921,13 +922,13 @@ Vue.use(VueWidgets);
                 return false;
             },
             showSecret(data){
-                console.log("----------=================",data)
-                //if(data == show[0].id){
+                console.log("----------=================",this[data])
                 if(this[data] == "password" ){
                     this[data] = "text"
                 }else{
                     this[data] = "password"
                 }
+                //if(data == show[0].id){
                 
                 // if(this.client_idType == "password" ){
                 //     this.client_idType = "text"
@@ -997,7 +998,10 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.$Loading.start()
-
+            console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
+            if (this.$route.params.tabName) {
+                this.activetabs = this.$route.params.tabName
+            }
             let self = this;   
             self.loading = true;
             let  data = {
@@ -1007,8 +1011,8 @@ Vue.use(VueWidgets);
                 "domain" : 'custom',
                 "isActive" : true,
                 "isDeleated" : false,
-                "subscriptionId" : Cookies.get('subscriptionId')    
-            }
+                "subscriptionId" : Cookies.get('subscriptionId')
+            };
             axios({
                 method: 'post',
                 url: feathersUrl +'settings',

@@ -187,8 +187,8 @@
                                 <span class="address">Office Address</span> <br>
                                 <span style="font-weight:500">
                                     {{row.user_billing_info.street1}} <br>
-                                    <span v-if="row.user_billing_info.street1"> {{row.user_billing_info.street2}}</span>
-                                     <span v-else></span><br>
+                                    <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}}<br></span>
+                                     <span v-else></span>
                                     {{row.user_billing_info.city}} - {{row.user_billing_info.postalcode}}<br>
                                     {{row.user_billing_info.state}} , {{row.user_billing_info.country}}
                                 </span>
@@ -439,24 +439,39 @@
                 </Panel>
             </Collapse>
         </Card>
+        <Modal
+            v-model="modal1"
+            title="Preview Order Details"
+            width="59%"
+            ok-text= "Download PDF"
+            @on-ok="download"
+            @on-cancel="cancel">
+            <downloadBillingInfo id="InvoiceBill" :row="billData"></downloadBillingInfo>
+        </Modal>
     </div>
 </template>
 <script>
     import moment from 'moment';
     import 'owl.carousel/dist/assets/owl.carousel.css';
+    import config from '../../config/customConfig.js'
     import jQuery from 'jquery';
+    import downloadBillingInfo from './download-billinginfo.vue';
     import owlCarousel from 'owl.carousel';
     const accounting = require('accounting-js');
+    let axios = require('axios'); 
     export default {
         props: {
             row: Object
         },
+        components: {downloadBillingInfo},
         data() {
             return {
-                 value1: '1',
-                 orderDate: '',
-                 moment: moment,
-                 imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
+                value1: '1',
+                modal1: false,
+                orderDate: '',
+                moment: moment,
+                billData: {},
+                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
             }
         },
         methods: {
@@ -502,7 +517,34 @@
                 // $(".description").css("display", "table-row");
             },
             downloadBill () {
-                this.billinfo = true
+                this.modal1 = true
+            },
+            async cancel() {
+                self.modal1 = false
+            },
+            async download() {
+                var self = this
+		        self.$Loading.start()
+                console.log("billData-------------->>>",$('#InvoiceBill').html())
+                await axios({
+                    method: 'post',
+                    url: config.default.serviceUrl + 'exporttopdf',
+                    data: {
+                    
+                        "html" : $('#InvoiceBill').html()
+                    },
+                    
+                    }).then(function (response) {
+		            self.$Loading.finish()
+                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
+                    var arrayBufferView = new Uint8Array( response.data.data );
+                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                    var link=document.createElement('a');
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
+                    link.click();
+                })    
             }
         },
         filters: {

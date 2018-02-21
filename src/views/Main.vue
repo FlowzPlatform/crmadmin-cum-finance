@@ -26,7 +26,7 @@
             <!-- <alert type="success" show-icon closable>
             A success prompt
             <span slot="desc">Content of prompt. Content of prompt. Content of prompt. Content of prompt. </span>
-        </alert> -->
+            </alert> -->
             <div class="main-header">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
