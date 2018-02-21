@@ -127,7 +127,7 @@
                         console.log(params)
                         axios({
                             method:'delete',
-                             url: subscriptionUrl+'invite',
+                            url: subscriptionUrl+'invite',
                             //url: "http://172.16.230.86:3030/" + 'invite',
                             params : paramss,
                             headers : {
@@ -137,6 +137,7 @@
                             .then(function(response) {
                                 console.log(response)
                                 self.data6.splice(params.index, 1);
+                                self.$Message.success('User Un-assigned successfully');
                             }).catch(function(err){
                                 console.log(err)
                             });
@@ -156,8 +157,8 @@
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
                         axios.get(subscriptionUrl +'subscription-invitation', {
                         params: {
-                            subscriptionId: this.row.subscriptionId,
-                            own : true
+                            subscriptionId: this.row.subscriptionId
+                           // own : true
                         },
                         headers : {
                             Authorization : Cookies.get('auth_token')
