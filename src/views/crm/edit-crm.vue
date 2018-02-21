@@ -534,6 +534,10 @@
                     type: 'PATCH',
                     url: databasepost + self.$route.params.id,
                     data: self.finaldata,
+                    headers:{
+                      Authorization : Cookies.get('auth_token')
+                    },
+
                     success: function (data1) {
                       result = data1;
                       self.loading = false
@@ -560,6 +564,10 @@
                     type: 'PATCH',
                     url: databasepost + self.$route.params.id,
                     data: self.finaldata,
+                    headers:{
+                      Authorization : Cookies.get('auth_token')
+                    },
+
                     success: function (data1) {
                       result = data1;
                       self.loading = false

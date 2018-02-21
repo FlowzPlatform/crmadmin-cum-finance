@@ -224,6 +224,7 @@
             this.getDataOfSubscriptionUser();
             this.getHistory();
         },
+       
         methods: {
 
             async getHistory(){
