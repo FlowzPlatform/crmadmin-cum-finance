@@ -170,6 +170,7 @@
 				crmdata: [],
 				domainConfig: "",
 				loading: false,
+				domainConfig: "",
 				file: '',
 				finaldata: {
 					name: '',
@@ -215,6 +216,7 @@
 								},
 							})
 								.then(async function(response) {
+									self.domainConfig=response.data.domain
 								console.log(response)
 								self.domainConfig=response.data.domain
 								if(response.data.domain == 'custom'){

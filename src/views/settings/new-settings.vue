@@ -219,7 +219,8 @@
                                     "domain" :  'Xero' ,
                                     "pem" : lastModified,
                                     "isActive" : self.isActive,
-                                    "isDeleated" : false
+                                    "isDeleated" : false,
+                                    "subscriptionId" : Cookies.get('subscriptionId')
                                 }
                             
                               
@@ -280,6 +281,7 @@
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
                         self.loading = true;
+
                         let  data = {
                                     "configName": self.QBformValidate.configName.trim(),
                                     "refresh_token" :  self.QBformValidate.refresh_token,
@@ -288,7 +290,8 @@
                                     "domain" : 'QB',
                                     "realmId" : self.QBformValidate.realmId,
                                     "isActive" : self.isActiveQb,
-                                    "isDeleated" : false
+                                    "isDeleated" : false,
+                                    "subscriptionId" : Cookies.get('subscriptionId')
                                 }
                         axios({
                                 method: 'post',

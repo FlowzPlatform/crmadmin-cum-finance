@@ -109,7 +109,8 @@
 											method: 'PATCH',
 											url: feathersUrl +'settings/'+item.id,
 											headers:{
-												Authorization : Cookies.get('auth_token')
+												Authorization : Cookies.get('auth_token'),
+												subscriptionId : Cookies.get('subscriptionId')
 											},
 											data: params
 										})  
@@ -194,7 +195,8 @@
 												method: 'PATCH',
 												url: feathersUrl +'settings/'+item.id,
 												headers:{
-													Authorization : Cookies.get('auth_token')
+													Authorization : Cookies.get('auth_token'),
+													subscriptionId : Cookies.get('subscriptionId')
 												},
 												data: params
 											})  
@@ -213,7 +215,8 @@
 											method: 'PATCH',
 											url: feathersUrl +'settings/'+configId,
 											headers:{
-												Authorization : Cookies.get('auth_token')
+												Authorization : Cookies.get('auth_token'),
+												subscriptionId : Cookies.get('subscriptionId')
 											},
 											data: params
 										})  
