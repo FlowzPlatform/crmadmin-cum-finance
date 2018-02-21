@@ -3,7 +3,7 @@
         <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
             <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
         </Select>
-        <Table stripe  border  :columns="columns1" :data="data1"></Table>
+        <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
             v-model="modal1"
@@ -50,6 +50,7 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
+                            // console.log('rowwwwwwwwwwwwww-------Expand', params.row)
                             return h(expandRow, {
                                 props: {
                                     row: params.row
@@ -81,7 +82,6 @@
                         width: 110,
                         align:  'center',
                         render : (h , {row}) => {
-                            console.log("row", row)
                             var date = moment(row.products[0].createdAt).format('DD-MMM-YYYY')
                             return date
                         }
@@ -101,7 +101,6 @@
                         width: 115,
                         align:  'center',
                         render : (h , {row}) => {
-                            // console.log("row", row)
                             return row.products.length
                         }
                     },
@@ -252,6 +251,13 @@
             },
             downloadBill () {
                 this.billinfo = true
+            },
+            async viewDetails(params,status){
+                // setTimeout(function(){
+                // $('.my-panel').css('display','none')
+                // },100)
+                if (!status) return
+                $('.ivu-table-cell-expand-expanded').click()
             }
         },
         async mounted() {

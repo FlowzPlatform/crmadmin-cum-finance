@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Tabs>
-            <TabPane label="Configuration">
+        <Tabs v-model="activetabs">
+            <TabPane label="Configuration" name="Configuration">
 
                 <div class="settings_header">
                     <Button @click="addNewConfig">Add New Configuration</Button>
@@ -28,7 +28,7 @@
                                                 <td >Consumer key </td>
                                                 <td>
                                                     <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
-                                                        <Button slot="append" icon="eye" @click="showSecret(item)"></Button>
+                                                        <Button slot="append" icon="eye" @click="showSecret('consumerKeyType')"></Button>
                                                     </Input>                            
                                                 </td>
                                             </tr>
@@ -36,7 +36,7 @@
                                                 <td >Client ID </td>
                                                 <td>
                                                     <Input :type="client_idType" readonly :value='item.client_id'>
-                                                        <Button slot="append" icon="eye" @click="showSecret" ></Button>
+                                                        <Button slot="append" icon="eye" @click="showSecret('client_idType')" ></Button>
                                                     </Input>
                                                 </td>
                                             </tr>
@@ -53,7 +53,7 @@
                                                 <td >Consumer secret </td>
                                                 <td>
                                                     <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
-                                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                                        <Button slot="append" icon="eye" @click="showSecret('consumerSecretType')"></Button>
                                                     </Input>
                                                 </td>
                                             </tr>
@@ -61,7 +61,7 @@
                                                 <td >Client secret </td>
                                                 <td>
                                                     <Input :type="client_secretType" readonly :value='item.client_secret'>
-                                                        <Button slot="append" icon="eye" @click="showSecret"></Button>
+                                                        <Button slot="append" icon="eye" @click="showSecret('client_secretType')"></Button>
                                                     </Input>
                                                 </td>
                                             </tr>
@@ -176,7 +176,7 @@
                 </div>
             </TabPane>
 
-            <TabPane label="General">
+            <TabPane label="General" name="General">
                 <div class="settings_header">
                     <Button @click="addNewGeneralSettings">Add New General Configuration</Button>
                 </div>
@@ -258,7 +258,7 @@
                 </div>
             </TabPane>
 
-            <TabPane label="Online Payment">
+            <TabPane label="Online Payment" name="Online Payment">
                 <div class="settings_header">
                     <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
                 </div>
@@ -339,26 +339,27 @@
 </template>
 
 <script>
-import _ from 'lodash'
-import Vue from 'vue'
-import VueWidgets from 'vue-widgets'
-import 'vue-widgets/dist/styles/vue-widgets.css'
-import axios from "axios"
-let config = require("@/config/customConfig.js")
-let feathersUrl =  config.default.serviceUrl;
-import Cookies from 'js-cookie';
-import psl from 'psl';
-// import customSetting from './General-setting.vue'
-// import onlinePayment from './Online-Payment.vue'
-Vue.use(VueWidgets);
+    import _ from 'lodash'
+    import Vue from 'vue'
+    import VueWidgets from 'vue-widgets'
+    import 'vue-widgets/dist/styles/vue-widgets.css'
+    import axios from "axios"
+    let config = require("@/config/customConfig.js")
+    let feathersUrl =  config.default.serviceUrl;
+    import Cookies from 'js-cookie';
+    import psl from 'psl';
+    // import customSetting from './General-setting.vue'
+    // import onlinePayment from './Online-Payment.vue'
+    Vue.use(VueWidgets);
 
 
     export default {
-      components: {
-        
-      },
+        components: {
+            
+        },
         data () {
             return {
+                activetabs: '',
                 current: '',
                 tabValue: '',
                 exData: '',
@@ -909,32 +910,37 @@ Vue.use(VueWidgets);
                 return false;
             },
             showSecret(data){
-                console.log("----------=================",this)
+                console.log("----------=================",this[data])
+                if(this[data] == "password" ){
+                    this[data] = "text"
+                }else{
+                    this[data] = "password"
+                }
                 //if(data == show[0].id){
                 
-                if(this.client_idType == "password" ){
-                    this.client_idType = "text"
-                }else{
-                    this.client_idType = "password"
-                }
+                // if(this.client_idType == "password" ){
+                //     this.client_idType = "text"
+                // }else{
+                //     this.client_idType = "password"
+                // }
 
-                if(this.client_secretType == "password"){
-                    this.client_secretType = "text"
-                }else{
-                    this.client_secretType = "password"
-                }
+                // if(this.client_secretType == "password"){
+                //     this.client_secretType = "text"
+                // }else{
+                //     this.client_secretType = "password"
+                // }
 
-                if(this.consumerKeyType == "password"){
-                    this.consumerKeyType = "text"
-                }else{
-                    this.consumerKeyType = "password"
-                }
+                // if(this.consumerKeyType == "password"){
+                //     this.consumerKeyType = "text"
+                // }else{
+                //     this.consumerKeyType = "password"
+                // }
 
-                if(this.consumerSecretType == "password"){
-                    this.consumerSecretType = "text"
-                }else{
-                    this.consumerSecretType = "password"
-                }
+                // if(this.consumerSecretType == "password"){
+                //     this.consumerSecretType = "text"
+                // }else{
+                //     this.consumerSecretType = "password"
+                // }
                 //}
                 
                 
@@ -978,7 +984,10 @@ Vue.use(VueWidgets);
         },
         mounted(){
             this.$Loading.start()
-
+            console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
+            if (this.$route.params.tabName) {
+                this.activetabs = this.$route.params.tabName
+            }
             let self = this;   
             self.loading = true;
             let  data = {
@@ -987,7 +996,8 @@ Vue.use(VueWidgets);
                 "invoice_url" : feathersUrl+"custominvoice",
                 "domain" : 'custom',
                 "isActive" : true,
-                "isDeleated" : false
+                "isDeleated" : false,
+                "subscriptionId" : Cookies.get('subscriptionId')
             }
             axios({
                 method: 'post',

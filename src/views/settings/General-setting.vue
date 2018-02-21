@@ -1,5 +1,8 @@
 <template>
   <div class="GeneralSettings">
+    <div class="settings_header">
+        <Button @click="goToSettingsList">All Settings</Button>
+    </div>
     <div class="container" style="margin-top: 2%; margin-bottom: 2%;">
       <!-- Address Settings Section -->
       <div class="collapsingDivWrapper row">
@@ -81,9 +84,9 @@
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
               </Upload>
               <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
-              <div>
-              <Button type="primary" @click="handleLogoUpload()">Submit</Button>
-              </div>
+                <div>
+                  <Button type="primary" @click="handleLogoUpload()">Submit</Button>
+                </div>
             </FormItem>
             </Form>             
         </div>
@@ -167,6 +170,12 @@ export default {
     }
   },
   methods: {
+    goToSettingsList(){
+      this.$router.push({
+          name: 'Settings',
+          params: { tabName: 'General' }
+      });
+    },
     configChange(data){              
       $('#CustomerName').css("display","block")
       settingId = data;              
@@ -553,6 +562,13 @@ export default {
   /*.ivu-icon{
     display: none;
   }*/
+  .settings_header{
+      padding : 10px;
+      text-align:right;
+      background: #cacaca;
+      width:100%;
+      margin:14px 2px;
+  }
   .toggleableDivHeaderContent {
       margin-top: 0px;
       margin-bottom: 30px;

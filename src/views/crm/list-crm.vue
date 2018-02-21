@@ -5,6 +5,7 @@
 	import config from '../../config/customConfig.js'
 	import axios from 'axios'
 	import Cookies from 'js-cookie';
+	import _ from 'lodash';
 	var crmpostapiurl = config.default.serviceUrl;
 	export default {
 		data () {

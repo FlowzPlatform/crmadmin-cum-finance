@@ -1,32 +1,37 @@
 <template>
-	<div class="container" style="background: white;">
-		<div class="row">
-			<div class="col-md-12" style="margin-top: 20px;">
-				<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-					<FormItem label="Configuration Name">
-						<Select v-model="formValidate.configuration" style="width:100%;text-align:left">
-							<Option  value='all'>All</Option>
-							<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="Gateway" prop="gateway">
-						<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
-						<Option  value='stripe'>Stripe</Option>
-						<Option  value='auth'>AuthrizedDotNet</Option>
-						<Option value='paypal'>PayPal</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="x_api_token" v-if="formValidate.gateway">
-						<Input v-model="formValidate.x_api_token" placeholder="Enter x_api_token"></Input>
-					</FormItem>
-					<FormItem label="x_api_login" v-if="formValidate.gateway == 'auth' || formValidate.gateway == 'paypal'">
-						<Input v-model="formValidate.x_api_login" placeholder="Enter x_api_login"></Input>
-					</FormItem>
-					<div style="text-align:center;">
-						<Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-						<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
-					</div>
-				</Form>
+	<div>
+		<div class="settings_header">
+			<Button @click="goToSettingsList">All Settings</Button>
+		</div>
+		<div class="container" style="background: white;">
+			<div class="row">
+				<div class="col-md-12" style="margin-top: 20px;">
+					<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
+						<FormItem label="Configuration Name">
+							<Select v-model="formValidate.configuration" style="width:100%;text-align:left">
+								<Option  value='all'>All</Option>
+								<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="Gateway" prop="gateway">
+							<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
+							<Option  value='stripe'>Stripe</Option>
+							<Option  value='auth'>AuthrizedDotNet</Option>
+							<Option value='paypal'>PayPal</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="x_api_token" v-if="formValidate.gateway">
+							<Input v-model="formValidate.x_api_token" placeholder="Enter x_api_token"></Input>
+						</FormItem>
+						<FormItem label="x_api_login" v-if="formValidate.gateway == 'auth' || formValidate.gateway == 'paypal'">
+							<Input v-model="formValidate.x_api_login" placeholder="Enter x_api_login"></Input>
+						</FormItem>
+						<div style="text-align:center;">
+							<Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+							<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+						</div>
+					</Form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -64,6 +69,13 @@
 			}
 		},
 		methods: {
+			goToSettingsList(){
+				this.$router.push({
+					name: 'Settings',
+					params: { tabName: 'Online Payment' }
+
+				});
+			},
 			handleSubmit (name) {
 				var self = this
 				this.$refs[name].validate((valid) => {
@@ -293,4 +305,11 @@
 </script>
 
 <style scoped>
+	.settings_header{
+		padding : 10px;
+		text-align:right;
+		background: #cacaca;
+		width:100%;
+		margin:14px 2px;
+	}
 </style>

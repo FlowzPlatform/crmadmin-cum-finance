@@ -26,10 +26,10 @@
 							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
-							<Upload multiple id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action=''> 
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
 								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
 							</Upload>
-							<div v-if="file !== null">Uploaded file: {{ file.name }} </div>
+							<div v-if="file !== null" style="margin-left:20px">Uploaded file: {{ file.name }} </div>
 						</div>
 					</div>
 				</div>
@@ -50,7 +50,15 @@
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
 									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
-										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										<div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='Custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
 									 </div> -->
@@ -160,6 +168,7 @@
 				customerData:[],
 				customCustomerUrl: '',
 				crmdata: [],
+				domainConfig: "",
 				loading: false,
 				file: '',
 				finaldata: {
@@ -167,7 +176,7 @@
 					cname: '',
 					project: '',
 					status: '',
-					fileupload: '',
+					fileupload: [],
 					assignee: [],
 					product_line: '',
 					contractdate: '',
@@ -207,6 +216,7 @@
 							})
 								.then(async function(response) {
 								console.log(response)
+								self.domainConfig=response.data.domain
 								if(response.data.domain == 'custom'){
 
 										self.customCustomerUrl = response.data.customer_url;
@@ -354,36 +364,72 @@
 
 					if (mail != false && phone != false) {
 						this.loading = true
-						var reader = new FileReader();
 						var file = this.file
-						console.log('uuuuuu',file)
-						reader.readAsDataURL(file);
-						// console.log('reader',reader);
-					  	reader.addEventListener("load", async function () {
-							self.finaldata.fileupload = reader.result;
-							await $.ajax({
-								type: 'POST',
-								headers: {
-									'Authorization': Cookies.get('auth_token')
-								},
-								url: serviceUrl  + "crm-case/",
-								data: self.finaldata,
-								success: function (data1) {
-									result = data1;
-									console.log("json data******123",result);
-									self.loading = false,
-									self.$Notice.success({
-										title: 'Sucess',
-										desc: 'New CRM case is Saved. ',
-										duration: 4.5
-									});
-									self.$router.push( "list-relationship")
-								},error: function(err){
-									self.loading = false,
-								console.log("error",err);
+						console.log('file------->',file)
+						if(file != ''){
+
+							var reader = new FileReader();
+							console.log('uuuuuu',file)
+							reader.readAsDataURL(file);
+							// console.log('reader',reader);
+						  	reader.addEventListener("load", async function () {
+								console.log('uuuuuu',file.name)
+								var fileupObj = {
+									"filename":file.name,
+									"url":reader.result
 								}
+								self.finaldata.fileupload.push(fileupObj);
+								await $.ajax({
+									type: 'POST',
+									headers: {
+										'Authorization': Cookies.get('auth_token')
+									},
+									url: serviceUrl  + "crm-case/",
+									data: self.finaldata,
+									success: function (data1) {
+										result = data1;
+										console.log("json data******123",result);
+										self.loading = false,
+										self.$Notice.success({
+											title: 'Sucess',
+											desc: 'New CRM case is Saved. ',
+											duration: 4.5
+										});
+										self.$router.push( "list-relationship")
+									},error: function(err){
+										self.loading = false,
+									console.log("error",err);
+									}
+								});
 							});
-						});
+
+						}else{
+
+							await $.ajax({
+									type: 'POST',
+									headers: {
+										'Authorization': Cookies.get('auth_token')
+									},
+									url: serviceUrl  + "crm-case/",
+									data: self.finaldata,
+									success: function (data1) {
+										result = data1;
+										console.log("json data******123",result);
+										self.loading = false,
+										self.$Notice.success({
+											title: 'Sucess',
+											desc: 'New CRM case is Saved. ',
+											duration: 4.5
+										});
+										self.$router.push( "list-relationship")
+									},error: function(err){
+										self.loading = false,
+									console.log("error",err);
+									}
+								});
+
+						}
+						
 							// var params = self.finaldata
 							// console.log("json data******123this.finaldata",params);
 

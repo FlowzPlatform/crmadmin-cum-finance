@@ -92,17 +92,17 @@
 </template>
 
 <script>
-let config = require("@/config/customConfig.js")
-let feathersUrl =  config.default.serviceUrl;
-import _ from 'lodash'
-import Vue from 'vue'
-import VueWidgets from 'vue-widgets'
-import 'vue-widgets/dist/styles/vue-widgets.css'
-import axios from "axios"
-const reader  = new FileReader();
-import Cookies from 'js-cookie';
+    let config = require("@/config/customConfig.js")
+    let feathersUrl =  config.default.serviceUrl;
+    import _ from 'lodash'
+    import Vue from 'vue'
+    import VueWidgets from 'vue-widgets'
+    import 'vue-widgets/dist/styles/vue-widgets.css'
+    import axios from "axios"
+    const reader  = new FileReader();
+    import Cookies from 'js-cookie';
 
-Vue.use(VueWidgets);
+    Vue.use(VueWidgets);
 
 
     export default {
@@ -183,8 +183,9 @@ Vue.use(VueWidgets);
             
             goToSettingsList(){
                 this.$router.push({
-                        name: 'Settings'
-                    });
+                    name: 'Settings',
+                    params: { tabName: 'Configuration' }
+                });
             },
             async handleUpload (file) {
                 

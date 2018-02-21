@@ -170,7 +170,16 @@
 					<TabPane label="Notes:" icon="edit">
 						<textarea name="editor1"></textarea>
 						<div id="c2597">
-							<input id="c2601" type="file" name="myFile" />
+              <div v-if="finaldata.fileupload" style="padding:10px"> 
+                <Table border stripe :columns="columns1" :data="data1"></Table>             
+                <!-- <div v-for="item in finaldata.fileupload" style="margin-top: 10px;margin-left: 20px;"><a :href="item.url">{{item.filename}}</a></div> -->
+              </div>
+              <div v-else>    
+              </div>
+  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
+                <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
+                <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
+              </Upload> 
 						</div>
 					</TabPane>
 					<TabPane label="Comments:" icon="ios-information-outline">
@@ -227,6 +236,7 @@
         customerData:[],
         loading: false,
         crmdata: {},
+        file:'',
         finaldata: {
           name: '',
           cname: '',
@@ -234,6 +244,7 @@
           status: '',
           assignee: [],
           product_line: '',
+          fileupload: [],
           contractdate: '',
           nextdate: '',
           priceinput: '',
@@ -241,6 +252,81 @@
           email: '',
           phone: '', 
         },
+        columns1: [
+          {
+            type: 'index',
+            width: 80,
+            align: 'center'
+          },
+          {
+            title: 'Uploaded File',
+            key: 'filename'
+          },
+          {
+              title: 'Action',
+              key: 'Status',
+              align: 'center',
+              width: 150,
+              render: (h, params) => {               
+                  return h('div', [
+                    h('Tooltip', {
+                        props: {
+                          placement: 'top',
+                          content: 'Download'
+                        },
+                        style:{
+                          cursor:'pointer'
+                        }
+                      }, [
+                          h('Button', {
+                            props: {
+                              type: 'text',
+                              size: 'large',
+                              icon: 'ios-cloud-download-outline'
+                            },
+                            style: {
+                              color: '#2d8cf0',
+                              fontSize:'20px'
+                            },
+                            on: {
+                              click: () => {
+                                // console.log(params)
+                                window.location.href = params.row.url;
+                              }
+                          }
+                        })
+                      ]),               
+                    // h('Tooltip', {
+                    //     props: {
+                    //       placement: 'top',
+                    //       content: 'Delete Your File'
+                    //     },
+                    //     style:{
+                    //       cursor:'pointer'
+                    //     }
+                    //   }, [
+                    //       h('Button', {
+                    //         props: {
+                    //           type: 'text',
+                    //           size: 'large',
+                    //           icon: 'android-delete'
+                    //         },
+                    //         style: {
+                    //           color: 'red',
+                    //           fontSize:'20px'
+                    //         },
+                    //         on: {
+                    //           click: () => {
+                    //             this.DeleteFile(params.row)
+                    //           }
+                    //       }
+                    //     })
+                    //   ])             
+                  ])
+              }
+            }
+        ],
+        data1:[],
         momdata: [],
         mData: [],
         description:'',
@@ -249,8 +335,13 @@
       }
     },
     methods: {
+      async handleUpload (file) {
+        var self = this
+        console.log('file',file)
+        self.file = file
+        return false;       
+      },
       async showdata() {
-
         var self = this
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
@@ -258,6 +349,9 @@
             self.finaldata = res.data
             self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
             self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
+            if(self.finaldata.fileupload != undefined){
+              self.data1 = self.finaldata.fileupload;
+            }
             CKEDITOR.instances.editor1.setData(self.finaldata.description)
            // return res.data
           }).catch(err => {
@@ -400,9 +494,6 @@
           }
         });
       },  
-      // filterMethod (value, option) {
-      //   return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-      // },
       async postdata() {
         let self = this
         let desc = CKEDITOR.instances.editor1.getData()
@@ -414,25 +505,77 @@
         
         if (mail != false && phone != false) {
           this.loading = true
-          await $.ajax({
-            type: 'PATCH',
-            url: databasepost + self.$route.params.id,
-            data: self.finaldata,
-            success: function (data1) {
-              result = data1;
-              self.loading = false
-              self.$Notice.success({
-                      title: 'Sucess',
-                      desc: 'Edit CRM case is Saved. ',
-                duration: 4.5
-                    });
-              console.log("json data******123",result);
-              self.$router.push("/relationship/list-relationship")
-            },error: function(err){
-              self.loading = false,
-                console.log("error",err);
+            var file = this.file
+            console.log('uuuuuu',file)
+            if(file != ''){
+              if(this.finaldata.fileupload != undefined){
+                var noOfFiles = this.finaldata.fileupload.length
+                console.log('&&&&&&&&&&&&',noOfFiles)
+              }else{
+                var noOfFiles = 0
               }
-          });
+              if(noOfFiles < 5){
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                // console.log('reader',reader);
+                 reader.addEventListener("load", async function () {
+                  console.log('uuuuuu',file.name)
+                  var fileupObj = {
+                    "filename":file.name,
+                    "url":reader.result
+                  }
+                  if(self.finaldata.fileupload == undefined){
+                    self.finaldata['fileupload'] = []
+                    
+                  }
+                  console.log('**************************************',self.finaldata)
+                  self.finaldata.fileupload.push(fileupObj);
+                  await $.ajax({
+                    type: 'PATCH',
+                    url: databasepost + self.$route.params.id,
+                    data: self.finaldata,
+                    success: function (data1) {
+                      result = data1;
+                      self.loading = false
+                      self.$Notice.success({
+                              title: 'Sucess',
+                              desc: 'Edit CRM case is Saved. ',
+                        duration: 4.5
+                            });
+                      console.log("json data******123",result);
+                      self.$router.push("/relationship/list-relationship")
+                    },error: function(err){
+                      self.loading = false,
+                        console.log("error",err);
+                      }
+                  });
+              });
+              }
+              else{
+                this.$Message.error('You can not add more than 5 files');
+                this.loading = false
+              }
+            }else{
+              await $.ajax({
+                    type: 'PATCH',
+                    url: databasepost + self.$route.params.id,
+                    data: self.finaldata,
+                    success: function (data1) {
+                      result = data1;
+                      self.loading = false
+                      self.$Notice.success({
+                              title: 'Sucess',
+                              desc: 'Edit CRM case is Saved. ',
+                        duration: 4.5
+                            });
+                      console.log("json data******123",result);
+                      self.$router.push("/relationship/list-relationship")
+                    },error: function(err){
+                      self.loading = false,
+                        console.log("error",err);
+                      }
+                  });
+            }
         } else {
           alert("Enter Valid Email Address OR Phone Number")
         }
@@ -467,6 +610,9 @@
           }   
                           
         });
+      },
+      DeleteFile(params){
+        console.log('params',params)
       }
   },
     mounted() {
@@ -602,7 +748,6 @@
       border-right-color: rgb(199, 199, 199);
       border-bottom-color: rgb(199, 199, 199);
       border-left-color: rgb(199, 199, 199);
-      height: 50px;
   }
   #c2601 {
       margin-top: 10px;
