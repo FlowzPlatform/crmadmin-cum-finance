@@ -1077,6 +1077,7 @@
                             title: error.response.statusText,
                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
                             );
+                    
                     }
                     self.$Loading.error();
                 });
@@ -1095,11 +1096,49 @@
                         name: 'login'
                     });
                 }else if(error.response.status == 403){
-                    self.$Notice.error({
-                        duration:0, 
-                        title: error.response.statusText,
-                        desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                    });
+                    console.log("error.response",error.response)
+                    if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
+                        axios({
+                            method:'get',
+                            url:feathersUrl +'settings',
+                            headers:{
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
+                            },
+                        })
+                        .then(response => {
+                            console.log(response)
+                            localStorage.clear();
+                            self.data6 = response.data.data
+                            console.log("+++++++++++++++++++++data6",self.data6);
+                            for (let [inx, item] of self.data6.entries()) {
+                                if (item.hasOwnProperty('online_payment')) {
+                                    let i = 0
+                                    // console.log('item:: ', item.online_payment)
+                                    for (let k in item.online_payment) {
+                                        item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+                                        if (item.online_payment[k].length > 0) {
+                                            if (i === 0) {
+                                                self.tabarr.push({activetab : k+inx})
+                                                i++
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    self.tabarr.push({activetab : ''})
+                                }
+                            }
+                            console.log("self.tabarr",self.tabarr)
+                            self.$Loading.finish();
+                        })
+                    }
+                    else {
+                        self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                        });
+                    }
                 }
             }); 
         }

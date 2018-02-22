@@ -239,7 +239,7 @@
                                 console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
                                  
                                  self.loading = false;
-                                 self.$Message.success('Success!');
+                                 self.$Message.success('Configuration Added Successfully');
                                  self.handleReset('XeroformValidate')
                             })
                             .catch(function (error) {
@@ -304,9 +304,8 @@
                             })  
                             .then(function (response) {
                                 console.log(response)
-                                 self.$Message.success('Success!');
                                  self.loading = false;
-                                 self.$Message.success('Success!');
+                                 self.$Message.success('Configuration Added Successfully');
                                  self.handleReset('QBformValidate')
                             })
                             .catch(function (error) {
@@ -361,7 +360,7 @@
             //                 })  
             //                 .then(function (response) {
             //                     console.log(response)
-            //                      self.$Message.success('Success!');
+            //                      self.$Message.success('Configuration Added Successfully');
             //                      self.loading = false;
             //                      self.handleReset('customformValidate')
             //                 })
@@ -403,7 +402,7 @@
             //                 })  
             //                 .then(function (response) {
             //                     console.log(response)
-            //                      self.$Message.success('Success!');
+            //                      self.$Message.success('Configuration Added Successfully');
             //                      self.loading = false;
             //                      self.handleReset('customformValidate')
             //                 })

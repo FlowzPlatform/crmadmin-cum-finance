@@ -375,11 +375,12 @@ export default {
     async tabClicked(data){
       console.log(data)
       this.tabIndex = data;
+      let settingName = this.tabPanes[data].configName;
       let settingId = this.tabPanes[data].id
       let settingDomain = this.tabPanes[data].domain;
-      this.getContactBySettingId(settingId ,settingDomain , data)
+      this.getContactBySettingId(settingId ,settingDomain , data, settingName)
     },
-    async getContactBySettingId(settingId , settingDomain , data){
+    async getContactBySettingId(settingId , settingDomain , data, settingName){
       this.$Loading.start();
       this.data6 = [];
       let self = this;
@@ -388,56 +389,66 @@ export default {
       if(settingDomain == 'custom'){
         console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
         let customerUrl = this.tabPanes[data].customer_url;
-         await axios({
+        await axios({
             method: 'get',
             url: customerUrl,
             params : {
               settingId : this.tabPanes[data].id
             },
             headers:{
-            Authorization : Cookies.get('auth_token')
-        },
-            }).then(async function (response) {
-              self.$Loading.finish();
-              console.log(response)
-              self.data6 = response.data.data.reverse();
+                Authorization : Cookies.get('auth_token')
+            },
+        })
+        .then(async function (response) {
+          self.$Loading.finish();
+          console.log(response)
+          self.data6 = response.data.data.reverse();
 
-              let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
-              let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
-              let arr = [];
-              let len = columnArray.length;
-              for (let i = 0; i < len; i++) {
-                  arr.push({
-                      title: columnArray[i],
-                      key : columnArray[i],
-                      sortable: true
+          let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+          let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
+          let arr = [];
+          let len = columnArray.length;
+          for (let i = 0; i < len; i++) {
+              arr.push({
+                  title: columnArray[i],
+                  key : columnArray[i],
+                  sortable: true
 
-                  });
-              }
-              self.list = await self.mockTableData1(1,pageSize)
-              self.column3 = arr;
-            })
-            .catch(function (error) {
-              self.$Loading.error();
-              console.log(error);
-            });
-      }else{
+              });
+          }
+          self.list = await self.mockTableData1(1,pageSize)
+          self.column3 = arr;
+        })
+        .catch(function (error) {
+          self.$Loading.error();
+          console.log(error);
+        });
+      }
+      else{
         await axios.get(feathersUrl +'contacts', {
           headers:{
             Authorization : Cookies.get('auth_token')
-        },
-        params : {
-        settingId : settingId
-        }
-        }).then(async function (response) {
-
+          },
+          params : {
+            settingId : settingId
+          }
+        })
+        .then(async function (response) {
           console.log("$$$$$$$$$$$$$$$$$$$",response)
-            self.data6 = response.data[0].data.reverse();
-            self.$Loading.finish();
-            $('.preload').css("display","none")
-            self.list = await self.mockTableData1(1,pageSize)
-        }).catch(function (error) {
-          console.log("error",error);
+          self.data6 = response.data[0].data.reverse();
+          self.$Loading.finish();
+          $('.preload').css("display","none")
+          self.list = await self.mockTableData1(1,pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            if (error.response.data.message === 'invalid_grant') {
+                self.$Notice.error({
+                    duration:0, 
+                    title: "QB : Credential Expired",
+                    desc: "Token is expired for "+settingName
+                });
+            }
             self.$Loading.error();
         });
       }
@@ -448,45 +459,45 @@ export default {
       $('#selectEmail').children('option:not(:first)').remove();
 
       self.data6.forEach (obj => {
-            console.log("obj------------------->",obj);
-            if(obj.Name != undefined){
-              NameArr.push(obj.Name);
-              if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
+        console.log("obj------------------->",obj);
+        if(obj.Name != undefined){
+          NameArr.push(obj.Name);
+          if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
 
-              }else{
-                EmailArr.push(obj.EmailAddress)
-              }
-            }else{
-              NameArr.push(obj.DisplayName)
-              if(obj.PrimaryEmailAddr != undefined){
-                console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
-                EmailArr.push(obj.PrimaryEmailAddr.Address)
-              }
-              console.log('EmailArr------------>',EmailArr)
-            }
-          })
+          }else{
+            EmailArr.push(obj.EmailAddress)
+          }
+        }else{
+          NameArr.push(obj.DisplayName)
+          if(obj.PrimaryEmailAddr != undefined){
+            console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+            EmailArr.push(obj.PrimaryEmailAddr.Address)
+          }
+          console.log('EmailArr------------>',EmailArr)
+        }
+      })
 
-          console.log("NameArr----------->before", NameArr);
-          NameArr.sort();
-          console.log("NameArr----------->after", NameArr);
+      // console.log("NameArr----------->before", NameArr);
+      NameArr.sort();
+      // console.log("NameArr----------->after", NameArr);
 
-          console.log("EmailArr----------->before", EmailArr);
-          EmailArr.sort();
-          console.log("EmailArr----------->after", EmailArr);
+      // console.log("EmailArr----------->before", EmailArr);
+      EmailArr.sort();
+      // console.log("EmailArr----------->after", EmailArr);
 
-          NameArr.forEach(item => {
-            var x = document.getElementById("selectCustomer");
-            var option = document.createElement("option");
-            option.text = item;
-            x.add(option);
-          })
+      NameArr.forEach(item => {
+        var x = document.getElementById("selectCustomer");
+        var option = document.createElement("option");
+        option.text = item;
+        x.add(option);
+      })
 
-          EmailArr.forEach(item => {
-            var y = document.getElementById("selectEmail");
-            var option = document.createElement("option");
-            option.text = item;
-            y.add(option);
-          })
+      EmailArr.forEach(item => {
+        var y = document.getElementById("selectEmail");
+        var option = document.createElement("option");
+        option.text = item;
+        y.add(option);
+      })
 
     },
     async getAllSettings(){
@@ -504,12 +515,13 @@ export default {
             if (response.data.data.length != 0)
             {
               self.tabPanes = response.data.data;
-            $('.preload').css("display","none")
-            let settingId = self.tabPanes[self.tabIndex].id
-            let settingDomain = self.tabPanes[self.tabIndex].domain;
-            self.getContactBySettingId(settingId , settingDomain , 0)
-            }else
-            {
+              $('.preload').css("display","none")
+              let settingName = self.tabPanes[self.tabIndex].configName;            
+              let settingId = self.tabPanes[self.tabIndex].id
+              let settingDomain = self.tabPanes[self.tabIndex].domain;
+              self.getContactBySettingId(settingId , settingDomain , 0)
+            }
+            else {
                 self.$Modal.warning({
                 title: 'No Configuration available',
                 okText : "Go to Settings",

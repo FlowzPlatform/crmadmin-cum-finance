@@ -99,7 +99,7 @@
                         render: (h, params) => {
                             return h('div', [
                                // console.log(params)
-                                h('p', Object.keys(params.row.role))
+                                h('p', this.capitalize(Object.keys(params.row.role)[0]))
                             ]);
                         }
                     },
@@ -110,7 +110,7 @@
                             return h('div', [
                                 //console.log(params)
                                 //let obj= Object.keys(params.row.role);
-                                h('strong', params.row.role[Object.keys(params.row.role)])
+                                h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
                         }
                     }
@@ -158,7 +158,7 @@
                             return h('div', [
                                 //console.log(params)
                                 //let obj= Object.keys(params.row.role);
-                                h('strong', params.row.role[Object.keys(params.row.role)])
+                                h('strong', this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
                         }
                         
@@ -169,7 +169,7 @@
                         render: (h, params) => {
                             return h('div', [
                                // console.log(params)
-                                h('p', Object.keys(params.row.role))
+                                h('p', this.capitalize(Object.keys(params.row.role)[0]))
                             ]);
                         }
                         
@@ -226,7 +226,12 @@
         },
        
         methods: {
-
+            capitalize (str) {
+                console.log("str before",str)
+                str = str[0].toUpperCase() + str.slice(1)
+                console.log("str after",str)                
+                return str;
+            },
             async getHistory(){
                  axios.get(subscriptionUrl+'subscription-invitation', {
 
