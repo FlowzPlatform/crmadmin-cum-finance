@@ -176,7 +176,7 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
+  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" show-upload-list='false' action='' style="padding:10px"> 
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
                 <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
               </Upload> 
