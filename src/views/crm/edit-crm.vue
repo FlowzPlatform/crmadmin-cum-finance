@@ -53,7 +53,15 @@
                 </div>
                 <div class="col-xs-8">
                   <Select v-model="finaldata.config" placeholder="Select Config" @on-change="configChange">
-                    <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
+                    <div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
                   </Select>
                   <!-- <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete> -->
                   <!-- <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -176,7 +184,7 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
+  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px" multiple="false"> 
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
                 <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
               </Upload> 
@@ -197,6 +205,7 @@
 		</div>
 	</div>
 </template>
+
 <script>
   import comment from './comment.vue'
   import config from '../../config/customConfig.js'
@@ -237,6 +246,7 @@
         loading: false,
         crmdata: {},
         file:'',
+        flag:false,
         finaldata: {
           name: '',
           cname: '',
@@ -267,7 +277,8 @@
               key: 'Status',
               align: 'center',
               width: 150,
-              render: (h, params) => {               
+              render: (h, params) => {   
+              console.log('params--------->',params)            
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -296,32 +307,35 @@
                           }
                         })
                       ]),               
-                    // h('Tooltip', {
-                    //     props: {
-                    //       placement: 'top',
-                    //       content: 'Delete Your File'
-                    //     },
-                    //     style:{
-                    //       cursor:'pointer'
-                    //     }
-                    //   }, [
-                    //       h('Button', {
-                    //         props: {
-                    //           type: 'text',
-                    //           size: 'large',
-                    //           icon: 'android-delete'
-                    //         },
-                    //         style: {
-                    //           color: 'red',
-                    //           fontSize:'20px'
-                    //         },
-                    //         on: {
-                    //           click: () => {
-                    //             this.DeleteFile(params.row)
-                    //           }
-                    //       }
-                    //     })
-                    //   ])             
+                    h('Tooltip', {
+                        props: {
+                          placement: 'top',
+                          content: 'Delete Your File'
+                        },
+                        style:{
+                          cursor:'pointer'
+                        }
+                      }, [
+                          h('Button', {
+                            props: {
+                              type: 'text',
+                              size: 'large',
+                              icon: 'android-delete',
+                              loading: this.finaldata.fileupload[params.index].flag
+                            },
+                            style: {
+                              color: 'red',
+                              fontSize:'20px'
+                            },
+                            on: {
+                              click: () => {
+                                // this.flag = true
+                                this.finaldata.fileupload[params.index].flag = true
+                                this.DeleteFile(params,this.finaldata.id)
+                              }
+                          }
+                        })
+                      ])             
                   ])
               }
             }
@@ -350,6 +364,9 @@
             self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
             self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
             if(self.finaldata.fileupload != undefined){
+              for (let f of self.finaldata.fileupload) {
+                f['flag'] = false
+              }
               self.data1 = self.finaldata.fileupload;
             }
             CKEDITOR.instances.editor1.setData(self.finaldata.description)
@@ -474,21 +491,21 @@
               result1 = data.data;
               console.log(data)
               var myarr = []
-			        _.forEach(result1, (d) => {
-								if (d.hasOwnProperty('fullname')) {
-									if (d.fullname !== undefined) {
-										if (d.fullname !== null) {
-											if (d.fullname.trim() !== '') {
-												let checkname = _.findIndex(myarr,{value: d.fullname})
-												if (checkname === -1) {
-												  myarr.push({label: d.fullname, value: d.fullname})
+              _.forEach(result1, (d) => {
+                if (d.hasOwnProperty('fullname')) {
+                  if (d.fullname !== undefined) {
+                    if (d.fullname !== null) {
+                      if (d.fullname.trim() !== '') {
+                        let checkname = _.findIndex(myarr,{value: d.fullname})
+                        if (checkname === -1) {
+                          myarr.push({label: d.fullname, value: d.fullname})
                         }
-											}
-										}
-									}
-								}
-			        })
-							self.assigneedata = _.sortBy(myarr,['value']);
+                      }
+                    }
+                  }
+                }
+              })
+              self.assigneedata = _.sortBy(myarr,['value']);
           },error: function(err){
              console.log("error",err);
           }
@@ -518,7 +535,7 @@
                 var reader = new FileReader();
                 reader.readAsDataURL(file);
                 // console.log('reader',reader);
-                 reader.addEventListener("load", async function () {
+                 reader.addEventListener("load", async function () {
                   console.log('uuuuuu',file.name)
                   var fileupObj = {
                     "filename":file.name,
@@ -533,11 +550,10 @@
                   await $.ajax({
                     type: 'PATCH',
                     url: databasepost + self.$route.params.id,
-                    data: self.finaldata,
                     headers:{
                       Authorization : Cookies.get('auth_token')
                     },
-
+                    data: self.finaldata,
                     success: function (data1) {
                       result = data1;
                       self.loading = false
@@ -563,11 +579,10 @@
               await $.ajax({
                     type: 'PATCH',
                     url: databasepost + self.$route.params.id,
-                    data: self.finaldata,
                     headers:{
                       Authorization : Cookies.get('auth_token')
                     },
-
+                    data: self.finaldata,
                     success: function (data1) {
                       result = data1;
                       self.loading = false
@@ -619,8 +634,39 @@
                           
         });
       },
-      DeleteFile(params){
+      async DeleteFile(params,id){
+        let self = this
         console.log('params',params)
+        console.log('id------->',id)
+        // console.log(this.data1)
+        // let arr = _.filter(this.data1, function(num){ return num.filename = params.filename });
+        // console.log(arr)
+        await $.ajax({
+          type: 'patch',
+          url: databasepost+id,
+          headers: {
+            Authorization : Cookies.get('auth_token')
+          },
+          data: params.row,
+          success: function (data11) {
+            console.log("json data******123",data11);
+            self.finaldata.fileupload[params.index].flag = false
+            self.$Notice.success({
+              title: 'Sucess',
+              desc: 'File successfully deleted ',
+              duration: 4.5
+            });
+            if(data11.fileupload != undefined){
+              self.data1 = data11.fileupload
+            }else{
+              self.data1 = [];
+            }
+            
+            //self.data1.splice()
+          },error: function(err){
+              console.log("error",err);
+            }
+        });
       }
   },
     mounted() {
@@ -642,6 +688,7 @@
 
 
 </script>
+
 <style scoped>
   * {
     box-sizing: border-box;

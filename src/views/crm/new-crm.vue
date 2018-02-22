@@ -26,7 +26,7 @@
 							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
-							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px" multiple="false"> 
 								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
 							</Upload>
 							<div v-if="file !== null" style="margin-left:20px">Uploaded file: {{ file.name }} </div>

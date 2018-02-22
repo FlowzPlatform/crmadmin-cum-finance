@@ -52,7 +52,7 @@
                             return h('div', [
                                 //console.log(params)
                                 //let obj= Object.keys(params.row.role);
-                                h('strong', params.row.role[Object.keys(params.row.role)])
+                                h('strong', this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
                         }
                     },
@@ -106,6 +106,12 @@
             }
         },
         methods : {
+            capitalize (str) {
+                console.log("str before",str)
+                str = str[0].toUpperCase() + str.slice(1)
+                console.log("str after",str)                
+                return str;
+            },
             show (index) {
                 
             },
