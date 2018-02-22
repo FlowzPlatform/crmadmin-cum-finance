@@ -1396,7 +1396,8 @@
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
               headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -1512,7 +1513,8 @@
                 Name : params.row.Contact.Name
               },
               headers:{
-              Authorization : Cookies.get('auth_token')
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
           },
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
@@ -1557,7 +1559,8 @@
                                             url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
                                             data: myData,
                                             headers: {
-                                              'authorization':  Cookies.get('auth_token')
+                                              'authorization':  Cookies.get('auth_token'),
+                                              
                                             }
                                             }).then(function (response) {
                                               console.log(response);
@@ -1990,7 +1993,8 @@
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
-              Authorization : Cookies.get('auth_token')
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
           },
         })
         .then(function (response) {
