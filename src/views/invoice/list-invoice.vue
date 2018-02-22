@@ -519,7 +519,7 @@
               align: 'center',
               width: 210,
               render: (h, {row}) => {
-                if(row.TotalAmt-row.Balance != row.TotalAmt){
+                if(row.TotalAmt-row.Balance != 0){
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -608,23 +608,25 @@
 
                           cursor:'pointer'
                         }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: this.eye
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            // this.viewDetails(params)
-                          }
-                        }
-                      }, '')
-                    ])
+                      }
+                    //   , [
+                    //   h('img', {
+                    //     attrs: {
+                    //         src: this.eye
+                    //       },
+                    //       style: {
+                    //         hight:'20px',
+                    //         width:'20px',
+                    //         margin: '2px'
+                    //       },
+                    //     on: {
+                    //       click: () => {
+                    //         // this.viewDetails(params)
+                    //       }
+                    //     }
+                    //   }, '')
+                    // ]
+                  )
                   ])
                 }else{
                   return h('div', [
@@ -1100,12 +1102,7 @@
         if(this.dategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            var a = moment(self.dategt, 'YYYY/MM/DD');
-            var b = moment(item.DueDate, 'YYYY/MM/DD');
-            var days = b.diff(a, 'days');
-
-
-            if(days >= 0){
+            if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
               console.log('item>>>>>>>>>>>>>>>>>>>>', item)
               return item;
             }
@@ -1118,11 +1115,7 @@
           console.log("this.dategt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item.DueDate)
-            var a = moment(self.datelt, 'YYYY/MM/DD');
-            var b = moment(item.DueDate, 'YYYY/MM/DD');
-            var days = b.diff(a, 'days');
-            console.log('iiiiiiiiiiiiiiii',days);
-            if(days <= 0){
+            if(moment(item.DueDate).diff(moment(self.datelt).format(), 'days') <= 0){
               return item;
             }
           });
@@ -1412,13 +1405,6 @@
               })
               .catch(function (error) {
                 console.log(error);
-                if(error.response.status == 403){
-                 self.$Notice.error(
-                     {duration:0, 
-                     title: error.response.statusText,
-                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                     );
-                  }
               });
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1527,7 +1513,8 @@
                 Name : params.row.Contact.Name
               },
               headers:{
-              Authorization : Cookies.get('auth_token')
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
           },
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
@@ -1572,7 +1559,8 @@
                                             url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
                                             data: myData,
                                             headers: {
-                                              'authorization':  Cookies.get('auth_token')
+                                              'authorization':  Cookies.get('auth_token'),
+                                              
                                             }
                                             }).then(function (response) {
                                               console.log(response);
@@ -1872,15 +1860,24 @@
           $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
         },1000)
         let self = this;
+        console.log(self.tabPanes[self.tabIndex].domain)
+        console.log('id..........',params.Id)
+        let id
+        if(self.tabPanes[self.tabIndex].domain == "QB"){
+          id = params.Id
+        } else if(self.tabPanes[self.tabIndex].domain == "Xero"){
+          id = params.InvoiceID
+        }
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
                   settingId : self.tabPanes[self.tabIndex].id,
-                  InvoiceID : params.InvoiceID
+                  InvoiceID : id
               }
           })
           .then(function (response) {
+            console.log('rrrrrrrrrrrrrrrrrr',response)
               self.newTabIndex = self.tabIndex
-              console.log(response.data.data.length)
+              console.log(response.data.data)
               if(response.data.data.length == 0){
                 // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
                 console.log("self.newList>>>>>>>>>>>>>", self.newList)
@@ -2031,13 +2028,6 @@
 
           console.log("error",error);
           self.spinShow = false;
-            if(error.response.status == 403){
-               self.$Notice.error(
-                   {duration:0, 
-                   title: error.response.statusText,
-                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                   );
-                }
         });
       }
 
