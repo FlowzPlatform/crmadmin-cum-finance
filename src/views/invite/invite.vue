@@ -138,6 +138,17 @@
                     {
                         title: 'Role',
                         key: 'role',
+                         render: (h, params) => {
+                            return h('div', [
+                                //console.log(params)
+                                //let obj= Object.keys(params.row.role);
+                                // console.log("Object.keys(params.row.role)",Object.keys(params.row.role))
+                                // console.log(">>>>>>>>>>>>>>>>>>>>> " , params.row.role)
+                                // h('strong',params)
+                                h('p', this.capitalize(params.row.role))
+                                //h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
+                            ]);
+                        }
                         
                     }
                 ],
