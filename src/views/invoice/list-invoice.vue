@@ -140,155 +140,90 @@
 
   <div v-if="emailData != ''" ref="email1" style="display:none">
 
-  <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
-          <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
-              <tbody>
-                <tr class="top">
-                  <td colspan="3" style="padding: 5px;vertical-align: top;">
-                      <table style="width: 100%;line-height: inherit;text-align: left;">
-                          <tbody><tr>
-                              <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
-
-                                  <img :src='emailDataCompany.logo' key="max-logo" style="height: 82px;width: 215px;">
-
-                              </td>
-
-                              <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
-                                  Invoice #: {{emailData.row.InvoiceNumber}}<br>
-                                  Created: {{createdDate}}<br>
-                                  Due: {{dueDate}}
-                              </td>
-                          </tr>
-                      </tbody></table>
-                  </td>
-              </tr>
-
-              <!-- <tr style="background: rgb(238, 238, 238);"> -->
-              <tr>
-              <td colspan="3" style="padding: 13px;vertical-align: top;">
-                      <table style="width: 100%;line-height: inherit;text-align: left;">
-                          <tbody><tr>
-                              <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
-                                  <b>To :</b><br>
-                                  {{emailData.row.Contact.Name}}<br>
-                                  {{emailDataCustomer.Addresses[0].AddressLine1}}<br>
-                                  {{emailDataCustomer.Addresses[0].AddressLine2}}<br>
-                                  {{emailDataCustomer.Addresses[0].City}}<br>
-
-                                  {{emailDataCustomer.Addresses[0].Country}},{{emailDataCustomer.Addresses[0].PostalCode}}
-
-                              </td>
-                              <td style="padding-bottom: 40px;text-align: right;padding: 13px;vertical-align: top;" v-if = "emailDataCompany.address != undefined">
-                                  <b>From :</b><br>
-                                  {{emailDataCompany.address.name}}<br>
-                                  {{emailDataCompany.address.AddressLine1}}<br>
-                                  {{emailDataCompany.address.AddressLine2}}<br>
-                                  {{emailDataCompany.address.city}}<br>
-                                  {{emailDataCompany.address.country}},{{emailDataCompany.address.PostalCode}}
-                              </td>
-                          </tr>
-                      </tbody></table>
-                  </td>
-              </tr>
-              <tr>
-                  <td style="padding: 15px;">
-                  </td>
-              </tr>
-              <div v-for="item in DescriptionPdf">
-                <tr>
-                <td colspan="3" style="padding: 5px;vertical-align: top;">
-                        <table style="width: 100%;line-height: inherit;text-align: left;">
-                            <tbody>
-                            <tr  v-if='item.Title'>
-                                <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
-                                    <b>Item :</b><br>
-                                    {{item.Description}}
-                                </td>
-                            </tr>
-                             <tr>
-                                <td style="vertical-align: top;">
-                                    <b>Item Description :</b><br>
-                                    <div v-html="item.Description"></div>
-                                </td>
-                            </tr>
-                        </tbody></table>
-                    </td>
-                </tr>
-                 <tr>
-                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                        Quantity
-                    </td>
-
-                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
-                        Unit Amount
-                    </td>
-
-                    <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center;width:32%;">
-                        Line Amount
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding: 5px;vertical-align: top;text-align:center">
-                        {{item.Quantity}}
-                    </td>
-
-                    <td style="padding: 5px;vertical-align: top;text-align:center">
-                        ${{item.UnitAmount}}
-                    </td>
-                    <td style="text-align:center;padding: 5px;vertical-align: top;">
-                        ${{item.LineAmount}}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3"><hr style="border: #efefef solid 1px;"></td>
-                </tr>
+    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
+      <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
+          <div id="logo" style="float: left;margin-top: 8px;">
+              <img :src="emailDataCompany.logo" style="height: 70px;">
+          </div>
+          <div id="company" v-if = "emailDataCompany.address != undefined" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
+              <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
+              <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
+              <div>{{emailDataCompany.address.country}}</div>
+              <!--<div>
+                      <a href="mailto:company@example.com" style="color: #0087C3;text-decoration: none;">company@example.com</a>
+              </div>-->
+          </div>
+      </header>
+      <main>
+          <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px;font-family: Verdana;">
+              <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
+                  <div  style="color: #777777;">INVOICE TO:</div>
+                  <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{emailData.row.Contact.Name}}</h2>
+                  <div >{{emailDataCustomer.Addresses[0].AddressLine1}}<br> {{emailDataCustomer.Addresses[0].AddressLine2}}<br> {{emailDataCustomer.Addresses[0].City}}  {{emailDataCustomer.Addresses[0].PostalCode}} </div>
+                  <div >{{emailDataCustomer.Addresses[0].Country}}</div>                    
+                  <!--<div >
+                      <a href="mailto:john@example.com" style="color: #0087C3;text-decoration: none;"> customer@example.com </a>
+                  </div>-->
               </div>
-              <tr>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-                  <td style="font-weight: bold;padding: 5px;">
-                      <div class="col-sm-6" style="text-align: -webkit-right;">Sub Total:</div>
-                      <div class="col-sm-6">${{emailData.row.SubTotal}}</div>
-
-                  </td>
-              </tr>
-              <tr>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-
-                  <td style="font-weight: bold;padding: 5px;">
-                      <div class="col-sm-6" style="text-align: -webkit-right;">Tax: </div>
-                      <div class="col-sm-6">${{emailData.row.TotalTax}}</div>
-                  </td>
-              </tr>
-              <tr>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-
-
-                  <td style="border-top: 1px solid #eee;font-weight: bold;padding: 5px;">
-                      <div class="col-sm-6" style="text-align: -webkit-right;">Total:</div>
-                      <div class="col-sm-6">${{emailData.row.Total}}</div>
-
-
-                  </td>
-              </tr>
-              <tr>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-                  <td style="padding: 5px;vertical-align: top;"></td>
-
-                  <td style="border-top: 1px solid #eee;font-weight: bold;background: rgb(238, 238, 238);padding: 5px;
-  ">
-                      <div class="col-sm-6" style="text-align: -webkit-right;">Total Due:</div>
-                      <div class="col-sm-6">${{emailData.row.AmountDue}}</div>
-
-                  </td>
-              </tr>
-
-
-          </tbody></table>
-      </div>
+              <div id="invoice" style="float: right;text-align: right;">
+                  <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;">{{emailData.row.InvoiceNumber}}</h1>
+                  <div  style="font-size: 12px;color: #777777;">Date of Invoice: {{createdDate}}</div>
+                  <div  style="font-size: 12px;color: #777777;">Due Date: {{dueDate}}</div>
+              </div>
+          </div>
+          <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
+              <thead>
+                  <tr>
+                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                      ">#</th>
+                      <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
+                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
+                      <th  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
+                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr v-for="(item,inx) in DescriptionPdf">
+                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                          <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>
+                          
+                          <span v-html="text(item.Description)"></span>
+                          </td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.UnitAmount)}}</td>
+                      <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.Quantity}}</td>
+                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.LineAmount) }}</td>
+                  </tr>
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <td colspan="2"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailData.row.SubTotal) }}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="2"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(emailData.row.TotalTax)}}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="2" style="border: none;"></td>
+                      <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailData.row.Total)}}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="2"></td>
+                      <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailData.row.AmountDue)}}</td>
+                  </tr>
+              </tfoot>
+          </table>
+          <div id="thanks" style="font-size: 16px;margin-bottom: 10px;font-family: Verdana;color: #555555;">Thank you!</div>
+      </main>
+      <footer style="font-size:12px;font-family: Verdana;">
+          Invoice was created on a computer and is valid without the signature and seal.
+      </footer>
+    </div>
 
   </div>
 
@@ -421,8 +356,6 @@
   </div>
 </template>
 
-
-
 <script>
   import config from '@/config/customConfig.js'
   import axios from 'axios'
@@ -439,6 +372,7 @@
   //import Handlebars from 'handlebars'
   import moment from 'moment'
   import Cookies from 'js-cookie'
+  const accounting = require('accounting-js');  
   var pageSize = 10
   var settingID
   export default {
@@ -1016,7 +950,21 @@
       }
     },
     components: { listtransaction },
-     methods: {
+    methods: {
+      text(item) {
+         try{
+           return JSON.parse(item).description
+         } catch(e) {
+           return item
+         }
+          // return (typeof item === 'object')? JSON.parse(item).description : item
+          // return $(item).text();
+      },
+      accounting(item){
+          console.log("item",item)
+          return accounting.formatMoney(item)
+      },
+
       // async mockTableData1 (p,size) {
       //   this.len = this.data1.length
       //   console.log("this.data111",this.data1)
@@ -1048,24 +996,24 @@
       },
 
       async changeData() {
-       console.log("this.data6", this.data6)
+        console.log("this.data6", this.data6)
         this.filterArray = this.data6
         var self = this
 
         if(this.cname != ''){
-         console.log("this.cname", this.cname)
-         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-          if(item.Contact != undefined){
-            return item.Contact.Name === self.cname;
-          }else if(item.CustomerRef != undefined){
-            return item.CustomerRef.name === self.cname;
-          }else{
-            return item.Name === self.cname;
-          }
-        });
-         console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
+          console.log("this.cname", this.cname)
+          this.filterArray = _.filter(this.filterArray,  function(item){
+            console.log("item",item)
+            if(item.Contact != undefined){
+              return item.Contact.Name === self.cname;
+            }else if(item.CustomerRef != undefined){
+              return item.CustomerRef.name === self.cname;
+            }else{
+              return item.Name === self.cname;
+            }
+          });
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           console.log("myarr",this.filterArray)
@@ -1094,9 +1042,9 @@
            console.log("myarr",this.filterArray)
            this.list = await this.mockTableData2(1,pageSize)
         }else{
-              console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-              console.log("myarr",this.filterArray)
-              this.list = await this.mockTableData2(1,pageSize)
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.dategt != ''){
@@ -1107,8 +1055,8 @@
               return item;
             }
           });
-           console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.datelt != ''){
@@ -1179,8 +1127,8 @@
            this.list = await this.mockTableData2(1,pageSize)
         }
 
-
       },
+
       async getCustomerBySettingId(settingId , settingDomain , data){
         // $('#selectCustomer').remove();
         var NameArr = [];
@@ -1189,24 +1137,25 @@
         let res
         console.log("settingId----------------------->",settingDomain)
         if(settingDomain == 'custom'){
-          let customerUrl = this.tabPanes[data].customer_url;
-          console.log('--------iiiiiiiiii------------',customerUrl)
-           await axios({
+            let customerUrl = this.tabPanes[data].customer_url;
+            console.log('--------iiiiiiiiii------------',customerUrl)
+            await axios({
               method: 'get',
               url: customerUrl,
               headers:{
-              Authorization : Cookies.get('auth_token')
+                Authorization : Cookies.get('auth_token')
               },
               params: {
                   settingId : settingId
-                }
-              }).then(function (response) {
+              }
+            })
+            .then(function (response) {
                 console.log('------------->',response)
                 res = response.data.data
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }else{
           if (settingId != '') {
             await axios({
@@ -1216,14 +1165,14 @@
                   settingId : settingId
                 },
                 headers:{
-                Authorization : Cookies.get('auth_token')
-            },
-                }).then(function (response) {
-                  res = response.data[0].data
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
+                    Authorization : Cookies.get('auth_token')
+                },
+            }).then(function (response) {
+                res = response.data[0].data
+            })
+            .catch(function (error) {
+                console.log("Error in customer by settingId",error);
+            });
           }
         }
 
@@ -1333,17 +1282,17 @@
 
       // },
       exportData (type) {
-                  if (type === 1) {
-                    console.log(this.$refs);
-                      this.$refs.table[0].exportCsv({
-                          filename: 'The original data'
-                      });
-                  } else if (type === 2) {
-                      this.$refs.table[0].exportCsv({
-                          filename: 'Sorting and filtering data',
-                          original: false
-                      });
-                  }
+          if (type === 1) {
+            console.log(this.$refs);
+              this.$refs.table[0].exportCsv({
+                  filename: 'The original data'
+              });
+          } else if (type === 2) {
+              this.$refs.table[0].exportCsv({
+                  filename: 'Sorting and filtering data',
+                  original: false
+              });
+          }
       },
       async mockTableData1 (p,size) {
 
@@ -1351,21 +1300,21 @@
         return this.data6.slice((p - 1) * size, p * size);
       },
       async mockTableData2 (p,size) {
-        console.log("p-------------->",p)
-        console.log("p-------------->",size)
-        console.log("console.log------------>",this.filterArray)
-        this.len = this.filterArray.length
-        return this.filterArray.slice((p - 1) * size, p * size);
+          console.log("p-------------->",p)
+          console.log("p-------------->",size)
+          console.log("console.log------------>",this.filterArray)
+          this.len = this.filterArray.length
+          return this.filterArray.slice((p - 1) * size, p * size);
       },
       async changePage (p) {
           this.page = p
-        console.log("not inside",this.filterArray.length)
-        if(this.filterArray.length == 0){
-          console.log("inside",this.filterArray)
-          this.list = await this.mockTableData1(p,pageSize);
-        }else{
-          this.list = await this.mockTableData2(p,pageSize);
-        }
+          console.log("not inside",this.filterArray.length)
+          if(this.filterArray.length == 0){
+            console.log("inside",this.filterArray)
+            this.list = await this.mockTableData1(p,pageSize);
+          }else{
+            this.list = await this.mockTableData2(p,pageSize);
+          }
       },
       async createPDF (params) {
         this.$Loading.start();
@@ -1392,7 +1341,7 @@
               .catch(function (error) {
                 console.log(error);
               });
-      await axios({
+        await axios({
               method: 'get',
               url: config.default.serviceUrl + 'Settings/' + settingID,
               headers:{
@@ -1409,7 +1358,7 @@
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
-      axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
+        axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
           headers:{
               Authorization : Cookies.get('auth_token')
           },
@@ -1494,8 +1443,7 @@
           this.$router.push('/checkout/' + params.Id+"?settingId="+this.settingIdForPayment)
         }
       },
-
-
+      
       async sendemail(params){
         this.$Loading.start();
         this.emailData = params;
@@ -1576,18 +1524,19 @@
 
       },
       async tabClicked(data){
-        console.log(data)
+        // console.log(data)
         this.tabIndex = data;
         this.newList = [];
         this.newTabIndex = '';
+        let settingName = this.tabPanes[data].configName;
         let settingId = this.tabPanes[data].id;
         let settingDomain = this.tabPanes[data].domain;
         this.settingIdForPayment = settingId;
 
-        this.getInvoiceBySettingId(settingId ,settingDomain , data)
+        this.getInvoiceBySettingId(settingId ,settingDomain , data, settingName)
         this.getCustomerBySettingId(settingId , settingDomain , data)
       },
-      async getInvoiceBySettingId(settingId , settingDomain , data){
+      async getInvoiceBySettingId(settingId , settingDomain , data, settingName){
         console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
         settingID = settingId
         this.$Loading.start();
@@ -1596,203 +1545,206 @@
         self.list = [];
 
         if(settingDomain == 'custom'){
-        let Invoiceurl = self.tabPanes[data].invoice_url;
-
-
-        axios({
-              method: 'get',
-              url: Invoiceurl,
-              params : {
-                settingId : this.tabPanes[data].id
-              },
-              headers:{
-                Authorization : Cookies.get('auth_token')
-              },
-        })
-        .then(async function (response) {
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          console.log("iiiiiiiii------------------>",response);
-          self.data6 = response.data.data;
-          let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
-          let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
-
-          console.log("############# " , columnArray);
-          columnArray = ["Invoice_No","Name", "DueDate","Due",  "Paid",  "Total" , "Status"]
-          let arr = [];
-          let len = columnArray.length;
-          for (let i = 0; i < len; i++) {
-              arr.push({
-                  title: columnArray[i],
-                  key : columnArray[i],
-                  sortable: true
-              });
-          }
-          if(modifiedArray.indexOf("Action") != -1){
-            modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
-          }else{
-            arr.push({
-                  title: "Action",
-                  width: 210,
-                  align: 'center',
-                  render: (h, params) => {
-                  return h('div', [
-                      h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'Send Mail'
-                        },
-                        style:{
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                        h('img', {
-                         attrs: {
-                            src: self.mail
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                          on: {
-                            click: () => {
-                              self.sendemailCustom(params)
-                            }
-                          }
-                        }, '')
-                      ]),
-                      h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'Download'
-                        },
-                        style:{
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: self.download
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            self.createPDFCustom(params)
-                          }
-                        }
-                      }, '')
-                    ]),
-                    h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'Make payment'
-                        },
-                        style:{
-
-                          cursor:'pointer'
-                        }
-                      }, [
-                      h('img', {
-                        attrs: {
-                            src: self.money
-                          },
-                          style: {
-                            hight:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                        on: {
-                          click: () => {
-                            self.makePaymentCustom(params ,settingId, settingDomain)
-                          }
-                        }
-                      }, '')
-                    ])
-                    // h('Tooltip', {
-                    //     props: {
-                    //       placement: 'top',
-                    //       content: 'View Detailed Transaction'
-                    //     },
-                    //     style:{
-                    //
-                    //       cursor:'pointer'
-                    //     }
-                    //   }, [
-                    //   h('img', {
-                    //     attrs: {
-                    //         src: self.eye
-                    //       },
-                    //       style: {
-                    //         hight:'20px',
-                    //         width:'20px',
-                    //         margin: '2px'
-                    //       },
-                    //     on: {
-                    //       click: () => {
-                    //         self.viewDetailsCustom(params ,settingId, settingDomain)
-                    //       }
-                    //     }
-                    //   }, '')
-                    // ])
-                  ])
-
-              },
-
+          let Invoiceurl = self.tabPanes[data].invoice_url;
+          axios({
+            method: 'get',
+            url: Invoiceurl,
+            params : {
+              settingId : this.tabPanes[data].id
             },
-            {
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
+          })
+          .then(async function (response) {
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            console.log("iiiiiiiii------------------>",response);
+            self.data6 = response.data.data;
+            let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+            let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
+
+            console.log("############# " , columnArray);
+            columnArray = ["Invoice_No","Name", "DueDate","Due",  "Paid",  "Total" , "Status"]
+            let arr = [];
+            let len = columnArray.length;
+            for (let i = 0; i < len; i++) {
+              arr.push({
+                title: columnArray[i],
+                key : columnArray[i],
+                sortable: true
+              });
+            }
+            if(modifiedArray.indexOf("Action") != -1){
+              modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
+            }else{
+              arr.push({
+                title: "Action",
+                width: 210,
+                align: 'center',
+                render: (h, params) => {
+                return h('div', [
+                  h('Tooltip', {
+                    props: {
+                    placement: 'top',
+                    content: 'Send Mail'
+                    },
+                    style:{
+
+                    cursor:'pointer'
+                    }
+                  }, [
+                    h('img', {
+                    attrs: {
+                      src: self.mail
+                    },
+                    style: {
+                      hight:'20px',
+                      width:'20px',
+                      margin: '2px'
+                    },
+                    on: {
+                      click: () => {
+                      self.sendemailCustom(params)
+                      }
+                    }
+                    }, '')
+                  ]),
+                  h('Tooltip', {
+                    props: {
+                    placement: 'top',
+                    content: 'Download'
+                    },
+                    style:{
+
+                    cursor:'pointer'
+                    }
+                  }, [
+                  h('img', {
+                    attrs: {
+                      src: self.download
+                    },
+                    style: {
+                      hight:'20px',
+                      width:'20px',
+                      margin: '2px'
+                    },
+                    on: {
+                    click: () => {
+                      self.createPDFCustom(params)
+                    }
+                    }
+                  }, '')
+                  ]),
+                  h('Tooltip', {
+                    props: {
+                    placement: 'top',
+                    content: 'Make payment'
+                    },
+                    style:{
+
+                    cursor:'pointer'
+                    }
+                  }, [
+                  h('img', {
+                    attrs: {
+                      src: self.money
+                    },
+                    style: {
+                      hight:'20px',
+                      width:'20px',
+                      margin: '2px'
+                    },
+                    on: {
+                    click: () => {
+                      self.makePaymentCustom(params ,settingId, settingDomain)
+                    }
+                    }
+                  }, '')
+                  ])
+                  // h('Tooltip', {
+                  //     props: {
+                  //       placement: 'top',
+                  //       content: 'View Detailed Transaction'
+                  //     },
+                  //     style:{
+                  //
+                  //       cursor:'pointer'
+                  //     }
+                  //   }, [
+                  //   h('img', {
+                  //     attrs: {
+                  //         src: self.eye
+                  //       },
+                  //       style: {
+                  //         hight:'20px',
+                  //         width:'20px',
+                  //         margin: '2px'
+                  //       },
+                  //     on: {
+                  //       click: () => {
+                  //         self.viewDetailsCustom(params ,settingId, settingDomain)
+                  //       }
+                  //     }
+                  //   }, '')
+                  // ])
+                ])
+
+              },
+
+              },
+              {
               type: 'expand',
               width: 50,
               render: (h, params) => {
                 console.log('params--------------->',self.newList)
                 console.log('this.newTabIndex............',self.newTabIndex)
                 return h(listtransaction, {
-                  props: {
-                    list:self.newList,
-                    tabIndex:self.newTabIndex
-                  }
+                props: {
+                  list:self.newList,
+                  tabIndex:self.newTabIndex
+                }
                 })
               }
-            })
-          }
-          self.list = await self.mockTableData1(1,pageSize)
-          self.columns3 = arr;
-
-        })
-        .catch(function (error) {
-          console.log("error",error);
-          self.$Loading.error();
-
-        });
-        }else{
+              })
+            }
+            self.list = await self.mockTableData1(1,pageSize)
+            self.columns3 = arr;
+			    })
+          .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+          });
+        }
+        else{
           axios.get(config.default.serviceUrl + 'invoice', {
-          headers:{
-              Authorization : Cookies.get('auth_token')
-          },
-          params : {
-            settingId : settingId
-          }
-        })
-        .then(async function (response) {
-          console.log("response------>iuy",response);
+            headers:{
+                Authorization : Cookies.get('auth_token')
+            },
+            params : {
+              settingId : settingId
+            }
+          })
+          .then(async function (response) {
+              console.log("response------>iuy",response);
 
-          self.data6 = response.data[0].data.reverse();
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          self.filterArray = []
-          self.list = await self.mockTableData1(1,pageSize)
-        })
-        .catch(function (error) {
-          console.log("error",error);
-          self.$Loading.error();
-
-        });
+              self.data6 = response.data[0].data.reverse();
+              self.$Loading.finish();
+              $('.preload').css("display","none")
+              self.filterArray = []
+              self.list = await self.mockTableData1(1,pageSize)
+          })
+          .catch(function (error) {
+            console.log("error",error);
+            if (error.response.data.message === 'invalid_grant') {
+              self.$Notice.error({
+                duration:0, 
+                title: "QB : Credential Expired",
+                desc: "Token is expired for "+settingName
+              });
+            }
+            self.$Loading.error();
+          });
         }
 
 

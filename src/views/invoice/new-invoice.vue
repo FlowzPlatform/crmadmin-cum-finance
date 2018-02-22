@@ -221,73 +221,80 @@ export default {
       let resp
       let self = this
 
-      
       await axios({
-                    method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingId
-                  })
-                    .then(async function(response) {
-                      console.log(response)
-                      if(response.data.domain == 'custom'){
+          method:'get',
+          url: config.default.serviceUrl + 'settings/'+settingId,
+          headers:{
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
+          },
+      })
+      .then(async function(response) {
+          console.log("-----------============",response)
+          if(response.data.domain == 'custom'){
 
-                            self.customCustomerUrl = response.data.customer_url;
-                            self.customInvoiceUrl = response.data.invoice_url;
-                            
-                           await axios({
-                              method: 'get',
-                              url: self.customCustomerUrl,
-                              params : {settingId : response.data.id},
-                              headers:{
-                                Authorization : Cookies.get('auth_token')
-                              }
-                            })
-                            .then(function (response) {
-                              console.log(response)
-                              resp = response.data.data
-                              console.log("resp",resp)
-                              self.data2 = _.sortBy(resp, ['Name']);
-                              console.log("self.data2---------------->after",self.data2)
-                            })
+              self.customCustomerUrl = response.data.customer_url;
+              self.customInvoiceUrl = response.data.invoice_url;
+              
+              await axios({
+                method: 'get',
+                url: self.customCustomerUrl,
+                params : {settingId : response.data.id},
+                headers:{
+                  Authorization : Cookies.get('auth_token')
+                }
+              })
+              .then(function (response) {
+                console.log(response)
+                resp = response.data.data
+                console.log("resp",resp)
+                self.data2 = _.sortBy(resp, ['Name']);
+                console.log("self.data2---------------->after",self.data2)
+              })
 
-                            .catch(function (error) {
-                              console.log(error.response)
-                              self.$Message.error(error.response.data.data[0].message)
+              .catch(function (error) {
+                console.log(error.response)
+                self.$Message.error(error.response.data.data[0].message)
+              });
 
-                            });
-
-                      }else{
-                            await axios({
-                                    method: 'get',
-                                    url: config.default.serviceUrl + 'contacts',
-                                    params: {
-                                      settingId : settingId
-                                    },
-                                    headers:{
-                                        Authorization : Cookies.get('auth_token')
-                                    },
-                                  }).then(function (response) {
-                                  
-                                    resp = response.data
-                                    console.log("resp",resp[0].data)
-                                    self.data2 = _.sortBy(resp[0].data, ['Name']);
-                                    console.log("self.data2---------------->after",self.data2)
-                                  })
-                                  .catch(function (error) {
-                                    console.log(error);
-                                  });
-                      }
-                  })
-                  .catch(function (error) {
-                    console.log("error",error);
-                    self.spinShow = false;
-                      if(error.response.status == 403){
-                         self.$Notice.error(
-                             {duration:0, 
-                             title: error.response.statusText,
-                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                             );
-                          }
+          }else{
+              await axios({
+                  method: 'get',
+                  url: config.default.serviceUrl + 'contacts',
+                  params: {
+                    settingId : settingId
+                  },
+                  headers:{
+                      Authorization : Cookies.get('auth_token')
+                  },
+              })
+              .then(function (response) {
+                  resp = response.data
+                  console.log("resp",resp[0].data)
+                  self.data2 = _.sortBy(resp[0].data, ['Name']);
+                  console.log("self.data2---------------->after",self.data2)
+              })
+              .catch(function (error) {
+                  console.log(error);
+                  self.$Notice.error({
+                    duration:0, 
+                    title: "QB : Credential Expired",
+                    desc: "Token is expired for "+response.data.configName
                   });
+              });
+          }
+      })
+      .catch(function (error) {
+        console.log("error----------",error);
+        self.spinShow = false;
+          if(error.response.status == 403){
+              self.$Notice.error(
+                  {duration:0, 
+                  title: error.response.statusText,
+                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                  );
+              }
+      });
       
       
       console.log("response------>iuy",resp);
@@ -297,6 +304,7 @@ export default {
         
       //})
     },
+
     async formData (name) {
       console.log(name)
       this.$refs[name].validate((valid) => {
