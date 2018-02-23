@@ -67,10 +67,10 @@ module.exports = {
         flowzDbetlUrl: 'https://dbetl.' + process.env.domainkey,
 
         loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth//Gplus',
-        loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/twitter',
-        loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/github',
-        loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/linkedin',
+        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
+        loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
+        loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
+        loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
 
         // loginWithFacebookUrl: 'https://auth.flowzcluster.tk/auth/facebook',
         // loginWithGoogleUrl: 'https://auth.flowzcluster.tk/auth/Gplus',
