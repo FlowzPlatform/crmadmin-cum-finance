@@ -232,8 +232,10 @@
             }
         },
         mounted() {
+            
             this.getDataOfSubscriptionUser();
             this.getHistory();
+            
         },
        
         methods: {
@@ -244,6 +246,7 @@
                 return str;
             },
             async getHistory(){
+                this.$Loading.start();
                  axios.get(subscriptionUrl+'subscription-invitation', {
 
                    // axios.get('http://172.16.230.86:3030/subscription-invitation', {
@@ -261,8 +264,10 @@
                         // this.options2 = sub_id;
                         
                     })
+                this.$Loading.finish();
             },
             async getDataOfSubscriptionUser() {
+                this.$Loading.start();
                 let sub_id = [];
                 let Role_id = [];
                 
@@ -324,7 +329,7 @@
                         this.options2 = sub_id;
                         
                     })
-
+                this.$Loading.finish();
             },
             async inviteNow() {
                 

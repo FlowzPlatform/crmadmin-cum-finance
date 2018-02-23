@@ -170,7 +170,6 @@
 				crmdata: [],
 				domainConfig: "",
 				loading: false,
-				domainConfig: "",
 				file: '',
 				finaldata: {
 					name: '',
@@ -208,61 +207,60 @@
 
 				var settingId = self.finaldata.config
 				await axios({
-								method:'get',
-								url: config.default.serviceUrl + 'settings/'+settingId,
-								headers:{
-									Authorization : Cookies.get('auth_token'),
-									subscriptionId : Cookies.get('subscriptionId')
-								},
+					method:'get',
+					url: config.default.serviceUrl + 'settings/'+settingId,
+					headers:{
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
+					},
+				})
+				.then(async function(response) {
+						self.domainConfig=response.data.domain
+					console.log(response)
+					if(response.data.domain == 'custom'){
+
+							self.customCustomerUrl = response.data.customer_url;
+							self.customInvoiceUrl = response.data.invoice_url;
+							
+						await axios({
+							method: 'get',
+							url: self.customCustomerUrl,
+							params : {settingId : response.data.id},
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							}
 							})
-								.then(async function(response) {
-									self.domainConfig=response.data.domain
-								console.log(response)
-								self.domainConfig=response.data.domain
-								if(response.data.domain == 'custom'){
-
-										self.customCustomerUrl = response.data.customer_url;
-										self.customInvoiceUrl = response.data.invoice_url;
-										
-									await axios({
-										method: 'get',
-										url: self.customCustomerUrl,
-										params : {settingId : response.data.id},
-										headers:{
-											Authorization : Cookies.get('auth_token')
-										}
-										})
-										.then(function (response) {
-										console.log(response)
-										resp = response.data.data
-										self.customerData = resp
-										console.log("self.customerData", self.customerData)
-										})
-										.catch(function (error) {
-										console.log(error.response)
-										self.$Message.error(error.response.data.data[0].message)
-										});
-
-								}else{
-										await axios({
-												method: 'get',
-												url: config.default.serviceUrl + 'contacts',
-												params: {
-												settingId : settingId
-												},
-												headers:{
-													Authorization : Cookies.get('auth_token')
-												},
-											}).then(function (response) {
-											
-												resp = response.data
-												self.customerData = resp[0].data
-											})
-											.catch(function (error) {
-												console.log(error);
-											});
-								}
+							.then(function (response) {
+							console.log(response)
+							resp = response.data.data
+							self.customerData = resp
+							console.log("self.customerData", self.customerData)
+							})
+							.catch(function (error) {
+							console.log(error.response)
+							self.$Message.error(error.response.data.data[0].message)
 							});
+
+					}else{
+							await axios({
+									method: 'get',
+									url: config.default.serviceUrl + 'contacts',
+									params: {
+									settingId : settingId
+									},
+									headers:{
+										Authorization : Cookies.get('auth_token')
+									},
+								}).then(function (response) {
+								
+									resp = response.data
+									self.customerData = resp[0].data
+								})
+								.catch(function (error) {
+									console.log(error);
+								});
+					}
+				});
 				
 				
 				console.log("response------>iuy",resp);
@@ -1193,5 +1191,8 @@
 	}
 	.col-xs-3 {
 	    float: none;
+	}
+	.ivu-upload-list{
+		display: none;
 	}
 </style>

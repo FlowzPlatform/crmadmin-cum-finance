@@ -1565,7 +1565,7 @@
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
             console.log("############# " , columnArray);
-            columnArray = ["Invoice_No","Name", "DueDate","Due",  "Paid",  "Total" , "Status"]
+            columnArray = ["Invoice_No","Name", "DueDate", "Paid","Due",  "Total" , "Status"]
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {

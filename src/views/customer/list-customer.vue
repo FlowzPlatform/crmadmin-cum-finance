@@ -288,14 +288,14 @@ export default {
           }
       },
       {
-        "title": "EmailAddress",
+        "title": "Email Address",
         "key": "EmailAddress",
         render:(h,{row})=>{
           return row.EmailAddress
           }
       },
       {
-        "title": "PhoneNumber",
+        "title": "Phone Number",
         "key": "PhoneNumber",
         render:(h,{row})=>{
           return row.PhoneNumber
@@ -309,7 +309,7 @@ export default {
           }
       },
       {
-        "title": "ContactStatus",
+        "title": "Status",
         "key": "ContactStatus",
         render:(h,{row})=>{
           return row.ContactStatus

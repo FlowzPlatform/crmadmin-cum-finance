@@ -22,6 +22,8 @@
     let subscriptionUrl = config.default.subscriptionUrl
     import Cookies from 'js-cookie';
     import moment from 'moment'
+    let emailTemp = require('../emailTemplate')
+    let SendEmailBodyInvite = emailTemp.sendInviteemail;
     export default {
         props: {
             row: Object,
@@ -83,7 +85,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.sendEmail(params.index)
+                                            this.sendEmail(params.row)
                                         }
                                     }
                                 }, 'Send Email'),
@@ -115,6 +117,26 @@
             show (index) {
                 
             },
+            sendEmail (data) {
+                console.log("data-------",data)
+                var SendEmailBody = SendEmailBodyInvite.replace(/WriteSenderNameHere/i, data.fromEmail);
+                SendEmailBody = SendEmailBody.replace(/domainKey/g, process.env.domainkey);
+                SendEmailBody = SendEmailBody.replace(/SYSTEMNAME/g, Object.keys(data.role)[0]);
+                SendEmailBody = SendEmailBody.replace(/ROLE/g, Object.values(data.role)[0]);
+                console.log("SendEmailBody",SendEmailBody)
+                axios({
+                    method: 'post',
+                    url: config.default.baseUrl +'/vmailmicro/sendEmail',
+                    headers: {Authorization: Cookies.get('Authorization')},
+                    data: { "to": data.toEmail, "from": data.fromEmail, "subject": "Invitation from Flowz", "body": SendEmailBody}
+                })
+                .then(async (result) => {
+                    return true;
+                })
+                .catch(function(err){
+                    return err
+                })
+            },
             remove (params) {
 
                 this.$Modal.confirm({
@@ -139,14 +161,14 @@
                             headers : {
                                 "Authorization": Cookies.get('auth_token'),
                             }
-                            })
-                            .then(function(response) {
-                                console.log(response)
-                                self.data6.splice(params.index, 1);
-                                self.$Message.success('User Un-assigned successfully');
-                            }).catch(function(err){
-                                console.log(err)
-                            });
+                        })
+                        .then(function(response) {
+                            console.log(response)
+                            self.data6.splice(params.index, 1);
+                            self.$Message.success('User Un-assigned successfully');
+                        }).catch(function(err){
+                            console.log(err)
+                        });
                     },
                     onCancel: () => {
                        
@@ -155,22 +177,23 @@
                 //this.data6.splice(index, 1);
                 
             },
-            init(){
+            async init(){
+                this.$Loading.start();
                 let self = this
                 console.log(this.row)
                  //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                     //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
-                        axios.get(subscriptionUrl +'subscription-invitation', {
-                        params: {
-                            subscriptionId: this.row.subscriptionId
-                           // own : true
-                        },
-                        headers : {
-                            Authorization : Cookies.get('auth_token')
-                        }
-                    })
-                        .then(function(result){
+                await axios.get(subscriptionUrl +'subscription-invitation', {
+                    params: {
+                        subscriptionId: this.row.subscriptionId
+                        // own : true
+                    },
+                    headers : {
+                        Authorization : Cookies.get('auth_token')
+                    }
+                })
+                .then(function(result){
                     if(result.data.data.length == 0){
                         self.assignee = "No assignee found for this subscription"
                     }else{
@@ -179,6 +202,7 @@
                         self.data6 = self.assignee
                     }
                 })
+                self.$Loading.finish();
             }
         },
         mounted() {

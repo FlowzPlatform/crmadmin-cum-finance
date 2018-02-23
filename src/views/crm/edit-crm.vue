@@ -53,15 +53,7 @@
                 </div>
                 <div class="col-xs-8">
                   <Select v-model="finaldata.config" placeholder="Select Config" @on-change="configChange">
-                    <div v-if="domainConfig=='Xero'">
-											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='custom'">
-											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
-										</div>
+                    <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                   </Select>
                   <!-- <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete> -->
                   <!-- <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -75,7 +67,15 @@
 								</div>
 								<div class="col-xs-8">
                   <Select v-model="finaldata.cname" class="customer">
-										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										<div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
 									 <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -184,7 +184,7 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" show-upload-list='false' action='' style="padding:10px"> 
+  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
                 <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
               </Upload> 
@@ -241,7 +241,8 @@
         comment
     },
     data() {
-      return { 
+      return {
+        domainConfig: '',
         customerData:[],
         loading: false,
         crmdata: {},
@@ -385,8 +386,8 @@
       async calldata() {
         let resp
         let self = this
-
         var settingId = self.finaldata.config
+        alert(settingId)
         await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
@@ -396,7 +397,8 @@
           }
         })
         .then(async function(response) {
-          console.log(response)
+          console.log("%%%%%%%%%%%%%%%%%%%response",response)
+          self.domainConfig=response.data.domain 
           if(response.data.domain == 'custom'){
             self.customCustomerUrl = response.data.customer_url;
             self.customInvoiceUrl = response.data.invoice_url;
@@ -824,4 +826,7 @@
   .form-control {
       display: unset !important;
   }
+  .ivu-upload-list{
+		display: none;
+	}
 </style>
