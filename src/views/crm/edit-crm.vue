@@ -184,10 +184,10 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload":before-upload="handleUpload" action='' style="padding:10px"> 
-                <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
+  							<Upload id="fileUpload":before-upload="handleUpload" action='' :show-upload-list="uploadlist" style="padding:10px"> 
+                <Button type="ghost" icon="ios-cloud-upload-outline">Select new file </Button>
               </Upload> 
-                <div v-if="file !== ''" style="padding:10px">Uploaded file: {{ file.name }} 
+                <div v-if="file !== ''" style="padding:10px">Selected file: {{ file.name }} 
                   <Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
                 </div>
                 <!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
@@ -249,6 +249,7 @@
         customerData:[],
         loading: false,
         crmdata: {},
+	uploadlist:false,
         file:'',
         flag:false,
         finaldata: {
