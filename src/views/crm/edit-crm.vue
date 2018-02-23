@@ -184,10 +184,13 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" action='' style="padding:10px"> 
+  							<Upload id="fileUpload":before-upload="handleUpload" action='' style="padding:10px"> 
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
-                <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
               </Upload> 
+                <div v-if="file !== ''" style="padding:10px">Uploaded file: {{ file.name }} 
+                  <Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
+                </div>
+                <!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
 						</div>
 					</TabPane>
 					<TabPane label="Comments:" icon="ios-information-outline">
@@ -350,6 +353,9 @@
       }
     },
     methods: {
+      removefile(){
+				this.file = ''
+			},
       async handleUpload (file) {
         var self = this
         console.log('file',file)
@@ -387,7 +393,6 @@
         let resp
         let self = this
         var settingId = self.finaldata.config
-        alert(settingId)
         await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,

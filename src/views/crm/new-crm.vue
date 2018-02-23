@@ -26,10 +26,15 @@
 							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
-							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" show-upload-list='false' action='' style="padding:10px"> 
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px"> 
 								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
 							</Upload>
-							<div v-if="file !== null" style="margin-left:20px">Uploaded file: {{ file.name }} </div>
+							<div v-if="file !== ''" style="margin-left:20px">Uploaded file: {{ file.name }} 
+								<Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
+							</div>
+
+							<!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
+						
 						</div>
 					</div>
 				</div>
@@ -195,6 +200,9 @@
 				}
 			},
 		methods: {
+			removefile(){
+				this.file = ''
+			},
 			async handleUpload (file) {
 				var self = this
 				console.log('file',file)

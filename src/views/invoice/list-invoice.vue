@@ -2008,12 +2008,6 @@
   .panel-heading{
     padding: 4px 8px;
   }
-  .ivu-table table {
-    font-size: 14px;
-  }
-  .ivu-table th{
-    background-color: #d9edf7;
-  }
   .ivu-table-border th {
       border-right: 1px solid #ddd;
   }

@@ -113,6 +113,10 @@
                                 h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
                         }
+                    },
+                    {
+                        title : 'Assigned By' ,
+                        key : 'invitedBy'
                     }
                 ],
                  columns3: [
@@ -246,7 +250,6 @@
                 return str;
             },
             async getHistory(){
-                this.$Loading.start();
                  axios.get(subscriptionUrl+'subscription-invitation', {
 
                    // axios.get('http://172.16.230.86:3030/subscription-invitation', {
@@ -264,7 +267,6 @@
                         // this.options2 = sub_id;
                         
                     })
-                this.$Loading.finish();
             },
             async getDataOfSubscriptionUser() {
                 this.$Loading.start();
@@ -273,7 +275,7 @@
                 
                // axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
                     
-                    axios.get(subscriptionUrl + 'register-roles', {
+                    await axios.get(subscriptionUrl + 'register-roles', {
                         // headers: {
                         //     'Authorization': Cookies.get('auth_token')
                         // },
@@ -328,8 +330,8 @@
                         this.data3 = this.assigned_Arr3;
                         this.options2 = sub_id;
                         
+                        this.$Loading.finish();
                     })
-                this.$Loading.finish();
             },
             async inviteNow() {
                 

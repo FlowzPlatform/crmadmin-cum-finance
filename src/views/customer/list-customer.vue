@@ -605,12 +605,6 @@ export default {
 </script>
 
 <style>
-.ivu-table table {
-  font-size: 14px;
-}
-.ivu-table th{
-  background-color: #d9edf7;
-}
 .ivu-spin-main {
     width: 100%;
     text-align: -webkit-center;
