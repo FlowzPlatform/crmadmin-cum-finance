@@ -27,9 +27,9 @@
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
 							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px"> 
-								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
 							</Upload>
-							<div v-if="file !== ''" style="margin-left:20px">Uploaded file: {{ file.name }} 
+							<div v-if="file !== ''" style="margin-left:20px">Selected file: {{ file.name }} 
 								<Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
 							</div>
 
@@ -170,6 +170,7 @@
 		name: 'newcrm',
 		data() {
 			return {
+				uploadlist : false,
 				customerData:[],
 				customCustomerUrl: '',
 				crmdata: [],
