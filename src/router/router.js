@@ -239,19 +239,20 @@ export const appRouter = [
               //  name: 'Billing List', 
                // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
            // },
-            {
-                path: 'change-password',
-                title: 'Change Password',
-                icon: 'locked',
-                name: 'Change Password',
-                component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
-            },
+            
             {
                 path: 'set-swatches',
                 title: 'Set Swatches',
                 icon: 'android-color-palette',
                 name: 'Set Swatches',
                 component: resolve => { require(['@/views/admin-account/set-swatches.vue'], resolve);}
+            },
+            {
+                path: 'change-password',
+                title: 'Change Password',
+                icon: 'locked',
+                name: 'Change Password',
+                component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
             }
         ]
     },

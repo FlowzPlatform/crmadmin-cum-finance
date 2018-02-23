@@ -85,8 +85,8 @@ module.exports = {
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
         orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',
 
-        requestinfoapi: 'http://172.16.61.112:3032/request-info',
-        requestquoteapi: 'http://172.16.230.181:3032/request-quote'
+        requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
+        requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote'
     }
 
 }

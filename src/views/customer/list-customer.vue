@@ -97,30 +97,6 @@ export default {
         "key": "Name"
       },
       {
-        "title": "Status",
-        "key": "ContactStatus",
-        "sortable": true,
-        "width":120,
-        filters: [
-          {
-            label: 'ACTIVE',
-            value: 1
-          },
-          {
-            label: 'INACTIVE',
-            value: 2
-          }
-        ],
-        filterMultiple: false,
-        filterMethod (value, row) {
-          if (value === 1) {
-            return row.ContactStatus ==  'ACTIVE';
-          } else if (value === 2) {
-            return row.ContactStatus == 'INACTIVE';
-          }
-        }
-      },
-      {
         "title": "Email",
         "key": "EmailAddress",
         "sortable": true,
@@ -188,27 +164,12 @@ export default {
         render:(h,{row})=>{
           return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
         }
-      }
-    ],
-    columns2: [
-      {
-        "title": "Customer Name",
-        "key": "DisplayName"
       },
       {
         "title": "Status",
-        "key": "Active",
-        "width":120,
+        "key": "ContactStatus",
         "sortable": true,
-        render:(h,{row})=>{
-          if(row.Active == true)
-            {
-              return "ACTIVE"
-            }
-            else {
-              return 'INACTIVE'
-          }
-        },
+        "width":120,
         filters: [
           {
             label: 'ACTIVE',
@@ -227,6 +188,12 @@ export default {
             return row.ContactStatus == 'INACTIVE';
           }
         }
+      }
+    ],
+    columns2: [
+      {
+        "title": "Customer Name",
+        "key": "DisplayName"
       },
       {
         "title": "Email",
@@ -276,9 +243,79 @@ export default {
         render:(h,{row})=>{
               return row.BillAddr.Line1 +", "+row.BillAddr.City
         }
+      },
+      {
+        "title": "Status",
+        "key": "Active",
+        "width":120,
+        "sortable": true,
+        render:(h,{row})=>{
+          if(row.Active == true)
+            {
+              return "ACTIVE"
+            }
+            else {
+              return 'INACTIVE'
+          }
+        },
+        filters: [
+          {
+            label: 'ACTIVE',
+            value: 1
+          },
+          {
+            label: 'INACTIVE',
+            value: 2
+          }
+        ],
+        filterMultiple: false,
+        filterMethod (value, row) {
+          if (value === 1) {
+            return row.ContactStatus ==  'ACTIVE';
+          } else if (value === 2) {
+            return row.ContactStatus == 'INACTIVE';
+          }
+        }
       }
     ],
-    column3:[],
+    column3:[
+      {
+        "title": "Customer Name",
+        "key": "Name",
+        render:(h,{row})=>{
+          console.log("-------------row",row)
+          return row.Name
+          }
+      },
+      {
+        "title": "EmailAddress",
+        "key": "EmailAddress",
+        render:(h,{row})=>{
+          return row.EmailAddress
+          }
+      },
+      {
+        "title": "PhoneNumber",
+        "key": "PhoneNumber",
+        render:(h,{row})=>{
+          return row.PhoneNumber
+          }
+      },
+      {
+        "title": "Address",
+        "key": "Address",
+        render:(h,{row})=>{
+          return row.Address
+          }
+      },
+      {
+        "title": "ContactStatus",
+        "key": "ContactStatus",
+        render:(h,{row})=>{
+          return row.ContactStatus
+          }
+      }
+    ],
     data6: [],
     data7: [],
     filterArray: [],
@@ -417,7 +454,7 @@ export default {
               });
           }
           self.list = await self.mockTableData1(1,pageSize)
-          self.column3 = arr;
+          // self.column3 = arr;
         })
         .catch(function (error) {
           self.$Loading.error();

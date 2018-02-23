@@ -95,15 +95,15 @@
 									if (this.formValidate.gateway == 'stripe') {
 										delete patchData.x_api_login
 									}
-									let gateway = this.formValidate.gateway;
-									console.log("gateway",gateway);
-									var params = {'online_payment': {},'id' : configId}
-									delete patchData.gateway;
-									patchData['isDefault'] = true;
-									patchData['isDeleted'] = false;
-									params.online_payment[gateway] = patchData;
-									console.log("---------------------params online payment",params);
 									this.configs.forEach(item => {
+										let gateway = this.formValidate.gateway;
+										console.log("gateway",gateway);
+										var params = {'online_payment': {},'id' : item.id}
+										delete patchData.gateway;
+										patchData['isDefault'] = true;
+										patchData['isDeleted'] = false;
+										params.online_payment[gateway] = patchData;
+										console.log("---------------------params online payment",params);
 										// console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
 										axios({
 											method: 'PATCH',
@@ -250,7 +250,8 @@
 				let self = this
 				await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
 					headers:{
-						Authorization : Cookies.get('auth_token')
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
 					}
 				})
 				.then(function (response) {

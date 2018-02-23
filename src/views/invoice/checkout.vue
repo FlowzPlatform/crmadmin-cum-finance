@@ -399,7 +399,16 @@ export default {
             })
             .catch(function (err) {
               self.loading = false
-              self.$Message.error(err.response.data.message)
+              if (err.response.data.code === '404') {
+                self.$Notice.error({
+                      duration:0, 
+                      title: "Payment Credential Not Available",
+                      desc: err.response.data.message
+                  });
+              }
+              else {
+                self.$Message.error(err.response.data.message)
+              }
 
             });
             
