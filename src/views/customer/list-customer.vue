@@ -349,7 +349,13 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
+
+
       if(this.status != ''){
         console.log("this.status", this.status)
         this.filterArray = _.filter(this.filterArray,  function(item){
@@ -370,7 +376,12 @@ export default {
         });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
+      
       if(this.email != ''){
        console.log("this.email", this.email)
        this.filterArray = _.filter(this.filterArray,  function(item){
@@ -386,7 +397,11 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
     },
     async mockTableData2 (p,size) {
       console.log("p-------------->",p)

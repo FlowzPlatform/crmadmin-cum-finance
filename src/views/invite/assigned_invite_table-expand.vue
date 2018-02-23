@@ -136,6 +136,11 @@
                     data: { "to": data.toEmail, "from": data.fromEmail, "subject": "Invitation from Flowz", "body": SendEmailBody}
                 })
                 .then(async (result) => {
+                    console.log("result",result);
+                    self.$Notice.success({
+                        duration:0,
+                        desc: "Mail Sended Successfully"
+                    });
                     return true;
                 })
                 .catch(function(err){
