@@ -362,15 +362,15 @@ export default {
 
       axios.get(config.default.serviceUrl + 'settings', {
         params : {
-            isActive : true,
-            user : Cookies.get('user')
+            isActive : true
         },
         headers:{
-            Authorization : Cookies.get('auth_token')
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
         },
       })
       .then(function (response) {
-        // console.log("setting response",response);
+        console.log("setting response",response);
         self.list = self.list
         self.spinShow = false;
         if (response.data.data.length != 0)

@@ -32,7 +32,7 @@ import expandRow from './view-request-quote.vue';
 import requestInfo from './request-info.vue'
 import _ from 'lodash';
 import downloadRequestQuote from './download-requestQuote.vue';
-var api = "http://172.16.230.181:3032/request-quote";
+var api = config.default.requestquoteapi;
 export default {
   name: 'myaccount',
   components: { expandRow,requestInfo,downloadRequestQuote},
