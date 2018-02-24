@@ -26,10 +26,15 @@
 							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
-							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" show-upload-list='false' action='' style="padding:10px"> 
-								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px"> 
+								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
 							</Upload>
-							<div v-if="file !== null" style="margin-left:20px">Uploaded file: {{ file.name }} </div>
+							<div v-if="file !== ''" style="margin-left:20px">Selected file: {{ file.name }} 
+								<Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
+							</div>
+
+							<!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
+						
 						</div>
 					</div>
 				</div>
@@ -165,12 +170,12 @@
 		name: 'newcrm',
 		data() {
 			return {
+				uploadlist : false,
 				customerData:[],
 				customCustomerUrl: '',
 				crmdata: [],
 				domainConfig: "",
 				loading: false,
-				domainConfig: "",
 				file: '',
 				finaldata: {
 					name: '',
@@ -196,6 +201,9 @@
 				}
 			},
 		methods: {
+			removefile(){
+				this.file = ''
+			},
 			async handleUpload (file) {
 				var self = this
 				console.log('file',file)
@@ -208,61 +216,60 @@
 
 				var settingId = self.finaldata.config
 				await axios({
-								method:'get',
-								url: config.default.serviceUrl + 'settings/'+settingId,
-								headers:{
-									Authorization : Cookies.get('auth_token'),
-									subscriptionId : Cookies.get('subscriptionId')
-								},
+					method:'get',
+					url: config.default.serviceUrl + 'settings/'+settingId,
+					headers:{
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
+					},
+				})
+				.then(async function(response) {
+						self.domainConfig=response.data.domain
+					console.log(response)
+					if(response.data.domain == 'custom'){
+
+							self.customCustomerUrl = response.data.customer_url;
+							self.customInvoiceUrl = response.data.invoice_url;
+							
+						await axios({
+							method: 'get',
+							url: self.customCustomerUrl,
+							params : {settingId : response.data.id},
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							}
 							})
-								.then(async function(response) {
-									self.domainConfig=response.data.domain
-								console.log(response)
-								self.domainConfig=response.data.domain
-								if(response.data.domain == 'custom'){
-
-										self.customCustomerUrl = response.data.customer_url;
-										self.customInvoiceUrl = response.data.invoice_url;
-										
-									await axios({
-										method: 'get',
-										url: self.customCustomerUrl,
-										params : {settingId : response.data.id},
-										headers:{
-											Authorization : Cookies.get('auth_token')
-										}
-										})
-										.then(function (response) {
-										console.log(response)
-										resp = response.data.data
-										self.customerData = resp
-										console.log("self.customerData", self.customerData)
-										})
-										.catch(function (error) {
-										console.log(error.response)
-										self.$Message.error(error.response.data.data[0].message)
-										});
-
-								}else{
-										await axios({
-												method: 'get',
-												url: config.default.serviceUrl + 'contacts',
-												params: {
-												settingId : settingId
-												},
-												headers:{
-													Authorization : Cookies.get('auth_token')
-												},
-											}).then(function (response) {
-											
-												resp = response.data
-												self.customerData = resp[0].data
-											})
-											.catch(function (error) {
-												console.log(error);
-											});
-								}
+							.then(function (response) {
+							console.log(response)
+							resp = response.data.data
+							self.customerData = resp
+							console.log("self.customerData", self.customerData)
+							})
+							.catch(function (error) {
+							console.log(error.response)
+							self.$Message.error(error.response.data.data[0].message)
 							});
+
+					}else{
+							await axios({
+									method: 'get',
+									url: config.default.serviceUrl + 'contacts',
+									params: {
+									settingId : settingId
+									},
+									headers:{
+										Authorization : Cookies.get('auth_token')
+									},
+								}).then(function (response) {
+								
+									resp = response.data
+									self.customerData = resp[0].data
+								})
+								.catch(function (error) {
+									console.log(error);
+								});
+					}
+				});
 				
 				
 				console.log("response------>iuy",resp);
@@ -1193,5 +1200,8 @@
 	}
 	.col-xs-3 {
 	    float: none;
+	}
+	.ivu-upload-list{
+		display: none;
 	}
 </style>

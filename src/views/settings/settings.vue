@@ -1097,7 +1097,7 @@
                     });
                 }else if(error.response.status == 403){
                     console.log("error.response",error.response)
-                    if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
+                    // if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
                         axios({
                             method:'get',
                             url:feathersUrl +'settings',
@@ -1131,14 +1131,14 @@
                             console.log("self.tabarr",self.tabarr)
                             self.$Loading.finish();
                         })
-                    }
-                    else {
-                        self.$Notice.error({
-                            duration:0, 
-                            title: error.response.statusText,
-                            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                        });
-                    }
+                    // }
+                    // else {
+                    //     self.$Notice.error({
+                    //         duration:0, 
+                    //         title: error.response.statusText,
+                    //         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                    //     });
+                    // }
                 }
             }); 
         }

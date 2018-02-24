@@ -1,18 +1,22 @@
-<style scoped>
-    .expand-row{
-        margin-bottom: 16px;
-    }
+<style>
+    .ivu-spin-main {
+      width: 100% !important;
+      text-align: -webkit-center !important;
+  }
 </style>
 <template>
     <div>
-        
-             
-        <div v-if = 'data6.length > 0'>
-           <Table border :columns="columns7" :data="data6"></Table>
+        <div v-if="spinShow">
+                  <Spin size="large"></Spin>
         </div>
-        <div v-else style="text-align:center;color:#fd5e5e">
-            <!-- <h5>{{assignee}}</h5> -->
-            <h5>No one is assigned</h5>
+        <div v-else>
+            <div v-if = 'data6.length > 0'>
+                <Table border :columns="columns7" :data="data6"></Table>
+            </div>
+            <div v-else style="text-align:center;color:#fd5e5e">
+                <!-- <h5>{{assignee}}</h5> -->
+                <h5>No one is assigned</h5>
+            </div>
         </div>
     </div>
 </template>
@@ -22,6 +26,8 @@
     let subscriptionUrl = config.default.subscriptionUrl
     import Cookies from 'js-cookie';
     import moment from 'moment'
+    let emailTemp = require('../emailTemplate')
+    let SendEmailBodyInvite = emailTemp.sendInviteemail;
     export default {
         props: {
             row: Object,
@@ -29,8 +35,9 @@
         },
         data(){
             return{
-              assignee   : '',
-              columns7: [
+                spinShow: true,
+                assignee   : '',
+                columns7: [
                     {
                         title: 'Assignee Email',
                         key: 'toEmail',
@@ -83,7 +90,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.sendEmail(params.index)
+                                            this.sendEmail(params.row)
                                         }
                                     }
                                 }, 'Send Email'),
@@ -115,6 +122,31 @@
             show (index) {
                 
             },
+            sendEmail (data) {
+                console.log("data-------",data)
+                var SendEmailBody = SendEmailBodyInvite.replace(/WriteSenderNameHere/i, data.fromEmail);
+                SendEmailBody = SendEmailBody.replace(/domainKey/g, process.env.domainkey);
+                SendEmailBody = SendEmailBody.replace(/SYSTEMNAME/g, Object.keys(data.role)[0]);
+                SendEmailBody = SendEmailBody.replace(/ROLE/g, Object.values(data.role)[0]);
+                console.log("SendEmailBody",SendEmailBody)
+                axios({
+                    method: 'post',
+                    url: config.default.baseUrl +'/vmailmicro/sendEmail',
+                    headers: {Authorization : Cookies.get('auth_token')},
+                    data: { "to": data.toEmail, "from": data.fromEmail, "subject": "Invitation from Flowz", "body": SendEmailBody}
+                })
+                .then(async (result) => {
+                    console.log("result",result);
+                    self.$Notice.success({
+                        duration:0,
+                        desc: "Mail Sended Successfully"
+                    });
+                    return true;
+                })
+                .catch(function(err){
+                    return err
+                })
+            },
             remove (params) {
 
                 this.$Modal.confirm({
@@ -139,14 +171,14 @@
                             headers : {
                                 "Authorization": Cookies.get('auth_token'),
                             }
-                            })
-                            .then(function(response) {
-                                console.log(response)
-                                self.data6.splice(params.index, 1);
-                                self.$Message.success('User Un-assigned successfully');
-                            }).catch(function(err){
-                                console.log(err)
-                            });
+                        })
+                        .then(function(response) {
+                            console.log(response)
+                            self.data6.splice(params.index, 1);
+                            self.$Message.success('User Un-assigned successfully');
+                        }).catch(function(err){
+                            console.log(err)
+                        });
                     },
                     onCancel: () => {
                        
@@ -155,22 +187,24 @@
                 //this.data6.splice(index, 1);
                 
             },
-            init(){
+            async init(){
+                
                 let self = this
                 console.log(this.row)
                  //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                     //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
-                        axios.get(subscriptionUrl +'subscription-invitation', {
-                        params: {
-                            subscriptionId: this.row.subscriptionId
-                           // own : true
-                        },
-                        headers : {
-                            Authorization : Cookies.get('auth_token')
-                        }
-                    })
-                        .then(function(result){
+                await axios.get(subscriptionUrl +'subscription-invitation', {
+                    params: {
+                       // subscriptionId: this.row.subscriptionId
+                        // own : true
+                    },
+                    headers : {
+                        Authorization : Cookies.get('auth_token')
+                    }
+                })
+                .then(function(result){
+                    self.spinShow = false;
                     if(result.data.data.length == 0){
                         self.assignee = "No assignee found for this subscription"
                     }else{

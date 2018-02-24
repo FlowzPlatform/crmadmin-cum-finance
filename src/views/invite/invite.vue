@@ -113,6 +113,10 @@
                                 h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
                         }
+                    },
+                    {
+                        title : 'Assigned By' ,
+                        key : 'invitedBy'
                     }
                 ],
                  columns3: [
@@ -232,8 +236,10 @@
             }
         },
         mounted() {
+            
             this.getDataOfSubscriptionUser();
             this.getHistory();
+            
         },
        
         methods: {
@@ -263,12 +269,13 @@
                     })
             },
             async getDataOfSubscriptionUser() {
+                this.$Loading.start();
                 let sub_id = [];
                 let Role_id = [];
                 
                // axios.get('http://api.flowzcluster.tk/subscription/register-roles', {
                     
-                    axios.get(subscriptionUrl + 'register-roles', {
+                    await axios.get(subscriptionUrl + 'register-roles', {
                         // headers: {
                         //     'Authorization': Cookies.get('auth_token')
                         // },
@@ -323,8 +330,8 @@
                         this.data3 = this.assigned_Arr3;
                         this.options2 = sub_id;
                         
+                        this.$Loading.finish();
                     })
-
             },
             async inviteNow() {
                 

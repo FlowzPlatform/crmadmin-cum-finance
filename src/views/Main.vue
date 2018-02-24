@@ -6,7 +6,8 @@
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
         
-        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'206px', overflow: shrink ? 'visible' : 'auto'}">
+        <!--<div class="sidebar-menu-con" :style="{width: shrink?'60px':'206px', overflow: shrink ? 'visible' : 'auto'}"> -->
+        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'225px', overflow: shrink ? 'visible' : 'auto'}">
             <shrinkable-menu
                 :shrink="shrink"
                 @on-change="handleSubmenuChange"
@@ -21,7 +22,8 @@
                 </div>
             </shrinkable-menu>
         </div>
-        <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
+        <!--<div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">-->
+        <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'225px'}">
 
             <!-- <alert type="success" show-icon closable>
             A success prompt
@@ -112,7 +114,8 @@
                 <tags-page-opened :pageTagsList="pageTagsList"></tags-page-opened>
             </div>
         </div>
-        <div class="single-page-con" :style="{left: shrink?'60px':'200px'}">
+        <!--<div class="single-page-con" :style="{left: shrink?'60px':'200px'}">-->
+        <div class="single-page-con" :style="{left: shrink?'60px':'225px'}">
             <div class="single-page">
                 <keep-alive :include="cachePage">
                     <router-view></router-view>

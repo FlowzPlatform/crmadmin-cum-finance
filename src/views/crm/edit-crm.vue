@@ -53,15 +53,7 @@
                 </div>
                 <div class="col-xs-8">
                   <Select v-model="finaldata.config" placeholder="Select Config" @on-change="configChange">
-                    <div v-if="domainConfig=='Xero'">
-											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='custom'">
-											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
-										</div>
+                    <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                   </Select>
                   <!-- <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete> -->
                   <!-- <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -75,7 +67,15 @@
 								</div>
 								<div class="col-xs-8">
                   <Select v-model="finaldata.cname" class="customer">
-										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										<div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
 									 <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -184,10 +184,13 @@
               </div>
               <div v-else>    
               </div>
-  							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" show-upload-list='false' action='' style="padding:10px"> 
-                <Button type="ghost" icon="ios-cloud-upload-outline">Select new file to upload</Button>
-                <div v-if="file !== null" style="padding:10px">Uploaded file: {{ file.name }} </div>
+  							<Upload id="fileUpload":before-upload="handleUpload" action='' :show-upload-list="uploadlist" style="padding:10px"> 
+                <Button type="ghost" icon="ios-cloud-upload-outline">Select new file </Button>
               </Upload> 
+                <div v-if="file !== ''" style="padding:10px">Selected file: {{ file.name }} 
+                  <Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
+                </div>
+                <!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
 						</div>
 					</TabPane>
 					<TabPane label="Comments:" icon="ios-information-outline">
@@ -241,10 +244,12 @@
         comment
     },
     data() {
-      return { 
+      return {
+        domainConfig: '',
         customerData:[],
         loading: false,
         crmdata: {},
+	uploadlist:false,
         file:'',
         flag:false,
         finaldata: {
@@ -349,6 +354,9 @@
       }
     },
     methods: {
+      removefile(){
+				this.file = ''
+			},
       async handleUpload (file) {
         var self = this
         console.log('file',file)
@@ -385,7 +393,6 @@
       async calldata() {
         let resp
         let self = this
-
         var settingId = self.finaldata.config
         await axios({
           method:'get',
@@ -396,7 +403,8 @@
           }
         })
         .then(async function(response) {
-          console.log(response)
+          console.log("%%%%%%%%%%%%%%%%%%%response",response)
+          self.domainConfig=response.data.domain 
           if(response.data.domain == 'custom'){
             self.customCustomerUrl = response.data.customer_url;
             self.customInvoiceUrl = response.data.invoice_url;
@@ -824,4 +832,7 @@
   .form-control {
       display: unset !important;
   }
+  .ivu-upload-list{
+		display: none;
+	}
 </style>

@@ -1,62 +1,65 @@
 <template>
   <div>
-    <Card style="height:404px" class = 'card'>
-   <div class="row">
-     <div class="col-lg-6 col-md-6 col-sm-6">
-       <h1 v-if = "!showForgotPassword">
-         <i class="fa fa-lock"></i> Change Password
-       </h1>
-       <h1 v-if = "showForgotPassword">
-         <i class="fa fa-key"></i> Forgot Password
-       </h1>
-     </div>
-   </div>
-   <div class="col-lg-6 col-md-6 col-sm-6">
-    <i-form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1">
-      <div v-if = 'showForgotPassword'>
-        <form-item label="Email" prop="email">
-          <Input type="email" v-model="formValidate1.email" placeholder="Enter Email"></Input>
-            <!-- <i-input type="email" v-model="formValidate.email" placeholder="Enter Email"></i-input> -->
-        </form-item>
-      </div>
-      </i-form>
-      <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate">
-      <div v-if = '!showForgotPassword'>
-        <form-item label="Current Password" prop="oldpasswd">
-            <Input :type="showCurrentpassword" v-model="formValidate.oldpasswd" placeholder="Enter Current Password">
-              <Button slot="append" icon="eye"@click = "showpassword('showCurrentpassword')" ></Button>
-            </Input>
-        </form-item>
-        <form-item label="New Password" prop="newpasswd">
-          <Input :type="showNewpassword" v-model="formValidate.newpasswd" placeholder="Enter New Password">
-            <Button slot="append" icon="eye" @click ="showpassword('showNewpassword')" ></Button>
-          </Input>
-            <!-- <i-input type="password" v-model="formValidate.newpasswd" placeholder="Enter New Password"></i-input> -->
-        </form-item>
-        <form-item label="Confirm Password" prop="confpasswd">
-          <Input :type="showConfirmpassword" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password">
-            <Button slot="append" icon="eye" @click ="showpassword('showConfirmpassword')" ></Button>
-          </Input>
-            <!-- <i-input type="password" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password"></i-input> -->
-        </form-item>
-        <form-item>
-            <i-button type="primary" @click="handleSubmit('formValidate')">Save</i-button>
-            <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</i-button>
-            <a @click="forgotPassword()">Forgot Password</a>
-            <span class="required-field">* Required Fields</span>
-        </form-item>
-      </div>
-      <div v-if = 'showForgotPassword'>
-        <form-item>
-          <i-button type="primary" v-if = 'showForgotPassword' @click="forgotPasswordSendEmail('formValidate1')">Submit</i-button>
-          <a @click="backtoLogin()">Back to Change Password</a>
-        </form-item>
-      </div>
-
-    </i-form>
-</div>
-</Card>
-</div>
+    <Row>
+      <Col span="12" offset="6">
+        <Card style="height:404px" class = 'card'>
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <h1 v-if = "!showForgotPassword">
+                <i class="fa fa-lock"></i> Change Password
+              </h1>
+              <h1 v-if = "showForgotPassword">
+                <i class="fa fa-key"></i> Forgot Password
+              </h1>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6" style="width: 100%;">
+            <i-form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1">
+              <div v-if = 'showForgotPassword'>
+                <form-item label="Email" prop="email">
+                  <Input type="email" v-model="formValidate1.email" placeholder="Enter Email"></Input>
+                    <!-- <i-input type="email" v-model="formValidate.email" placeholder="Enter Email"></i-input> -->
+                </form-item>
+              </div>
+            </i-form>
+            <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate">
+              <div v-if = '!showForgotPassword'>
+                <form-item label="Current Password" prop="oldpasswd">
+                    <Input :type="showCurrentpassword" v-model="formValidate.oldpasswd" placeholder="Enter Current Password">
+                      <Button slot="append" icon="eye"@click = "showpassword('showCurrentpassword')" ></Button>
+                    </Input>
+                </form-item>
+                <form-item label="New Password" prop="newpasswd">
+                  <Input :type="showNewpassword" v-model="formValidate.newpasswd" placeholder="Enter New Password">
+                    <Button slot="append" icon="eye" @click ="showpassword('showNewpassword')" ></Button>
+                  </Input>
+                    <!-- <i-input type="password" v-model="formValidate.newpasswd" placeholder="Enter New Password"></i-input> -->
+                </form-item>
+                <form-item label="Confirm Password" prop="confpasswd">
+                  <Input :type="showConfirmpassword" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password">
+                    <Button slot="append" icon="eye" @click ="showpassword('showConfirmpassword')" ></Button>
+                  </Input>
+                    <!-- <i-input type="password" v-model="formValidate.confpasswd" placeholder="Enter Confirm Password"></i-input> -->
+                </form-item>
+                <form-item>
+                    <i-button type="primary" @click="handleSubmit('formValidate')">Save</i-button>
+                    <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</i-button>
+                    <a @click="forgotPassword()">Forgot Password</a>
+                    <span class="required-field">* Required Fields</span>
+                </form-item>
+              </div>
+              <div v-if = 'showForgotPassword'>
+                <form-item>
+                  <i-button type="primary" v-if = 'showForgotPassword' @click="forgotPasswordSendEmail('formValidate1')">Submit</i-button>
+                  <a @click="backtoLogin()">Back to Change Password</a>
+                </form-item>
+              </div>
+            </i-form>
+          </div>
+        </Card>
+      </Col>
+    </Row>
+  </div>
 </template>
 
 <script>

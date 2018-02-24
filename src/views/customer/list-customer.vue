@@ -288,14 +288,14 @@ export default {
           }
       },
       {
-        "title": "EmailAddress",
+        "title": "Email Address",
         "key": "EmailAddress",
         render:(h,{row})=>{
           return row.EmailAddress
           }
       },
       {
-        "title": "PhoneNumber",
+        "title": "Phone Number",
         "key": "PhoneNumber",
         render:(h,{row})=>{
           return row.PhoneNumber
@@ -309,7 +309,7 @@ export default {
           }
       },
       {
-        "title": "ContactStatus",
+        "title": "Status",
         "key": "ContactStatus",
         render:(h,{row})=>{
           return row.ContactStatus
@@ -349,7 +349,13 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
+
+
       if(this.status != ''){
         console.log("this.status", this.status)
         this.filterArray = _.filter(this.filterArray,  function(item){
@@ -370,7 +376,12 @@ export default {
         });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
+      
       if(this.email != ''){
        console.log("this.email", this.email)
        this.filterArray = _.filter(this.filterArray,  function(item){
@@ -386,7 +397,11 @@ export default {
       });
        console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
-      }
+      }else{
+          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
     },
     async mockTableData2 (p,size) {
       console.log("p-------------->",p)
@@ -605,12 +620,6 @@ export default {
 </script>
 
 <style>
-.ivu-table table {
-  font-size: 14px;
-}
-.ivu-table th{
-  background-color: #d9edf7;
-}
 .ivu-spin-main {
     width: 100%;
     text-align: -webkit-center;

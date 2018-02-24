@@ -60,11 +60,11 @@ module.exports = {
 
 
 
-        flowzDashboardUrl: 'https://dashboard.' + process.env.domainkey,
-        flowzBuilderUrl: 'https://webbuilder.' + process.env.domainkey,
-        flowzVmailUrl: 'https://vmail.' + process.env.domainkey,
-        flowzUploaderUrl: 'https://uploader.' + process.env.domainkey,
-        flowzDbetlUrl: 'https://dbetl.' + process.env.domainkey,
+        flowzDashboardUrl: 'https://www.dashboard.' + process.env.domainkey,
+        flowzBuilderUrl: 'https://www.webbuilder.' + process.env.domainkey,
+        flowzVmailUrl: 'https://www.vmail.' + process.env.domainkey,
+        flowzUploaderUrl: 'https://www.uploader.' + process.env.domainkey,
+        flowzDbetlUrl: 'https://www.dbetl.' + process.env.domainkey,
 
         loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
         loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
@@ -80,6 +80,7 @@ module.exports = {
 
         serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
         // serviceUrl :            'http://localhost:3037/',
+        baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
         projecturl: 'https://api.' + process.env.domainkey + '/mom/',
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
