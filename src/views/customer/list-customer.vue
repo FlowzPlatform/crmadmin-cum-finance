@@ -34,10 +34,10 @@
                           <label>Status</label>
                       </div>
                       <div class="panel-collapse collapse" id="status">
-                          <select class="form-control mb-2 mb-sm-0" v-model="status">
+                          <select class="form-control mb-2 mb-sm-0" v-model="status" id="selectStatus">
                               <option value="">All</option>
-                              <option value="ACTIVE">ACTIVE</option>
-                              <option value="INACTIVE">INACTIVE</option>
+                              <!-- <option value="ACTIVE">ACTIVE</option>
+                              <option value="INACTIVE">INACTIVE</option> -->
                           </select>
                       </div>
                   </div>
@@ -509,11 +509,25 @@ export default {
       $('#selectCustomer').children('option:not(:first)').remove();
       var EmailArr = [];
       $('#selectEmail').children('option:not(:first)').remove();
+      var StatusArr = [];
+      $('#selectStatus').children('option:not(:first)').remove();
+
 
       self.data6.forEach (obj => {
         console.log("obj------------------->",obj);
         if(obj.Name != undefined){
           NameArr.push(obj.Name);
+          if(StatusArr.length != 0){           
+            StatusArr.forEach(item => {
+              if(item == obj.ContactStatus){
+
+              }else{
+                StatusArr.push(obj.ContactStatus);
+              }
+            })
+          }else{
+            StatusArr.push(obj.ContactStatus);
+          }
           if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
 
           }else{
@@ -525,7 +539,30 @@ export default {
             console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
             EmailArr.push(obj.PrimaryEmailAddr.Address)
           }
-          console.log('EmailArr------------>',EmailArr)
+          if(obj.Active != undefined){
+            if(StatusArr.length != 0){
+              StatusArr.forEach(item => {
+                 if(obj.Active == true){
+                    if(item == "ACTIVE"){
+                    }else{
+                      StatusArr.push("ACTIVE");
+                    }
+                  }else{
+                    if(item == "INACTIVE"){
+                    }else{
+                      StatusArr.push("INACTIVE");
+                    }
+                  }
+            })              
+            }else{
+              if(obj.Active == true){
+                  StatusArr.push("ACTIVE");
+              }else{
+                StatusArr.push("INACTIVE");
+              }
+            }
+          }
+          console.log('StatusArr------------>',StatusArr)
         }
       })
 
@@ -546,6 +583,13 @@ export default {
 
       EmailArr.forEach(item => {
         var y = document.getElementById("selectEmail");
+        var option = document.createElement("option");
+        option.text = item;
+        y.add(option);
+      })
+
+      StatusArr.forEach(item => {
+        var y = document.getElementById("selectStatus");
         var option = document.createElement("option");
         option.text = item;
         y.add(option);
