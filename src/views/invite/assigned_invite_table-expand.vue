@@ -196,7 +196,7 @@
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
                 await axios.get(subscriptionUrl +'subscription-invitation', {
                     params: {
-                       // subscriptionId: this.row.subscriptionId
+                        subscriptionId: this.row.subscriptionId
                         // own : true
                     },
                     headers : {
