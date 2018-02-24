@@ -18,7 +18,7 @@
                 <div slot="top" class="logo-con">
 
                     <img v-show="!shrink" src="../images/flowz-logo2.png" key="max-logo" />
-                    <img v-show="shrink" src="../images/flowz-logo2.png" key="min-logo" style="height: 22px;" /
+                    <img v-show="shrink" src="../images/flowz-logo2.png" key="min-logo" style="height: 22px;" />
                 </div>
             </shrinkable-menu>
         </div>
