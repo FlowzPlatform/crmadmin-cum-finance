@@ -13,7 +13,7 @@
         </div>
       </TabPane>
       <TabPane label="Imprint Color">
-        <Table border :columns="columns2" :data="list2" ></Table>
+        <Table border :columns="columns2" :data="list2" @on-row-click="myrwoclick"></Table>
         <div style="margin: 10px;overflow: hidden">
           <div style="float: right;">
             <Page :total="len" :current="1" @on-change="changePage"></Page>
@@ -54,9 +54,9 @@ export default {
     selectRadio2:'',
     hexcode1:'',
     imgurl1:'',
-    flagHaxCode1: false,
+    flagHexCode1: false,
     flagImageUrl1: false,
-    flagHaxCode2: false,
+    flagHexCode2: false,
     flagImageUrl2: false,
     columns1: [
       {
@@ -107,19 +107,18 @@ export default {
                 display: 'inline-table',
                 fontWeight:'200'
               }
-            }, 'ImageUrl')
+            }, 'Upload Image')
           ])
         },
       },
       {
-        title: '#Haxcode',
+        title: '#Hexcode',
         key: '',
         align: 'center',
-        className: '#Haxcode',
+        className: '#Hexcode',
         render: (h, params) => {
           return h('Input', {
             props: {
-              // value: this.list1[(this.page - 1) * 10 + (params.index)].hexcode1,
               value: this.list1[params.index].hexcode1,
               disabled: this.list1[params.index].ishexDisable
             },
@@ -140,7 +139,7 @@ export default {
                             return h('Upload', {
                               props: {
                                   action: '',
-                                  beforeUpload	: this.handleUpload
+                                  beforeUpload	: this.handleUpload1
                               }
                             },[
                                 h('Button', {
@@ -160,7 +159,7 @@ export default {
                                     style: {
                                         // marginRight: '5px'
                                     }
-                                }, this.list1[params.index].imgurl1),
+                                },this.list1[params.index].file),
                             ]);
                         }
                     },
@@ -169,16 +168,36 @@ export default {
         key: '',
         align: 'center',
         render: (h, params) => {
-          return  h('Icon', {
-              props: {
-                type: 'android-checkbox-blank',
-                // color: this.list1[(this.page - 1) * 10 + (params.index)].colorBox1
-                color: this.list1[params.index].colorBox1
-              },
-              style: {
-                fontSize: '40px'
-              }
-            })
+          if(this.list1[params.index].checkvalue == 'Hexcode'){
+            return  h('Icon', {
+                props: {
+                  type: 'android-checkbox-blank',
+                  color: this.list1[params.index].colorBox1
+                },
+                style: {
+                  fontSize: '40px'
+                }
+              })
+          } else{
+            return h('img', {
+                              attrs: {
+                                src: this.list1[params.index].imageBox1
+                              },
+                              style: {
+                                height:'27px',
+                                width:'27px',
+                                margin: '2px',
+                              },
+                              className: 'test',
+                              on: {
+                                // click: () => {
+                                //   this.makepayment(params.row)
+                                // }
+                            }
+                          })
+
+          }
+
           }
       },
       {
@@ -191,6 +210,7 @@ export default {
                                 h('Button', {
                                     props: {
                                         type: 'primary',
+                                        loading: this.list1[params.index].loading1,
                                         size: 'small'
                                     },
                                     style: {
@@ -221,18 +241,18 @@ export default {
           return h('RadioGroup', {
             props: {
               vertical: true,
-              value: this.data2[params.index].checkvalue,
+              value: this.list2[params.index].checkvalue,
               size: 'small'
             },
             on: {
               'on-change': (value) => {
-                this.data2[params.index].checkvalue = value
+                this.list2[params.index].checkvalue = value
                 if (value === 'Hexcode') {
-                  this.data2[params.index].ishexDisable = false
-                  this.data2[params.index].isimgurlDisable = true
+                  this.list2[params.index].ishexDisable = false
+                  this.list2[params.index].isimgurlDisable = true
                 } else {
-                  this.data2[params.index].ishexDisable = true
-                  this.data2[params.index].isimgurlDisable = false
+                  this.list2[params.index].ishexDisable = true
+                  this.list2[params.index].isimgurlDisable = false
                 }
               }
             }
@@ -256,53 +276,29 @@ export default {
                 display: 'inline-table',
                 fontWeight:'200'
               }
-            }, 'ImageUrl')
+            }, 'Upload Image')
           ])
         },
       },
       {
-        title: '#Haxcode',
+        title: '#Hexcode',
         key: '',
         align: 'center',
-        className: '#Haxcode',
+        className: '#Hexcode',
         render: (h, params) => {
           return h('Input', {
             props: {
-              value: this.data2[params.index].hexcode2,
-              disabled: this.data2[params.index].ishexDisable
+              value: this.list2[params.index].hexcode2,
+              disabled: this.list2[params.index].ishexDisable
             },
             on: {
               input: (val) => {
-                this.data2[params.index].hexcode2 = val;
+                this.list2[params.index].hexcode2 = val;
               }
             }
           })
         }
       },
-      // {
-      //   title: 'ImageUrl',
-      //   key: '',
-      //   align: 'center',
-      //   className: 'ImageUrl',
-      //   render: (h, params) => {
-      //     return h('Upload', {
-      //       props: {
-      //         type: 'file',
-      //         size: 'small',
-      //         value: '',
-      //         disabled: this.data1[params.index].isimgurlDisable
-      //       },
-      //       style: {
-      //           marginRight: '5px'
-      //       },
-      //       on: {
-      //         // input: (val) => {
-      //         //   this.data1[params.index].imgurl1 = val;
-      //         // }
-      //       }
-      //     },'upload')
-      //   }
-      // },
       {
         title: 'Upload Image',
                         key: 'action',
@@ -312,24 +308,26 @@ export default {
                             return h('Upload', {
                               props: {
                                   action: '',
-                                  beforeUpload	: this.handleUpload
+                                  beforeUpload	: this.handleUpload2
                               }
                             },[
                                 h('Button', {
                                     props: {
                                         type: 'ghost',
                                         icon: 'ios-cloud-upload-outline',
-                                        disabled: this.data2[params.index].isimgurlDisable
+                                        disabled: this.list2[params.index].isimgurlDisable
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
-                                        // click: () => {
-                                        //     this.save1(params.index)
-                                        // }
                                     }
                                 }, 'Upload Image'),
+                                h('div', {
+                                    style: {
+                                        // marginRight: '5px'
+                                    }
+                                },this.list2[params.index].file),
                             ]);
                         }
                     },
@@ -338,16 +336,36 @@ export default {
         key: '',
         align: 'center',
         render: (h, params) => {
-          return h('Icon', {
-            props: {
-              type: 'android-checkbox-blank',
-              color: this.data2[params.index].colorBox2
-            },
-            style: {
-              fontSize: '40px'
-            }
-          })
-        }
+          if(this.list2[params.index].checkvalue == 'Hexcode'){
+            return  h('Icon', {
+                props: {
+                  type: 'android-checkbox-blank',
+                  color: this.list2[params.index].colorBox2
+                },
+                style: {
+                  fontSize: '40px'
+                }
+              })
+          } else{
+            return h('img', {
+                              attrs: {
+                                src: this.list2[params.index].imageBox2
+                              },
+                              style: {
+                                height:'27px',
+                                width:'27px',
+                                margin: '2px'
+                              },
+                              on: {
+                                // click: () => {
+                                //   this.makepayment(params.row)
+                                // }
+                            }
+                          })
+
+          }
+
+          }
       },
       {
         title: 'Action',
@@ -359,6 +377,7 @@ export default {
                                 h('Button', {
                                     props: {
                                         type: 'primary',
+                                        loading: this.list2[params.index].loading2,
                                         size: 'small'
                                     },
                                     style: {
@@ -386,8 +405,13 @@ export default {
       this.tabIndex = name
       this.getvidData()
     },
-    handleUpload(file){
+    handleUpload1(file){
       this.list1[this.rowIndex].imgurl1 = file
+      this.list1[this.rowIndex].file = file.name
+    },
+    handleUpload2(file){
+      this.list2[this.rowIndex].imgurl2 = file
+      this.list2[this.rowIndex].file = file.name
     },
     async changePage (p) {
       this.page = p
@@ -403,8 +427,9 @@ export default {
       return mydata.slice((p - 1) * size, p * size);
     },
     async mockTableData2 (p,size) {
-      this.len = this.data2.length
-      return this.data2.slice((p - 1) * size, p * size);
+      let mydata = _.cloneDeep(this.data2)
+      this.len = mydata.length
+      return mydata.slice((p - 1) * size, p * size);
     },
     async getColorTableData(){
       var self = this
@@ -440,23 +465,32 @@ export default {
         headers: {'Authorization': Cookies.get('auth_token'),
                   'vid': object.vid}
         }).then(async function (response) {
+          var uniqData = _.uniqBy(response.data.aggregations.group_by_attributes.buckets, 'key');
+          console.log('uniqData..............', uniqData)
           await self.getColorTableData()
-          $.each(response.data.aggregations.group_by_attributes.buckets,function(index,item){
+          $.each(uniqData,function(index,item){
 
             item.checkvalue = 'Hexcode'
             item.ishexDisable= false
             item.isimgurlDisable= true
             item.colorBox1 = 'white'
+            item.imageBox1=''
             _.find(self.data, function(o) {
               if(o.colorname == item.key && o.attribute_name == 'color'){
-                testdata.push({hexcode:o.hexcode, index:index})
+                console.log('iiiiiiiiiiiiiiiiiiii',o.imagefile)
+                testdata.push({hexcode:o.hexcode, index:index, imagefile:o.imagefile})
               }
              });
           })
-          self.data1 = response.data.aggregations.group_by_attributes.buckets
+          self.data1 = uniqData
           $.each(testdata,function(index,item){
-            self.data1[item.index].colorBox1 = item.hexcode
+            if(item.hexcode == undefined){
+              self.data1[item.index].colorBox1 = 'white'
+            } else {
+              self.data1[item.index].colorBox1 = item.hexcode
+            }
             self.data1[item.index].hexcode1 = item.hexcode
+            self.data1[item.index].imageBox1 = item.imagefile
           })
           self.list1 = await self.mockTableData1(1,pageSize)
           self.$Loading.finish();
@@ -472,27 +506,31 @@ export default {
         headers: {'Authorization': Cookies.get('auth_token'),
                   'vid': object.vid}
         }).then(async function (response) {
+          var uniqData = _.uniqBy(response.data.aggregations.group_by_attributes.buckets, 'key');
           await self.getColorTableData()
-          $.each(response.data.aggregations.group_by_attributes.buckets,function(index,item){
+          $.each(uniqData,function(index,item){
             item.checkvalue = 'Hexcode'
             item.ishexDisable= false
             item.isimgurlDisable= true
             item.colorBox2 = 'white'
+            item.imageBox2=''
             _.find(self.data, function(o) {
               if(o.colorname == item.key && o.attribute_name == 'imprintcolor'){
-                // testdata = o;
-                testdata.push({hexcode:o.hexcode, index:index})
-                // self.data1[index].colorBox1 = o.hexcode
+                testdata.push({hexcode:o.hexcode, index:index, imagefile:o.imagefile})
               }
              });
           })
-          self.data2 = response.data.aggregations.group_by_attributes.buckets
-          self.list2 = response.data.aggregations.group_by_attributes.buckets
+          self.data2 = uniqData
           $.each(testdata,function(index,item){
-            self.data2[item.index].colorBox2 = item.hexcode
+            if(item.hexcode == undefined){
+              self.data2[item.index].colorBox2 = 'white'
+            } else {
+              self.data2[item.index].colorBox2 = item.hexcode
+            }
             self.data2[item.index].hexcode2 = item.hexcode
+            self.data2[item.index].imageBox2 = item.imagefile
           })
-          // self.list2 = await self.mockTableData2(1,pageSize)
+          self.list2 = await self.mockTableData2(1,pageSize)
           self.$Loading.finish();
         }).catch(function (error) {
           console.log("-------",error);
@@ -501,26 +539,6 @@ export default {
         });
       }
     },
-    // setselect1(index){
-    //   if(this.data1[index].checkvalue == 'Hexcode'){
-    //     this.flagHaxCode1 = false
-    //     this.flagImageUrl1 = true
-    //   } else{
-    //     this.flagImageUrl1 = false
-    //     this.flagHaxCode1 = true
-    //   }
-    //
-    // },
-    // setselect2(){
-    //   if(this.data2[index].checkvalue == 'Hexcode'){
-    //     this.flagHaxCode2 = false
-    //     this.flagImageUrl2 = true
-    //   } else{
-    //     this.flagImageUrl2 = false
-    //     this.flagHaxCode2 = true
-    //   }
-    //
-    // },
     async save1 (index) {
       //validation
       if(this.list1[index].hexcode1 == undefined && this.list1[index].imgurl1 == undefined){
@@ -533,9 +551,8 @@ export default {
             this.$Message.error('Please enter valid hexcode');
             return false;
           } else {
-            console.log('this.websiteid...........',this.websiteName)
+            this.list1[index].loading1 = true
             param1 = {
-              // colorname :this.list1[(this.page - 1) * 10 + (index)].key,
               colorname :this.list1[index].key,
               hexcode : this.list1[index].hexcode1,
               attribute_name : 'color',
@@ -544,26 +561,28 @@ export default {
               websitename: this.websiteName
              }
              var self = this
-                   await self.getColorTableData()
+                  await self.getColorTableData()
                   var data = _.find(self.data, function(o) {
                       return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-                      
+
                         if(data != null){
                                axios({
                                       method: 'patch',
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
                                }).then(function (res) {
-                                      // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
                                       self.list1[index].colorBox1 = self.list1[index].hexcode1
                                       self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                       self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
 
                                       self.$Message.success("update successfully")
+                                      self.list1[index].loading1 = false
+
 
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
+                                   self.list1[index].loading1 = false
                                });
                         } else {
                                //post data in api
@@ -573,15 +592,16 @@ export default {
                                       data: param1,
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
-                                    // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
                                     self.list1[index].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
+                                    self.list1[index].loading1 = false
+
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
+                                   self.list1[index].loading1 = false
                                });
-
                         }
 
           }
@@ -590,6 +610,7 @@ export default {
             this.$Message.error('Please upload valid file');
             return false;
           } else {
+            this.list1[index].loading1 = true
             param1 = {
               colorname :this.list1[index].key,
               attribute_name : 'color',
@@ -601,7 +622,6 @@ export default {
                    await self.getColorTableData()
                   var data = _.find(self.data, function(o) {
                       return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-                      console.log('this.list1[index].checkvalue',this.list1[index].checkvalue)
                       var reader = new FileReader();
                       reader.readAsDataURL(this.list1[index].imgurl1);
                       reader.addEventListener("load", function () {
@@ -613,16 +633,16 @@ export default {
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
                                }).then(function (res) {
-                                      // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
-                                      self.list1[index].colorBox1 = self.list1[index].hexcode1
-                                      self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-                                      self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-
+                                      self.list1[index].imageBox1 = res.data.imagefile
+                                      // self.list1[index].colorBox1 = self.list1[index].hexcode1
+                                      // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
+                                      // self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
                                       self.$Message.success("update successfully")
-
+                                      self.list1[index].loading1 = false
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
+                                   self.list1[index].loading1 = false
                                });
                         } else {
                                //post data in api
@@ -632,123 +652,154 @@ export default {
                                       data: param1,
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
-                                    // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
-                                    self.list1[index].colorBox1 = self.list1[index].hexcode1
-                                    self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-                                    self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
+                                    console.log(res.data.imagefile)
+                                    self.list1[index].imageBox1 = res.data.imagefile
+                                    // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
+                                    // self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
+                                    self.list1[index].loading1 = false
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
+                                   self.list1[index].loading1 = false
                                });
 
                         }
                       })
           }
         }
-        // var self = this
-        //       await self.getColorTableData()
-        //      var data = _.find(self.data, function(o) {
-        //          return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-        //          console.log('this.list1[index].checkvalue',this.list1[index].checkvalue)
-        //          var reader = new FileReader();
-        //          reader.readAsDataURL(this.list1[index].imgurl1);
-        //          reader.addEventListener("load", function () {
-        //          var filebase64 = reader.result
-        //          param1['imagefile'] = filebase64
-        //            if(data != null){
-        //                   axios({
-        //                          method: 'patch',
-        //                          url: config.default.colorTableUrl +'/'+ data.id,
-        //                          data: param1,
-        //                   }).then(function (res) {
-        //                          // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
-        //                          self.list1[index].colorBox1 = self.list1[index].hexcode1
-        //                          self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-        //                          self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-        //
-        //                          self.$Message.success("update successfully")
-        //
-        //                   }).catch(function (error) {
-        //                          console.log("-------",error);
-        //                       self.$Message.error(error)
-        //                   });
-        //            } else {
-        //                   //post data in api
-        //                   axios({
-        //                          method: 'post',
-        //                          url: config.default.colorTableUrl,
-        //                          data: param1,
-        //                   }).then(function (res) {
-        //                        self.$Message.success("saved successfully")
-        //                        // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
-        //                        self.list1[index].colorBox1 = self.list1[index].hexcode1
-        //                        self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-        //                        self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-        //                   }).catch(function (error) {
-        //                        console.log("-------",error);
-        //                       self.$Message.error(error)
-        //                   });
-        //
-        //            }
-        //          })
-
-
-
-
       }
 
     },
     async save2 (index) {
-      if(this.data2[index].hexcode2 == undefined && this.data2[index].imgurl2 == undefined){
+      //validation
+      if(this.list2[index].hexcode2 == undefined && this.list2[index].imgurl2 == undefined){
         this.$Message.error('Please enter hexcode or imageurl');
       } else {
-        let regex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(this.data2[index].hexcode2);
-        if(this.data2[index].checkvalue == 'Hexcode'){
+        let param1
+        let regex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(this.list2[index].hexcode2);
+        if(this.list2[index].checkvalue == 'Hexcode'){
           if(!regex){
             this.$Message.error('Please enter valid hexcode');
             return false;
+          } else {
+            this.list2[index].loading2 = true
+            console.log('this.websiteid...........',this.websiteName)
+            param1 = {
+              colorname :this.list2[index].key,
+              hexcode : this.list2[index].hexcode1,
+              attribute_name : 'imprintcolor',
+              vid: this.vid,
+              websiteid: this.websiteid,
+              websitename: this.websiteName
+             }
+             var self = this
+                   await self.getColorTableData()
+                  var data = _.find(self.data, function(o) {
+                      return o.colorname==self.list2[index].key && o.attribute_name == 'imprintcolor'; });
+
+                        if(data != null){
+                               axios({
+                                      method: 'patch',
+                                      url: config.default.colorTableUrl +'/'+ data.id,
+                                      data: param1,
+                               }).then(function (res) {
+                                      self.list2[index].colorBox2 = self.list2[index].hexcode2
+                                      self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
+                                      self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
+
+                                      self.$Message.success("update successfully")
+                                      self.list2[index].loading2 = false
+                               }).catch(function (error) {
+                                      console.log("-------",error);
+                                   self.$Message.error(error)
+                                   self.list2[index].loading2 = false
+                               });
+                        } else {
+                               //post data in api
+                               axios({
+                                      method: 'post',
+                                      url: config.default.colorTableUrl,
+                                      data: param1,
+                               }).then(function (res) {
+                                    self.$Message.success("saved successfully")
+                                    self.list2[index].colorBox2 = self.list2[index].hexcode2
+                                    self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
+                                    self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
+                               }).catch(function (error) {
+                                    console.log("-------",error);
+                                   self.$Message.error(error)
+                               });
+
+                        }
+
+          }
+        } else if(this.list2[index].checkvalue == 'ImageUrl'){
+          if(this.list2[index].imgurl2.type != 'image/png' && this.list2[index].imgurl2.type != 'image/jpeg'){
+            this.$Message.error('Please upload valid file');
+            return false;
+          } else {
+            this.list2[index].loading2 = true
+            param1 = {
+              colorname :this.list2[index].key,
+              attribute_name : 'imprintcolor',
+              vid: this.vid,
+              websiteid: this.websiteid,
+              websitename: this.websiteName
+             }
+             var self = this
+                   await self.getColorTableData()
+                  var data = _.find(self.data, function(o) {
+                      return o.colorname==self.list2[index].key && o.attribute_name == 'imprintcolor'; });
+                      var reader = new FileReader();
+                      reader.readAsDataURL(this.list2[index].imgurl2);
+                      reader.addEventListener("load", function () {
+                      var filebase64 = reader.result
+                      param1['imagefile'] = filebase64
+                        if(data != null){
+                               axios({
+                                      method: 'patch',
+                                      url: config.default.colorTableUrl +'/'+ data.id,
+                                      data: param1,
+                               }).then(function (res) {
+                                 self.$Message.success("update successfully")
+                                 self.list2[index].imageBox2 = res.data.imagefile
+                                      // self.list2[index].colorBox2 = self.list2[index].hexcode2
+                                      // self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
+                                      // self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
+
+                                      self.list2[index].loading2 = false
+
+                               }).catch(function (error) {
+                                      console.log("-------",error);
+                                   self.$Message.error(error)
+                                   self.list2[index].loading2 = false
+                               });
+                        } else {
+                               //post data in api
+                               axios({
+                                      method: 'post',
+                                      url: config.default.colorTableUrl,
+                                      data: param1,
+                               }).then(function (res) {
+                                    self.$Message.success("saved successfully")
+                                    self.list2[index].imageBox2 = res.data.imagefile
+                                    // self.list2[index].colorBox2 = self.list2[index].hexcode2
+                                    // self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
+                                    // self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
+                                    self.list2[index].loading2 = false
+                               }).catch(function (error) {
+                                    console.log("-------",error);
+                                   self.$Message.error(error)
+                                   self.list2[index].loading2 = false
+                               });
+
+                        }
+                      })
           }
         }
-        var self = this
-              await self.getColorTableData()
-             var data = _.find(self.data, function(o) {
-               return o.colorname==self.data2[index].key && o.attribute_name == 'imprintcolor'; });
-             let param1 = {
-               colorname :self.data2[index].key,
-               hexcode : self.data2[index].hexcode2,
-               attribute_name : 'imprintcolor',
-               vid: self.vid
-              }
-                   if(data != null){
-                          axios({
-                                 method: 'patch',
-                                 url: config.default.colorTableUrl +'/'+ data.id,
-                                 data: param1,
-                          }).then(function (res) {
-                                 self.list1[index].colorBox1 = self.list1[index].hexcode1
-                                 self.$Message.success("update successfully")
-
-                          }).catch(function (error) {
-                                 console.log("-------",error);
-                              self.$Message.error(error)
-                          });
-                   } else {
-                          //post data in api
-                          axios({
-                                 method: 'post',
-                                 url: config.default.colorTableUrl,
-                                 data: param1,
-                          }).then(function (res) {
-                               self.$Message.success("saved successfully")
-                               self.data2[index].colorBox2 = self.data2[index].hexcode2
-                          }).catch(function (error) {
-                               console.log("-------",error);
-                              self.$Message.error(error)
-                          });
-                   }
       }
 
-    }
+    },
   },
   mounted(){
     var self = this
@@ -771,20 +822,13 @@ export default {
 </script>
 
 <style>
-/* .ivu-radio-group-vertical .ivu-radio-wrapper{
-  display: 'inline-table';
-} */
-.ivu-table td.swatch-box .ivu-table-cell{
-  /* border: solid 1px #ccc; */
-  height: 30px;
-  margin-bottom: 2px;
-  /* background: red; */
-  display: inline-block;
-  width:30px;
-  margin-left: 2px;
-}
 .ivu-tabs-nav-container{
   margin-top: 20px;
 }
+.test :hover{
+  width:50px;
+  height:50px;
+}
+
 
 </style>

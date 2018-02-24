@@ -48,6 +48,8 @@ module.exports = {
 
         filterColorUrl: "https://api."+process.env.domainkey+"/pdmnew/filters/colors",
         colorTableUrl: "https://api."+process.env.domainkey+"/serverapi/color-table",
+        // colorTableUrl: " http://172.16.230.163:3032/color-table",
+
 
 
 
