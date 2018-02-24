@@ -130,6 +130,7 @@
 		},
 		mounted() {
 			let self= this;
+			self.$Loading.start()
 			axios.get(crmpostapiurl +'crm-case/', {
 				headers: {
 						Authorization : Cookies.get('auth_token')
@@ -141,6 +142,7 @@
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)
 				self.data5 = _.orderBy(response.data.data, ['createdAt'],['desc']);
+				self.$Loading.finish()
 				console.log( "response.data.data", self.data5)
 			 })
 			 .catch(function (error) {

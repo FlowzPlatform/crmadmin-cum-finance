@@ -83,24 +83,32 @@
                                 h('Button', {
                                     props: {
                                         type: 'primary',
-                                        size: 'small'
+                                        size: 'small',
+                                        loading: params.row.flag.sendMailFlag
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            this.sendEmail(params.row)
+                                            
+                                            // console.log("params.row[params.index].flag",this.data6[params.index])
+                                            // params.row[params.index].flag = true
+                                            params.row.flag.sendMailFlag = true;
+                                            // console.log("============this.data6[params.index]",this.data6[params.index])
+                                            this.sendEmail(params)
                                         }
                                     }
                                 }, 'Send Email'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        size: 'small'
+                                        size: 'small',
+                                        loading: params.row.flag.unAssignFlag
                                     },
                                     on: {
                                         click: () => {
+                                            params.row.flag.unAssignFlag = true;
                                             this.remove(params)
                                         }
                                     }
@@ -122,13 +130,15 @@
             show (index) {
                 
             },
-            sendEmail (data) {
+            sendEmail (params) {
+                let self = this;
+                let data = params.row
                 console.log("data-------",data)
                 var SendEmailBody = SendEmailBodyInvite.replace(/WriteSenderNameHere/i, data.fromEmail);
                 SendEmailBody = SendEmailBody.replace(/domainKey/g, process.env.domainkey);
                 SendEmailBody = SendEmailBody.replace(/SYSTEMNAME/g, Object.keys(data.role)[0]);
                 SendEmailBody = SendEmailBody.replace(/ROLE/g, Object.values(data.role)[0]);
-                console.log("SendEmailBody",SendEmailBody)
+                // console.log("SendEmailBody",SendEmailBody)
                 axios({
                     method: 'post',
                     url: config.default.baseUrl +'/vmailmicro/sendEmail',
@@ -137,6 +147,7 @@
                 })
                 .then(async (result) => {
                     console.log("result",result);
+                    params.row.flag.sendMailFlag = false;
                     self.$Notice.success({
                         duration:0,
                         desc: "Mail Sended Successfully"
@@ -144,6 +155,7 @@
                     return true;
                 })
                 .catch(function(err){
+                    params.row.flag.sendMailFlag = false;
                     return err
                 })
             },
@@ -175,13 +187,19 @@
                         .then(function(response) {
                             console.log(response)
                             self.data6.splice(params.index, 1);
-                            self.$Message.success('User Un-assigned successfully');
+                            params.row.flag.unAssignFlag = false;
+                            // self.$Message.success('User Un-assigned successfully');
+                            self.$Notice.success({
+                                duration:0,
+                                desc: "User Un-assigned successfully"
+                            });
                         }).catch(function(err){
+                            params.row.flag.unAssignFlag = false;
                             console.log(err)
                         });
                     },
                     onCancel: () => {
-                       
+                       params.row.flag.unAssignFlag = false;
                     }
                 });
                 //this.data6.splice(index, 1);
@@ -196,7 +214,7 @@
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
                 await axios.get(subscriptionUrl +'subscription-invitation', {
                     params: {
-                        subscriptionId: this.row.subscriptionId
+                       subscriptionId: this.row.subscriptionId
                         // own : true
                     },
                     headers : {
@@ -210,6 +228,13 @@
                     }else{
                         console.log(result)
                         self.assignee = result.data.data
+                        for (let f of self.assignee) {
+                            f['flag'] = {
+                                sendMailFlag : false,
+                                unAssignFlag : false
+                            };
+                        }
+                        console.log("self.assignee",self.assignee)
                         self.data6 = self.assignee
                     }
                 })
@@ -218,6 +243,5 @@
         mounted() {
             this.init()
         }
-
     };
 </script>

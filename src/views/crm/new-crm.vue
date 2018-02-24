@@ -207,6 +207,15 @@
 			async handleUpload (file) {
 				var self = this
 				console.log('file',file)
+				if(file.size >= 51200){
+					this.$Notice.error({
+						title: 'File Limit',
+						desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+					});
+					self.removefile()
+					return true
+				}
 				self.file = file
 				return false;
 			},
@@ -273,6 +282,7 @@
 				
 				
 				console.log("response------>iuy",resp);
+				$('.customer').css("display","inline-block")				
 				// resp.forEach(obj =>{
 				//   console.log(obj[0].data)
 					// alert(self.formItem.configuration)
@@ -309,6 +319,7 @@
 			},
 			init() {
 				let self = this;
+				self.$Loading.start();
 				axios.get(serviceUrl+"settings", {
 					params: {
 						isActive : true
@@ -341,7 +352,6 @@
 			},
 			configChange(data){
 				console.log(data)
-				$('.customer').css("display","inline-block")
 				$('.autoCompleteDropdown').css("display","inline-block")
 				this.calldata(data);
 			},
@@ -499,8 +509,9 @@
 											}
 										}
 							})
-									self.assigneedata = _.sortBy(myarr,['value']);
-									console.log('self.assigneedata', self.assigneedata)
+							self.assigneedata = _.sortBy(myarr,['value']);
+							self.$Loading.finish()
+							console.log('self.assigneedata', self.assigneedata)
 						},error: function(err){
 						console.log("error",err);
 						}

@@ -360,11 +360,21 @@
       async handleUpload (file) {
         var self = this
         console.log('file',file)
+        if(file.size >= 51200){
+					this.$Notice.error({
+            title: 'File Limit',
+            desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+				  });
+          self.removefile()
+					return true
+				}
         self.file = file
         return false;       
       },
       async showdata() {
-        var self = this
+        var self = this;
+        self.$Loading.start()
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
@@ -514,6 +524,7 @@
                 }
               })
               self.assigneedata = _.sortBy(myarr,['value']);
+              self.$Loading.finish();
           },error: function(err){
              console.log("error",err);
           }
@@ -649,32 +660,43 @@
         // console.log(this.data1)
         // let arr = _.filter(this.data1, function(num){ return num.filename = params.filename });
         // console.log(arr)
-        await $.ajax({
-          type: 'patch',
-          url: databasepost+id,
-          headers: {
-            Authorization : Cookies.get('auth_token')
-          },
-          data: params.row,
-          success: function (data11) {
-            console.log("json data******123",data11);
-            self.finaldata.fileupload[params.index].flag = false
-            self.$Notice.success({
-              title: 'Sucess',
-              desc: 'File successfully deleted ',
-              duration: 4.5
+        this.$Modal.confirm({
+          okText: 'OK',
+          cancelText: 'Cancel',
+          title: 'Title',
+          content: '<p>Are you sure to delete?<p>',
+          onOk: () => {
+            $.ajax({
+              type: 'patch',
+              url: databasepost+id,
+              headers: {
+                Authorization : Cookies.get('auth_token')
+              },
+              data: params.row,
+              success: function (data11) {
+                console.log("json data******123",data11);
+                self.finaldata.fileupload[params.index].flag = false
+                self.$Notice.success({
+                  title: 'Sucess',
+                  desc: 'File successfully deleted ',
+                  duration: 4.5
+                });
+                if(data11.fileupload != undefined){
+                  self.data1 = data11.fileupload
+                }else{
+                  self.data1 = [];
+                }
+                
+                //self.data1.splice()
+              },error: function(err){
+                  console.log("error",err);
+                }
             });
-            if(data11.fileupload != undefined){
-              self.data1 = data11.fileupload
-            }else{
-              self.data1 = [];
-            }
-            
-            //self.data1.splice()
-          },error: function(err){
-              console.log("error",err);
-            }
-        });
+          },
+          onCancel: () => {
+            this.$Message.info('Clicked cancel');
+          }
+        })
       }
   },
     mounted() {
