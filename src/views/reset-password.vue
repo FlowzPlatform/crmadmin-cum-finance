@@ -62,8 +62,8 @@ export default {
                 let self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        let url = new URL(window.location.href);
-                        let forgetToken = url.hash.slice(1).split('=')[1]
+                        // let url = new URL(window.location.href);
+                        let forgetToken = self.$route.query.forget_token
                         console.log("this.$route.params",forgetToken)
                     axios.post(config.default.resetPasswordUrl, {
                               new_password: self.formValidate.newPassword.trim(),

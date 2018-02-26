@@ -97,7 +97,7 @@
                             };
                         }
                         console.log("self.assignee",self.assignee)
-                        self.data6 = self.assignee
+                        self.data7 = self.assignee
                     }
                 })
             }

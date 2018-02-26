@@ -2,10 +2,10 @@
     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Roboto Condensed', sans-serif;font-size:10px">
         <tr>
             <td align="center" valign="top">
-                <table border="0" cellspacing="0" cellpadding="0" width="560" style="background-color:#f0f0f0;">
+                <table border="0" cellspacing="0" cellpadding="0" width="100%" style="background-color:#f0f0f0;">
                     <tr>
                         <td align="left" valign="top" width="20"></td>
-                        <td align="left" valign="top" width="510">
+                        <td align="left" valign="top">
                             <table border="0" cellspacing="0" cellpadding="0" width="100%" style="font-size:10px">
                                 <tr>
                                     <td align="left" valign="top" height="10"></td>
@@ -296,7 +296,7 @@
                                                 <td align="left" height="10" valign="top"></td>
                                             </tr>
                                             <tr v-if="row.products.length > 1 && row.products.length !== inx+1">
-                                                <td align="left" height="80" valign="top"></td>
+                                                <td align="left" height="100" valign="top"></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -324,9 +324,12 @@
                                 </tr>
                             </table>
                         </td>
-                        <td align="left" valign="top" width="10"></td>
+                        <td align="left" valign="top" width="20"></td>
                     </tr>
                 </table>
+                <div style="font-size:10px;margin-top: 1%;bottom: 0px;position: inherit;width: 100%;text-align: -webkit-center;">
+                    Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
+                </div>
             </td>
         </tr>
     </table>

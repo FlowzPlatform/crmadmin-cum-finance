@@ -323,100 +323,102 @@ export default {
       
       
       await axios({
-                    method:'get',
-                    url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                  })
-                    .then(async function(response) {
-                      console.log(response)
-                      if(response.data.domain == 'custom'){
-                       // alert(self.formItem.configuration)
-                        let postData1 = {
-                            // domain: this.formItem.domain,
-                            settingId : self.formItem.configuration,
-                            Name: self.formItem.name,
-                            DueDate:self.formItem.duedate,
-                            Products:[
-                                {
-                                  description: self.formItem.description,
-                                  qty: self.formItem.qty,
-                                  amount: self.formItem.amount1
-                                }
-                            ]
-                            
-                          }
+        method:'get',
+        url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
+        headers:{
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
+        },
+      })
+      .then(async function(response) {
+        console.log(response)
+        if(response.data.domain == 'custom'){
+          // alert(self.formItem.configuration)
+            let postData1 = {
+              // domain: this.formItem.domain,
+              settingId : self.formItem.configuration,
+              Name: self.formItem.name,
+              DueDate:self.formItem.duedate,
+              products:[
+                  {
+                    description: self.formItem.description,
+                    qty: self.formItem.qty,
+                    amount: self.formItem.amount1,
+                    tax: 0
+                  }
+              ]
+              
+            }
 
-                            self.customCustomerUrl = response.data.customer_url;
-                            self.customInvoiceUrl = response.data.invoice_url;
-                            
-                            axios({
-                              method: 'post',
-                              url: self.customInvoiceUrl,
-                              data: postData1,
-                              headers:{
-                                Authorization : Cookies.get('auth_token')
-                              }
-                            })
-                            .then(function (response) {
-                              self.$Message.success('invoice created successfully');
-                              self.Cancel();
-                            })
-                            .catch(function (error) {
-                              console.log("error",error);
-                              self.$Message.error('invoice creation error');
-                            });
+            self.customCustomerUrl = response.data.customer_url;
+            self.customInvoiceUrl = response.data.invoice_url;
+              
+            axios({
+              method: 'post',
+              url: self.customInvoiceUrl,
+              data: postData1,
+              headers:{
+                Authorization : Cookies.get('auth_token')
+              }
+            })
+            .then(function (response) {
+              self.$Message.success('invoice created successfully');
+              self.Cancel();
+            })
+            .catch(function (error) {
+              console.log("error",error);
+              self.$Message.error('invoice creation error');
+            });
 
-                      }else{
-                        
-                          self.formItem.amount = parseInt(self.formItem.amount1)
-                          let postData = {
-                            // domain: self.formItem.domain,
-                            settingId : self.formItem.configuration,
-                            Name: self.formItem.name,
-                            DueDate: self.formItem.duedate,
-                            products:[
-                                {
-                                  description: self.formItem.description,
-                                  qty: self.formItem.qty,
-                                  amount: self.formItem.amount
-                                }
-                            ]
-                            
-                          }
-                          await axios({
-                              method: 'post',
-                              url: config.default.serviceUrl + 'invoice',
-                              data: postData,
-                              headers:{
-                                      Authorization : Cookies.get('auth_token')
-                                    },
-                            })
-                            .then(function (res) {
-                              console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
-                              self.$Message.success('invoice created successfully');
-                              self.Cancel();
-                            })
-                            .catch(function (err) {
-                              console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
-                              self.$Message.error('invoice creation error')
-                            });
+        }else{
+          
+            self.formItem.amount = parseInt(self.formItem.amount1)
+            let postData = {
+              // domain: self.formItem.domain,
+              settingId : self.formItem.configuration,
+              Name: self.formItem.name,
+              DueDate: self.formItem.duedate,
+              products:[
+                  {
+                    description: self.formItem.description,
+                    qty: self.formItem.qty,
+                    amount: self.formItem.amount,
+                    tax: 0
+                  }
+              ]
+              
+            }
+            await axios({
+                method: 'post',
+                url: config.default.serviceUrl + 'invoice',
+                data: postData,
+                headers:{
+                        Authorization : Cookies.get('auth_token')
+                      },
+              })
+              .then(function (res) {
+                console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
+                self.$Message.success('invoice created successfully');
+                self.Cancel();
+              })
+              .catch(function (err) {
+                console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
+                self.$Message.error('invoice creation error')
+              });
 
-                      }
-                  })
-                  .catch(function (error) {
-                    console.log("error",error);
-                    self.spinShow = false;
-                      if(error.response.status == 403){
-                         self.$Notice.error(
-                             {duration:0, 
-                             title: error.response.statusText,
-                             desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                             );
-                          }
-                  });
+        }
+      })
+      .catch(function (error) {
+        console.log("error",error);
+        self.spinShow = false;
+          if(error.response.status == 403){
+              self.$Notice.error(
+                  {duration:0, 
+                  title: error.response.statusText,
+                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+              );
+          }
+      });
 
 
 

@@ -2,15 +2,15 @@
     <div style="position: relative;width: 21cm; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
         <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
             <div id="logo" style="float: left;margin-top: 8px;">
-                <img src="https://s3-eu-west-1.amazonaws.com/htmlpdfapi.production/free_html5_invoice_templates/example2/logo.png" style="height: 70px;">
+                <img :src="emailDataCompany.logo" style="height: 70px;">
             </div>
-            <div id="company" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
-                <h2  style="font-size: 18px;font-weight: normal;margin: 0;">Company Name</h2>
-                <div>455 Foggy Heights, AZ 85004, US</div>
-                <div>(602) 519-0450</div>
-                <div>
+            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
+                <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
+                <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
+                <div>{{emailDataCompany.address.country}}</div>
+                <!--<div>
                         <a href="mailto:company@example.com" style="color: #0087C3;text-decoration: none;">company@example.com</a>
-                </div>
+                </div>-->
             </div>
 
         </header>
@@ -69,12 +69,25 @@
                         <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
                         <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
                     </tr>
+                    <tr>
+                        <td colspan="2" style="border: none;"></td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
+                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: none;"></td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
+                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
+                    </tr>
                 </tfoot>
             </table>
             <div id="thanks" style="font-size: 16px;margin-bottom: 10px;font-family: Verdana;color: #555555;">Thank you!</div>
         </main>
         <footer style="font-size:12px;font-family: Verdana;">
             Invoice was created on a computer and is valid without the signature and seal.
+            <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+                Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
+            </div>
         </footer>
     </div>
 </template>
@@ -84,16 +97,21 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     import jQuery from 'jquery';
     import owlCarousel from 'owl.carousel';
+     import config from '../../config/customConfig.js'    
+    import Cookies from 'js-cookie'; 
     const accounting = require('accounting-js');
+    let axios = require('axios');
     let result;
     export default {
         props: {
-            row: Object
+            row: Object,
+            invoice: Object
         },
         data() {
             return {
                 imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
-                moment: moment
+                moment: moment,
+                emailDataCompany: ''
             }
         },
         methods: {
@@ -148,6 +166,20 @@
             }
         },
         mounted() {
+            let self = this;
+            axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
+            headers:{
+                Authorization : Cookies.get('auth_token'),
+                subscriptionId : Cookies.get('subscriptionId')
+            },
+            })
+            .then(function (response) {
+            console.log("response------>iuy",response.data);
+            self.emailDataCompany = response.data
+            })
+            .catch(function (error) {
+                console.log("error",error);
+            });
         }
     };
 </script>

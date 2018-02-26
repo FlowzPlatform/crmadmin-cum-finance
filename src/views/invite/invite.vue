@@ -61,13 +61,14 @@
     let feathersUrl =  config.default.serviceUrl;
     let subscriptionUrl = config.default.subscriptionUrl
     import expandRow from './assigned_invite_table-expand.vue';
+    import expandInviteRow from './own_assigns.vue';
     import moment from 'moment';
     import _ from 'lodash'
     // import locale from 'element-ui/src/locale/lang/en';
     // import 'element-ui/lib/theme-default/index.css';
     Vue.use(ElementUI);
     export default {
-        components: { expandRow },
+        components: { expandRow, expandInviteRow },
         data() {
             return {
                 options: '',
@@ -90,7 +91,10 @@
                         width: 50,
                         render: (h, params) => {
                            //return 
-                           return h(expandRow, {
+                           return h(expandInviteRow, {
+                               props: {
+                                    row: params.row
+                                }
                                //'Show role and model here'
                             })
                         }
