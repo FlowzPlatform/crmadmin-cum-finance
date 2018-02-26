@@ -86,6 +86,16 @@
                 assigned_Arr4 : [],
                 columns2: [
                     {
+                        type: 'expand',
+                        width: 50,
+                        render: (h, params) => {
+                           //return 
+                           return h(expandRow, {
+                               //'Show role and model here'
+                            })
+                        }
+                    },
+                    {
                         title: 'Subscription Name',
                         key: 'name'
                     },
@@ -93,30 +103,40 @@
                         title: 'Subscription Id',
                         key: 'subscriptionId'
                     },
-                    {
-                        title: 'Module',
-                        key: 'role',
-                        render: (h, params) => {
-                            return h('div', [
-                               // console.log(params)
-                                h('p', this.capitalize(Object.keys(params.row.role)[0]))
-                            ]);
-                        }
-                    },
-                    {
-                        title: 'Role',
-                        key: 'role',
-                        render: (h, params) => {
-                            return h('div', [
-                                //console.log(params)
-                                //let obj= Object.keys(params.row.role);
-                                h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
-                            ]);
-                        }
-                    },
+                    // {
+                    //     title: 'Module',
+                    //     key: 'role',
+                    //     render: (h, params) => {
+                    //         return h('div', [
+                    //            // console.log(params)
+                    //             h('p', this.capitalize(Object.keys(params.row.role)[0]))
+                    //         ]);
+                    //     }
+                    // },
+                    // {
+                    //     title: 'Role',
+                    //     key: 'role',
+                    //     render: (h, params) => {
+                    //         return h('div', [
+                    //             //console.log(params)
+                    //             //let obj= Object.keys(params.row.role);
+                    //             h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
+                    //         ]);
+                    //     }
+                    // },
                     {
                         title : 'Assigned By' ,
                         key : 'invitedBy'
+                    },
+                    {
+                        title : 'Assigned On' ,
+                        key : 'createdAt',
+                        render: (h, params) => {
+                            
+                                var date1 = moment(params.assignDate).format('DD-MMM-YYYY')
+                                return date1
+                            
+                        }
                     }
                 ],
                  columns3: [
@@ -262,9 +282,9 @@
                     .then(response => {
                         console.log(response)
                         
-                        // this.data2 = this.assigned_Arr2 ;
+                        
                          this.data4 = response.data.data;
-                        // this.options2 = sub_id;
+                        
                         
                     })
             },
