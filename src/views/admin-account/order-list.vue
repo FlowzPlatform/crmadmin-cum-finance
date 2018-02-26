@@ -1,14 +1,14 @@
 <template>
     <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; ">
         <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-            <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
+            <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.websiteName }}</Option>
         </Select>
         <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
             v-model="modal1"
             title="Preview Order Details"
-            width="45%"
+            width="59%"
             ok-text= "Download PDF"
             @on-ok="download"
             @on-cancel="cancel">

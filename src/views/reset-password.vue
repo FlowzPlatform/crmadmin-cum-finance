@@ -16,7 +16,7 @@
                     <Input type="password" v-model="formValidate.confirmPassword" placeholder="Enter Confirm Password"></Input>
                 </FormItem>
                 <FormItem style="margin-top:10px;margin-bottom:10px">
-                    <Button type="primary" :loading="saveFileLoadingLogin" @click="handleSubmit('formValidate')">Submit</Button>
+                    <Button type="primary" id="button" :loading="saveFileLoadingLogin" @click="handleSubmit('formValidate')">Submit</Button>
                 </FormItem>
              </Form>
            </div>
@@ -63,9 +63,7 @@ export default {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         // let url = new URL(window.location.href);
-                        // let forgetToken = url.hash.slice(1).split('=')[1]
-                        let url = new URL(window.location.href);
-                        let forgetToken = url.searchParams.get("forget_token");
+                        let forgetToken = self.$route.query.forget_token
                         console.log("this.$route.params",forgetToken)
                     axios.post(config.default.resetPasswordUrl, {
                               new_password: self.formValidate.newPassword.trim(),
@@ -95,6 +93,17 @@ export default {
 
 
 <style lang="less">
+#button:hover{
+    background-color:#5daf34 !important;
+    color:#fff !important;
+}
+.ivu-form-item-error-tip {
+    position: absolute !important;
+    top: 80% !important;
+    left: 0;
+    line-height: 1;
+    color: #ed3f14;
+}
     .backbox,
 .loginContainer {
     top: 50%;

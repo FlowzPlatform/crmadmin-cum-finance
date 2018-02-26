@@ -412,25 +412,25 @@
                     Billing Information
                     <p slot="content">
                         <label class="col-sm-6"> 
-                                Invoice ID  : <label class="data"> {{row.billing_details.data.InvoiceNumber}} </label>
+                                Invoice ID  : <label class="data"> {{this.invoice.InvoiceNumber}} </label>
                         </label> 
                         <label class="col-sm-6"> 
-                                Customer Name  : <label class="data"> {{row.billing_details.data.Contact.Name}} </label>
+                                Customer Name  : <label class="data"> {{this.invoice.Contact.Name}} </label>
                         </label>
                         <label class="col-sm-6"> 
-                                Due Date  : <label class="data"> {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}} </label>
+                                Due Date  : <label class="data"> {{moment(this.invoice.DueDate).format('DD-MMM-YYYY')}} </label>
                         </label> 
                         <label class="col-sm-6"> 
-                                Paid Amount  : <label class="data"> {{accounting(row.billing_details.data.AmountPaid)}} </label>
+                                Paid Amount  : <label class="data"> {{accounting(this.invoice.AmountPaid)}} </label>
                         </label>
                         <label class="col-sm-6"> 
-                                Due Amount  : <label class="data"> {{accounting(row.billing_details.data.AmountDue)}} </label>
+                                Due Amount  : <label class="data"> {{accounting(this.invoice.AmountDue)}} </label>
                         </label>
                         <label class="col-sm-6"> 
-                                Total Amount : <label class="data"> {{accounting(row.billing_details.data.Total)}} </label>
+                                Total Amount : <label class="data"> {{accounting(this.invoice.Total)}} </label>
                         </label>
                         <label class="col-sm-6"> 
-                                Status : <label class="data"> {{row.billing_details.data.Status}} </label>
+                                Status : <label class="data"> {{this.invoice.Status}} </label>
                         </label>
                         <label class="col-sm-6"> 
                             Download Billing Information: <Button type="ghost" shape="circle" icon="android-download" @click="downloadBill"></Button>
@@ -441,12 +441,12 @@
         </Card>
         <Modal
             v-model="modal1"
-            title="Preview Order Details"
+            title="Preview Billing Details"
             width="59%"
             ok-text= "Download PDF"
             @on-ok="download"
             @on-cancel="cancel">
-            <downloadBillingInfo id="InvoiceBill" :row="billData"></downloadBillingInfo>
+            <downloadBillingInfo id="InvoiceBill" :row="billData" :invoice="invoice"></downloadBillingInfo>
         </Modal>
     </div>
 </template>
@@ -459,6 +459,7 @@
     import owlCarousel from 'owl.carousel';
     const accounting = require('accounting-js');
     let axios = require('axios'); 
+    import Cookies from 'js-cookie';
     export default {
         props: {
             row: Object
@@ -471,10 +472,30 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
+                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                invoice: {}
             }
         },
         methods: {
+            async invoiceData() {
+                var self = this
+                self.$Loading.start()
+                await axios({
+                    method: 'get',
+                    url: config.default.serviceUrl + 'invoice/' + self.row.billing_details.data.InvoiceID,
+                    params: {
+                        settingId : self.row.setting_id
+                    },
+                    headers:{
+                        Authorization : Cookies.get('auth_token')
+                    }, 
+                    }).then(function (response) {
+                        self.$Loading.finish()
+                        console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
+                        self.invoice = response.data[0].data
+                })    
+                console.log('invoice', self.invoice)
+            },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
@@ -526,6 +547,7 @@
                 var self = this
 		        self.$Loading.start()
                 console.log("billData-------------->>>",$('#InvoiceBill').html())
+                document.querySelector('#myfooter').style.position = 'fixed'
                 await axios({
                     method: 'post',
                     url: config.default.serviceUrl + 'exporttopdf',
@@ -536,6 +558,7 @@
                     
                     }).then(function (response) {
 		            self.$Loading.finish()
+                    document.querySelector('#myfooter').style.position = 'initial'
                     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
                     var arrayBufferView = new Uint8Array( response.data.data );
@@ -554,6 +577,7 @@
         },
         mounted() {
             this.billData = this.row
+            this.invoiceData()
         }
     };
 </script>

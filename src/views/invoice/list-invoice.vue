@@ -222,6 +222,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
+          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+              Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
+          </div>
       </footer>
     </div>
 
@@ -1378,6 +1381,7 @@
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
+          document.querySelector('#myfooter').style.position = 'fixed'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
@@ -1394,6 +1398,7 @@
 
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                document.querySelector('#myfooter').style.position = 'initial' 
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');

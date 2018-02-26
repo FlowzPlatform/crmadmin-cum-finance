@@ -251,7 +251,6 @@
         crmdata: {},
 	uploadlist:false,
         file:'',
-        flag:false,
         finaldata: {
           name: '',
           cname: '',
@@ -307,7 +306,8 @@
                             on: {
                               click: () => {
                                 // console.log(params)
-                                window.location.href = params.row.url;
+                                // window.location.href = params.row.url;
+                                this.DownloadFile(params.row.url);
                               }
                           }
                         })
@@ -325,8 +325,7 @@
                             props: {
                               type: 'text',
                               size: 'large',
-                              icon: 'android-delete',
-                              loading: this.finaldata.fileupload[params.index].flag
+                              icon: 'android-delete'
                             },
                             style: {
                               color: 'red',
@@ -335,7 +334,6 @@
                             on: {
                               click: () => {
                                 // this.flag = true
-                                this.finaldata.fileupload[params.index].flag = true
                                 this.DeleteFile(params,this.finaldata.id)
                               }
                           }
@@ -354,6 +352,22 @@
       }
     },
     methods: {
+      DownloadFile(url) {
+        // Get file name from url.
+        var filename = url.substring(url.lastIndexOf("/") + 1).split("?")[0]
+        var xhr = new XMLHttpRequest()
+        xhr.responseType = 'blob'
+        xhr.onload = function() {
+          var a = document.createElement('a')
+          a.href = window.URL.createObjectURL(xhr.response) // xhr.response is a blob
+          a.download = filename // Set the file name.
+          a.style.display = 'none'
+          document.body.appendChild(a)
+          a.click()
+        }
+        xhr.open('GET', url)
+        xhr.send()
+      },
       removefile(){
 				this.file = ''
 			},
@@ -382,9 +396,6 @@
             self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
             self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
             if(self.finaldata.fileupload != undefined){
-              for (let f of self.finaldata.fileupload) {
-                f['flag'] = false
-              }
               self.data1 = self.finaldata.fileupload;
             }
             CKEDITOR.instances.editor1.setData(self.finaldata.description)
@@ -595,6 +606,9 @@
                 this.loading = false
               }
             }else{
+
+              console.log("running else condition")
+              console.log("**********************",self.finaldata);
               await $.ajax({
                     type: 'PATCH',
                     url: databasepost + self.$route.params.id,
@@ -675,17 +689,14 @@
               data: params.row,
               success: function (data11) {
                 console.log("json data******123",data11);
-                self.finaldata.fileupload[params.index].flag = false
                 self.$Notice.success({
                   title: 'Sucess',
                   desc: 'File successfully deleted ',
                   duration: 4.5
                 });
-                if(data11.fileupload != undefined){
+               
                   self.data1 = data11.fileupload
-                }else{
-                  self.data1 = [];
-                }
+                  self.finaldata.fileupload = data11.fileupload
                 
                 //self.data1.splice()
               },error: function(err){

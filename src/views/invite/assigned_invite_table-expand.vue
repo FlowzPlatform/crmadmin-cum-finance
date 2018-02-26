@@ -68,7 +68,7 @@
                         key: 'assignDate',
                         render: (h, params) => {
                             
-                                var date1 = moment(params.assignDate).format('DD-MMM-YYYY')
+                                var date1 = moment(params.assignDate).format('MM-DD-YYYY')
                                 return date1
                             
                         }
