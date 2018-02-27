@@ -42,13 +42,25 @@
                 columns7: [
                    
                     {
+                        title: 'Module',
+                        key: 'module',
+                        render: (h, params) => {
+                            console.log("params",params)
+                            return h('div', [
+                                //let obj= Object.keys(params.row.role);
+                                h('strong', this.capitalize(Object.keys(params.row)[0]))
+                            ]);
+                        }
+                    },
+                    {
                         title: 'Role',
                         key: 'role',
                         render: (h, params) => {
+                            // console.log("Object.keys(params.row.role)",Object.keys(params.row))
+                            // console.log("params.row[Object.keys(params.row)]",params.row[Object.keys(params.row)[0]])
                             return h('div', [
-                                //console.log(params)
-                                //let obj= Object.keys(params.row.role);
-                                h('strong', this.capitalize(params.row.role[Object.keys(params.row.role)]))
+                                //let obj= Object.keys(params.row);
+                                h('strong', this.capitalize(params.row[Object.keys(params.row)[0]]))
                             ]);
                         }
                     }
@@ -73,33 +85,14 @@
             async init(){
                 
                 let self = this
-                console.log(this.row)
-                await axios.get(subscriptionUrl +'subscription-invitation', {
-                    params: {
-                       subscriptionId: this.row.subscriptionId
-                        // own : true
-                    },
-                    headers : {
-                        Authorization : Cookies.get('auth_token')
-                    }
-                })
-                .then(function(result){
-                    self.spinShow = false;
-                    if(result.data.data.length == 0){
-                        self.assignee = "No assignee found for this subscription"
-                    }else{
-                        console.log(result)
-                        self.assignee = result.data.data
-                        for (let f of self.assignee) {
-                            f['flag'] = {
-                                sendMailFlag : false,
-                                unAssignFlag : false
-                            };
-                        }
-                        console.log("self.assignee",self.assignee)
-                        self.data7 = self.assignee
-                    }
-                })
+                console.log("this.row",this.row)
+                self.spinShow = false;
+                for (let role in this.row.role) {
+                    // console.log("role",role)
+                    // console.log("this.row.role[role]",this.row.role[role])
+                    self.data7.push({ [role] : this.row.role[role]})
+                }
+                console.log("self.data7",self.data7)
             }
         },
         mounted() {
