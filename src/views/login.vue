@@ -264,8 +264,8 @@ export default {
                              Cookies.set('user',  result.data.data.email  , {domain: location});
                               Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
-                            Cookies.set('email', response.data.email  , {domain: location});
-                            Cookies.set('password', '123456');
+                            // Cookies.set('email', response.data.email  , {domain: location});
+                            // Cookies.set('password', '123456');
                             self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
                             if (self.form.email === 'iview_admin') {
                                 Cookies.set('access', 0);
@@ -365,8 +365,8 @@ export default {
                             Cookies.set('user',  result.data.data.email  , {domain: location});
                             Cookies.set('auth_token', response.data.logintoken , {domain: location});
                         
-                            Cookies.set('email', response.data.email , {domain: location}) ;
-                            Cookies.set('password', '123456');
+                            // Cookies.set('email', response.data.email , {domain: location}) ;
+                            // Cookies.set('password', '123456');
                             self.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
                             if (self.form.email === 'iview_admin') {
                                 Cookies.set('access', 0);

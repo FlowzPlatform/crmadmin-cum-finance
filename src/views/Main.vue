@@ -63,9 +63,9 @@
                             <MenuGroup title="Flowz-Products">
                                 <MenuItem name="3-1"><span @click="goToFlowzDashboard">Flowz Dashboard</span></MenuItem>
                                 <MenuItem name="3-2"><span @click="goToFlowzBuilder">Website Builder</span></MenuItem>
-                                <MenuItem name="3-3"><span @click="goToFlowzVmail">Vmail</span></MenuItem>
+                                <!-- <MenuItem name="3-3"><span @click="goToFlowzVmail">Vmail</span></MenuItem> -->
                                 <MenuItem name="3-4"><span @click="goToFlowzUploader">Uploader</span></MenuItem>
-                                <MenuItem name="3-5"><span @click="goToFlowzDbetl">DBETL</span></MenuItem>
+                                <!-- <MenuItem name="3-5"><span @click="goToFlowzDbetl">DBETL</span></MenuItem> -->
                             </MenuGroup>
                         </Submenu>
                     </Menu>

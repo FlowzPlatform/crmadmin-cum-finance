@@ -29,7 +29,7 @@ module.exports = merge(webpackBaseConfig, {
             minChunks: Infinity
         }),
         new HtmlWebpackPlugin({
-            title: 'iView admin v' + package.version,
+            title: 'Flowz CRM',
             filename: '../index.html',
             template: './src/template/index.ejs',
             inject: false
