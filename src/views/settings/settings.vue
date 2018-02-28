@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Tabs v-model="activetabs">
-            <TabPane label="Configuration" name="Configuration">
+        <!--<Tabs v-model="activetabs">
+            <TabPane label="Configuration" name="Configuration">-->
 
                 <div class="settings_header">
                     <Button @click="addNewConfig">Add New Account</Button>
@@ -14,7 +14,7 @@
                         <div v-for="(item, inx) in data6">
                             <Col :span="12">
                                 <div style="padding: 5px;">
-                                    <Card style="padding:10px;">
+                                    <Card style="padding:10px; min-height:500px">
                                         <p slot="title">{{item.configName}}</p>
                                         
                                         <Tooltip placement="top" slot="extra" content="Toggle active / inactive" style="padding-left:3px;">
@@ -27,11 +27,8 @@
                                         </ButtonGroup>
                                                         
                                         <div>
-                                        <Collapse v-model="value2" accordion>
-                                            <Panel :name="item.configName + '1'">
-                                                Account
-                                                <p slot="content">
-                                                    <table id="t01">
+                                            <div class="firstPanel">
+                                                <table id="t01">
                                                         <tr>
                                                             <td>User</td>
                                                             <td>{{ item.user}}</td>
@@ -117,8 +114,9 @@
                                                             </ButtonGroup>
                                                         </div>
                                                     </span>
-                                                </p>
-                                            </Panel>
+                                            </div>
+                                        <Collapse v-model="value2" accordion>
+                                            
                                             <Panel :name="item.configName + '2'">
                                                 Profile
                                                 <p slot="content">
@@ -322,7 +320,7 @@
                         </div>
                     </Row>
                 </div>
-            </TabPane>
+            <!--</TabPane>-->
 
             <!--<TabPane label="General" name="General">
                 <div class="settings_header">
@@ -477,7 +475,7 @@
                     </Row>
                 </div>
             </TabPane> -->
-        </Tabs>      
+        <!--</Tabs>   -->   
     </div>
 </template>
 
@@ -1389,5 +1387,11 @@ table#t01 th {
 }
 .ivu-icon-arrow-right-b {
     padding-right: 10px;
+}
+.firstPanel {
+    background: white;
+    padding: 10px;
+    border: 1px solid #e0e1e3;
+    border-radius: 2px;
 }
 </style>
