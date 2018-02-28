@@ -36,28 +36,20 @@ export default {
   name: 'set-swatches',
   data () {
   return {
-    websiteid: '',
+    subscriptionId:'',
     rowIndex:'',
     tabIndex: 0,
     showtabs: false,
     data: '',
     vid: '',
     len:1,
-    file:'',
     list1: [],
     list2: [],
     listData: [],
     websiteList: [],
+    websiteid: '',
     websiteName: '',
     page:1,
-    selectRadio1:'',
-    selectRadio2:'',
-    hexcode1:'',
-    imgurl1:'',
-    flagHexCode1: false,
-    flagImageUrl1: false,
-    flagHexCode2: false,
-    flagImageUrl2: false,
     columns1: [
       {
         title: 'Attribute Value',
@@ -82,7 +74,10 @@ export default {
                   this.list1[params.index].ishexDisable = false
                   this.list1[params.index].isimgurlDisable = true
                 } else {
-                  this.list1[params.index].ishexDisable = true
+                  this.list1[params.index].ishexDisable = 'none'
+                  // setTimeout(function () {
+                  //   $('.ivu-color-picker-input.ivu-input.ivu-input-default').css('background', 'darkgray')
+                  // },0)
                   this.list1[params.index].isimgurlDisable = false
                 }
               }
@@ -116,19 +111,36 @@ export default {
         key: '',
         align: 'center',
         className: '#Hexcode',
+        // render: (h, params) => {
+          // return h('Input', {
+          //   props: {
+          //     value: this.list1[params.index].hexcode1,
+          //     disabled: this.list1[params.index].ishexDisable
+          //   },
+          //   on: {
+          //     input: (val) => {
+          //       this.list1[params.index].hexcode1 = val;
+          //     }
+          //   }
+          // })
+        // }
         render: (h, params) => {
-          return h('Input', {
-            props: {
-              value: this.list1[params.index].hexcode1,
-              disabled: this.list1[params.index].ishexDisable
-            },
-            on: {
-              input: (val) => {
-                this.list1[params.index].hexcode1 = val;
-              }
-            }
-          })
-        }
+                            return h('color-picker', {
+                              props: {
+                                value: this.list1[params.index].hexcode1,
+                                placement: 'right'
+                              },
+                              style: {
+                                pointerEvents:this.list1[params.index].ishexDisable,
+                              },
+                              on: {
+                              	'on-change' : (val) => {
+                                	console.log('Value ', val)
+                                  this.list1[params.index].hexcode1 = val
+                                }
+                              }
+                            })
+                        }
       },
       {
         title: 'Upload Image',
@@ -156,9 +168,6 @@ export default {
                                     }
                                 }, 'Upload Image'),
                                 h('div', {
-                                    style: {
-                                        // marginRight: '5px'
-                                    }
                                 },this.list1[params.index].file),
                             ]);
                         }
@@ -186,19 +195,11 @@ export default {
                               style: {
                                 height:'27px',
                                 width:'27px',
-                                margin: '2px',
-                              },
-                              className: 'test',
-                              on: {
-                                // click: () => {
-                                //   this.makepayment(params.row)
-                                // }
-                            }
+                                margin: '2px'
+                              }
                           })
-
           }
-
-          }
+      }
       },
       {
         title: 'Action',
@@ -210,7 +211,7 @@ export default {
                                 h('Button', {
                                     props: {
                                         type: 'primary',
-                                        loading: this.list1[params.index].loading1,
+                                        // loading: this.list1[params.index].loading1,
                                         size: 'small'
                                     },
                                     style: {
@@ -405,13 +406,37 @@ export default {
       this.tabIndex = name
       this.getvidData()
     },
-    handleUpload1(file){
-      this.list1[this.rowIndex].imgurl1 = file
+    handleUpload1(file){     
+        var self = this
+        console.log('file',file)
+        if(file.size >= 51200){
+					this.$Notice.error({
+            title: 'File Limit',
+            desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+          });
+          file = ''
+					return true
+				}
+        this.list1[this.rowIndex].imgurl1 = file
       this.list1[this.rowIndex].file = file.name
+        return false;   
     },
     handleUpload2(file){
-      this.list2[this.rowIndex].imgurl2 = file
-      this.list2[this.rowIndex].file = file.name
+      var self = this
+        console.log('file',file)
+        if(file.size >= 51200){
+					this.$Notice.error({
+            title: 'File Limit',
+            desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+          });
+          file = ''
+					return true
+				}
+        this.list2[this.rowIndex].imgurl2 = file
+        this.list2[this.rowIndex].file = file.name
+        return false;      
     },
     async changePage (p) {
       this.page = p
@@ -422,14 +447,12 @@ export default {
       }
     },
     async mockTableData1 (p,size) {
-      let mydata = _.cloneDeep(this.data1)
-      this.len = mydata.length
-      return mydata.slice((p - 1) * size, p * size);
+      this.len = this.data1.length
+      return this.data1.slice((p - 1) * size, p * size);
     },
     async mockTableData2 (p,size) {
-      let mydata = _.cloneDeep(this.data2)
-      this.len = mydata.length
-      return mydata.slice((p - 1) * size, p * size);
+      this.len = this.data2.length
+      return this.data2.slice((p - 1) * size, p * size);
     },
     async getColorTableData(){
       var self = this
@@ -441,7 +464,8 @@ export default {
         self.data = res.data.data
       })
       .catch(function (error) {
-        self.$Message.error(error)
+        console.log(error)
+        self.$Message.error('error')
       });
     },
     async getvidData(){
@@ -452,11 +476,13 @@ export default {
       let object
       object = await _.find(self.listData, function(o) {
         if(self.websiteName == o.websiteName){
+          console.log('llllllllllllllll',o)
           return o.vid;
         }
       });
       this.vid = object.vid
       this.websiteid = object.id
+      this.subscriptionId = object.subscriptionId
       // fetch data using vid
       if(this.tabIndex == 0){
         await axios({
@@ -475,27 +501,36 @@ export default {
             item.isimgurlDisable= true
             item.colorBox1 = 'white'
             item.imageBox1=''
+            item.hexcode1=''
             _.find(self.data, function(o) {
-              if(o.colorname == item.key && o.attribute_name == 'color'){
-                console.log('iiiiiiiiiiiiiiiiiiii',o.imagefile)
-                testdata.push({hexcode:o.hexcode, index:index, imagefile:o.imagefile})
+
+              if(!o.file){
+                if(o.colorname == item.key && o.attribute_name == 'color'){
+                  testdata.push({hexcode:o.hexcode, index:index})
+                }
+              } else {
+                if(o.colorname == item.key && o.attribute_name == 'color'){
+                  testdata.push({hexcode:o.hexcode, index:index, imagefile: o.file.url})
+                }
               }
+
              });
           })
           self.data1 = uniqData
           $.each(testdata,function(index,item){
             if(item.hexcode == undefined){
               self.data1[item.index].colorBox1 = 'white'
+              self.data1[item.index].hexcode1 = ''
             } else {
               self.data1[item.index].colorBox1 = item.hexcode
+              self.data1[item.index].hexcode1 = item.hexcode
             }
-            self.data1[item.index].hexcode1 = item.hexcode
             self.data1[item.index].imageBox1 = item.imagefile
           })
           self.list1 = await self.mockTableData1(1,pageSize)
           self.$Loading.finish();
         }).catch(function (error) {
-          console.log("-------",error);
+          console.log("error",error);
           self.$Loading.error();
             self.$Message.error(error)
         });
@@ -551,7 +586,7 @@ export default {
             this.$Message.error('Please enter valid hexcode');
             return false;
           } else {
-            this.list1[index].loading1 = true
+            this.$Loading.start();
             param1 = {
               colorname :this.list1[index].key,
               hexcode : this.list1[index].hexcode1,
@@ -570,19 +605,19 @@ export default {
                                       method: 'patch',
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                       self.list1[index].colorBox1 = self.list1[index].hexcode1
                                       self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                       self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-
                                       self.$Message.success("update successfully")
-                                      self.list1[index].loading1 = false
+                                      self.$Loading.finish();
 
 
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list1[index].loading1 = false
+                                   self.$Loading.error();
                                });
                         } else {
                                //post data in api
@@ -590,33 +625,41 @@ export default {
                                       method: 'post',
                                       url: config.default.colorTableUrl,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
                                     self.list1[index].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-                                    self.list1[index].loading1 = false
+                                    self.$Loading.finish();
 
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list1[index].loading1 = false
+                                   self.$Loading.error();
                                });
                         }
 
           }
         } else if(this.list1[index].checkvalue == 'ImageUrl'){
-          if(this.list1[index].imgurl1.type != 'image/png' && this.list1[index].imgurl1.type != 'image/jpeg'){
+          if(this.list1[index].imgurl1 == undefined){
+            this.$Message.error('Please enter imageurl');
+          } else if(this.list1[index].imgurl1.type != 'image/png' && this.list1[index].imgurl1.type != 'image/jpeg'){
             this.$Message.error('Please upload valid file');
             return false;
           } else {
-            this.list1[index].loading1 = true
+            this.$Loading.start();
+            console.log('this.list1[index].imgurl1', this.list1[index].imgurl1.name)
             param1 = {
               colorname :this.list1[index].key,
               attribute_name : 'color',
               vid: this.vid,
               websiteid: this.websiteid,
-              websitename: this.websiteName
+              websitename: this.websiteName,
+              subscriptionId: this.subscriptionId,
+              file: {
+                filename: this.list1[index].imgurl1.name
+              }
              }
              var self = this
                    await self.getColorTableData()
@@ -626,23 +669,22 @@ export default {
                       reader.readAsDataURL(this.list1[index].imgurl1);
                       reader.addEventListener("load", function () {
                       var filebase64 = reader.result
-                      param1['imagefile'] = filebase64
+                      param1.file['url'] = filebase64
+
                         if(data != null){
                                axios({
                                       method: 'patch',
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
-                                      self.list1[index].imageBox1 = res.data.imagefile
-                                      // self.list1[index].colorBox1 = self.list1[index].hexcode1
-                                      // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-                                      // self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
+                                      self.list1[index].imageBox1 = res.data.file.url
                                       self.$Message.success("update successfully")
-                                      self.list1[index].loading1 = false
+                                      self.$Loading.finish();
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list1[index].loading1 = false
+                                   self.$Loading.error();
                                });
                         } else {
                                //post data in api
@@ -650,17 +692,15 @@ export default {
                                       method: 'post',
                                       url: config.default.colorTableUrl,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
-                                    console.log(res.data.imagefile)
-                                    self.list1[index].imageBox1 = res.data.imagefile
-                                    // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
-                                    // self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
-                                    self.list1[index].loading1 = false
+                                    self.list1[index].imageBox1 = res.data.file.url
+                                    self.$Loading.finish();
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list1[index].loading1 = false
+                                   self.$Loading.error();
                                });
 
                         }
@@ -682,11 +722,10 @@ export default {
             this.$Message.error('Please enter valid hexcode');
             return false;
           } else {
-            this.list2[index].loading2 = true
-            console.log('this.websiteid...........',this.websiteName)
+            this.$Loading.start();
             param1 = {
               colorname :this.list2[index].key,
-              hexcode : this.list2[index].hexcode1,
+              hexcode : this.list2[index].hexcode2,
               attribute_name : 'imprintcolor',
               vid: this.vid,
               websiteid: this.websiteid,
@@ -708,11 +747,11 @@ export default {
                                       self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
 
                                       self.$Message.success("update successfully")
-                                      self.list2[index].loading2 = false
+                                      self.$Loading.finish();
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list2[index].loading2 = false
+                                   self.$Loading.error();
                                });
                         } else {
                                //post data in api
@@ -725,9 +764,11 @@ export default {
                                     self.list2[index].colorBox2 = self.list2[index].hexcode2
                                     self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
                                     self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
+                                    self.$Loading.finish();
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
+                                   self.$Loading.error();
                                });
 
                         }
@@ -738,7 +779,7 @@ export default {
             this.$Message.error('Please upload valid file');
             return false;
           } else {
-            this.list2[index].loading2 = true
+            this.$Loading.start();
             param1 = {
               colorname :this.list2[index].key,
               attribute_name : 'imprintcolor',
@@ -753,8 +794,8 @@ export default {
                       var reader = new FileReader();
                       reader.readAsDataURL(this.list2[index].imgurl2);
                       reader.addEventListener("load", function () {
-                      var filebase64 = reader.result
-                      param1['imagefile'] = filebase64
+                        var filebase64 = reader.result
+                        param1['imagefile'] = filebase64
                         if(data != null){
                                axios({
                                       method: 'patch',
@@ -763,16 +804,12 @@ export default {
                                }).then(function (res) {
                                  self.$Message.success("update successfully")
                                  self.list2[index].imageBox2 = res.data.imagefile
-                                      // self.list2[index].colorBox2 = self.list2[index].hexcode2
-                                      // self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
-                                      // self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
-
-                                      self.list2[index].loading2 = false
+                                 self.$Loading.finish();                                     
 
                                }).catch(function (error) {
                                       console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list2[index].loading2 = false
+                                   self.$Loading.error();
                                });
                         } else {
                                //post data in api
@@ -783,19 +820,15 @@ export default {
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
                                     self.list2[index].imageBox2 = res.data.imagefile
-                                    // self.list2[index].colorBox2 = self.list2[index].hexcode2
-                                    // self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
-                                    // self.data2[(self.page - 1) * 10 + (index)].hexcode2 = self.list2[index].hexcode2
-                                    self.list2[index].loading2 = false
+                                    self.$Loading.finish();
                                }).catch(function (error) {
                                     console.log("-------",error);
                                    self.$Message.error(error)
-                                   self.list2[index].loading2 = false
+                                   self.$Loading.error();
                                });
-
                         }
                       })
-          }
+                      }
         }
       }
 
@@ -825,10 +858,14 @@ export default {
 .ivu-tabs-nav-container{
   margin-top: 20px;
 }
-.test :hover{
-  width:50px;
-  height:50px;
+.ivu-color-picker-picker{
+ height: 183px;
 }
-
+.ivu-color-picker-saturation-wrapper{
+  padding-bottom:45%
+}
+.ivu-table-cell img:hover {
+  transform: scale(5);
+}
 
 </style>
