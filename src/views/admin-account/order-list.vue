@@ -157,7 +157,7 @@
                     var result = _.uniqBy(response.data.data,'website_id')
                     console.log("result", result)
                     self.websiteList = result
-                    // self.website = self.websiteList[0].website_id                  
+                    self.website = self.websiteList[0].website_id                  
                 })
             },
             listData (val) {
@@ -175,7 +175,7 @@
                 })
                 .then(function (response){
                     console.log("response val", response.data)
-                    self.data1 = response.data.data
+                    self.data1 = _.orderBy(response.data.data, ['created_at'],['desc']);
                 })
             },
             show (params) {

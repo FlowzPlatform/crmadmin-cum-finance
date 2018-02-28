@@ -200,9 +200,9 @@ export default {
 }
 </script>
 
-<style>
-.single-page {
-    text-align: center;
+<style scoped>
+ .main .single-page-con .single-page {
+    text-align: center !important;
   }
 .ivu-table-wrapper {
     margin-top: 20px;

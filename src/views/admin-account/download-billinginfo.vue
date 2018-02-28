@@ -28,7 +28,7 @@
                 <div id="invoice" style="float: right;text-align: right;">
                     <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;">{{row.billing_details.data.InvoiceNumber}}</h1>
                     <div  style="font-size: 12px;color: #777777;">Date of Invoice: {{moment(row.billing_details.data.Date).format('DD-MMM-YYYY')}}</div>
-                    <div  style="font-size: 12px;color: #777777;">Due Date: {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}}</div>
+                    <!--<div  style="font-size: 12px;color: #777777;">Due Date: {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}}</div>-->
                 </div>
             </div>
             <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">

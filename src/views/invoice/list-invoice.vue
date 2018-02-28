@@ -1381,30 +1381,32 @@
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'fixed'
+          document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-            axios({
-              method: 'post',
-              url: config.default.serviceUrl + 'exporttopdf',
-              data: {
+              document.querySelector('#myfooter').style.position = 'fixed'
+              axios({
+                method: 'post',
+                url: config.default.serviceUrl + 'exporttopdf',
+                data: {
 
-                  "html" : self.$refs.email1.innerHTML
-              },
+                    "html" : self.$refs.email1.innerHTML
+                },
 
-              }).then(function (response) {
-                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial' 
-                var arrayBufferView = new Uint8Array( response.data.data );
-                var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                var link=document.createElement('a');
-                link.href=window.URL.createObjectURL(blob);
-                link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
-                link.click();
+              })
+              .then(function (response) {
+                  console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                  document.querySelector('#myfooter').style.position = 'initial' 
+                  var arrayBufferView = new Uint8Array( response.data.data );
+                  var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                  var link=document.createElement('a');
+                  link.href=window.URL.createObjectURL(blob);
+                  link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
+                  link.click();
               })
               .catch(function (error) {
                 console.log(error);
