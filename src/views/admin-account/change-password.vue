@@ -104,7 +104,7 @@ export default {
                 },
                 ruleValidate1: {
                   email:[
-                    { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
+                    { required: true, message: 'Email cannot be empty', trigger: 'blur' },
                     { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                   ]
 
@@ -225,7 +225,7 @@ export default {
                 })
             },
             handleReset (name) {
-              alert(1)
+              // alert(1)
                 this.$refs[name].resetFields();
             }
   },
