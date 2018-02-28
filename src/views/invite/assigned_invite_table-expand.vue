@@ -155,8 +155,29 @@
                     return true;
                 })
                 .catch(function(err){
+                    console.log(err.response)
                     params.row.flag.sendMailFlag = false;
-                    return err
+                    if(err.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                        }else if(err.response.status == 403){
+                            self.$Notice.error(
+                                {duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                );
+                        
+                    }else{
+                        self.$Message.error(err.response.data);
+                    }
                 })
             },
             remove (params) {

@@ -390,7 +390,7 @@
                        // url: "http://172.16.230.86:3030/" + 'invite',
                         headers: {
                             "Authorization": Cookies.get('auth_token'),
-
+                            "subscriptionId" : Cookies.get('subscriptionId')
                         },
                         data: params
                     })
@@ -410,8 +410,25 @@
                     })
                     .catch(function(error) {
                         self.loading = false
-                        console.log('error', error.response)
-                        self.$message.warning("Something went wrong , please try again later ");
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                        }else if(error.response.status == 403){
+                            self.$Notice.error(
+                                {duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                );
+                        
+                    }
                     })
                 }
                 
