@@ -400,19 +400,19 @@ export default {
                     })  
                     .then(function (response) {
                       console.log('response------------------------>',response)
-                      this.loading = false;
+                      self.loading = false;
                       self.$router.push({
 												name: 'Settings'
 											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
-                      this.loading = false;
+                      self.loading = false;
                     })
               })
               },
               onCancel: () => {
-                this.loading = false;
+                self.loading = false;
               }
             })                        
           }
@@ -481,14 +481,14 @@ export default {
                       })  
                       .then(function (response) {
                         console.log('response------------------------>',response)
-                        this.loading = false;
+                        self.loading = false;
                         self.$router.push({
                           name: 'Settings'
                         });
                       })
                       .catch(function (error) {
                         console.log('error',error)
-                        this.loading = false;
+                        self.loading = false;
                       })
                     })
                   }
@@ -505,19 +505,19 @@ export default {
                     })  
                     .then(function (response) {
                       console.log('response------------------------>',response)
-                      this.loading = false;
+                      self.loading = false;
                       self.$router.push({
 												name: 'Settings'
 											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
-                      this.loading = false;
+                      self.loading = false;
                     })
                   }
                 },
                 onCancel: () => {
-                  this.loading = false;
+                  self.loading = false;
                 }
               })
           }

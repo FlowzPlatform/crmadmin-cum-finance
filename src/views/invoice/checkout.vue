@@ -369,7 +369,7 @@ export default {
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
             // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
-            self.payDetail.amount = self.payDetail.amount;
+            self.payDetail.amount = parseFloat(self.payDetail.amount);
             let param1 = {
               settingId:self.settingId.query.settingId,
               gateway:self.payDetail.gateway,
@@ -419,7 +419,7 @@ export default {
               settingId:self.responseDataForPayment.settingId,
               gateway:self.payDetail.gateway,
               id: self.responseDataForPayment.Invoice_No,
-              amount:self.payDetail.amount,
+              amount:parseFloat(self.payDetail.amount),
               Name:self.responseDataForPayment.Name,
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,

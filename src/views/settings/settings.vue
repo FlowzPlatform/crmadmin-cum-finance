@@ -118,7 +118,7 @@
                                             <Collapse v-model="value2" accordion>
                                                 <Panel :name="item.configName + '2'">
                                                     Profile
-                                                    <p slot="content" v-if="item.address !== ''">
+                                                    <p slot="content" v-if="item.address && item.address !== ''">
                                                         <table id="t01">
                                                             <tr>
                                                                 <td>Name</td>
@@ -150,7 +150,7 @@
                                                 </Panel>
                                                 <Panel :name="item.configName + '3'">
                                                     Online Payment
-                                                    <p slot="content" v-if="item.online_payment">
+                                                    <p slot="content" v-if="item.online_payment && item.online_payment !== ''">
                                                         <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
                                                             <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
                                                                 <div class="schema-form ivu-table-wrapper">
