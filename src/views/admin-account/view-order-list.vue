@@ -147,6 +147,33 @@
     }
     
 </style>
+<style>
+    .quantity-table .owl-carousel .owl-nav.disabled{
+            position: absolute;
+            right: 5px;
+            top: -17px;
+            display:inline-block;
+        }
+        .quantity-table .owl-carousel .owl-nav.disabled .owl-prev {
+            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll 0 0;
+            border-radius: 0;
+            height: 15px;
+            width: 15px;
+            font-size: 0;
+            float: left;
+        }
+        .quantity-table .owl-carousel .owl-nav.disabled .owl-next {
+            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll -16px center;
+            border-radius: 0!important;
+            height: 15px;
+            width: 15px;
+            font-size: 0px;
+            float: left;
+        }
+        .quantity-table .quantity-table-disc {
+            overflow: inherit !important;
+        }
+</style>
 <template>
     <div>
         <Card>
@@ -255,7 +282,7 @@
                                                                 <table class="info" style="width:100%;table-layout: auto;margin-top: -1px;">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th>Size &amp; Quantity</th>
+                                                                            <th>Quantity &amp; Price</th>
                                                                             <th>Imprint Information</th>
                                                                             <th>Additional Charges</th>
                                                                             <th>Charges</th>
@@ -320,7 +347,7 @@
                                                                                             <th style="text-align: -webkit-center;">Shipping Address </th>
                                                                                             <th style="text-align: -webkit-center;">Shipping</th>
                                                                                             <th style="text-align: -webkit-center;">Shipping Charge</th>
-                                                                                            <th style="text-align: -webkit-center;">Tax</th>
+                                                                                            <!--<th style="text-align: -webkit-center;">Tax</th>-->
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
@@ -356,16 +383,16 @@
                                                                                                 <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                 <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                             </td>
-                                                                                            <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
-                                                                                                <span style="float: left">Shipping Type: </span> {{item.shipping_method.shipping_type}} <br>
-                                                                                                <span style="float: left">Shipping Carrier: </span> <span v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
-                                                                                                <span style="float: left">Method: </span> <span  v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
-                                                                                                <span style="float: left">In Hand Date : </span> -
+                                                                                            <td style="width:20%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
+                                                                                                <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
+                                                                                                <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
+                                                                                                <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                             </td>
-                                                                                            <td style="width:16%">
-                                                                                                <span style="color:#C11E19">**Please Note:</span>  We will call you for the Shipping Charges.
+                                                                                            <td style="width:16%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                             </td>
-                                                                                            <td style="width:10%"></td>
+                                                                                            <!--<td style="width:10%"></td>-->
                                                                                         </tr>
                                                                                     </tbody>
                                                                                 </table>
@@ -417,9 +444,9 @@
                         <label class="col-sm-6"> 
                                 Customer Name  : <label class="data"> {{this.invoice.Contact.Name}} </label>
                         </label>
-                        <label class="col-sm-6"> 
+                        <!--<label class="col-sm-6"> 
                                 Due Date  : <label class="data"> {{moment(this.invoice.DueDate).format('DD-MMM-YYYY')}} </label>
-                        </label> 
+                        </label> -->
                         <label class="col-sm-6"> 
                                 Paid Amount  : <label class="data"> {{accounting(this.invoice.AmountPaid)}} </label>
                         </label>

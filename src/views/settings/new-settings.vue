@@ -24,7 +24,8 @@
                          -->
                          <Upload v-model="XeroformValidate.privateKey"
                             :before-upload="handleUpload"
-                            action="">
+                            action=""
+                            :show-upload-list="uploadlist">
                             <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
                         </Upload>
                         <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
@@ -108,6 +109,7 @@
     export default {
         data () {
             return {
+                uploadlist: false,
                tabs: 1 ,
                loading : false,
                file: null,
@@ -206,11 +208,10 @@
                             var file    =this.file
                             var reader  = new FileReader();
 
-                          reader.addEventListener("load", function () {
-                           
-                            let lastModified = self.file.lastModified +"-"+self.file.name;
-                            
-                            let  data = {
+                            reader.addEventListener("load", function () {
+                                let lastModified = self.file.lastModified +"-"+self.file.name;
+                                
+                                let  data = {
                                     "configName": self.XeroformValidate.configName.trim(),
                                     "certificate" : reader.result.substring( reader.result.indexOf(",")+1)  ,
                                     "useragent" :  self.XeroformValidate.useragent,
@@ -221,52 +222,51 @@
                                     "isActive" : self.isActive,
                                     "isDeleated" : false,
                                     "subscriptionId" : Cookies.get('subscriptionId')
-                                }
-                            
-                              
-                           
-                            
-                            axios({
-                                method: 'post',
-                                url: feathersUrl +'settings',
-                                headers:{
-                                    Authorization : Cookies.get('auth_token'),
-                                    subscriptionId : Cookies.get('subscriptionId')
-                                },
-                                data: data
-                            })  
-                            .then(function (response) {
-                                console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
-                                 
-                                 self.loading = false;
-                                 self.$Message.success('Configuration Added Successfully');
-                                 self.handleReset('XeroformValidate')
-                            })
-                            .catch(function (error) {
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
+                                };
+                                
+                                axios({
+                                    method: 'post',
+                                    url: feathersUrl +'settings',
+                                    headers:{
+                                        Authorization : Cookies.get('auth_token'),
+                                        subscriptionId : Cookies.get('subscriptionId')
+                                    },
+                                    data: data
+                                })  
+                                .then(function (response) {
+                                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
+                                    self.loading = false;
+                                    self.$Message.success('Configuration Added Successfully');
+                                    self.handleReset('XeroformValidate')
+                                    self.$router.push({
+                                        name: 'Settings'
                                     });
-                                }else if(error.response.status == 403){
-                                            self.$Notice.error(
-                                               {duration:0, 
-                                               title: error.response.statusText,
-                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                                               );
-                                        }
-                               
-                            });
-                          }, false);
+                                })
+                                .catch(function (error) {
+                                    if(error.response.status == 401){
+                                        let location = psl.parse(window.location.hostname)
+                                        location = location.domain === null ? location.input : location.domain
+                                        
+                                        Cookies.remove('auth_token' ,{domain: location}) 
+                                        this.$store.commit('logout', this);
+                                        
+                                        this.$router.push({
+                                            name: 'login'
+                                        });
+                                    }else if(error.response.status == 403){
+                                                self.$Notice.error(
+                                                {duration:0, 
+                                                title: error.response.statusText,
+                                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                                                );
+                                            }
+                                
+                                });
+                            }, false);
 
-                          if (file) {
-                            reader.readAsDataURL(file);
-                          }
+                            if (file) {
+                                reader.readAsDataURL(file);
+                            }
                         }
                     } else {
                         self.$Message.error('Something went wrong , please try again later!');
@@ -307,6 +307,9 @@
                                  self.loading = false;
                                  self.$Message.success('Configuration Added Successfully');
                                  self.handleReset('QBformValidate')
+                                 self.$router.push({
+                                    name: 'Settings'
+                                });
                             })
                             .catch(function (error) {
                                 if(error.response.status == 401){
@@ -428,12 +431,14 @@
             handleReset (name) {
                 this.$refs[name].resetFields();
                 this.file = null
+                this.isActive = false
+                this.isActiveQb = false
             }
         },
         computed: {
-        productChunks(){
-            return _.chunk(this.data6, 2);
-        }
+            productChunks(){
+                return _.chunk(this.data6, 2);
+            }
         },
         mounted() {
             console.log(this.$store.state.settingData)
@@ -449,5 +454,8 @@
     background: #cacaca;
     width:100%;
     margin:14px 2px;
+}
+.ivu-upload-list{
+    display: none;
 }
 </style>

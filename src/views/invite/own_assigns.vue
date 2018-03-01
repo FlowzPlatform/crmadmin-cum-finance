@@ -22,13 +22,12 @@
 </template>
 <script>
 
-    import axios from "axios"
-    import config from '@/config/customConfig.js'
-    let subscriptionUrl = config.default.subscriptionUrl
-    import Cookies from 'js-cookie';
-    import moment from 'moment'
-    let emailTemp = require('../emailTemplate')
-    let SendEmailBodyInvite = emailTemp.sendInviteemail;
+    // import axios from "axios"
+    // import config from '@/config/customConfig.js'
+    // let subscriptionUrl = config.default.subscriptionUrl
+    // import Cookies from 'js-cookie';
+    // let emailTemp = require('../emailTemplate')
+    // let SendEmailBodyInvite = emailTemp.sendInviteemail;
 
     export default {
         props: {

@@ -1,10 +1,12 @@
 <template>
     <div>
-        <Tabs v-model="activetabs">
-            <TabPane label="Configuration" name="Configuration">
+        <!--<Tabs v-model="activetabs">
+            <TabPane label="Configuration" name="Configuration">-->
 
                 <div class="settings_header">
-                    <Button @click="addNewConfig">Add New Configuration</Button>
+                    <Button @click="addNewConfig">Add New Account</Button>
+                    <Button @click="addNewGeneralSettings">Add New Profile Configuration</Button>
+                    <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
                 </div>
 
                 <div>
@@ -12,97 +14,205 @@
                         <div v-for="(item, inx) in data6">
                             <Col :span="12">
                                 <div style="padding: 5px;">
-                                    <Card style="padding:10px;height: 365px;">
+                                    <Card style="padding:10px; min-height:500px;">
                                         <p slot="title">{{item.configName}}</p>
-                                        <table id="t01">
-                                            <tr>
-                                                <td>User</td>
-                                                <td>{{ item.user}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Domain</td>
-                                                <td>{{ item.domain}}</td>
-                                            </tr>
-
-                                            <tr v-if="item.domain == 'Xero'">
-                                                <td >Consumer key </td>
-                                                <td>
-                                                    <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
-                                                        <Button slot="append" icon="eye" @click="showSecret('consumerKeyType')"></Button>
-                                                    </Input>                            
-                                                </td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'QB'">
-                                                <td >Client ID </td>
-                                                <td>
-                                                    <Input :type="client_idType" readonly :value='item.client_id'>
-                                                        <Button slot="append" icon="eye" @click="showSecret('client_idType')" ></Button>
-                                                    </Input>
-                                                </td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'custom'">
-                                                <td >Customer Url </td>
-                                                <td>
-                                                    <Input  readonly :value='item.customer_url'>
-                                                        
-                                                    </Input>
-                                                </td>
-                                            </tr>
-
-                                            <tr v-if="item.domain == 'Xero'">
-                                                <td >Consumer secret </td>
-                                                <td>
-                                                    <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
-                                                        <Button slot="append" icon="eye" @click="showSecret('consumerSecretType')"></Button>
-                                                    </Input>
-                                                </td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'QB'">
-                                                <td >Client secret </td>
-                                                <td>
-                                                    <Input :type="client_secretType" readonly :value='item.client_secret'>
-                                                        <Button slot="append" icon="eye" @click="showSecret('client_secretType')"></Button>
-                                                    </Input>
-                                                </td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'custom'">
-                                                <td >Invoice Url </td>
-                                                <td>
-                                                    <Input  readonly :value='item.invoice_url'>
-                                                    </Input>
-                                                </td>
-                                            </tr>
-
-                                            <tr v-if="item.domain == 'Xero'">
-                                                <td >User agent</td>
-                                                <td >{{ item.useragent}}</td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'QB'">
-                                                <td >realmId </td>
-                                                <td >{{item.realmId}}</td>
-                                            </tr>
-
-                                            <tr v-if="item.domain == 'Xero'">
-                                                <td >Certificate </td>
-                                                <td >{{ item.pem}}</td>
-                                            </tr>
-                                            <tr v-if="item.domain == 'QB'">
-                                                <td >Refresh Token: </td>
-                                                <td >{{item.refresh_token}}</td>
-                                            </tr>
-                                        </table>
-                                        <div class="actionDiv">
-                                            <Tooltip placement="top" content="Toggle active / inactive">
-                                                <i-switch v-model="item.isActive" :disabled="disabled" @on-change="buttonClicked(item)"></i-switch>
+                                        
+                                        <Tooltip placement="top" slot="extra" content="Toggle active / inactive" style="padding-left:3px;">
+                                            <i-switch v-model="item.isActive" :disabled="disabled" @on-change="buttonClicked(item)"></i-switch>
+                                        </Tooltip>
+                                        <ButtonGroup slot="extra" v-if="item.domain != 'custom'">
+                                            <Tooltip placement="top" content="Delete" style="padding-left:3px;">
+                                                <Button class="ButtonGroup" @click="deleteConfig(item)"   type="ghost" icon="trash-b"></Button>
                                             </Tooltip>
-                                            <ButtonGroup v-if="item.domain != 'custom'">
-                                                <Tooltip placement="top" content="Delete">
-                                                    <Button class="ButtonGroup" @click="deleteConfig(item)"   type="ghost" icon="trash-b"></Button>
-                                                </Tooltip>
-                                                <Tooltip placement="top" content="Edit">
-                                                    <Button class="ButtonGroup" @click="editConfig(item)" type="ghost" icon="edit"></Button>
-                                                </Tooltip>
-                                            </ButtonGroup>
+                                        </ButtonGroup>
+                                                        
+                                        <div>
+                                            <div class="firstPanel">
+                                                <table id="t01">
+                                                        <tr>
+                                                            <td>User</td>
+                                                            <td>{{ item.user}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Domain</td>
+                                                            <td>{{ item.domain}}</td>
+                                                        </tr>
+
+                                                        <tr v-if="item.domain == 'Xero'">
+                                                            <td >Consumer key </td>
+                                                            <td>
+                                                                <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
+                                                                    <Button slot="append" icon="eye" @click="showSecret('consumerKeyType')"></Button>
+                                                                </Input>                            
+                                                            </td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'QB'">
+                                                            <td >Client ID </td>
+                                                            <td>
+                                                                <Input :type="client_idType" readonly :value='item.client_id'>
+                                                                    <Button slot="append" icon="eye" @click="showSecret('client_idType')" ></Button>
+                                                                </Input>
+                                                            </td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'custom'">
+                                                            <td >Customer Url </td>
+                                                            <td>
+                                                                <Input  readonly :value='item.customer_url'>
+                                                                    
+                                                                </Input>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr v-if="item.domain == 'Xero'">
+                                                            <td >Consumer secret </td>
+                                                            <td>
+                                                                <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
+                                                                    <Button slot="append" icon="eye" @click="showSecret('consumerSecretType')"></Button>
+                                                                </Input>
+                                                            </td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'QB'">
+                                                            <td >Client secret </td>
+                                                            <td>
+                                                                <Input :type="client_secretType" readonly :value='item.client_secret'>
+                                                                    <Button slot="append" icon="eye" @click="showSecret('client_secretType')"></Button>
+                                                                </Input>
+                                                            </td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'custom'">
+                                                            <td >Invoice Url </td>
+                                                            <td>
+                                                                <Input  readonly :value='item.invoice_url'>
+                                                                </Input>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr v-if="item.domain == 'Xero'">
+                                                            <td >User agent</td>
+                                                            <td >{{ item.useragent}}</td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'QB'">
+                                                            <td >realmId </td>
+                                                            <td >{{item.realmId}}</td>
+                                                        </tr>
+
+                                                        <tr v-if="item.domain == 'Xero'">
+                                                            <td >Certificate </td>
+                                                            <td >{{ item.pem}}</td>
+                                                        </tr>
+                                                        <tr v-if="item.domain == 'QB'">
+                                                            <td >Refresh Token: </td>
+                                                            <td >{{item.refresh_token}}</td>
+                                                        </tr>
+                                                    </table>
+                                                    <span>
+                                                        <div class="actionDiv">
+                                                            <ButtonGroup slot="extra" v-if="item.domain != 'custom'">
+                                                                <Tooltip placement="top" content="Edit">
+                                                                    <Button class="ButtonGroup" @click="editConfig(item)" type="ghost" icon="edit"></Button>
+                                                                </Tooltip>
+                                                            </ButtonGroup>
+                                                        </div>
+                                                    </span>
+                                            </div>
+                                            <Collapse v-model="value2" accordion>
+                                                <Panel :name="item.configName + '2'">
+                                                    Profile
+                                                    <p slot="content" v-if="item.address !== ''">
+                                                        <table id="t01">
+                                                            <tr>
+                                                                <td>Name</td>
+                                                                <td>{{ item.address.name}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Address</td>
+                                                                <td>{{ item.address.AddressLine1}}, {{ item.address.AddressLine2}}, {{ item.address.city}}, {{ item.address.state}}, {{ item.address.country}}, {{ item.address.PostalCode}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Logo</td>
+                                                                <td><img style="height:50px" :src="item.logo" alt="No Image Available"/></td>
+                                                            </tr>
+                                                        </table>
+                                                        <span>
+                                                            <div class="actionDiv">
+                                                                <Tooltip placement="top" content="Delete">
+                                                                    <Button class="ButtonGroup" @click="deleteGeneralConfig(item)" type="ghost" icon="trash-b"></Button>
+                                                                </Tooltip>
+                                                                <Tooltip placement="top" content="Edit">
+                                                                    <Button class="ButtonGroup" @click="editGeneralConfig(item)" type="ghost" icon="edit"></Button>
+                                                                </Tooltip>
+                                                            </div>
+                                                        </span>
+                                                    </p>
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
+                                                        Profile Information is not Available. Add new profile configuration.
+                                                    </p>
+                                                </Panel>
+                                                <Panel :name="item.configName + '3'">
+                                                    Online Payment
+                                                    <p slot="content" v-if="item.online_payment">
+                                                        <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
+                                                            <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
+                                                                <div class="schema-form ivu-table-wrapper">
+                                                                    <div class="ivu-table ivu-table-border">
+                                                                        <div v-if="v.length > 0" class="ivu-table-body">
+                                                                            <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
+                                                                                            <div class="ivu-table-cell">
+                                                                                                <span>{{key}}</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="ivu-table-column-center">
+                                                                                            <div class="ivu-table-cell"><span>Action</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody class="ivu-table-tbody">
+                                                                                    <tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
+                                                                                        <td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
+                                                                                            <div class="ivu-table-cell">
+                                                                                                {{row[key]}}
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td class="ivu-table-column-center" style="padding:3px;">
+                                                                                            <div class="ivu-table-cell">
+                                                                                            <Tooltip content="Edit" placement="top">
+                                                                                                <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
+                                                                                                <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
+                                                                                            </Tooltip>
+                                                                                            <Tooltip content="Remove" placement="top">
+                                                                                                <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
+                                                                                                <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
+                                                                                            </Tooltip>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        <div v-else class="ivu-table-tip" style="display: none;">
+                                                                            <table cellspacing="0" cellpadding="0" border="0">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td><span>No Data</span></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </TabPane>
+                                                        </Tabs>
+                                                    </p>
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
+                                                        Payment Information is not Available. Add new payment configuration.
+                                                    </p>
+                                                </Panel>
+                                            </Collapse>
                                         </div>
                                     </Card>
                                     <Modal
@@ -169,14 +279,55 @@
                                         </Form>            
                                     
                                     </Modal>
+                                    <Modal
+                                        v-model="model2"
+                                        title="Edit Configuration"
+                                        ok-text="Save"
+                                        cancel-text="Cancel"
+                                        @on-ok="okGeneral"
+                                        @on-cancel="cancel">
+                                        
+                                        <Form :model="editGeneral" :label-width="100">
+                                            <FormItem label="AddressLine1">
+                                                <Input v-model="editGeneralData.AddressLine1" placeholder="AddressLine1"></Input>
+                                            </FormItem>
+                                            <FormItem label="AddressLine2">
+                                                <Input v-model="editGeneralData.AddressLine2" placeholder="AddressLine2"></Input>
+                                            </FormItem>
+                                            <FormItem label="Country" prop="country">
+                                                <!--<select v-model="country" id="country" name ="country" placeholder="Select Country">
+                                                </select> -->                         
+                                                <Input v-model="editGeneralData.country" placeholder="Country"></Input>
+                                            </FormItem>
+                                            <FormItem label="State">
+                                                <!-- <select v-model="state" id="state" name ="state" placeholder="Select State">
+                                                </select> -->
+                                                <Input v-model="editGeneralData.state" placeholder="State"></Input>
+                                            </FormItem>
+                                            <FormItem label="City">
+                                                <Input v-model="editGeneralData.city" placeholder="City"></Input>
+                                            </FormItem>
+                                            <FormItem label="Postal Code">
+                                                <Input v-model="editGeneralData.PostalCode" placeholder="PostalCode"></Input>
+                                            </FormItem>
+                                            <FormItem label="Logo">
+                                                <img style="height:50px" :src="editData.logo" alt="No Image Available"/>
+                                                <Upload id="fileUpload" v-model="editData.logo" :before-upload="handleUpload" action=''> 
+                                                    <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+                                                </Upload>
+                                                <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
+                                            </FormItem>
+                                        </Form>            
+                                    
+                                    </Modal>
                                 </div>
                             </Col>
                         </div>
                     </Row>
                 </div>
-            </TabPane>
+            <!--</TabPane>-->
 
-            <TabPane label="General" name="General">
+            <!--<TabPane label="General" name="General">
                 <div class="settings_header">
                     <Button @click="addNewGeneralSettings">Add New General Configuration</Button>
                 </div>
@@ -225,14 +376,10 @@
                                             <FormItem label="AddressLine2">
                                                 <Input v-model="editGeneralData.AddressLine2" placeholder="AddressLine2"></Input>
                                             </FormItem>
-                                            <FormItem label="Country" prop="country">
-                                                <!--<select v-model="country" id="country" name ="country" placeholder="Select Country">
-                                                </select> -->                         
+                                            <FormItem label="Country" prop="country">                         
                                                 <Input v-model="editGeneralData.country" placeholder="Country"></Input>
                                             </FormItem>
                                             <FormItem label="State">
-                                                <!-- <select v-model="state" id="state" name ="state" placeholder="Select State">
-                                                </select> -->
                                                 <Input v-model="editGeneralData.state" placeholder="State"></Input>
                                             </FormItem>
                                             <FormItem label="City">
@@ -300,11 +447,10 @@
                                                                                 <div class="ivu-table-cell">
                                                                                 <Tooltip content="Edit" placement="top">
                                                                                     <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
-                                                                                    <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
+                                                                                     
                                                                                 </Tooltip>
                                                                                 <Tooltip content="Remove" placement="top">
                                                                                     <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
-                                                                                    <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
                                                                                 </Tooltip>
                                                                                 </div>
                                                                             </td>
@@ -333,8 +479,8 @@
                         </div>
                     </Row>
                 </div>
-            </TabPane>
-        </Tabs>      
+            </TabPane> -->
+        <!--</Tabs>   -->   
     </div>
 </template>
 
@@ -359,6 +505,7 @@
         },
         data () {
             return {
+                value2 : [],
                 activetabs: '',
                 current: '',
                 tabValue: '',
@@ -615,7 +762,7 @@
                                     input: (val) => {
                                     }
                                 }
-                            },'This Configuration Will Be Deleted for '),
+                            },'This Payment Configuration Will Be Deleted for ' + self.data6[card].configName),
                         ])
                     }
                 })
@@ -655,40 +802,64 @@
                 
             },
             deleteConfig(data){
-                axios({
-                    method:'patch',
-                    url:feathersUrl +'settings/'+data.id,
-                    data:{isDeleated : true },
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                }).then(response => {
-                    if(response.status == 200){
-                        this.$Message.success("Configuaration deleated successfully")
-                        let deletedData =  this.data6.filter(function(el) {
-                            return el.id !== data.id;
+                this.$Modal.confirm({ 
+                    title: 'Confirm Delete',
+                    okText : "Delete",
+                    cancelText: 'Cancel',
+                    content: '',
+                    onOk: () => {
+                        axios({
+                            method:'patch',
+                            url:feathersUrl +'settings/'+data.id,
+                            data:{isDeleated : true },
+                            headers:{
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
+                            },
+                        }).then(response => {
+                            if(response.status == 200){
+                                this.$Message.success("Configuaration deleated successfully")
+                                let deletedData =  this.data6.filter(function(el) {
+                                    return el.id !== data.id;
+                                });
+                                this.data6 = deletedData, null, ' '
+                            }
+                            
+                        })
+                        .catch(error => {
+                                console.log(error)
+                                
+                                if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    Cookies.remove('subscriptionId' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }
                         });
-                        this.data6 = deletedData, null, ' '
+                    },
+                    render: (h) => {
+                        return h('div', {
+                        }, [
+                            h('span', {
+                                style:{
+                                    fontSize:'25px'
+                                },
+                                props: {
+                                },
+                                on: {
+                                    input: (val) => {
+                                    }
+                                }
+                            },'This Account Will Be Deleted Permanently'),
+                        ])
                     }
-                    
                 })
-                .catch(error => {
-                        console.log(error)
-                        
-                        if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
-                            this.$store.commit('logout', this);
-                            
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }
-                });
                 
             },
             deleteGeneralConfig(data){
@@ -1040,6 +1211,7 @@
                     self.data6 = response.data.data
                     console.log("+++++++++++++++++++++data6",self.data6);
                     for (let [inx, item] of self.data6.entries()) {
+
                         if (item.hasOwnProperty('online_payment')) {
                             let i = 0
                             // console.log('item:: ', item.online_payment)
@@ -1217,5 +1389,14 @@ table#t01 th {
     height: 32px;
     border-color: #e2e2e2;
     border-radius: 4px;
+}
+.ivu-icon-arrow-right-b {
+    padding-right: 10px;
+}
+.firstPanel {
+    background: white;
+    padding: 10px;
+    border: 1px solid #e0e1e3;
+    border-radius: 2px;
 }
 </style>

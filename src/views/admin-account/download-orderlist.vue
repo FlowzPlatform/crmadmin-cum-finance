@@ -229,11 +229,11 @@
                                                             <td align="left" valign="top" style="font-size:12px">SHIPPING ADDRESS</td>
                                                             <td align="left" valign="top" style="font-size:12px">SHIPPING</td>
                                                             <td align="left" valign="top" style="font-size:12px">SHIPPING CHARGE</td>
-                                                            <td align="left" valign="top" style="font-size:12px">TAX</td>
+                                                            <!--<td align="left" valign="top" style="font-size:12px">TAX</td>-->
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr v-for="(i, j) in item.shipping_method.shipping_detail">
-                                                            <td width="16" align="left" valign="top"></td>
+                                                            <td width="20" align="left" valign="top"></td>
                                                             <td style="font-weight: normal;font-size: 10px;color: #404040" align="left" valign="top">{{row.user_billing_info.name}} -
                                                                 <br>{{i.shipping_address.street1}},
                                                                 <br>{{i.shipping_address.city}} - {{i.shipping_address.postalcode}},
@@ -242,14 +242,10 @@
                                                             <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type : <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
                                                                 <br>Shipping Carrier :<span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span> <span v-else> -  </span>
                                                                 <br>Method : <span style="color: #404040" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span>
-                                                                <br>In hand Date :<span style="color: #404040"> - </span>
+                                                                <br>In hand Date :<span style="color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                             </td>
-                                                            <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type : <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
-                                                                <br>Shipping Carrier :<span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span> <span v-else> -  </span>
-                                                                <br>Method : <span style="color: #404040" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span>
-                                                                <br>In hand Date :<span style="color: #404040"> - </span>
-                                                            </td>
-                                                            <td align="left" valign="top"> </td>
+                                                            <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span></td>
+                                                            <!--<td align="left" valign="top"> </td>-->
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr height="10"></tr>

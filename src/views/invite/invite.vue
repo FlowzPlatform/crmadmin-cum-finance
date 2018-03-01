@@ -90,12 +90,10 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                           //return 
                            return h(expandInviteRow, {
                                props: {
                                     row: params.row
                                 }
-                               //'Show role and model here'
                             })
                         }
                     },

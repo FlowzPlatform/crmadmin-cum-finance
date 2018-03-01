@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="padding: 10px; margin: 5px; display: block;" >
       <div>
           <h1>Invoice List </h1>
@@ -12,6 +11,15 @@
                   <div class="panel-body">
                       <form>
                           <div class="collapse-maindiv maindiv" >
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#invoice"></span>
+                                      <label>Invoice No.</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="invoice">
+                                      <AutoComplete v-model="invoiceno" :data="invnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      </AutoComplete>
+                                  </div>
+                              </div>
                               <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                       <label>Customer Name</label>
@@ -138,7 +146,7 @@
 
   <div>
 
-  <div v-if="emailData != ''" ref="email1" style="display:none">
+   <div v-if="emailData != ''" ref="email1" style="display:none">
 
     <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
       <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
@@ -158,15 +166,23 @@
           <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px;font-family: Verdana;">
               <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
                   <div  style="color: #777777;">INVOICE TO:</div>
-                  <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{emailData.row.Contact.Name}}</h2>
-                  <div >{{emailDataCustomer.Addresses[0].AddressLine1}}<br> {{emailDataCustomer.Addresses[0].AddressLine2}}<br> {{emailDataCustomer.Addresses[0].City}}  {{emailDataCustomer.Addresses[0].PostalCode}} </div>
-                  <div >{{emailDataCustomer.Addresses[0].Country}}</div>                    
+                  <h2  style="font-size: 16px;font-weight: normal;margin: 0;" v-if="emailData.row == undefined">{{emailData.CustomerRef.name}}</h2>
+                  <h2  style="font-size: 16px;font-weight: normal;margin: 0;" v-else>{{emailData.row.Contact.Name}}</h2>
+                  <div v-if="emailDataCustomer.Addresses != undefined">                    
+                    <div >{{emailDataCustomer.Addresses[0].AddressLine1}}<br> {{emailDataCustomer.Addresses[0].AddressLine2}}<br> {{emailDataCustomer.Addresses[0].City}}  {{emailDataCustomer.Addresses[0].PostalCode}} </div>
+                    <div >{{emailDataCustomer.Addresses[0].Country}}</div>                    
+                  </div>
+                  <div v-else>                    
+                    <div v-if="emailDataCustomer.BillAddr != undefined">{{emailDataCustomer.BillAddr.Line1}}<br> {{emailDataCustomer.BillAddr.City}}  {{emailDataCustomer.BillAddr.PostalCode}}</div>                  
+                  </div>                  
+
                   <!--<div >
                       <a href="mailto:john@example.com" style="color: #0087C3;text-decoration: none;"> customer@example.com </a>
                   </div>-->
               </div>
               <div id="invoice" style="float: right;text-align: right;">
-                  <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;">{{emailData.row.InvoiceNumber}}</h1>
+                  <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;" v-if="emailData.row != undefined">{{emailData.row.InvoiceNumber}}</h1>
+                  <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;" v-else>{{emailData.Id}}</h1>
                   <div  style="font-size: 12px;color: #777777;">Date of Invoice: {{createdDate}}</div>
                   <div  style="font-size: 12px;color: #777777;">Due Date: {{dueDate}}</div>
               </div>
@@ -176,45 +192,62 @@
                   <tr>
                       <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
                       ">#</th>
-                      <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
                       <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
                       <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
+                      <div v-if="item.Description">
                       <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
                       <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                          <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>
-                          
-                          <span v-html="text(item.Description)"></span>
-                          </td>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.UnitAmount)}}</td>
-                      <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.Quantity}}</td>
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.LineAmount) }}</td>
+                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>
+                        
+                        <span v-html="text(item.Description)"></span>
+                      </td>
+                      </div>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
+
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
+                      <!-- <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else>Not available</td> -->
+
+                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
+                       <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
+                       <!-- <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else></td> -->
+
+                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
+                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
+                     <!--  <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else></td> -->
                   </tr>
               </tbody>
               <tfoot>
                   <tr>
-                      <td colspan="2"></td>
-                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailData.row.SubTotal) }}</td>
+                      <td colspan="3"></td>
+                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{ accounting(emailData.row.SubTotal) }}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{accounting(emailData.TotalAmt-emailData.TxnTaxDetail.TotalTax)}}</td>
                   </tr>
                   <tr>
-                      <td colspan="2"></td>
-                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td colspan="3"></td>
+                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px -20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
                   </tr>
                   <tr>
-                      <td colspan="2" style="border: none;"></td>
-                      <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailData.row.Total)}}</td>
+                      <td colspan="3" style="border: none;"></td>
+                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row">{{accounting(emailData.row.Total)}}</td>
+
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.TotalAmt)}}</td>
+
                   </tr>
                   <tr>
-                      <td colspan="2"></td>
-                      <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailData.row.AmountDue)}}</td>
+                      <td colspan="3"></td>
+                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row != undefined">{{accounting(emailData.row.AmountDue)}}</td>
+                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.Balance)}}</td>
                   </tr>
               </tfoot>
           </table>
@@ -229,8 +262,6 @@
     </div>
 
   </div>
-
-
 
   <div v-if="emailDataCustom != ''" ref="email2" style="display:none">
 
@@ -382,6 +413,8 @@
     name: 'hello',
     data () {
       return {
+        invnoFilter: [],
+        invoiceno:'',
         newList:[],
         previous: 'false',
         //message:"hello",
@@ -505,7 +538,7 @@
                           },
                           on: {
                             click: () => {
-                              this.createPDF(row)
+                              this.createPDFQB(row)
                             }
                           }
                         }, '')
@@ -614,7 +647,7 @@
                         },
                         on: {
                           click: () => {
-                            this.createPDF(row)
+                            this.createPDFQB(row)
                           }
                         }
                       }, '')
@@ -791,7 +824,7 @@
                           },
                           on: {
                             click: () => {
-                              this.createPDF(params)
+                              this.createPDFXero(params)
                             }
                           }
                         }, '')
@@ -874,7 +907,7 @@
                           },
                         on: {
                           click: () => {
-                            this.createPDF(params)
+                            this.createPDFXero(params)
                           }
                         }
                       }, '')
@@ -995,6 +1028,7 @@
         this.totallt = '';
         this.duegt = '';
         this.duelt = '';
+        this.invoiceno = '';
         this.getAllSettings();
       },
 
@@ -1002,6 +1036,20 @@
         console.log("this.data6", this.data6)
         this.filterArray = this.data6
         var self = this
+
+        if(this.invoiceno != ''){
+          console.log("this.invoiceno", this.invoiceno)
+          this.filterArray = _.filter(this.filterArray,  function(item){
+            console.log("item",item)
+            if(item.InvoiceNumber != undefined){
+              return item.InvoiceNumber === self.invoiceno;
+            }else {
+              return item.Id === self.invoiceno;
+            }
+          });
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,pageSize)
+        }
 
         if(this.cname != ''){
           console.log("this.cname", this.cname)
@@ -1319,7 +1367,7 @@
             this.list = await this.mockTableData2(p,pageSize);
           }
       },
-      async createPDF (params) {
+      async createPDFXero (params) {
         this.$Loading.start();
         console.log("paramsssssssssssssssss " , params)
         this.emailData = params;
@@ -1381,36 +1429,38 @@
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'fixed'
+          document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-            axios({
-              method: 'post',
-              url: config.default.serviceUrl + 'exporttopdf',
-              data: {
+              document.querySelector('#myfooter').style.position = 'fixed'
+              axios({
+                method: 'post',
+                url: config.default.serviceUrl + 'exporttopdf',
+                data: {
 
-                  "html" : self.$refs.email1.innerHTML
-              },
+                    "html" : self.$refs.email1.innerHTML
+                },
 
-              }).then(function (response) {
-                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial' 
-                var arrayBufferView = new Uint8Array( response.data.data );
-                var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                var link=document.createElement('a');
-                link.href=window.URL.createObjectURL(blob);
-                link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
-                link.click();
+              })
+              .then(function (response) {
+                  console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                  document.querySelector('#myfooter').style.position = 'initial' 
+                  var arrayBufferView = new Uint8Array( response.data.data );
+                  var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                  var link=document.createElement('a');
+                  link.href=window.URL.createObjectURL(blob);
+                  link.download=params.row.InvoiceNumber == undefined ? params.row.Id : params.row.InvoiceNumber;
+                  link.click();
               })
               .catch(function (error) {
                 console.log(error);
               });
 
-              saveAs(blob, filename);
+              // saveAs(blob, filename);
               // console.log(self.$refs.email1.innerHTML)
               // var doc = new jsPDF();
               // doc.fromHTML(self.$refs.email1.innerHTML, 15, 15, {
@@ -1435,7 +1485,125 @@
          }, 5000);
 
       },
+      async createPDFQB(params) {
+        this.$Loading.start();
+        console.log("paramsssssssssssssssss " , params)
+        this.emailData = params;
+        var self = this
+        var date = new Date(params.TxnDate);
+        this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+        var date1 = new Date(params.DueDate);
+        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingID,
+                Name : params.CustomerRef.name
+              },
+              headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+              }).then(function (response) {
+                console.log("contact response",response);
+                self.emailDataCustomer = response.data[0].data[0]
+                console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'Settings/' + settingID,
+              headers:{
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
+              },
+              }).then(function (response) {
+                console.log("ooooooooooooooooosetting response",response);
+                self.emailDataCompany = response.data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
 
+              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+
+        axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
+          headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+          params : {
+            settingId : settingID
+          }
+        })
+        .then(async function (response) {
+          console.log('response>>>>>>>>>>>>>>', response)
+          self.DescriptionPdf = response.data[0].data[0].Line;
+          console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+
+        })
+        .catch(function (error) {
+        });
+
+        // console.log('self.emailDataCustomer',self.emailDataCustomer)
+        setTimeout(function(){
+          console.log('self.$refs.email1.innerHTML----->',self.$refs)
+          self.$Loading.finish();
+          self.$Modal.confirm({
+            title: '',
+            content: self.$refs.email1.innerHTML,
+            width: 1000,
+            okText: 'Download PDF',
+            onOk: () => {
+            document.querySelector('#myfooter').style.position = 'fixed'
+            axios({
+              method: 'post',
+              url: config.default.serviceUrl + 'exporttopdf',
+              data: {
+
+                  "html" : self.$refs.email1.innerHTML
+              },
+
+              }).then(function (response) {
+                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                document.querySelector('#myfooter').style.position = 'initial' 
+                var arrayBufferView = new Uint8Array( response.data.data );
+                var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                var link=document.createElement('a');
+                link.href=window.URL.createObjectURL(blob);
+                link.download=params.Id;
+                link.click();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+              // saveAs(blob, filename);
+              // console.log(self.$refs.email1.innerHTML)
+              // var doc = new jsPDF();
+              // doc.fromHTML(self.$refs.email1.innerHTML, 15, 15, {
+              //     'width': 170
+              // },function() {
+              //     doc.save('sample-file.pdf');
+              // });
+
+
+            },
+            onCancel: () => {
+            }
+          })
+
+          // console.log(self.$refs.email1.innerHTML)
+          //   var filename = "invoice.html";
+          //   var data = self.$refs.email1.innerHTML;
+          //   var blob = new Blob([data], {
+          //       type: "text/html;charset=utf-8"
+          //   });
+          //   saveAs(blob, filename);
+         }, 5000);
+
+      },
       async makepayment(params){
           //alert(">>>>>>>>>>> , "+this.settingIdForPayment)
          console.log(params)
@@ -1530,6 +1698,7 @@
       },
       async tabClicked(data){
         // console.log(data)
+        this.reset();
         this.tabIndex = data;
         this.newList = [];
         this.newTabIndex = '';
@@ -1566,6 +1735,7 @@
             $('.preload').css("display","none")
             console.log("iiiiiiiii------------------>",response);
             self.data6 = response.data.data;
+            self.invnoFilter = []
             let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
@@ -1734,6 +1904,16 @@
               console.log("response------>iuy",response);
 
               self.data6 = response.data[0].data.reverse();
+              self.invnoFilter = []
+              if(response.data[0].data[0].InvoiceNumber != undefined){
+                response.data[0].data.forEach(item => {
+                  self.invnoFilter.push(item.InvoiceNumber)
+                })
+              }else if(response.data[0].data[0].Id != undefined){
+                response.data[0].data.forEach(item => {
+                  self.invnoFilter.push(item.Id)
+                })
+              }
               self.$Loading.finish();
               $('.preload').css("display","none")
               self.filterArray = []
