@@ -20,7 +20,7 @@
             </div>
             <div class="signupMsg visibility">
                <div class="textcontentLogin">
-                  <p class="title">Have an account?</p>
+                  <p class="title">Already have an account?</p>
                   <p>Log in to see all your statistics.</p>
                   <button id="switch2">LOG IN</button>
                </div>
@@ -51,13 +51,13 @@
                         <div class="lconun">
                            <div class="lrinp">
                               <label class="email">* </label><label> Email</label>
-                              <input type="email" v-model="login.email" class="" placeholder="Enter Standard Email">
+                              <input type="email" v-model="login.email" class="" placeholder="Email">
                            </div>
                         </div>
                         <div v-if="!showForgotPassword"  class="lconun">
                            <div class="lrinp">
-                              <label class="password">* </label><label> Password</label>
-                              <input type="password" class="" v-model="login.password" placeholder="Enter Standard Password">
+                              <label class="password">* </label><label>Password</label>
+                              <input type="password" class="" v-model="login.password" placeholder="Password">
                            </div>
                         </div>
                     </el-tab-pane>
@@ -65,13 +65,13 @@
                         <div class="lconun">
                            <div class="lrinp">
                               <label class="email">* </label><label>Email</label>
-                              <input type="email" v-model="login.email" class="" placeholder="Enter LDAP Email">
+                              <input type="email" v-model="login.email" class="" placeholder="LDAP Email">
                            </div>
                         </div>
                         <div class="lconun">
                            <div class="lrinp">
                               <label class="password">* </label><label>Password</label>
-                              <input type="password" class="" v-model="login.password" placeholder="Enter LDAP Password">
+                              <input type="password" class="" v-model="login.password" placeholder="LDAP Password">
                            </div>
                         </div>
                     </el-tab-pane>
@@ -115,16 +115,20 @@
                <div class="inputbox">
                   <form  v-on:submit.prevent="signupUser" action="#" method="post" id="form1">
                      <div class="lrinp">
-                        <label>Username</label>
-                        <input type="text" v-model="signup.username" placeholder="Enter username (Required)">
+                        <label>*First name</label>
+                        <input type="text" v-model="signup.fname" placeholder="First name">
                      </div>
                      <div class="lrinp">
-                        <label>Email</label>
-                        <input type="email" v-model="signup.email" placeholder="Enter email (Required)">
+                        <label>*Last name</label>
+                        <input type="text" v-model="signup.lname" placeholder="Last name">
                      </div>
                      <div class="lrinp">
-                        <label>Password</label>
-                        <input type="password" v-model="signup.password" placeholder="Enter password (Required)">
+                        <label>*Email</label>
+                        <input type="email" v-model="signup.email" placeholder="Email">
+                     </div>
+                     <div class="lrinp">
+                        <label>*Password</label>
+                        <input type="password" v-model="signup.password" placeholder="Password">
                      </div>
                      <button type="submit" style="display:none"></button>
                   </form>
@@ -200,7 +204,8 @@ export default {
                 password: ""
             },
             signup: {
-                username: "",
+                fname: "",
+                lname: '',
                 password: "",
                 email: ""
             },
@@ -403,8 +408,10 @@ export default {
                 $frontbox = $('.frontbox');
            let emailValidator = await this.validateEmail(self.signup.email);
            console.log(emailValidator)
-          if(self.signup.username == ""){
-               self.$message.warning("User Name is required");
+          if(self.signup.fname == ""){
+               self.$message.warning("First Name is required");
+           }else if(self.signup.lname == ""){
+               self.$message.warning("Last name is required");
            }else if(self.signup.email == ""){
                self.$message.warning("email is required");
            }else if(emailValidator == false){
@@ -416,7 +423,8 @@ export default {
                axios.post(config.default.signupUrl, {
                 email: self.signup.email.trim(),
                 password: self.signup.password.trim(),
-                username: self.signup.username.trim()
+                firstname: self.signup.fname.trim(),
+                lastname: self.signup.lname.trim()
             })
             .then(function (response) {
                 console.log(response);
