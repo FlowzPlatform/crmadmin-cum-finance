@@ -3,7 +3,7 @@
     <div class="settings_header">
         <Button @click="goToSettingsList">All Settings</Button>
     </div>
-    <div class="container" style="margin-top: 2%; margin-bottom: 2%;">
+    <div class="container" style="margin-top: 2%; width: 100%; margin-bottom: 2%;">
       <!-- Address Settings Section -->
       <div class="collapsingDivWrapper row">
           <div class="col-md-12">
@@ -54,7 +54,7 @@
                 <Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
             </FormItem>
             <div style="text-align:center;">
-              <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+              <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
               <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
               </div>
               <div style="color:blue;font-size: smaller;">**You will see this address in your invoice</div>
@@ -85,7 +85,7 @@
               </Upload>
               <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
                 <div>
-                  <Button type="primary" @click="handleLogoUpload()">Submit</Button>
+                  <Button type="primary" @click="handleLogoUpload()" :loading="logoLoading">Submit</Button>
                 </div>
             </FormItem>
             </Form>             
@@ -127,6 +127,8 @@ export default {
       }
     };
     return {
+      loading:false,
+      logoLoading:false,
       formValidate: {
         name: '',
         mobile : '',
@@ -183,10 +185,22 @@ export default {
     async handleUpload (file) {
       var self = this
       console.log('file',file)
-      self.file = file
+      if(file.size >= 51200){
+          this.$Notice.error({
+            title: 'File Limit',
+            desc: 'File size should be less than or equal to 50Kb. ',
+            duration: 4.5
+          });
+          self.file = ''
+          return true
+      }
+      else {
+        self.file = file
+      }
       return false;
     },
     handleLogoUpload () {
+      this.logoLoading = true;
       var self = this;
       var checkConfig;
       console.log('**************',this.file)
@@ -202,132 +216,148 @@ export default {
           reader.addEventListener("load", function () {
             console.log('reader------->',reader.result)
 
-          var logoData1 = {'logo': reader.result}
-          console.log('iiiiiiiiiiiiiiiiii',logoData1)
+            var logoData1 = {'logo': reader.result}
+            console.log('iiiiiiiiiiiiiiiiii',logoData1)
 
-          if(self.formData.configuration === 'all'){ 
-            self.$Modal.confirm({
-              title: '',
-              content: '<h4>This address will be configured for all of your Configuration</h4>',
-              width: 500,
-              okText: 'Agree',
-              cancelText: 'Disagree',
-              onOk: () => {
-                console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',self.formData.configuration)
-                delete self.formData.configuration;
-                self.configs.forEach(item => {
-                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
-                    axios({
-                      method: 'PATCH',
-                      url: feathersUrl +'settings/'+item.id,
-                      headers:{
-                          Authorization : Cookies.get('auth_token'),
-                          subscriptionId : Cookies.get('subscriptionId')
-                      },
-                      data: logoData1
-                    })  
-                    .then(function (response) {
-                      console.log('response------------------------>',response)
-                    })
-                    .catch(function (error) {
-                      console.log('error',error)
-                    })
-              })
-              },
-              onCancel: () => {
-              }
-            })                        
-          }
-        else{
-          console.log('this.configs',self.configs)
-          console.log('this.formData.configuration',self.formData.configuration)
-          var data000 = _.filter(self.configs, {'id': self.formData.configuration })
-          console.log("data000----------------------------->",data000)
-          var checkConfig;
-          self.$Modal.confirm({
+            if(self.formData.configuration === 'all'){ 
+              self.$Modal.confirm({
                 title: '',
-                content: '',
+                content: '<h4>This address will be configured for all of your Configuration</h4>',
                 width: 500,
                 okText: 'Agree',
                 cancelText: 'Disagree',
-                render: (h) => {
-                    return h('div', {
-                    }, [
-                        h('span', {
-                          style:{
-                            fontSize:'25px'
-                          },
-                        props: {
-                        },
-                        on: {
-                          input: (val) => {
-                          }
-                        }
-                      },'This address will be configured for ' + data000[0].configName),
-                       h('div', {
-                        style:{
-                            height:'50px'
-                          }
-                    }),
-                      h('Checkbox', {
-                        props: {
-                          value: this.value
-                        },
-                        on: {
-                          input: (val) => {
-                            checkConfig = val
-                            console.log("val",checkConfig)
-
-                          }
-                        }
-                      },'Do you want this address for all configartion?')
-                    ])
-                },
                 onOk: () => {
-                console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
-                if(checkConfig == true){
+                  console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',self.formData.configuration)
+                  delete self.formData.configuration;
                   self.configs.forEach(item => {
-                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
-                    axios({
-                      method: 'PATCH',
-                      url: feathersUrl +'settings/'+item.id,
-                      headers:{
-                          Authorization : Cookies.get('auth_token'),
-                          subscriptionId : Cookies.get('subscriptionId')
-                      },
-                      data: logoData1
-                    })  
-                    .then(function (response) {
-                      console.log('response------------------------>',response)
-                    })
-                    .catch(function (error) {
-                      console.log('error',error)
-                    })
-                  })
+                      console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                      axios({
+                        method: 'PATCH',
+                        url: feathersUrl +'settings/'+item.id,
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: logoData1
+                      })  
+                      .then(function (response) {
+                        console.log('response------------------------>',response)
+                        self.logoLoading = false;
+                        self.$router.push({
+                          name: 'Settings'
+                        });
+                      })
+                      .catch(function (error) {
+                        console.log('error',error)
+                        self.logoLoading = false;
+                      })
+                })
+                },
+                onCancel: () => {
+                    self.logoLoading = false;
                 }
-                else{
-                console.log()               
-                  axios({
-                    method: 'PATCH',
-                    url: feathersUrl +'settings/'+self.formData.configuration,
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                    data: logoData1
-                  })  
-                  .then(function (response) {
-                    console.log('response------------------------>',response)
-                  })
-                  .catch(function (error) {
-                    console.log('error',error)
-                  })
-                }
-              },
-              onCancel: () => {
-              }
-            })
-        }
+              })                        
+            }
+            else{
+              console.log('this.configs',self.configs)
+              console.log('this.formData.configuration',self.formData.configuration)
+              var data000 = _.filter(self.configs, {'id': self.formData.configuration })
+              console.log("data000----------------------------->",data000)
+              var checkConfig;
+              self.$Modal.confirm({
+                  title: '',
+                  content: '',
+                  width: 500,
+                  okText: 'Agree',
+                  cancelText: 'Disagree',
+                  render: (h) => {
+                      return h('div', {
+                      }, [
+                          h('span', {
+                            style:{
+                              fontSize:'25px'
+                            },
+                          props: {
+                          },
+                          on: {
+                            input: (val) => {
+                            }
+                          }
+                        },'This address will be configured for ' + data000[0].configName),
+                        h('div', {
+                          style:{
+                              height:'50px'
+                            }
+                      }),
+                        h('Checkbox', {
+                          props: {
+                            value: this.value
+                          },
+                          on: {
+                            input: (val) => {
+                              checkConfig = val
+                              console.log("val",checkConfig)
+
+                            }
+                          }
+                        },'Do you want this address for all configartion?')
+                      ])
+                  },
+                  onOk: () => {
+                    console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                    if(checkConfig == true){
+                      self.configs.forEach(item => {
+                        console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                        axios({
+                          method: 'PATCH',
+                          url: feathersUrl +'settings/'+item.id,
+                          headers:{
+                              Authorization : Cookies.get('auth_token'),
+                              subscriptionId : Cookies.get('subscriptionId')
+                          },
+                          data: logoData1
+                        })  
+                        .then(function (response) {
+                          console.log('response------------------------>',response)
+                          self.logoLoading = false;
+                          self.$router.push({
+                            name: 'Settings'
+                          });
+                        })
+                        .catch(function (error) {
+                          console.log('error',error)
+                          self.logoLoading = false;
+                        })
+                      })
+                    }
+                    else{
+                      axios({
+                        method: 'PATCH',
+                        url: feathersUrl +'settings/'+self.formData.configuration,
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: logoData1
+                      })  
+                      .then(function (response) {
+                        console.log('response------------------------>',response)
+                        self.logoLoading = false;
+                          self.$router.push({
+                            name: 'Settings'
+                          });
+                      })
+                      .catch(function (error) {
+                        console.log('error',error)
+                        self.logoLoading = false;
+                      })
+                    }
+                  },
+                  onCancel: () => {
+                    self.logoLoading = false;
+                  }
+                })
+            }
           }, false);
 
           
@@ -342,8 +372,10 @@ export default {
         
     },
     handleSubmit (name) {
+      let self = this;
       this.$refs[name].validate((valid) => {
         if (valid) {
+          this.loading = true;
           if(this.formValidate.configuration === 'all'){ 
             this.$Modal.confirm({
               title: '',
@@ -368,73 +400,103 @@ export default {
                     })  
                     .then(function (response) {
                       console.log('response------------------------>',response)
+                      this.loading = false;
+                      self.$router.push({
+												name: 'Settings'
+											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
+                      this.loading = false;
                     })
               })
               },
               onCancel: () => {
+                this.loading = false;
               }
             })                        
           }
-        else{
-          console.log('this.configs',this.configs)
-          console.log('this.formValidate.configuration',this.formValidate.configuration)
-          var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
-          console.log("data000----------------------------->",data000)
-          var checkConfig;
-          this.$Modal.confirm({
-                title: '',
-                content: '',
-                width: 500,
-                okText: 'Agree',
-                cancelText: 'Disagree',
-                render: (h) => {
-                    return h('div', {
-                    }, [
-                        h('span', {
-                          style:{
-                            fontSize:'25px'
+          else{
+            console.log('this.configs',this.configs)
+            console.log('this.formValidate.configuration',this.formValidate.configuration)
+            var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
+            console.log("data000----------------------------->",data000)
+            var checkConfig;
+            this.$Modal.confirm({
+                  title: '',
+                  content: '',
+                  width: 500,
+                  okText: 'Agree',
+                  cancelText: 'Disagree',
+                  render: (h) => {
+                      return h('div', {
+                      }, [
+                          h('span', {
+                            style:{
+                              fontSize:'25px'
+                            },
+                          props: {
                           },
-                        props: {
-                        },
-                        on: {
-                          input: (val) => {
+                          on: {
+                            input: (val) => {
+                            }
                           }
-                        }
-                      },'This address will be configured for ' + data000[0].configName),
-                       h('div', {
-                        style:{
-                            height:'50px'
-                          }
-                    }),
-                      h('Checkbox', {
-                        props: {
-                          value: this.value
-                        },
-                        on: {
-                          input: (val) => {
-                            checkConfig = val
-                            console.log("val",checkConfig)
+                        },'This address will be configured for ' + data000[0].configName),
+                        h('div', {
+                          style:{
+                              height:'50px'
+                            }
+                      }),
+                        h('Checkbox', {
+                          props: {
+                            value: this.value
+                          },
+                          on: {
+                            input: (val) => {
+                              checkConfig = val
+                              console.log("val",checkConfig)
 
+                            }
                           }
-                        }
-                      },'Do you want this address for all configartion?')
-                    ])
-                },
-                onOk: () => {
-                console.log('data----------------------------->',params)
-                console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
-                if(checkConfig == true){
-                  delete this.formValidate.configuration;
-                  var params = {'address':this.formValidate}
-                  console.log('UUUUUUUUUUUUUUUUU',this.configs)
-                  this.configs.forEach(item => {
-                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                        },'Do you want this address for all configartion?')
+                      ])
+                  },
+                  onOk: () => {
+                  console.log('data----------------------------->',params)
+                  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                  if(checkConfig == true){
+                    delete this.formValidate.configuration;
+                    var params = {'address':this.formValidate}
+                    console.log('UUUUUUUUUUUUUUUUU',this.configs)
+                    this.configs.forEach(item => {
+                      console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                      axios({
+                        method: 'PATCH',
+                        url: feathersUrl +'settings/'+item.id,
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: params
+                      })  
+                      .then(function (response) {
+                        console.log('response------------------------>',response)
+                        this.loading = false;
+                        self.$router.push({
+                          name: 'Settings'
+                        });
+                      })
+                      .catch(function (error) {
+                        console.log('error',error)
+                        this.loading = false;
+                      })
+                    })
+                  }
+                  else{
+                  var params = {'address':this.formValidate}                
                     axios({
                       method: 'PATCH',
-                      url: feathersUrl +'settings/'+item.id,
+                      url: feathersUrl +'settings/'+this.formValidate.configuration,
                       headers:{
                           Authorization : Cookies.get('auth_token'),
                           subscriptionId : Cookies.get('subscriptionId')
@@ -443,35 +505,22 @@ export default {
                     })  
                     .then(function (response) {
                       console.log('response------------------------>',response)
+                      this.loading = false;
+                      self.$router.push({
+												name: 'Settings'
+											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
+                      this.loading = false;
                     })
-                  })
+                  }
+                },
+                onCancel: () => {
+                  this.loading = false;
                 }
-                else{
-                var params = {'address':this.formValidate}                
-                  axios({
-                    method: 'PATCH',
-                    url: feathersUrl +'settings/'+this.formValidate.configuration,
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                    data: params
-                  })  
-                  .then(function (response) {
-                    console.log('response------------------------>',response)
-                  })
-                  .catch(function (error) {
-                    console.log('error',error)
-                  })
-                }
-              },
-              onCancel: () => {
-              }
-            })
-        }
+              })
+          }
         } else {
           this.$Message.error('Please fill up all the fields correctly');
         }

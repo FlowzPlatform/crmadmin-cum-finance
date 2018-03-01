@@ -27,7 +27,7 @@
 							<Input v-model="formValidate.x_api_login" placeholder="Enter x_api_login"></Input>
 						</FormItem>
 						<div style="text-align:center;">
-							<Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+							<Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
 							<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
 						</div>
 					</Form>
@@ -48,6 +48,7 @@
 	export default {
 		data () {
 			return {
+				loading: false,
 				formValidate:{
 					configuration:'all',
 					gateway:'',
@@ -78,6 +79,7 @@
 			},
 			handleSubmit (name) {
 				var self = this
+				self.loading = true;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
 						console.log('formValidate----------------------------->',this.formValidate)
@@ -117,13 +119,19 @@
 										.then(function (response) {
 											console.log('response------------------------>',response)
 											self.handleReset();
+											self.loading = false;
+											self.$router.push({
+												name: 'Settings'
+											});
 										})
 										.catch(function (error) {
+											self.loading = false;
 											console.log('error',error)
 										})
 									})
 								},
 								onCancel: () => {
+									self.loading = false;
 								}
 							})                        
 						}
@@ -203,8 +211,13 @@
 											.then(function (response) {
 												console.log('response------------------------>',response)
 												self.handleReset();
+												self.loading = false;
+												self.$router.push({
+													name: 'Settings'
+												});
 											})
 											.catch(function (error) {
+												self.loading = false;
 												console.log('error',error)
 											})
 										})
@@ -223,13 +236,19 @@
 										.then(function (response) {
 											console.log('response------------------------>',response)
 											self.handleReset();
+											self.loading = false;
+											self.$router.push({
+												name: 'Settings'
+											});
 										})
 										.catch(function (error) {
+											self.loading = false;
 											console.log('error',error)
 										})
 									}
 								},
 								onCancel: () => {
+									self.loading = false;
 								}
 							})
 						}

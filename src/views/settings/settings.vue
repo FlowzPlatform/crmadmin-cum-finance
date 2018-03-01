@@ -14,7 +14,7 @@
                         <div v-for="(item, inx) in data6">
                             <Col :span="12">
                                 <div style="padding: 5px;">
-                                    <Card style="padding:10px; min-height:500px">
+                                    <Card style="padding:10px; min-height:500px;">
                                         <p slot="title">{{item.configName}}</p>
                                         
                                         <Tooltip placement="top" slot="extra" content="Toggle active / inactive" style="padding-left:3px;">
@@ -115,99 +115,104 @@
                                                         </div>
                                                     </span>
                                             </div>
-                                        <Collapse v-model="value2" accordion>
-                                            
-                                            <Panel :name="item.configName + '2'">
-                                                Profile
-                                                <p slot="content">
-                                                    <table id="t01">
-                                                        <tr>
-                                                            <td>Name</td>
-                                                            <td>{{ item.address.name}}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Address</td>
-                                                            <td>{{ item.address.AddressLine1}}, {{ item.address.AddressLine2}}, {{ item.address.city}}, {{ item.address.state}}, {{ item.address.country}}, {{ item.address.PostalCode}}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Logo</td>
-                                                            <td><img style="height:50px" :src="item.logo" alt="No Image Available"/></td>
-                                                        </tr>
-                                                    </table>
-                                                    <span>
-                                                        <div class="actionDiv">
-                                                            <Tooltip placement="top" content="Delete">
-                                                                <Button class="ButtonGroup" @click="deleteGeneralConfig(item)" type="ghost" icon="trash-b"></Button>
-                                                            </Tooltip>
-                                                            <Tooltip placement="top" content="Edit">
-                                                                <Button class="ButtonGroup" @click="editGeneralConfig(item)" type="ghost" icon="edit"></Button>
-                                                            </Tooltip>
-                                                        </div>
-                                                    </span>
-                                                </p>
-                                            </Panel>
-                                            <Panel :name="item.configName + '3'">
-                                                Online Payment
-                                                <p slot="content">
-                                                <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
-                                                        <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
-                                                            <div class="schema-form ivu-table-wrapper">
-                                                                <div class="ivu-table ivu-table-border">
-                                                                    <div v-if="v.length > 0" class="ivu-table-body">
-                                                                        <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
-                                                                                        <div class="ivu-table-cell">
-                                                                                            <span>{{key}}</span>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="ivu-table-column-center">
-                                                                                        <div class="ivu-table-cell"><span>Action</span>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody class="ivu-table-tbody">
-                                                                                <tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
-                                                                                    <td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
-                                                                                        <div class="ivu-table-cell">
-                                                                                            {{row[key]}}
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td class="ivu-table-column-center" style="padding:3px;">
-                                                                                        <div class="ivu-table-cell">
-                                                                                        <Tooltip content="Edit" placement="top">
-                                                                                            <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
-                                                                                            <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
-                                                                                        </Tooltip>
-                                                                                        <Tooltip content="Remove" placement="top">
-                                                                                            <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
-                                                                                            <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
-                                                                                        </Tooltip>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
-                                                                                
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div v-else class="ivu-table-tip" style="display: none;">
-                                                                        <table cellspacing="0" cellpadding="0" border="0">
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td><span>No Data</span></td>
-                                                                                </tr>
-                                                                            </tbody>
-                                                                        </table>
+                                            <Collapse v-model="value2" accordion>
+                                                <Panel :name="item.configName + '2'">
+                                                    Profile
+                                                    <p slot="content" v-if="item.address !== ''">
+                                                        <table id="t01">
+                                                            <tr>
+                                                                <td>Name</td>
+                                                                <td>{{ item.address.name}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Address</td>
+                                                                <td>{{ item.address.AddressLine1}}, {{ item.address.AddressLine2}}, {{ item.address.city}}, {{ item.address.state}}, {{ item.address.country}}, {{ item.address.PostalCode}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Logo</td>
+                                                                <td><img style="height:50px" :src="item.logo" alt="No Image Available"/></td>
+                                                            </tr>
+                                                        </table>
+                                                        <span>
+                                                            <div class="actionDiv">
+                                                                <Tooltip placement="top" content="Delete">
+                                                                    <Button class="ButtonGroup" @click="deleteGeneralConfig(item)" type="ghost" icon="trash-b"></Button>
+                                                                </Tooltip>
+                                                                <Tooltip placement="top" content="Edit">
+                                                                    <Button class="ButtonGroup" @click="editGeneralConfig(item)" type="ghost" icon="edit"></Button>
+                                                                </Tooltip>
+                                                            </div>
+                                                        </span>
+                                                    </p>
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
+                                                        Profile Information is not Available. Add new profile configuration.
+                                                    </p>
+                                                </Panel>
+                                                <Panel :name="item.configName + '3'">
+                                                    Online Payment
+                                                    <p slot="content" v-if="item.online_payment">
+                                                        <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
+                                                            <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="k" :name="setname(k, inx)" :key="k">
+                                                                <div class="schema-form ivu-table-wrapper">
+                                                                    <div class="ivu-table ivu-table-border">
+                                                                        <div v-if="v.length > 0" class="ivu-table-body">
+                                                                            <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
+                                                                                            <div class="ivu-table-cell">
+                                                                                                <span>{{key}}</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="ivu-table-column-center">
+                                                                                            <div class="ivu-table-cell"><span>Action</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody class="ivu-table-tbody">
+                                                                                    <tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
+                                                                                        <td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
+                                                                                            <div class="ivu-table-cell">
+                                                                                                {{row[key]}}
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td class="ivu-table-column-center" style="padding:3px;">
+                                                                                            <div class="ivu-table-cell">
+                                                                                            <Tooltip content="Edit" placement="top">
+                                                                                                <Button class="ButtonGroup" @click="handleEdit(inx, k, i)" type="ghost" icon="edit"></Button>
+                                                                                                <!-- <a @click="handleEdit(inx, k, i)"><Icon type="edit" size="20" color="blue"></Icon></a> -->
+                                                                                            </Tooltip>
+                                                                                            <Tooltip content="Remove" placement="top">
+                                                                                                <Button class="ButtonGroup" @click="handleDelete(inx, k, i)" type="ghost" icon="android-delete"></Button>
+                                                                                                <!-- <a @click="handleDelete(inx, k, i)"><Icon type="android-delete" size="20" color="#e74c3c"></Icon></a> -->
+                                                                                            </Tooltip>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        <div v-else class="ivu-table-tip" style="display: none;">
+                                                                            <table cellspacing="0" cellpadding="0" border="0">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td><span>No Data</span></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </TabPane>
-                                                </Tabs>
-                                                </p>
-                                            </Panel>
-                                        </Collapse>
+                                                            </TabPane>
+                                                        </Tabs>
+                                                    </p>
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
+                                                        Payment Information is not Available. Add new payment configuration.
+                                                    </p>
+                                                </Panel>
+                                            </Collapse>
                                         </div>
                                     </Card>
                                     <Modal

@@ -70,6 +70,15 @@ export default {
         callback();
       }
     };
+    const validateAmount = async(rule, value, callback) => {
+      let patt = new RegExp('^[0-9].+$')
+      let _res = patt.test(value)
+      if (!_res) {
+        callback(new Error('Not Allowed Special Character'))
+      } else {
+        callback();
+      }
+    };
     return {
       customCustomerUrl:"",
       customInvoiceUrl:"",
@@ -112,7 +121,7 @@ export default {
           ],
           amount1: [
               { required: true, message: 'Amount cannot be empty', trigger: 'blur' },
-              { validator: validateNum, trigger: 'blur' }
+              { validator: validateAmount, trigger: 'blur' }
           ],
           selectamount: [
               { required: true, message: 'Amount cannot be empty', trigger: 'blur' }
