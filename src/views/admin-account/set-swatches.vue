@@ -32,10 +32,10 @@ import config from '@/config/customConfig'
 
 var pageSize = 10
 
-export default {
+export default {  
   name: 'set-swatches',
   data () {
-  return {
+  return {   
     subscriptionId:'',
     rowIndex:'',
     tabIndex: 0,
@@ -74,10 +74,7 @@ export default {
                   this.list1[params.index].ishexDisable = false
                   this.list1[params.index].isimgurlDisable = true
                 } else {
-                  this.list1[params.index].ishexDisable = 'none'
-                  // setTimeout(function () {
-                  //   $('.ivu-color-picker-input.ivu-input.ivu-input-default').css('background', 'darkgray')
-                  // },0)
+                  this.list1[params.index].ishexDisable = true                 
                   this.list1[params.index].isimgurlDisable = false
                 }
               }
@@ -110,31 +107,16 @@ export default {
         title: '#Hexcode',
         key: '',
         align: 'center',
-        className: '#Hexcode',
-        // render: (h, params) => {
-          // return h('Input', {
-          //   props: {
-          //     value: this.list1[params.index].hexcode1,
-          //     disabled: this.list1[params.index].ishexDisable
-          //   },
-          //   on: {
-          //     input: (val) => {
-          //       this.list1[params.index].hexcode1 = val;
-          //     }
-          //   }
-          // })
-        // }
+        className: '#Hexcode',        
         render: (h, params) => {
-                            return h('color-picker', {
+                            return h('el-color-picker', {
                               props: {
                                 value: this.list1[params.index].hexcode1,
-                                placement: 'right'
-                              },
-                              style: {
-                                pointerEvents:this.list1[params.index].ishexDisable,
+                                placement: 'right',
+                                disabled: this.list1[params.index].ishexDisable
                               },
                               on: {
-                              	'on-change' : (val) => {
+                              	'change' : (val) => {
                                 	console.log('Value ', val)
                                   this.list1[params.index].hexcode1 = val
                                 }
@@ -158,7 +140,8 @@ export default {
                                     props: {
                                         type: 'ghost',
                                         icon: 'ios-cloud-upload-outline',
-                                        disabled: this.list1[params.index].isimgurlDisable
+                                        disabled: this.list1[params.index].isimgurlDisable,
+                                        donetext: 'English',
                                     },
                                     style: {
                                         marginRight: '5px'
@@ -287,18 +270,20 @@ export default {
         align: 'center',
         className: '#Hexcode',
         render: (h, params) => {
-          return h('Input', {
-            props: {
-              value: this.list2[params.index].hexcode2,
-              disabled: this.list2[params.index].ishexDisable
-            },
-            on: {
-              input: (val) => {
-                this.list2[params.index].hexcode2 = val;
-              }
-            }
-          })
-        }
+                            return h('el-color-picker', {
+                              props: {
+                                value: this.list2[params.index].hexcode2,
+                                placement: 'right',
+                                disabled: this.list2[params.index].ishexDisable
+                              },
+                              on: {
+                              	'change' : (val) => {
+                                	console.log('Value ', val)
+                                  this.list2[params.index].hexcode2 = val
+                                }
+                              }
+                            })
+                        }
       },
       {
         title: 'Upload Image',
@@ -520,7 +505,7 @@ export default {
           $.each(testdata,function(index,item){
             if(item.hexcode == undefined){
               self.data1[item.index].colorBox1 = 'white'
-              self.data1[item.index].hexcode1 = ''
+              // self.data1[item.index].hexcode1 = ''
             } else {
               self.data1[item.index].colorBox1 = item.hexcode
               self.data1[item.index].hexcode1 = item.hexcode
@@ -549,10 +534,17 @@ export default {
             item.isimgurlDisable= true
             item.colorBox2 = 'white'
             item.imageBox2=''
-            _.find(self.data, function(o) {
-              if(o.colorname == item.key && o.attribute_name == 'imprintcolor'){
-                testdata.push({hexcode:o.hexcode, index:index, imagefile:o.imagefile})
-              }
+            item.hexcode2=''
+            _.find(self.data, function(o) {             
+              if(!o.file){
+                if(o.colorname == item.key && o.attribute_name == 'imprintcolor'){
+                  testdata.push({hexcode:o.hexcode, index:index})
+                }
+              } else {
+                  if(o.colorname == item.key && o.attribute_name == 'imprintcolor'){
+                  testdata.push({hexcode:o.hexcode, index:index, imagefile:o.file.url})
+                  }
+                }
              });
           })
           self.data2 = uniqData
@@ -593,7 +585,8 @@ export default {
               attribute_name : 'color',
               vid: this.vid,
               websiteid: this.websiteid,
-              websitename: this.websiteName
+              websitename: this.websiteName,
+              subscriptionId: this.subscriptionId
              }
              var self = this
                   await self.getColorTableData()
@@ -729,7 +722,8 @@ export default {
               attribute_name : 'imprintcolor',
               vid: this.vid,
               websiteid: this.websiteid,
-              websitename: this.websiteName
+              websitename: this.websiteName,
+              subscriptionId: this.subscriptionId
              }
              var self = this
                    await self.getColorTableData()
@@ -741,6 +735,7 @@ export default {
                                       method: 'patch',
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                       self.list2[index].colorBox2 = self.list2[index].hexcode2
                                       self.data2[(self.page - 1) * 10 + (index)].colorBox2 = self.list2[index].hexcode2
@@ -759,6 +754,7 @@ export default {
                                       method: 'post',
                                       url: config.default.colorTableUrl,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
                                     self.list2[index].colorBox2 = self.list2[index].hexcode2
@@ -785,7 +781,11 @@ export default {
               attribute_name : 'imprintcolor',
               vid: this.vid,
               websiteid: this.websiteid,
-              websitename: this.websiteName
+              websitename: this.websiteName,
+              subscriptionId: this.subscriptionId,
+              file: {
+                filename: this.list2[index].imgurl2.name
+              }
              }
              var self = this
                    await self.getColorTableData()
@@ -795,15 +795,16 @@ export default {
                       reader.readAsDataURL(this.list2[index].imgurl2);
                       reader.addEventListener("load", function () {
                         var filebase64 = reader.result
-                        param1['imagefile'] = filebase64
+                        param1.file['url'] = filebase64
                         if(data != null){
                                axios({
                                       method: 'patch',
                                       url: config.default.colorTableUrl +'/'+ data.id,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                  self.$Message.success("update successfully")
-                                 self.list2[index].imageBox2 = res.data.imagefile
+                                 self.list2[index].imageBox2 = res.data.file.url
                                  self.$Loading.finish();                                     
 
                                }).catch(function (error) {
@@ -817,9 +818,10 @@ export default {
                                       method: 'post',
                                       url: config.default.colorTableUrl,
                                       data: param1,
+                                      headers: {'Authorization': Cookies.get('auth_token')}
                                }).then(function (res) {
                                     self.$Message.success("saved successfully")
-                                    self.list2[index].imageBox2 = res.data.imagefile
+                                    self.list2[index].imageBox2 = res.data.file.url
                                     self.$Loading.finish();
                                }).catch(function (error) {
                                     console.log("-------",error);

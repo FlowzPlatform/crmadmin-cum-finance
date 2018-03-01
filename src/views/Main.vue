@@ -135,8 +135,12 @@
     import config from '@/config/customConfig';
     import axios from 'axios'
     import ElementUI from 'element-ui';
+    import lang from 'element-ui/lib/locale/lang/en'
+    import locale from 'element-ui/lib/locale'
+
     import Vue from 'vue';
     let subscriptionUrl = config.default.subscriptionUrl
+    locale.use(lang)
     Vue.use(ElementUI);
 
     export default {
