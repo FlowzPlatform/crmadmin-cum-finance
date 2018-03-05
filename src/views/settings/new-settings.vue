@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="settings_header">
-            <Button @click="goToSettingsList">All Settings</Button>
+            <Button @click="goToSettingsList">All Account Settings</Button>
         </div>
-        <Tabs type="card">
+        <Tabs type="card" @on-click="tabClick">
             <TabPane label="Xero">
                 <Form ref="XeroformValidate" :model="XeroformValidate" :rules="XeroruleValidate" :label-width="150">
                     <FormItem label="Configuration Name" prop="configName">
@@ -87,8 +87,6 @@
                 </Form>
             </TabPane> -->
         </Tabs>
-    
-
     </div>
 </template>
 
@@ -136,6 +134,9 @@
                     ],
                     configName: [
                         { required: true, message: "Cconfiguration name Key cannot be empty", trigger: 'blur' }
+                    ],
+                    privateKey: [
+                        { required: true, message: "Private Key(.pem) file must be uploaded", trigger: 'blur' }
                     ]
                 },
                 QBformValidate: {
@@ -182,11 +183,17 @@
             }
         },
         methods: {
-            
+            tabClick(data) {
+                if (data == 0) {
+                    this.handleReset('XeroformValidate')
+                }
+                if (data == 1) {
+                    this.handleReset('QBformValidate')
+                }
+            },
             goToSettingsList(){
                 this.$router.push({
-                    name: 'Settings',
-                    params: { tabName: 'Configuration' }
+                    name: 'Settings'
                 });
             },
             async handleUpload (file) {
@@ -243,6 +250,7 @@
                                     });
                                 })
                                 .catch(function (error) {
+                                    self.loading = false;
                                     if(error.response.status == 401){
                                         let location = psl.parse(window.location.hostname)
                                         location = location.domain === null ? location.input : location.domain
@@ -283,54 +291,54 @@
                         self.loading = true;
 
                         let  data = {
-                                    "configName": self.QBformValidate.configName.trim(),
-                                    "refresh_token" :  self.QBformValidate.refresh_token,
-                                    "client_id" : self.QBformValidate.client_id,
-                                    "client_secret" : self.QBformValidate.client_secret,
-                                    "domain" : 'QB',
-                                    "realmId" : self.QBformValidate.realmId,
-                                    "isActive" : self.isActiveQb,
-                                    "isDeleated" : false,
-                                    "subscriptionId" : Cookies.get('subscriptionId')
-                                }
+                            "configName": self.QBformValidate.configName.trim(),
+                            "refresh_token" :  self.QBformValidate.refresh_token,
+                            "client_id" : self.QBformValidate.client_id,
+                            "client_secret" : self.QBformValidate.client_secret,
+                            "domain" : 'QB',
+                            "realmId" : self.QBformValidate.realmId,
+                            "isActive" : self.isActiveQb,
+                            "isDeleated" : false,
+                            "subscriptionId" : Cookies.get('subscriptionId')
+                        };
                         axios({
-                                method: 'post',
-                                url: feathersUrl +'settings',
-                                headers:{
-                                    Authorization : Cookies.get('auth_token'),
-                                    subscriptionId : Cookies.get('subscriptionId')
-                                },
-                                data: data
-                            })  
-                            .then(function (response) {
-                                console.log(response)
-                                 self.loading = false;
-                                 self.$Message.success('Configuration Added Successfully');
-                                 self.handleReset('QBformValidate')
-                                 self.$router.push({
-                                    name: 'Settings'
-                                });
-                            })
-                            .catch(function (error) {
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
-                                    });
-                                }else if(error.response.status == 403){
-                                            self.$Notice.error(
-                                               {duration:0, 
-                                               title: error.response.statusText,
-                                               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                                               );
-                                        }
-                               
+                            method: 'post',
+                            url: feathersUrl +'settings',
+                            headers:{
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
+                            },
+                            data: data
+                        })  
+                        .then(function (response) {
+                            console.log(response)
+                                self.loading = false;
+                                self.$Message.success('Configuration Added Successfully');
+                                self.handleReset('QBformValidate')
+                                self.$router.push({
+                                name: 'Settings'
                             });
+                        })
+                        .catch(function (error) {
+                            self.loading = false;
+                            if(error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                this.$store.commit('logout', this);
+                                
+                                this.$router.push({
+                                    name: 'login'
+                                });
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                    duration:0, 
+                                    title: error.response.statusText,
+                                    desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }  
+                        });
                         
                     }
                     else {

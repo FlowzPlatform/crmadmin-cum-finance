@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="settings_header">
-			<Button @click="goToSettingsList">All Settings</Button>
+			<Button @click="goToSettingsList">All Account Settings</Button>
 		</div>
 		<div class="container" style="background: white;">
 			<div class="row">
@@ -72,8 +72,8 @@
 		methods: {
 			goToSettingsList(){
 				this.$router.push({
-					name: 'Settings',
-					params: { tabName: 'Online Payment' }
+					name: 'Settings'
+					// params: { tabName: 'Online Payment' }
 
 				});
 			},
@@ -86,7 +86,7 @@
 						if(this.formValidate.configuration === 'all'){ 
 							this.$Modal.confirm({
 								title: '',
-								content: '<h4>This address will be configured for all of your Configuration</h4>',
+								content: '<h4>This Payment Credentials will be configured for all of your Accounts</h4>',
 								width: 500,
 								okText: 'Agree',
 								cancelText: 'Disagree',
@@ -117,7 +117,7 @@
 											data: params
 										})  
 										.then(function (response) {
-											console.log('response------------------------>',response)
+											// console.log('response------------------------>',response)
 											self.handleReset();
 											self.loading = false;
 											self.$router.push({
@@ -160,7 +160,7 @@
 											input: (val) => {
 											}
 										}
-										},'This address will be configured for ' + data000[0].configName),
+										},'This Payment Credential will be configured for ' + data000[0].configName),
 										h('div', {
 										style:{
 											height:'50px'
@@ -177,7 +177,7 @@
 
 											}
 										}
-										},'Do you want this address for all configartion?')
+										},'Do you want to use this Payment credentials for all Accounts?')
 									])
 								},
 								onOk: () => {

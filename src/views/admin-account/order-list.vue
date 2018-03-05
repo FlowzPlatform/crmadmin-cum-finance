@@ -1,8 +1,10 @@
 <template>
     <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; ">
-        <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-            <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.websiteName }}</Option>
-        </Select>
+        <div class="drpdwn" style="text-align:center">
+            <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+                <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+            </Select>
+        </div>
         <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
@@ -143,22 +145,41 @@
             init () {
                 var self = this
                 console.log("config.default.orderapi", config.default.orderapi)
-                axios.get( config.default.orderapi , {
-                    params: {
-                      owner_id: self.userid
-                    },
-                    // headers: {
-                    //   'Authorization': Cookies.get('auth_token'),
-                    //   // 'subscriptionId': Cookies.get('subscriptionId')
-                    // } 
+                axios({
+                    method: 'get',
+                    url: config.default.subscriptionWebsitesapi,
+                    // params: {
+                    //   owner_id: self.userid
+                    // },
+                    headers: {
+                      'Authorization': Cookies.get('auth_token'),
+                      'subscriptionId': Cookies.get('subscriptionId')
+                    } 
                 })
                 .then(function (response){
                     console.log("response", response.data)
-                    var result = _.uniqBy(response.data.data,'website_id')
+                    var result = _.uniqBy(response.data.data,'websiteId')
                     console.log("result", result)
                     self.websiteList = result
-                    self.website = self.websiteList[0].website_id                  
+                    console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                    self.website = self.websiteList[0].websiteId                  
                 })
+                // axios.get( config.default.orderapi , {
+                //     params: {
+                //       owner_id: self.userid
+                //     },
+                //     // headers: {
+                //     //   'Authorization': Cookies.get('auth_token'),
+                //     //   // 'subscriptionId': Cookies.get('subscriptionId')
+                //     // } 
+                // })
+                // .then(function (response){
+                //     console.log("response", response.data)
+                //     var result = _.uniqBy(response.data.data,'website_id')
+                //     console.log("result", result)
+                //     self.websiteList = result
+                //     self.website = self.websiteList[0].website_id                  
+                // })
             },
             listData (val) {
                 var self = this
@@ -262,18 +283,18 @@
         },
         async mounted() {
             var self = this
-            await axios({
-                method: 'get',
-                url: config.default.userDetail,
-                headers: {'Authorization': Cookies.get('auth_token')}
-                }).then(async function (response) {
-                    self.userid = response.data.data._id               
-                    console.log('user detail response------>',self.userid)
-                })
-                .catch(function (error) {
-                    console.log("-------",error);
-                    self.$Message.error(error)
-            });
+            // await axios({
+            //     method: 'get',
+            //     url: config.default.userDetail,
+            //     headers: {'Authorization': Cookies.get('auth_token')}
+            //     }).then(async function (response) {
+            //         self.userid = response.data.data._id               
+            //         console.log('user detail response------>',self.userid)
+            //     })
+            //     .catch(function (error) {
+            //         console.log("-------",error);
+            //         self.$Message.error(error)
+            // });
             this.init()
         },
         filters: {
@@ -285,9 +306,6 @@
 </script>
 
 <style scoped>
-    .main .single-page-con .single-page {
-        text-align: center !important;
-    }
     .ivu-table-wrapper {
         margin-top: 20px;
     }
