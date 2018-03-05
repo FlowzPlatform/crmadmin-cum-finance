@@ -774,7 +774,7 @@
                 this.name = Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 var resp;
-                axios.get(serviceUrl+"settings", {
+                await axios.get(serviceUrl+"settings", {
                     params: {
                         isActive : true,
                         //user : Cookies.get('user')

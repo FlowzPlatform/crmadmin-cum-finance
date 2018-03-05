@@ -2,9 +2,11 @@
   <div>
     <Tabs type="card">
         <TabPane label="Requested Quote">
-          <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-              <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
-          </Select>
+          <div class="drpdwn" style="text-align:center">
+            <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+                <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+            </Select>
+          </div>
           <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
         </TabPane>
         <TabPane label="Requested Info">
@@ -140,19 +142,19 @@ export default {
     },
     async getReuestQuoteData () {
       var self = this;
-      await axios.get( api, {
+      await axios.get( config.default.subscriptionWebsitesapi, {
         // params : {
         //   owner_id: self.userid
         // },
         headers: {
           'Authorization': Cookies.get('auth_token'),
-          // 'subscriptionId': Cookies.get('subscriptionId')
+          'subscriptionId': Cookies.get('subscriptionId')
         } 
         }).then(async function (response) {
           console.log('response request quote>',response)
-          var result = _.uniqBy(response.data.data,'website_id')
+          var result = _.uniqBy(response.data.data,'websiteId')
           self.websiteList = result
-          self.website = self.websiteList[0].website_id
+          self.website = self.websiteList[0].websiteId
         })
         .catch(function (error) {
           console.log("-------",error);

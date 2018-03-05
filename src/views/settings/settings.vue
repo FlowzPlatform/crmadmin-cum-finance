@@ -106,8 +106,8 @@
                                                         </tr>
                                                     </table>
                                                     <span>
-                                                        <div class="actionDiv">
-                                                            <ButtonGroup slot="extra" v-if="item.domain != 'custom'">
+                                                        <div class="actionDiv" v-if="item.domain != 'custom'">
+                                                            <ButtonGroup>
                                                                 <Tooltip placement="top" content="Edit">
                                                                     <Button class="ButtonGroup" @click="editConfig(item)" type="ghost" icon="edit"></Button>
                                                                 </Tooltip>
@@ -779,13 +779,13 @@
             addNewConfig(){
                  this.$store.state.settingData = ""
                 this.$router.push({
-                        name: 'New Settings'
+                        name: 'Account Settings'
                     });
             },
             addNewGeneralSettings() {
                 this.$store.state.settingData = ""
                 this.$router.push({
-                    name: 'General Settings'
+                    name: 'Profile Settings'
                 });
             },
             addNewPaymentSettings() {
@@ -1169,10 +1169,10 @@
         },
         mounted(){
             this.$Loading.start()
-            console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
-            if (this.$route.params.tabName) {
-                this.activetabs = this.$route.params.tabName
-            }
+            // console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
+            // if (this.$route.params.tabName) {
+            //     this.activetabs = this.$route.params.tabName
+            // }
             let self = this;   
             self.loading = true;
             let  data = {
@@ -1215,14 +1215,19 @@
                         if (item.hasOwnProperty('online_payment')) {
                             let i = 0
                             // console.log('item:: ', item.online_payment)
-                            for (let k in item.online_payment) {
-                                item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
-                                if (item.online_payment[k].length > 0) {
-                                    if (i === 0) {
-                                        self.tabarr.push({activetab : k+inx})
-                                        i++
+                            if (item.online_payment !== '') {
+                                for (let k in item.online_payment) {
+                                    item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+                                    if (item.online_payment[k].length > 0) {
+                                        if (i === 0) {
+                                            self.tabarr.push({activetab : k+inx})
+                                            i++
+                                        }
                                     }
                                 }
+                            }
+                            else {
+                                self.tabarr.push({activetab : ''})
                             }
                         } else {
                             self.tabarr.push({activetab : ''})

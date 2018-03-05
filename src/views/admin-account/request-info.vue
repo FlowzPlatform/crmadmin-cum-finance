@@ -1,9 +1,11 @@
 <template>
   <div>
+    <div class="drpdwn" style="text-align:center">
       <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-          <Option v-for="item in websiteList" :value="item.website_id" :key="item.id">{{ item.website_id }}</Option>
+          <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
       </Select>
-      <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+    </div>
+    <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
   </div>
 </template>
 
@@ -40,7 +42,7 @@ export default {
       },
       {
         "title": "TOTAL ITEM",
-        "key": "productInfo",
+        // "key": "productInfo",
         render:(h,{row})=>{
           var total = row.productInfo.length
           return total
@@ -48,7 +50,7 @@ export default {
       },
       {
         "title": "REQUESTED ON",
-        "key": "created_at",
+        // "key": "created_at",
         render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
                 return date1
@@ -63,20 +65,20 @@ export default {
       var self = this;
       await axios({
         method: 'get',
-        url: config.default.requestinfoapi,
+        url: config.default.subscriptionWebsitesapi,
         // params : {
         //   userId:self.userid,
         // },
         headers:{
           'Authorization': Cookies.get('auth_token'),
-          // 'subscriptionId': Cookies.get('subscriptionId')    
+          'subscriptionId': Cookies.get('subscriptionId')    
         }
         }).then(async function (response) {
           console.log('response------>',response)
-          self.list = response.data.data
-          var result = _.uniqBy(response.data.data,'website_id')
+          // self.list = response.data.data
+          var result = _.uniqBy(response.data.data,'websiteId')
           self.websiteList = result
-          self.website = self.websiteList[0].website_id
+          self.website = self.websiteList[0].websiteId
         })
         .catch(function (error) {
           console.log("-------",error);
@@ -87,7 +89,7 @@ export default {
       var self = this
       var len
       console.log("val", val)
-      axios.get({
+      axios({
           method: 'get',
           url: config.default.requestinfoapi,
           params: {

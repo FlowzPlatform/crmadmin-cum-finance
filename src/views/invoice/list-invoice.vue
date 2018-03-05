@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="padding: 10px; margin: 5px; display: block;" >
-      <div>
+      <div style="text-align:left;">
           <h1>Invoice List </h1>
           <div class="panel panel-default panel-group" id="accordion">
               <div class="panel-heading">
@@ -52,11 +52,11 @@
                                   <div class="form-group row panel-collapse collapse" id="date">
                                       <div class="col-xs-3">
                                         <label>From Date</label>
-                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
+                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
                                       </div>
                                       <div class="col-xs-3">
                                         <label>To Date</label>
-                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
+                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 100%;"></DatePicker>
                                       </div>
                                   </div>
                               </div>
@@ -218,7 +218,7 @@
                   <tr>
                       <td colspan="3"></td>
                       <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px -20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
                       <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
                   </tr>
                   <tr>
@@ -974,7 +974,7 @@
           // return $(item).text();
       },
       accounting(item){
-          console.log("item",item)
+          // console.log("item",item)
           return accounting.formatMoney(item)
       },
 
@@ -1079,14 +1079,19 @@
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(item.Date != undefined){
-              if(moment(item.Date).diff(moment(self.dategt).format(), 'days') >= 0){
-              console.log('item>>>>>>>>>>>>>>>>>>>>', item)
-              return item;
+              var a = moment(item.Date).format('YYYY-MM-DD')
+              if(moment(a).diff(moment(self.dategt).format(), 'days') >= 0){
+                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                return item;
               }
+              // if(moment(item.Date).diff(moment(self.dategt).format(), 'days') >= 0){
+              // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+              // return item;
+              // }
             }else{
               if(moment(item.TxnDate).diff(moment(self.dategt).format(), 'days') >= 0){
-              console.log('item>>>>>>>>>>>>>>>>>>>>', item)
-              return item;
+                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                return item;
               }
             }
           });
@@ -1095,13 +1100,17 @@
         }
 
         if(this.datelt != ''){
-          console.log("this.dategt", this.datelt)
+          console.log("this.datelt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item.DueDate)
             if(item.Date != undefined){
-              if(moment(item.Date).diff(moment(self.datelt).format(), 'days') <= 0){
-              return item;
+              var a = moment(item.Date).format('YYYY-MM-DD')
+              if(moment(a).diff(moment(self.datelt).format(), 'days') <= 0){
+                return item;
               }
+              // if(moment(item.Date).diff(moment(self.datelt).format(), 'days') <= 0){
+              // return item;
+              // }
             }else{
               if(moment(item.TxnDate).diff(moment(self.datelt).format(), 'days') <= 0){
               return item;
@@ -1603,7 +1612,7 @@
       },
       async sendemailQB(params){
 
-        his.$Loading.start();
+        this.$Loading.start();
         console.log("paramsssssssssssssssss " , params)
         this.emailData = params;
         var self = this
@@ -1701,10 +1710,12 @@
                           }).then(function (response) {
                             console.log(response);
                             self.$Message.success(response.data.success);
+                            self.$Loading.finish();
                             self.list[params.index].loading1 = false
                           })
                           .catch(function (error) {
                             self.$Message.warning("email send failed , Please try again later");
+                            self.$Loading.finish();
                             console.log(error);
                           });
                       }
@@ -2124,7 +2135,7 @@
                                           myData = JSON.stringify(myData)
                                           axios({
                                             method: 'post',
-                                            url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                                            url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
                                             data: myData,
                                             headers: {
                                               'authorization':  Cookies.get('auth_token')

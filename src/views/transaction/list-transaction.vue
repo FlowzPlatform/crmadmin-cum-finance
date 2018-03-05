@@ -150,16 +150,26 @@ export default {
               key: 'Date',
               sortable: true,
               render:(h,{row})=>{
+                  var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+            //    let date = row.paymentAccounting.Invoice.Date;
+            //    let initial = date.split(/\//);
+            //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
 
-
-               let date = row.paymentAccounting.Invoice.Date;
-               let initial = date.split(/\//);
-                let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
-
-                return moment(formatDate).format("ll")
+                return date
 
 
               }
+            //   render:(h,{row})=>{
+
+
+            //    let date = row.paymentAccounting.Invoice.Date;
+            //    let initial = date.split(/\//);
+            //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
+
+            //     return moment(formatDate).format("ll")
+
+
+            //   }
           },
           {
               title: 'Amount',
@@ -442,7 +452,15 @@ export default {
         })
         .then(async function (response) {
             console.log("transaction response",response);
-            self.data = response.data.data;
+            var deep = _.cloneDeep(response.data.data);
+            _(deep).each(function(item , index){
+                var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                item.paymentAccounting.Invoice.Date = dt._d
+            })
+            var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+            self.data = desc;
+
+            // self.data = response.data.data;
             self.$Loading.finish();
             $('.preload').css("display","none")
             if(self.list.length == 0){
@@ -464,16 +482,17 @@ export default {
         var NameArr = [];
 
             self.data.forEach (obj => {
-                console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                 NameArr.push(obj.paymentAccounting.Contact.Name);
               })
-            NameArr.sort();
+            // NameArr.sort();
+            NameArr = _.chain(NameArr).sort().uniq().value();
 
             NameArr.forEach(item => {
                 var x = document.getElementById("selectCustomer");
                 var option = document.createElement("option");
                 option.text = item;
-                console.log()
+                // console.log()
                 x.add(option);
             })
     }
