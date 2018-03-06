@@ -32,10 +32,10 @@ jobs:
             docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
             docker build -t crmadmin_frontend_flowz:staging --build-arg domainkey="$DOMAINKEY_STAGING" .;
             docker tag crmadmin_frontend_flowz:$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER $DOCKER_USERNAME/crmadmin_frontend_flowz:$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER;
-            docker tag crmadmin_frontend_flowz:$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER $DOCKER_USERNAME/crmadmin_frontend_flowz:dev;
+            docker tag crmadmin_frontend_flowz:$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER $DOCKER_USERNAME/crmadmin_frontend_flowz:staging;
             docker images;
             docker push $DOCKER_USERNAME/crmadmin_frontend_flowz:$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER;
-            docker push $DOCKER_USERNAME/crmadmin_frontend_flowz:dev;
+            docker push $DOCKER_USERNAME/crmadmin_frontend_flowz:staging;
         else
             docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
             docker build -t crmadmin_frontend_flowz:qa --build-arg domainkey="$DOMAINKEY_QA" .;
