@@ -54,7 +54,7 @@ echo "waiting for service to upgrade "
           "\"upgrading\"" )
               echo "still upgrading"
               echo -n "."
-              sleep 3
+              sleep 60
               continue ;;
           *)
               die "unexpected upgrade state" ;;
