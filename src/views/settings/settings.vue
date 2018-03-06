@@ -1184,140 +1184,252 @@
                 "isDeleated" : false,
                 "subscriptionId" : Cookies.get('subscriptionId')
             };
+
+            // ------------------------
             axios({
-                method: 'post',
-                url: feathersUrl +'settings',
+                method:'get',
+                url:feathersUrl +'settings',
                 headers:{
                     Authorization : Cookies.get('auth_token'),
                     subscriptionId : Cookies.get('subscriptionId')
                 },
-                data: data
-            })  
-            .then(function (response) {
-                console.log("-----------settings response",response)
-                // self.$Message.success('Success!');
-                self.loading = false;
-                axios({
-                    method:'get',
-                    url:feathersUrl +'settings',
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                })
-                .then(response => {
-                    console.log(response)
-                    localStorage.clear();
-                    self.data6 = response.data.data
-                    console.log("+++++++++++++++++++++data6",self.data6);
-                    for (let [inx, item] of self.data6.entries()) {
+            })
+            .then(response => {
+                // console.log("---------response",response)
+                localStorage.clear();
+                self.data6 = response.data.data
+                console.log("+++++++++++++++++++++data6",self.data6);
+                let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
+                console.log("arrIndex",arrIndex)
+                if (arrIndex < 0) {
+                    axios({
+                        method: 'post',
+                        url: feathersUrl +'settings',
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: data
+                    })
+                    .then(function (response) {
+                        console.log("-----------settings response",response)
+                        // self.data6.push(response.data);
+                        // self.$Message.success('Success!');
+                    })
+                    .catch(function (error) {
+                        console.log("error in get settings",error)
+                        if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            this.$store.commit('logout', this);
+                            
+                            this.$router.push({
+                                name: 'login'
+                            });
+                        }else if(error.response.status == 403){
+                            console.log("error.response",error.response)
+                            if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
+                                
+                            }
+                            else {
+                                self.$Notice.error({
+                                    duration:0, 
+                                    title: error.response.statusText,
+                                    desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }
+                        }
+                    });
+                }
+                console.log("after post self.data6",self.data6);
+                for (let [inx, item] of self.data6.entries()) {
 
-                        if (item.hasOwnProperty('online_payment')) {
-                            let i = 0
-                            // console.log('item:: ', item.online_payment)
-                            if (item.online_payment !== '') {
-                                for (let k in item.online_payment) {
-                                    item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
-                                    if (item.online_payment[k].length > 0) {
-                                        if (i === 0) {
-                                            self.tabarr.push({activetab : k+inx})
-                                            i++
-                                        }
+                    if (item.hasOwnProperty('online_payment')) {
+                        let i = 0
+                        // console.log('item:: ', item.online_payment)
+                        if (item.online_payment !== '') {
+                            for (let k in item.online_payment) {
+                                item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+                                if (item.online_payment[k].length > 0) {
+                                    if (i === 0) {
+                                        self.tabarr.push({activetab : k+inx})
+                                        i++
                                     }
                                 }
                             }
-                            else {
-                                self.tabarr.push({activetab : ''})
-                            }
-                        } else {
+                        }
+                        else {
                             self.tabarr.push({activetab : ''})
                         }
+                    } else {
+                        self.tabarr.push({activetab : ''})
                     }
-                    console.log("self.tabarr",self.tabarr)
-                    self.$Loading.finish();
-                })
-                .catch(error => {
-                    if(error.response.status == 401){
-                        let location = psl.parse(window.location.hostname)
-                        location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
-                        self.$store.commit('logout', self);
-                        
-                        self.$router.push({
-                            name: 'login'
-                        });
-                    }else if(error.response.status == 403){
-                        self.$Notice.error(
-                            {duration:0, 
-                            title: error.response.statusText,
-                            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                            );
-                    
-                    }
-                    self.$Loading.error();
-                });
+                }
+                console.log("self.tabarr",self.tabarr)
+                self.$Loading.finish();
             })
-            .catch(function (error) {
-                console.log(error)
+            .catch(error => {
                 if(error.response.status == 401){
                     let location = psl.parse(window.location.hostname)
                     location = location.domain === null ? location.input : location.domain
                     
                     Cookies.remove('auth_token' ,{domain: location}) 
                     Cookies.remove('subscriptionId' ,{domain: location}) 
-                    this.$store.commit('logout', this);
+                    self.$store.commit('logout', self);
                     
-                    this.$router.push({
+                    self.$router.push({
                         name: 'login'
                     });
                 }else if(error.response.status == 403){
-                    console.log("error.response",error.response)
-                    // if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
-                        axios({
-                            method:'get',
-                            url:feathersUrl +'settings',
-                            headers:{
-                                Authorization : Cookies.get('auth_token'),
-                                subscriptionId : Cookies.get('subscriptionId')
-                            },
-                        })
-                        .then(response => {
-                            console.log(response)
-                            localStorage.clear();
-                            self.data6 = response.data.data
-                            console.log("+++++++++++++++++++++data6",self.data6);
-                            for (let [inx, item] of self.data6.entries()) {
-                                if (item.hasOwnProperty('online_payment')) {
-                                    let i = 0
-                                    // console.log('item:: ', item.online_payment)
-                                    for (let k in item.online_payment) {
-                                        item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
-                                        if (item.online_payment[k].length > 0) {
-                                            if (i === 0) {
-                                                self.tabarr.push({activetab : k+inx})
-                                                i++
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    self.tabarr.push({activetab : ''})
-                                }
-                            }
-                            console.log("self.tabarr",self.tabarr)
-                            self.$Loading.finish();
-                        })
-                    // }
-                    // else {
-                    //     self.$Notice.error({
-                    //         duration:0, 
-                    //         title: error.response.statusText,
-                    //         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                    //     });
-                    // }
+                    self.$Notice.error(
+                        {duration:0, 
+                        title: error.response.statusText,
+                        desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                        );
+                
                 }
-            }); 
+                self.$Loading.error();
+            });
+            // -------------------------
+
+
+            // axios({
+            //     method: 'post',
+            //     url: feathersUrl +'settings',
+            //     headers:{
+            //         Authorization : Cookies.get('auth_token'),
+            //         subscriptionId : Cookies.get('subscriptionId')
+            //     },
+            //     data: data
+            // })  
+            // .then(function (response) {
+            //     console.log("-----------settings response",response)
+            //     // self.$Message.success('Success!');
+            //     self.loading = false;
+            //     axios({
+            //         method:'get',
+            //         url:feathersUrl +'settings',
+            //         headers:{
+            //             Authorization : Cookies.get('auth_token'),
+            //             subscriptionId : Cookies.get('subscriptionId')
+            //         },
+            //     })
+            //     .then(response => {
+            //         console.log(response)
+            //         localStorage.clear();
+            //         self.data6 = response.data.data
+            //         console.log("+++++++++++++++++++++data6",self.data6);
+            //         for (let [inx, item] of self.data6.entries()) {
+
+            //             if (item.hasOwnProperty('online_payment')) {
+            //                 let i = 0
+            //                 // console.log('item:: ', item.online_payment)
+            //                 if (item.online_payment !== '') {
+            //                     for (let k in item.online_payment) {
+            //                         item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+            //                         if (item.online_payment[k].length > 0) {
+            //                             if (i === 0) {
+            //                                 self.tabarr.push({activetab : k+inx})
+            //                                 i++
+            //                             }
+            //                         }
+            //                     }
+            //                 }
+            //                 else {
+            //                     self.tabarr.push({activetab : ''})
+            //                 }
+            //             } else {
+            //                 self.tabarr.push({activetab : ''})
+            //             }
+            //         }
+            //         console.log("self.tabarr",self.tabarr)
+            //         self.$Loading.finish();
+            //     })
+            //     .catch(error => {
+            //         if(error.response.status == 401){
+            //             let location = psl.parse(window.location.hostname)
+            //             location = location.domain === null ? location.input : location.domain
+                        
+            //             Cookies.remove('auth_token' ,{domain: location}) 
+            //             Cookies.remove('subscriptionId' ,{domain: location}) 
+            //             self.$store.commit('logout', self);
+                        
+            //             self.$router.push({
+            //                 name: 'login'
+            //             });
+            //         }else if(error.response.status == 403){
+            //             self.$Notice.error(
+            //                 {duration:0, 
+            //                 title: error.response.statusText,
+            //                 desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+            //                 );
+                    
+            //         }
+            //         self.$Loading.error();
+            //     });
+            // })
+            // .catch(function (error) {
+            //     console.log(error)
+            //     if(error.response.status == 401){
+            //         let location = psl.parse(window.location.hostname)
+            //         location = location.domain === null ? location.input : location.domain
+                    
+            //         Cookies.remove('auth_token' ,{domain: location}) 
+            //         Cookies.remove('subscriptionId' ,{domain: location}) 
+            //         this.$store.commit('logout', this);
+                    
+            //         this.$router.push({
+            //             name: 'login'
+            //         });
+            //     }else if(error.response.status == 403){
+            //         console.log("error.response",error.response)
+            //         // if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
+            //             axios({
+            //                 method:'get',
+            //                 url:feathersUrl +'settings',
+            //                 headers:{
+            //                     Authorization : Cookies.get('auth_token'),
+            //                     subscriptionId : Cookies.get('subscriptionId')
+            //                 },
+            //             })
+            //             .then(response => {
+            //                 console.log(response)
+            //                 localStorage.clear();
+            //                 self.data6 = response.data.data
+            //                 console.log("+++++++++++++++++++++data6",self.data6);
+            //                 for (let [inx, item] of self.data6.entries()) {
+            //                     if (item.hasOwnProperty('online_payment')) {
+            //                         let i = 0
+            //                         // console.log('item:: ', item.online_payment)
+            //                         for (let k in item.online_payment) {
+            //                             item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
+            //                             if (item.online_payment[k].length > 0) {
+            //                                 if (i === 0) {
+            //                                     self.tabarr.push({activetab : k+inx})
+            //                                     i++
+            //                                 }
+            //                             }
+            //                         }
+            //                     } else {
+            //                         self.tabarr.push({activetab : ''})
+            //                     }
+            //                 }
+            //                 console.log("self.tabarr",self.tabarr)
+            //                 self.$Loading.finish();
+            //             })
+            //         // }
+            //         // else {
+            //         //     self.$Notice.error({
+            //         //         duration:0, 
+            //         //         title: error.response.statusText,
+            //         //         desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+            //         //     });
+            //         // }
+            //     }
+            // }); 
         }
     }
 </script>

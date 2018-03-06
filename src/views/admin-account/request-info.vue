@@ -82,7 +82,11 @@ export default {
         })
         .catch(function (error) {
           console.log("-------",error);
-            self.$Message.error(error)
+            // self.$Message.error(error)
+            self.$Message.error({
+              content: error,
+              duration: 4.5
+            })
         });
     },
     listData (val) {
@@ -126,10 +130,10 @@ export default {
 </script>
 
 <style>
-.single-page {
-    text-align: center;
-  }
-.ivu-table-wrapper {
+  .ivu-table-wrapper {
     margin-top: 20px;
   }
+  .ivu-table-cell {
+        word-break: break-word;
+    }
 </style>

@@ -774,17 +774,20 @@ export default {
 /* .ivu-radio-group-vertical .ivu-radio-wrapper{
   display: 'inline-table';
 } */
-.ivu-table td.swatch-box .ivu-table-cell{
-  /* border: solid 1px #ccc; */
-  height: 30px;
-  margin-bottom: 2px;
-  /* background: red; */
-  display: inline-block;
-  width:30px;
-  margin-left: 2px;
-}
-.ivu-tabs-nav-container{
-  margin-top: 20px;
-}
+  .ivu-table td.swatch-box .ivu-table-cell{
+    /* border: solid 1px #ccc; */
+    height: 30px;
+    margin-bottom: 2px;
+    /* background: red; */
+    display: inline-block;
+    width:30px;
+    margin-left: 2px;
+  }
+  .ivu-tabs-nav-container{
+    margin-top: 20px;
+  }
+  .ivu-table-cell {
+        word-break: break-word;
+    }
 
 </style>

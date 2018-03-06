@@ -351,8 +351,8 @@ export default {
               products:[
                   {
                     description: self.formItem.description,
-                    qty: self.formItem.qty,
-                    amount: self.formItem.amount1,
+                    qty: parseFloat(self.formItem.qty),
+                    amount: parseFloat(self.formItem.amount1),
                     tax: 0
                   }
               ]

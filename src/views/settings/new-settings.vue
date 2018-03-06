@@ -197,7 +197,6 @@
                 });
             },
             async handleUpload (file) {
-                
                 this.file = file
                 return false;
             },
@@ -208,8 +207,14 @@
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
                         console.log(this.file)
-                        if( self.file == null || self.file.type !== "application/x-x509-ca-cert"){
-                            self.$Message.error(' Please, attach a .pem file!');
+                        let file_ext = this.file.name.split('.').pop()
+                        console.log("self.file.type file_ext", file_ext)
+                        if( self.file == null || file_ext !== "pem"){
+                            self.$Message.error({
+                                content: ' Please, attach a .pem file!',
+                                duration: 4.5
+                            });
+
                         }else{
                             this.loading = true;
                             var file    =this.file

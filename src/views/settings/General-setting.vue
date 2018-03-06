@@ -200,13 +200,16 @@ export default {
       return false;
     },
     handleLogoUpload () {
-      this.logoLoading = true;
+      // this.logoLoading = true;
       var self = this;
       var checkConfig;
       console.log('**************',this.file)
       console.log("self.file.type", this.file.type)
-      if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
-
+      // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
+      let file_ext = this.file.name.split('.').pop()
+      console.log("self.file.type file_ext", file_ext)      
+      if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
+        this.logoLoading = true;
           console.log('this.file',this.file)
           var reader = new FileReader();
           var file = this.file
@@ -367,7 +370,11 @@ export default {
           }
 
       }else {
-          self.$Message.error(' Please, attach a .jpg or .png file!');
+           self.$Message.error({
+            content: ' Please, attach a .jpg or .png file!',
+            duration: 4.5
+          });
+           self.logoLoading = false;
         }
         
     },

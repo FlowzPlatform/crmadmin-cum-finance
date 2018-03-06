@@ -426,7 +426,7 @@
                 sortable: true
             },
             {
-                title: 'customer Name',
+                title: 'Customer Name',
                 key: 'CustomerRef',
                 sortable: true,
                 render : (h , {row}) => { return row.CustomerRef.name}
@@ -469,7 +469,7 @@
               align: 'center',
               width: 210,
               render: (h, {row}) => {
-                if(row.TotalAmt-row.Balance != 0){
+                if(row.TotalAmt-row.Balance != row.TotalAmt){
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -497,6 +497,32 @@
                           }
                         },'')
                       ]),
+                      h('Tooltip', {
+                        props: {
+                          placement: 'top',
+                          content: 'Send Mail'
+                        },
+                        style:{
+                          float:'center',
+                          cursor:'pointer'
+                        }
+                      }, [
+                        h('img', {
+                          attrs: {
+                            src : this.mail
+                          },
+                          style: {
+                            height:'20px',
+                            width:'20px',
+                            margin: '2px'
+                          },
+                          on: {
+                            click: () => {
+                              this.sendemailQB(row)
+                            }
+                          }
+                        }, '')
+                      ]),
                     h('Tooltip', {
                         props: {
                           placement: 'top',
@@ -519,32 +545,6 @@
                           on: {
                             click: () => {
                               this.createPDFQB(row)
-                            }
-                          }
-                        }, '')
-                      ]),
-                 h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'Send Mail'
-                        },
-                        style:{
-                          float:'center',
-                          cursor:'pointer'
-                        }
-                      }, [
-                        h('img', {
-                          attrs: {
-                            src : this.mail
-                          },
-                          style: {
-                            height:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                          on: {
-                            click: () => {
-                              this.sendemailQB(row)
                             }
                           }
                         }, '')
@@ -1202,7 +1202,7 @@
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
-                  console.log("/////////////////////////////////////////////////////////////////",obj)
+                  // console.log("/////////////////////////////////////////////////////////////////",obj)
                   if(obj.Name == undefined){
                       NameArr.push(obj.DisplayName)
                   }else{
@@ -1600,10 +1600,12 @@
                           }).then(function (response) {
                             console.log(response);
                             self.$Message.success(response.data.success);
-                            self.list[params.index].loading1 = false
+                            // self.list[params.index].loading1 = false
+                            self.$Loading.finish();
                           })
                           .catch(function (error) {
                             self.$Message.warning("email send failed , Please try again later");
+                            self.$Loading.finish();
                             console.log(error);
                           });
                       }
@@ -1711,7 +1713,7 @@
                             console.log(response);
                             self.$Message.success(response.data.success);
                             self.$Loading.finish();
-                            self.list[params.index].loading1 = false
+                            // self.list[params.index].loading1 = false
                           })
                           .catch(function (error) {
                             self.$Message.warning("email send failed , Please try again later");
@@ -2143,10 +2145,12 @@
                                             }).then(function (response) {
                                               console.log(response);
                                               self.$Message.success(response.data.success);
-                                              self.list[params.index].loading1 = false
+                                              self.$Loading.finish();
+                                              // self.list[params.index].loading1 = false
                                             })
                                             .catch(function (error) {
                                               self.$Message.warning("email send failed , Please try again later");
+                                              self.$Loading.finish();
                                               console.log(error);
                                             });
                       }
@@ -2230,9 +2234,6 @@
       margin: 0 6px;
       float: none !important;
   }
-
-
-
   .ivu-icon.ivu-icon-help-circled{
       display: none;
   }
@@ -2240,5 +2241,11 @@
 
   #viewDetailInInvoice #accordion {
     display: none;
+  }
+  .ivu-table-cell {
+      word-break: break-word;
+  }
+  .ivu-auto-complete.ivu-select-dropdown {
+    max-height: 200px !important;
   }
 </style>

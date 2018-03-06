@@ -24,8 +24,12 @@
                                   data-target="#invoiceId"></span>
                                   <label>Invoice No.</label>
                               </div>
-                              <div class="panel-collapse collapse" id="invoiceId">
+                              <!--<div class="panel-collapse collapse" id="invoiceId">
                                  <input class="form-control" type="text" v-model="invoiceId"/>
+                              </div>-->
+                              <div class="panel-collapse collapse" id="invoiceId">
+                                  <AutoComplete v-model="invoiceId" :data="invnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                  </AutoComplete>
                               </div>
                           </div>
                           <div class="panel panel-default">
@@ -36,11 +40,11 @@
                               <div class="form-group row panel-collapse collapse" id="date">
                                   <div class="col-xs-3">
                                     <label>From Date</label>
-                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
                                   </div>
                                   <div class="col-xs-3">
                                     <label>To Date</label>
-                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
+                                      <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 100%;"></DatePicker>
                                   </div>
                               </div>
                           </div>
@@ -108,6 +112,7 @@ export default {
   data() {
       return {
        // msg : "weqweq",
+       invnoFilter : [],
        nodataMsg: 'No Data',
        // list1: this.list,
         tabPanes : [],
@@ -322,42 +327,70 @@ export default {
       if(this.invoiceId != ''){
         console.log("this.invoiceId", this.invoiceId)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item)
-          return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+            console.log("item",item)
+            //   return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+            if(item.paymentAccounting.Invoice.InvoiceNumber != undefined){
+                return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+            }else{
+                return item.paymentAccounting.Invoice.InvoiceID === self.invoiceId;
+            }
         });
          console.log("myarr",this.filterArray)
          this.list = await this.mockTableData2(1,pageSize)
       }
 
-     if(this.dategt != ''){
-        console.log("this.dategt", this.dategt)
-        this.filterArray = _.filter(this.filterArray,  function(item){
-          // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
-          //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
-          //   return item;
-          // }
-          console.log("item",item.paymentAccounting.Invoice.Date)
-          var newdate = moment(self.dategt).format('DD/MM/YYYY');
-          console.log("newdate",newdate)
-          console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
-          return item.paymentAccounting.Invoice.Date >= newdate;
-        });
-         console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
+    //  if(this.dategt != ''){
+    //     console.log("this.dategt", this.dategt)
+    //     this.filterArray = _.filter(this.filterArray,  function(item){
+    //       // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+    //       //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+    //       //   return item;
+    //       // }
+    //       console.log("item",item.paymentAccounting.Invoice.Date)
+    //       var newdate = moment(self.dategt).format('DD/MM/YYYY');
+    //       console.log("newdate",newdate)
+    //       console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
+    //       return item.paymentAccounting.Invoice.Date >= newdate;
+    //     });
+    //      console.log("myarr",this.filterArray)
+    //      this.list = await this.mockTableData2(1,pageSize)
 
-      }
+    //   }
 
-      if(this.datelt != ''){
-        console.log("this.datelt", this.datelt)
-        this.filterArray = _.filter(this.filterArray,  function(item){
-          console.log("item",item.paymentAccounting.Invoice.Date)
-          var newdate = moment(self.datelt).format('DD/MM/YYYY');
-          console.log("newdate",newdate)
-          return item.paymentAccounting.Invoice.Date <= newdate;
-        });
-         console.log("myarr",this.filterArray)
-         this.list = await this.mockTableData2(1,pageSize)
-      }
+    //   if(this.datelt != ''){
+    //     console.log("this.datelt", this.datelt)
+    //     this.filterArray = _.filter(this.filterArray,  function(item){
+    //       console.log("item",item.paymentAccounting.Invoice.Date)
+    //       var newdate = moment(self.datelt).format('DD/MM/YYYY');
+    //       console.log("newdate",newdate)
+    //       return item.paymentAccounting.Invoice.Date <= newdate;
+    //     });
+    //      console.log("myarr",this.filterArray)
+    //      this.list = await this.mockTableData2(1,pageSize)
+    //   }
+
+        if(this.dategt != ''){
+            console.log("this.dategt", this.dategt)
+            this.filterArray = _.filter(this.filterArray,  function(item){
+            if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.dategt).format(), 'days') >= 0){
+                return item;
+            }
+            });
+            console.log("myarr",this.filterArray)
+            this.list = await this.mockTableData2(1,pageSize)
+
+        }
+
+        if(this.datelt != ''){
+            console.log("this.datelt", this.datelt)
+            this.filterArray = _.filter(this.filterArray,  function(item){
+            if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.datelt).format(), 'days') <= 0){
+                return item;
+            }
+            });
+            console.log("myarr",this.filterArray)
+            this.list = await this.mockTableData2(1,pageSize)
+        }
 
     },
     async mockTableData2 (p,size) {
@@ -416,12 +449,12 @@ export default {
       });
     },
     async tabClicked(data){
-      console.log(this.tabPanes)
-      console.log(">>>>>>>>>>>>>>>>>> " , data)
-      this.tabIndex = data;
-      let settingId = this.tabPanes[data].id
-
-      this.getTransaction(settingId);
+        console.log(this.tabPanes)
+        console.log(">>>>>>>>>>>>>>>>>> " , data)
+        this.reset();
+        this.tabIndex = data;
+        let settingId = this.tabPanes[data].id
+        this.getTransaction(settingId);
     },
 
     async mockTableData1 (p,size) {
@@ -459,6 +492,7 @@ export default {
             })
             var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
             self.data = desc;
+            self.invnoFilter = [];
 
             // self.data = response.data.data;
             self.$Loading.finish();
@@ -484,6 +518,11 @@ export default {
             self.data.forEach (obj => {
                 // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                 NameArr.push(obj.paymentAccounting.Contact.Name);
+                if(obj.paymentAccounting.Invoice.InvoiceNumber != undefined){
+                  self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
+                }else{
+                  self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceID);
+                }
               })
             // NameArr.sort();
             NameArr = _.chain(NameArr).sort().uniq().value();
@@ -510,3 +549,12 @@ export default {
   }
 }
 </script>
+
+<style>
+    .ivu-table-cell {
+        word-break: break-word;
+    }
+    .ivu-auto-complete.ivu-select-dropdown {
+        max-height: 200px !important;
+    }
+</style>

@@ -12,35 +12,35 @@
           
           <ul>
               <li>
-                  <a href="" target="_blank">Invoice ID :</a>
+                  <span style="color:  rgb(40, 125, 201);text-decoration: none;">Invoice ID :</span>
                   <span>
                       
                       {{ invoiceid }} 
                   </span>
               </li>
               <li>
-                  <a href="" target="_blank">Name :</a>
+                  <span style="color:  rgb(40, 125, 201);text-decoration: none;">Name :</span>
                   <span>
                       
                       {{ name }}
                   </span>
               </li>
               <li>
-                  <a href="" target="_blank">Paid Amount :</a>
+                  <span style="color:  rgb(40, 125, 201);text-decoration: none;">Paid Amount :</span>
                   <span>
                       
                       ${{ amountpaid }}
                   </span>
               </li>
               <li>
-                  <a href="" target="_blank">Due Amount :</a>
+                  <span style="color:  rgb(40, 125, 201);text-decoration: none;">Due Amount :</span>
                   <span>
                       
                       ${{ amountDue }}
                   </span>
               </li>
               <li>
-                  <a href="" target="_blank">Total :</a>
+                  <span style="color:  rgb(40, 125, 201);text-decoration: none;">Total :</span>
                   <span>
                       
                       ${{ total }} 
@@ -270,8 +270,8 @@ export default {
 
                   responseData = response.data[0];
                   if(Array.isArray(responseData.data)) {
-                    console.log("!!!!!!!!!!!")
                     responseData = responseData.data[0]
+                    console.log("!!!!!!!!!!!",responseData)
 
                     self.responseDataForPayment = responseData;
                     self.payDetail.amount = responseData.Balance;
@@ -285,13 +285,14 @@ export default {
                   }
                   else {
                     responseData = responseData.data;
+                    console.log("response data!!!!!!!!!!",responseData);
                     self.responseDataForPayment = responseData;
                     self.payDetail.amount = responseData.AmountDue;
                     self.invoiceid = responseData.InvoiceID;
                     self.name = responseData.Contact.Name
                     self.amountpaid = responseData.AmountPaid
                     self.amountDue = responseData.AmountDue
-                    self.total = paymentAmount
+                    self.total = responseData.Total
                     self.settingId = settingID
                     self.$Spin.hide();
                   }
@@ -369,12 +370,12 @@ export default {
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
             // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
-            self.payDetail.amount = parseFloat(self.payDetail.amount);
+            // self.payDetail.amount = parseFloat(self.payDetail.amount);
             let param1 = {
               settingId:self.settingId.query.settingId,
               gateway:self.payDetail.gateway,
               id: paymentInvoiceId,
-              amount:self.payDetail.amount,
+              amount:parseFloat(self.payDetail.amount),
               Name:contactName,
               type:self.payDetail.cardtype,
               cardNumber:self.payDetail.cardNumber,
@@ -399,6 +400,7 @@ export default {
             })
             .catch(function (err) {
               self.loading = false
+              console.log("errror in payment",err.response);
               if (err.response.data.code === '404') {
                 self.$Notice.error({
                       duration:0, 
