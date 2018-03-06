@@ -309,4 +309,7 @@
     .ivu-table-wrapper {
         margin-top: 20px;
     }
+    .ivu-table-cell {
+        word-break: break-word;
+    }
 </style>

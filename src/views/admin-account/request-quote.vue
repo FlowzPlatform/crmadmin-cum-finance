@@ -160,7 +160,7 @@ export default {
           console.log("-------",error);
             self.$Message.error({
               content: error,
-              duration: 10
+              duration: 4.5
             })
         });
     },
@@ -203,10 +203,10 @@ export default {
 </script>
 
 <style scoped>
- .main .single-page-con .single-page {
-    text-align: center !important;
-  }
-.ivu-table-wrapper {
+  .ivu-table-wrapper {
     margin-top: 20px;
   }
+  .ivu-table-cell {
+        word-break: break-word;
+    }
 </style>
