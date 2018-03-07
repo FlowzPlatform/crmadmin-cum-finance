@@ -1167,7 +1167,7 @@
                 return _.chunk(this.data6, 2);
             }
         },
-        mounted(){
+        async mounted(){
             this.$Loading.start()
             // console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
             // if (this.$route.params.tabName) {
@@ -1194,7 +1194,7 @@
                     subscriptionId : Cookies.get('subscriptionId')
                 },
             })
-            .then(response => {
+            .then(async response => {
                 // console.log("---------response",response)
                 localStorage.clear();
                 self.data6 = response.data.data
@@ -1202,7 +1202,7 @@
                 let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
                 console.log("arrIndex",arrIndex)
                 if (arrIndex < 0) {
-                    axios({
+                    await axios({
                         method: 'post',
                         url: feathersUrl +'settings',
                         headers:{
@@ -1213,6 +1213,7 @@
                     })
                     .then(function (response) {
                         console.log("-----------settings response",response)
+                        self.data6.push(response.data);
                         // self.data6.push(response.data);
                         // self.$Message.success('Success!');
                     })
@@ -1231,8 +1232,12 @@
                             });
                         }else if(error.response.status == 403){
                             console.log("error.response",error.response)
-                            if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
-                                
+                            if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER' || error.response.data.data.errorCode === 'ERR-PERMISSION') {
+                                self.$Notice.error({
+                                    duration:0, 
+                                    title: error.response.statusText,
+                                    desc:error.response.data.message
+                                });
                             }
                             else {
                                 self.$Notice.error({
@@ -1284,11 +1289,26 @@
                         name: 'login'
                     });
                 }else if(error.response.status == 403){
-                    self.$Notice.error(
-                        {duration:0, 
-                        title: error.response.statusText,
-                        desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                        );
+                    console.log("error.response.data.data.errorCode",error.response.data.data.errorCode)
+                    if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER' || error.response.data.data.errorCode === 'ERR-PERMISSION') {
+                        self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message
+                        });
+                    }
+                    else {
+                        self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                        });
+                    }
+                    // self.$Notice.error(
+                    //     {duration:0, 
+                    //     title: error.response.statusText,
+                    //     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                    //     );
                 
                 }
                 self.$Loading.error();

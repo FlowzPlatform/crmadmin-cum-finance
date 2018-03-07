@@ -134,9 +134,6 @@
                     ],
                     configName: [
                         { required: true, message: "Cconfiguration name Key cannot be empty", trigger: 'blur' }
-                    ],
-                    privateKey: [
-                        { required: true, message: "Private Key(.pem) file must be uploaded", trigger: 'blur' }
                     ]
                 },
                 QBformValidate: {

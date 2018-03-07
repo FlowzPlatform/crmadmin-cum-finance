@@ -102,12 +102,12 @@ var pageSize = 10
 export default {
   name: '',
   props: {
-     list : {
-         default: function () { return [] }
-     },
-     tabIndex : {
-         default: function () { return 0 }
-     }
+    //  list : {
+    //      default: function () { return [] }
+    //  },
+    //  tabIndex : {
+    //      default: function () { return 0 }
+    //  }
   },
   data() {
       return {
@@ -116,11 +116,11 @@ export default {
        nodataMsg: 'No Data',
        // list1: this.list,
         tabPanes : [],
-        //tabIndex: 0,
+        tabIndex: 0,
         spinShow: true,
         data : [],
         len:1,
-        //list: [],
+        list: [],
         columns3:[],
         columns1: [
           {
@@ -287,6 +287,9 @@ export default {
       }
   },
   methods: {
+      filterMethod (value, option) {
+          return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+      },
     // getData() {
     //   if (this.list1.length <= 0) {
     //     return this.list
@@ -436,7 +439,7 @@ export default {
             content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
             onOk: () => {
                 self.$router.push({
-                    name: 'newsettings'
+                    name: 'Settings'
                 })
               }
             });

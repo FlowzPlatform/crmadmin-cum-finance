@@ -1790,6 +1790,32 @@
                   h('Tooltip', {
                     props: {
                     placement: 'top',
+                    content: 'Make payment'
+                    },
+                    style:{
+
+                    cursor:'pointer'
+                    }
+                  }, [
+                  h('img', {
+                    attrs: {
+                      src: self.money
+                    },
+                    style: {
+                      hight:'20px',
+                      width:'20px',
+                      margin: '2px'
+                    },
+                    on: {
+                    click: () => {
+                      self.makePaymentCustom(params ,settingId, settingDomain)
+                    }
+                    }
+                  }, '')
+                  ]),
+                  h('Tooltip', {
+                    props: {
+                    placement: 'top',
                     content: 'Send Mail'
                     },
                     style:{
@@ -1835,32 +1861,6 @@
                     on: {
                     click: () => {
                       self.createPDFCustom(params)
-                    }
-                    }
-                  }, '')
-                  ]),
-                  h('Tooltip', {
-                    props: {
-                    placement: 'top',
-                    content: 'Make payment'
-                    },
-                    style:{
-
-                    cursor:'pointer'
-                    }
-                  }, [
-                  h('img', {
-                    attrs: {
-                      src: self.money
-                    },
-                    style: {
-                      hight:'20px',
-                      width:'20px',
-                      margin: '2px'
-                    },
-                    on: {
-                    click: () => {
-                      self.makePaymentCustom(params ,settingId, settingDomain)
                     }
                     }
                   }, '')
