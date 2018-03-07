@@ -152,5 +152,8 @@
 	 }
 </script>
 <style scoped>
+	.ivu-table-cell {
+        word-break: break-word;
+    }
 </style>
 

@@ -517,17 +517,7 @@ export default {
         console.log("obj------------------->",obj);
         if(obj.Name != undefined){
           NameArr.push(obj.Name);
-          if(StatusArr.length != 0){           
-            StatusArr.forEach(item => {
-              if(item == obj.ContactStatus){
-
-              }else{
-                StatusArr.push(obj.ContactStatus);
-              }
-            })
-          }else{
-            StatusArr.push(obj.ContactStatus);
-          }
+          StatusArr.push(obj.ContactStatus);
           if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
 
           }else{
@@ -539,28 +529,12 @@ export default {
             console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
             EmailArr.push(obj.PrimaryEmailAddr.Address)
           }
-          if(obj.Active != undefined){
-            if(StatusArr.length != 0){
-              StatusArr.forEach(item => {
-                 if(obj.Active == true){
-                    if(item == "ACTIVE"){
-                    }else{
-                      StatusArr.push("ACTIVE");
-                    }
-                  }else{
-                    if(item == "INACTIVE"){
-                    }else{
-                      StatusArr.push("INACTIVE");
-                    }
-                  }
-            })              
-            }else{
+          if(obj.Active != undefined){            
               if(obj.Active == true){
                   StatusArr.push("ACTIVE");
               }else{
                 StatusArr.push("INACTIVE");
               }
-            }
           }
           console.log('StatusArr------------>',StatusArr)
         }
@@ -588,6 +562,7 @@ export default {
         y.add(option);
       })
 
+      StatusArr = _.chain(StatusArr).sort().uniq().value();
       StatusArr.forEach(item => {
         var y = document.getElementById("selectStatus");
         var option = document.createElement("option");
@@ -664,11 +639,14 @@ export default {
 </script>
 
 <style>
-.ivu-spin-main {
-    width: 100%;
-    text-align: -webkit-center;
-}
-.ivu-table-border th {
-    border-right: 1px solid #ddd;
-}
+  .ivu-spin-main {
+      width: 100%;
+      text-align: -webkit-center;
+  }
+  .ivu-table-border th {
+      border-right: 1px solid #ddd;
+  }
+  .ivu-table-cell {
+      word-break: break-word;
+  }
 </style>

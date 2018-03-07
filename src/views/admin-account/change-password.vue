@@ -5,7 +5,7 @@
         <Card style="height:404px" class = 'card'>
           <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6">
-              <h1 v-if = "!showForgotPassword">
+              <h1 v-if = "!showForgotPassword" style="padding: initial;">
                 <i class="fa fa-lock"></i> Change Password
               </h1>
               <h1 v-if = "showForgotPassword">

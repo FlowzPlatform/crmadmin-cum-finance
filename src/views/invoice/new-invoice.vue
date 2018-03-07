@@ -44,7 +44,7 @@
 						</Row>        
 					</FormItem>
 					<div style="text-align:center;">
-						<Button type="primary" @click="formData('formItem')">Submit</Button>
+						<Button type="primary" @click="formData('formItem')" :loading="loading">Submit</Button>
 						<Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Cancel</Button>
 					</div>
 				</Form>
@@ -80,6 +80,7 @@ export default {
       }
     };
     return {
+      loading: false,
       customCustomerUrl:"",
       customInvoiceUrl:"",
       formItem: {
@@ -295,7 +296,8 @@ export default {
       })
       .catch(function (error) {
         console.log("error----------",error);
-        self.spinShow = false;
+        self.loading = false;
+        // self.spinShow = false;
           if(error.response.status == 403){
               self.$Notice.error(
                   {duration:0, 
@@ -326,11 +328,10 @@ export default {
       })
     },
     async newInvoice () {
-
+      this.loading = true;
       let self = this;
       let settingIdForInvoice = this.formItem.configuration
-      
-      
+     
       await axios({
         method:'get',
         url: config.default.serviceUrl + 'settings/'+settingIdForInvoice,
@@ -351,8 +352,8 @@ export default {
               products:[
                   {
                     description: self.formItem.description,
-                    qty: self.formItem.qty,
-                    amount: self.formItem.amount1,
+                    qty: parseFloat(self.formItem.qty),
+                    amount: parseFloat(self.formItem.amount1),
                     tax: 0
                   }
               ]
@@ -372,10 +373,15 @@ export default {
             })
             .then(function (response) {
               self.$Message.success('invoice created successfully');
+              self.loading = false;
+              self.$router.push({
+                name:'Invoice List'
+              })
               self.Cancel();
             })
             .catch(function (error) {
               console.log("error",error);
+              self.loading = false;
               self.$Message.error('invoice creation error');
             });
 
@@ -408,18 +414,24 @@ export default {
               .then(function (res) {
                 console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
                 self.$Message.success('invoice created successfully');
+                self.loading = false;
+                self.$router.push({
+                  name:'Invoice List'
+                })
                 self.Cancel();
               })
               .catch(function (err) {
                 console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
                 self.$Message.error('invoice creation error')
+                self.loading = false;
               });
 
         }
       })
       .catch(function (error) {
         console.log("error",error);
-        self.spinShow = false;
+        self.loading = false;
+        // self.spinShow = false;
           if(error.response.status == 403){
               self.$Notice.error(
                   {duration:0, 
