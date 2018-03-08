@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="padding: 10px; margin: 5px; display: block;" >
-      <div>
+      <div style="text-align:left;">
           <h1>Invoice List </h1>
           <div class="panel panel-default panel-group" id="accordion">
               <div class="panel-heading">
@@ -52,11 +52,11 @@
                                   <div class="form-group row panel-collapse collapse" id="date">
                                       <div class="col-xs-3">
                                         <label>From Date</label>
-                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 368px;"></DatePicker>
+                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
                                       </div>
                                       <div class="col-xs-3">
                                         <label>To Date</label>
-                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 368px;"></DatePicker>
+                                          <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 100%;"></DatePicker>
                                       </div>
                                   </div>
                               </div>
@@ -73,20 +73,6 @@
 
                                           <input class="form-control" type="text" v-model="totallt" placeholder="Max-Amount"
                                           />
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#dueamount"></span>
-                                      <label>Due Amount</label>
-                                  </div>
-                                  <div class="form-group row panel-collapse collapse" id="dueamount">
-                                      <div class="col-xs-3">
-                                          <input class="form-control" type="text" v-model="duegt" placeholder="Min-Due Amount"/>
-                                      </div>
-                                      <div class="col-xs-3">
-                                        <input class="form-control" type="text" v-model="duelt" placeholder="Max-Due Amount"/>
                                       </div>
                                   </div>
                               </div>
@@ -232,7 +218,7 @@
                   <tr>
                       <td colspan="3"></td>
                       <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px -20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
                       <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
                   </tr>
                   <tr>
@@ -440,17 +426,17 @@
                 sortable: true
             },
             {
-                title: 'customer Name',
+                title: 'Customer Name',
                 key: 'CustomerRef',
                 sortable: true,
                 render : (h , {row}) => { return row.CustomerRef.name}
             },
             {
-                title: 'Due Date',
-                key: 'DueDate',
+                title: 'Date',
+                key: 'TxnDate',
                 sortable: true,
                 render : (h,{row}) => {
-                  var date1 = moment(row.DueDate).format('DD-MMM-YYYY')
+                  var date1 = moment(row.TxnDate).format('DD-MMM-YYYY')
                   return date1
                 }
             },
@@ -458,12 +444,6 @@
                 title: 'Paid',
                 sortable: true,
                 render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
-            },
-            {
-                title: 'Due',
-                key: 'Balance',
-                sortable: true,
-                render : (h , {row}) => { return '$' + row.Balance }
             },
             {
                 title: 'Amount',
@@ -489,7 +469,7 @@
               align: 'center',
               width: 210,
               render: (h, {row}) => {
-                if(row.TotalAmt-row.Balance != 0){
+                if(row.TotalAmt-row.Balance != row.TotalAmt){
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -517,6 +497,32 @@
                           }
                         },'')
                       ]),
+                      h('Tooltip', {
+                        props: {
+                          placement: 'top',
+                          content: 'Send Mail'
+                        },
+                        style:{
+                          float:'center',
+                          cursor:'pointer'
+                        }
+                      }, [
+                        h('img', {
+                          attrs: {
+                            src : this.mail
+                          },
+                          style: {
+                            height:'20px',
+                            width:'20px',
+                            margin: '2px'
+                          },
+                          on: {
+                            click: () => {
+                              this.sendemailQB(row)
+                            }
+                          }
+                        }, '')
+                      ]),
                     h('Tooltip', {
                         props: {
                           placement: 'top',
@@ -539,32 +545,6 @@
                           on: {
                             click: () => {
                               this.createPDFQB(row)
-                            }
-                          }
-                        }, '')
-                      ]),
-                 h('Tooltip', {
-                        props: {
-                          placement: 'top',
-                          content: 'Send Mail'
-                        },
-                        style:{
-                          float:'center',
-                          cursor:'pointer'
-                        }
-                      }, [
-                        h('img', {
-                          attrs: {
-                            src : this.mail
-                          },
-                          style: {
-                            height:'20px',
-                            width:'20px',
-                            margin: '2px'
-                          },
-                          on: {
-                            click: () => {
-                              this.sendemail(row)
                             }
                           }
                         }, '')
@@ -621,7 +601,7 @@
                           },
                           on: {
                             click: () => {
-                              this.sendemail(row)
+                              this.sendemailQB(row)
                             }
                           }
                         }, '')
@@ -712,11 +692,11 @@
                 render:(h,{row})=>{ return row.Contact.Name }
             },
             {
-                title: 'Due Date',
-                key: 'DueDate',
+                title: 'Date',
+                key: 'Date',
                 sortable: true,
                 render:(h,{row})=>{
-                  var date1 = moment(row.DueDate).format('DD-MMM-YYYY')
+                  var date1 = moment(row.Date).format('DD-MMM-YYYY')
                   return date1
                 }
             },
@@ -725,12 +705,6 @@
                 key: 'AmountPaid',
                 sortable: true,
                 render:(h,{row})=>{ return '$' + row.AmountPaid  }
-            },
-            {
-                title: 'Due',
-                key: 'AmountDue',
-                sortable: true,
-                render:(h,{row})=>{ return '$' + row.AmountDue }
             },
             {
                 title: 'Total',
@@ -798,7 +772,7 @@
                           },
                           on: {
                             click: () => {
-                              this.sendemail(params)
+                              this.sendemailXERO(params)
                             }
                           }
                         },'')
@@ -881,7 +855,7 @@
                           },
                           on: {
                             click: () => {
-                              this.sendemail(params)
+                              this.sendemailXERO(params)
                             }
                           }
                         }, '')
@@ -987,6 +961,9 @@
     },
     components: { listtransaction },
     methods: {
+      filterMethod (value, option) {
+          return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+      },
       text(item) {
          try{
            return JSON.parse(item).description
@@ -997,7 +974,7 @@
           // return $(item).text();
       },
       accounting(item){
-          console.log("item",item)
+          // console.log("item",item)
           return accounting.formatMoney(item)
       },
 
@@ -1101,9 +1078,21 @@
         if(this.dategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
-              console.log('item>>>>>>>>>>>>>>>>>>>>', item)
-              return item;
+            if(item.Date != undefined){
+              var a = moment(item.Date).format('YYYY-MM-DD')
+              if(moment(a).diff(moment(self.dategt).format(), 'days') >= 0){
+                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                return item;
+              }
+              // if(moment(item.Date).diff(moment(self.dategt).format(), 'days') >= 0){
+              // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+              // return item;
+              // }
+            }else{
+              if(moment(item.TxnDate).diff(moment(self.dategt).format(), 'days') >= 0){
+                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                return item;
+              }
             }
           });
           console.log("myarr",this.filterArray)
@@ -1111,11 +1100,21 @@
         }
 
         if(this.datelt != ''){
-          console.log("this.dategt", this.datelt)
+          console.log("this.datelt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item.DueDate)
-            if(moment(item.DueDate).diff(moment(self.datelt).format(), 'days') <= 0){
+            if(item.Date != undefined){
+              var a = moment(item.Date).format('YYYY-MM-DD')
+              if(moment(a).diff(moment(self.datelt).format(), 'days') <= 0){
+                return item;
+              }
+              // if(moment(item.Date).diff(moment(self.datelt).format(), 'days') <= 0){
+              // return item;
+              // }
+            }else{
+              if(moment(item.TxnDate).diff(moment(self.datelt).format(), 'days') <= 0){
               return item;
+              }
             }
           });
            console.log("myarr",this.filterArray)
@@ -1144,34 +1143,6 @@
               return item.Total <= self.totallt;
             }else{
               return item.TotalAmt <= self.totallt;
-            }
-          });
-           console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
-        }
-
-        if(this.duegt != ''){
-          console.log("this.duegt", this.duegt)
-          this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
-            if(item.AmountDue != undefined){
-              return item.AmountDue >=self.duegt
-            }else{
-              return item.Balance >= self.duegt;
-            }
-          });
-           console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
-        }
-
-        if(this.duelt != ''){
-          console.log("this.duelt", this.duelt)
-          this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
-            if(item.AmountDue != undefined){
-              return item.AmountDue <=self.duelt
-            }else{
-              return item.Balance <= self.duelt;
             }
           });
            console.log("myarr",this.filterArray)
@@ -1231,7 +1202,7 @@
         console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
-                  console.log("/////////////////////////////////////////////////////////////////",obj)
+                  // console.log("/////////////////////////////////////////////////////////////////",obj)
                   if(obj.Name == undefined){
                       NameArr.push(obj.DisplayName)
                   }else{
@@ -1249,89 +1220,6 @@
               })
 
       },
-      // async apiData () {
-      //   var resp;
-      //   let self=this;
-      //   console.log("TRTYYTYTT");
-      //   await axios.get(config.default.serviceUrl + 'invoice', {
-      //     headers:{
-      //         Authorization : Cookies.get('auth_token')
-      //     },
-      //   })
-      //   .then(function (response) {
-      //     resp = response
-      //     console.log("response------>iuy",resp);
-      //     self.tabPanes = response.data
-      //     $('.preload').css("display","none")
-      //   })
-      //   .catch(function (error) {
-      //     console.log("error",error);
-      //   });
-      //   return resp
-      // },
-      // async changeApiData () {
-      //   var resp;
-      //   var params = {};
-      //   let self = this;
-      //   if(this.cname != ''){
-      //     params['Name'] = this.cname
-      //   }
-      //   if(this.status != ''){
-      //     params['Status'] = this.status
-      //   }
-      //   if(this.dategt != ''){
-      //     params['Date'] = this.dategt
-      //   }
-      //   if(this.totalgt != ''){
-      //     params['Total'] = this.totalgt
-
-      //   }
-      //   if(this.duegt != ''){
-      //     params['AmountDue'] =  this.duegt
-      //   }
-
-      //   console.log("params api data", params)
-      //   await axios.get(config.default.serviceUrl + 'invoice?domain=Xero', {
-      //     params: params
-      //   })
-      //   .then(function (response) {
-      //     resp = response
-      //     console.log("response changePage------>",resp);
-
-      //     $('.preload').css("display","none")
-      //   })
-      //   .catch(function (error) {
-      //     console.log("error",error);
-      //   });
-      //   return resp
-      // },
-      // tableDataBind(){
-      //       var self = this
-      //       if(this.resdata.data.Err){
-      //         console.log("error in response",this.resdata.data.Err)
-      //       }else{
-      //         this.resp = this.resdata.data
-      //         console.log("inside table data bind",this.resp)
-      //         this.resp.forEach(result =>{
-      //           //console.log(result)
-      //           result.data.forEach(result2 =>{
-      //             var myobj = {}
-      //           myobj.Name = result2.Contact.Name
-      //           myobj.InvoiceID = result2.InvoiceID
-      //           myobj.AmountDue = result2.AmountDue
-      //           myobj.AmountPaid = result2.AmountPaid
-      //           myobj.Date = result2.Date
-      //           myobj.Total = result2.Total
-      //           myobj.status = result2.Status
-      //           myobj.loading = false
-      //           myobj.loading1 = false
-      //           self.data1.push(myobj)
-      //           })
-
-      //         })
-      //         }
-
-      // },
       exportData (type) {
           if (type === 1) {
             console.log(this.$refs);
@@ -1617,15 +1505,15 @@
         }
       },
       
-      async sendemail(params){
+      async sendemailXERO(params){
         this.$Loading.start();
+        // console.log("paramsssssssssssssssss " , params)
         this.emailData = params;
+        var self = this
         var date = new Date(params.row.Date);
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-        console.log("this.emailData------------------------------------->",this.emailData)
-        var self = this;
         await axios({
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
@@ -1634,17 +1522,158 @@
                 Name : params.row.Contact.Name
               },
               headers:{
-              Authorization : Cookies.get('auth_token'),
-              subscriptionId : Cookies.get('subscriptionId')
+              Authorization : Cookies.get('auth_token')
           },
               }).then(function (response) {
-                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                 self.emailDataCustomer = response.data[0].data[0]
               })
               .catch(function (error) {
                 console.log(error);
               });
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'Settings/' + settingID,
+              headers:{
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
+              },
+              }).then(function (response) {
+                console.log("ooooooooooooooooo",response);
+                self.emailDataCompany = response.data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
 
+              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+
+        axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
+          headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+          params : {
+            settingId : settingID
+          }
+        })
+        .then(async function (response) {
+          console.log('response>>>>>>>>>>>>>>', response)
+          self.DescriptionPdf = response.data[0].data.LineItems;
+
+        })
+        .catch(function (error) {
+        });
+
+        this.$Modal.confirm({
+                      title: 'Email would be sent to',
+                      okText: 'OK',
+                      cancelText: 'Cancel',
+                      render: (h) => {
+                          return h('Input', {
+                              props: {
+                                  value: self.emailDataCustomer.EmailAddress,
+                                  autofocus: true,
+                                  placeholder: 'Please enter email Id...'
+                              },
+                              on: {
+                                  input: (val) => {
+                                      self.emailIdTobeSent = val;
+                                  }
+                              }
+                          })
+                      },
+                    onOk: ()=>{                   
+                      let myData = {
+                          "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                          "from": "obsoftcare@gmail.com",
+                          "subject": "email invoice",
+                          "body": self.$refs.email1.innerHTML
+                        }
+                        myData = JSON.stringify(myData)
+                        axios({
+                          method: 'post',
+                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          data: myData,
+                          headers: {
+                            'authorization':  Cookies.get('auth_token'),
+                            
+                          }
+                          }).then(function (response) {
+                            console.log(response);
+                            self.$Message.success(response.data.success);
+                            // self.list[params.index].loading1 = false
+                            self.$Loading.finish();
+                          })
+                          .catch(function (error) {
+                            self.$Message.warning("email send failed , Please try again later");
+                            self.$Loading.finish();
+                            console.log(error);
+                          });
+                      }
+                  })
+
+      },
+      async sendemailQB(params){
+
+        this.$Loading.start();
+        console.log("paramsssssssssssssssss " , params)
+        this.emailData = params;
+        var self = this
+        var date = new Date(params.TxnDate);
+        this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+        var date1 = new Date(params.DueDate);
+        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'contacts',
+              params: {
+                settingId : settingID,
+                Name : params.CustomerRef.name
+              },
+              headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+              }).then(function (response) {
+                console.log("contact response",response);
+                self.emailDataCustomer = response.data[0].data[0]
+                console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+        await axios({
+              method: 'get',
+              url: config.default.serviceUrl + 'Settings/' + settingID,
+              headers:{
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
+              },
+              }).then(function (response) {
+                console.log("ooooooooooooooooosetting response",response);
+                self.emailDataCompany = response.data
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+
+        axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
+          headers:{
+              Authorization : Cookies.get('auth_token')
+          },
+          params : {
+            settingId : settingID
+          }
+        })
+        .then(async function (response) {
+          console.log('response>>>>>>>>>>>>>>', response)
+          self.DescriptionPdf = response.data[0].data[0].Line;
+          console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+
+        })
+        .catch(function (error) {
+        });
+        
         console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
         this.$Modal.confirm({
                       title: 'Email would be sent to',
@@ -1655,43 +1684,42 @@
                               props: {
                                   value: self.emailDataCustomer.EmailAddress,
                                   autofocus: true,
-
                                   placeholder: 'Please enter email Id...'
                               },
                               on: {
                                   input: (val) => {
-
                                       self.emailIdTobeSent = val;
                                   }
                               }
                           })
                       },
-                      onOk: ()=>{
-
-                                      let myData = {
-                                            "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
-                                            "from": "obsoftcare@gmail.com",
-                                            "subject": "email invoice",
-                                            "body": self.$refs.email1.innerHTML
-                                          }
-                                          myData = JSON.stringify(myData)
-                                          axios({
-                                            method: 'post',
-                                            url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
-                                            data: myData,
-                                            headers: {
-                                              'authorization':  Cookies.get('auth_token'),
-                                              
-                                            }
-                                            }).then(function (response) {
-                                              console.log(response);
-                                              self.$Message.success(response.data.success);
-                                              self.list[params.index].loading1 = false
-                                            })
-                                            .catch(function (error) {
-                                              self.$Message.warning("email send failed , Please try again later");
-                                              console.log(error);
-                                            });
+                    onOk: ()=>{                   
+                      let myData = {
+                          "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                          "from": "obsoftcare@gmail.com",
+                          "subject": "email invoice",
+                          "body": self.$refs.email1.innerHTML
+                        }
+                        myData = JSON.stringify(myData)
+                        axios({
+                          method: 'post',
+                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          data: myData,
+                          headers: {
+                            'authorization':  Cookies.get('auth_token'),
+                            
+                          }
+                          }).then(function (response) {
+                            console.log(response);
+                            self.$Message.success(response.data.success);
+                            self.$Loading.finish();
+                            // self.list[params.index].loading1 = false
+                          })
+                          .catch(function (error) {
+                            self.$Message.warning("email send failed , Please try again later");
+                            self.$Loading.finish();
+                            console.log(error);
+                          });
                       }
                   })
 
@@ -1740,7 +1768,7 @@
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
             console.log("############# " , columnArray);
-            columnArray = ["Invoice_No","Name", "DueDate", "Paid","Due",  "Total" , "Status"]
+            columnArray = ["Invoice_No","Name", "Date", "Paid",  "Total" , "Status"]
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {
@@ -1759,6 +1787,32 @@
                 align: 'center',
                 render: (h, params) => {
                 return h('div', [
+                  h('Tooltip', {
+                    props: {
+                    placement: 'top',
+                    content: 'Make payment'
+                    },
+                    style:{
+
+                    cursor:'pointer'
+                    }
+                  }, [
+                  h('img', {
+                    attrs: {
+                      src: self.money
+                    },
+                    style: {
+                      hight:'20px',
+                      width:'20px',
+                      margin: '2px'
+                    },
+                    on: {
+                    click: () => {
+                      self.makePaymentCustom(params ,settingId, settingDomain)
+                    }
+                    }
+                  }, '')
+                  ]),
                   h('Tooltip', {
                     props: {
                     placement: 'top',
@@ -1807,32 +1861,6 @@
                     on: {
                     click: () => {
                       self.createPDFCustom(params)
-                    }
-                    }
-                  }, '')
-                  ]),
-                  h('Tooltip', {
-                    props: {
-                    placement: 'top',
-                    content: 'Make payment'
-                    },
-                    style:{
-
-                    cursor:'pointer'
-                    }
-                  }, [
-                  h('img', {
-                    attrs: {
-                      src: self.money
-                    },
-                    style: {
-                      hight:'20px',
-                      width:'20px',
-                      margin: '2px'
-                    },
-                    on: {
-                    click: () => {
-                      self.makePaymentCustom(params ,settingId, settingDomain)
                     }
                     }
                   }, '')
@@ -2109,7 +2137,7 @@
                                           myData = JSON.stringify(myData)
                                           axios({
                                             method: 'post',
-                                            url:  'http://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                                            url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
                                             data: myData,
                                             headers: {
                                               'authorization':  Cookies.get('auth_token')
@@ -2117,10 +2145,12 @@
                                             }).then(function (response) {
                                               console.log(response);
                                               self.$Message.success(response.data.success);
-                                              self.list[params.index].loading1 = false
+                                              self.$Loading.finish();
+                                              // self.list[params.index].loading1 = false
                                             })
                                             .catch(function (error) {
                                               self.$Message.warning("email send failed , Please try again later");
+                                              self.$Loading.finish();
                                               console.log(error);
                                             });
                       }
@@ -2204,9 +2234,6 @@
       margin: 0 6px;
       float: none !important;
   }
-
-
-
   .ivu-icon.ivu-icon-help-circled{
       display: none;
   }
@@ -2214,5 +2241,11 @@
 
   #viewDetailInInvoice #accordion {
     display: none;
+  }
+  .ivu-table-cell {
+      word-break: break-word;
+  }
+  .ivu-auto-complete.ivu-select-dropdown {
+    max-height: 200px !important;
   }
 </style>

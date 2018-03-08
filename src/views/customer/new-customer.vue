@@ -80,7 +80,7 @@
                 <Input v-model="formValidate.fax" placeholder="Enter your fax"></Input>
             </FormItem> -->
             <div style="text-align:center;">
-              <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+              <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
               <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
             </div>
             </FormItem>
@@ -116,6 +116,7 @@ Vue.use(VueWidgets);
             }
           };
           return {
+              loading: false,
               customCustomerUrl:'',
               customInvoiceUrl: '',
               formValidate: {
@@ -248,92 +249,102 @@ Vue.use(VueWidgets);
               
             },
             async createCustomer () {
+              this.loading = true;
               var self = this
-              
-
               console.log(">>>>>>>>>>> " , settingId)
               await axios({
-                      method:'get',
-                      url: config.default.serviceUrl + 'settings/'+settingId,
-                      headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                      },
-                    })
-                      .then(async function(response) {
-                        console.log(response)
-                        if(response.data.domain == 'custom'){
+                  method:'get',
+                  url: config.default.serviceUrl + 'settings/'+settingId,
+                  headers:{
+                    Authorization : Cookies.get('auth_token'),
+                    subscriptionId : Cookies.get('subscriptionId')
+                  },
+                })
+                .then(async function(response) {
+                    console.log(response)
+                    if(response.data.domain == 'custom'){
 
-                          var params = {
-                            settingId : settingId,
-                            Name: self.formValidate.name,
-                            ContactStatus: 'ACTIVE',
-                            EmailAddress:self.formValidate.mail,
-                            Address: self.formValidate.AddressLine1+","+self.formValidate.AddressLine2+","+self.formValidate.city+","+self.formValidate.state+","+self.formValidate.PostalCode+","+self.formValidate.country,
-                            
-                            PhoneNumber:self.formValidate.mobile
-                          }
+                      var params = {
+                        settingId : settingId,
+                        Name: self.formValidate.name,
+                        ContactStatus: 'ACTIVE',
+                        EmailAddress:self.formValidate.mail,
+                        Address: self.formValidate.AddressLine1+","+self.formValidate.AddressLine2+","+self.formValidate.city+","+self.formValidate.state+","+self.formValidate.PostalCode+","+self.formValidate.country,
+                        
+                        PhoneNumber:self.formValidate.mobile
+                      }
 
-                              self.customCustomerUrl = response.data.customer_url;
-                              self.customInvoiceUrl = response.data.invoice_url;
-                              
-                              axios({
-                                method: 'post',
-                                url: self.customCustomerUrl,
-                                data: params,
-                                headers:{
-                                  Authorization : Cookies.get('auth_token')
-                                }
-                              })
-                              .then(function (response) {
-                                self.$Message.success('created customer successfully');
-                                self.$refs['formValidate'].resetFields();
-                              })
-                              .catch(function (error) {
-                                console.log("error",error);
-                              });
+                          self.customCustomerUrl = response.data.customer_url;
+                          self.customInvoiceUrl = response.data.invoice_url;
+                          
+                          axios({
+                            method: 'post',
+                            url: self.customCustomerUrl,
+                            data: params,
+                            headers:{
+                              Authorization : Cookies.get('auth_token')
+                            }
+                          })
+                          .then(function (response) {
+                            self.$Message.success('created customer successfully');
+                            self.$refs['formValidate'].resetFields();
+                            self.loading = false;
+                            self.$router.push({
+                              name:'Customer List'
+                            })
+                          })
+                          .catch(function (error) {
+                            self.loading = false;
+                            console.log("error",error);
+                          });
 
-                        }else{
-                          var params1 = {
-                            settingId : settingId,
-                            Name: self.formValidate.name,
-                            ContactStatus: 'ACTIVE',
-                            EmailAddress:self.formValidate.mail,
-                            AddressLine1:self.formValidate.AddressLine1,
-                            AddressLine2:self.formValidate.AddressLine2,
-                            City:self.formValidate.city,
-                            Country:self.formValidate.country,
-                            PostalCode:self.formValidate.PostalCode,
-                            PhoneNumber:self.formValidate.mobile
-                          }
-                              axios({
-                                method: 'post',
-                                url: config.default.serviceUrl + 'contacts',
-                                data: params1,
-                                headers:{
-                                  Authorization : Cookies.get('auth_token')
-                                }
-                              })
-                              .then(function (response) {
-                                self.$Message.success('created customer successfully');
-                                self.$refs['formValidate'].resetFields();
-                              })
-                              .catch(function (error) {
-                                console.log("error",error);
-                                self.$Message.error('error in create customer')
-                              });
-                        }
-                    })
-                    .catch(function (error) {
-                      console.log("error",error);
-                      if(error.response.status == 403){
-                      self.$Notice.error(
-                          {duration:0, 
-                          title: error.response.statusText,
-                          desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                          );
-                        }
-                    });     
+                    }else{
+                      var params1 = {
+                        settingId : settingId,
+                        Name: self.formValidate.name,
+                        ContactStatus: 'ACTIVE',
+                        EmailAddress:self.formValidate.mail,
+                        AddressLine1:self.formValidate.AddressLine1,
+                        AddressLine2:self.formValidate.AddressLine2,
+                        City:self.formValidate.city,
+                        Country:self.formValidate.country,
+                        PostalCode:self.formValidate.PostalCode,
+                        PhoneNumber:self.formValidate.mobile
+                      }
+                          axios({
+                            method: 'post',
+                            url: config.default.serviceUrl + 'contacts',
+                            data: params1,
+                            headers:{
+                              Authorization : Cookies.get('auth_token')
+                            }
+                          })
+                          .then(function (response) {
+                            self.$Message.success('created customer successfully');
+                            self.loading = false;
+                            self.$router.push({
+                              name:'Customer List'
+                            })
+                            self.$refs['formValidate'].resetFields();
+                          })
+                          .catch(function (error) {
+                            console.log("error",error);
+                            self.loading = false;
+                            self.$Message.error('error in create customer')
+                          });
+                    }
+                })
+                .catch(function (error) {
+                  console.log("error",error);
+                  self.loading = false;
+                  if(error.response.status == 403){
+                  self.$Notice.error(
+                      {duration:0, 
+                      title: error.response.statusText,
+                      desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                      );
+                    }
+                });     
               
             }
         },
