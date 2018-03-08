@@ -50,7 +50,7 @@
                     <el-tab-pane label="Standard" name="1">
                         <div class="lconun">
                            <div class="lrinp">
-                              <label class="email">* </label><label> Email</label>
+                              <label class="email">* </label><label>Email</label>
                               <input type="email" v-model="login.email" class="" placeholder="Email">
                            </div>
                         </div>
@@ -115,19 +115,18 @@
                <div class="inputbox">
                   <form  v-on:submit.prevent="signupUser" action="#" method="post" id="form1">
                      <div class="lrinp">
-                        <label>*First name</label>
-                        <input type="text" v-model="signup.fname" placeholder="First name">
+                        <label>* Name</label>
                      </div>
                      <div class="lrinp">
-                        <label>*Last name</label>
-                        <input type="text" v-model="signup.lname" placeholder="Last name">
+                        <input type="text" style="width:49%;display: inline-block;" v-model="signup.fname" placeholder="First name">
+                        <input type="text" style="width:49%;display: inline-block;" v-model="signup.lname" placeholder="Last name">
                      </div>
                      <div class="lrinp">
-                        <label>*Email</label>
+                        <label>* Email</label>
                         <input type="email" v-model="signup.email" placeholder="Email">
                      </div>
                      <div class="lrinp">
-                        <label>*Password</label>
+                        <label>* Password</label>
                         <input type="password" v-model="signup.password" placeholder="Password">
                      </div>
                      <button type="submit" style="display:none"></button>

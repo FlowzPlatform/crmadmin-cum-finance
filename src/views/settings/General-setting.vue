@@ -1,7 +1,7 @@
 <template>
   <div class="GeneralSettings">
     <div class="settings_header">
-        <Button @click="goToSettingsList">All Settings</Button>
+        <Button @click="goToSettingsList">All Account Settings</Button>
     </div>
     <div class="container" style="margin-top: 2%; width: 100%; margin-bottom: 2%;">
       <!-- Address Settings Section -->
@@ -174,8 +174,8 @@ export default {
   methods: {
     goToSettingsList(){
       this.$router.push({
-          name: 'Settings',
-          params: { tabName: 'General' }
+          name: 'Settings'
+          // params: { tabName: 'General' }
       });
     },
     configChange(data){              
@@ -200,13 +200,16 @@ export default {
       return false;
     },
     handleLogoUpload () {
-      this.logoLoading = true;
+      // this.logoLoading = true;
       var self = this;
       var checkConfig;
       console.log('**************',this.file)
       console.log("self.file.type", this.file.type)
-      if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
-
+      // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
+      let file_ext = this.file.name.split('.').pop()
+      console.log("self.file.type file_ext", file_ext)      
+      if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
+        this.logoLoading = true;
           console.log('this.file',this.file)
           var reader = new FileReader();
           var file = this.file
@@ -217,12 +220,12 @@ export default {
             console.log('reader------->',reader.result)
 
             var logoData1 = {'logo': reader.result}
-            console.log('iiiiiiiiiiiiiiiiii',logoData1)
+            // console.log('iiiiiiiiiiiiiiiiii',logoData1)
 
             if(self.formData.configuration === 'all'){ 
               self.$Modal.confirm({
                 title: '',
-                content: '<h4>This address will be configured for all of your Configuration</h4>',
+                content: '<h4>This address will be configured for all of your Accounts</h4>',
                 width: 500,
                 okText: 'Agree',
                 cancelText: 'Disagree',
@@ -241,7 +244,7 @@ export default {
                         data: logoData1
                       })  
                       .then(function (response) {
-                        console.log('response------------------------>',response)
+                        // console.log('response------------------------>',response)
                         self.logoLoading = false;
                         self.$router.push({
                           name: 'Settings'
@@ -251,7 +254,7 @@ export default {
                         console.log('error',error)
                         self.logoLoading = false;
                       })
-                })
+                  })
                 },
                 onCancel: () => {
                     self.logoLoading = false;
@@ -300,11 +303,11 @@ export default {
 
                             }
                           }
-                        },'Do you want this address for all configartion?')
+                        },'Do you want to use this address for all Accounts?')
                       ])
                   },
                   onOk: () => {
-                    console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                    // console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
                     if(checkConfig == true){
                       self.configs.forEach(item => {
                         console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
@@ -318,7 +321,7 @@ export default {
                           data: logoData1
                         })  
                         .then(function (response) {
-                          console.log('response------------------------>',response)
+                          // console.log('response------------------------>',response)
                           self.logoLoading = false;
                           self.$router.push({
                             name: 'Settings'
@@ -341,7 +344,7 @@ export default {
                         data: logoData1
                       })  
                       .then(function (response) {
-                        console.log('response------------------------>',response)
+                        // console.log('response------------------------>',response)
                         self.logoLoading = false;
                           self.$router.push({
                             name: 'Settings'
@@ -367,7 +370,11 @@ export default {
           }
 
       }else {
-          self.$Message.error(' Please, attach a .jpg or .png file!');
+           self.$Message.error({
+            content: ' Please, attach a .jpg or .png file!',
+            duration: 4.5
+          });
+           self.logoLoading = false;
         }
         
     },
@@ -379,7 +386,7 @@ export default {
           if(this.formValidate.configuration === 'all'){ 
             this.$Modal.confirm({
               title: '',
-              content: '<h4>This address will be configured for all of your Configuration</h4>',
+              content: '<h4>This address will be configured for all of your Accounts</h4>',
               width: 500,
               okText: 'Agree',
               cancelText: 'Disagree',
@@ -400,19 +407,19 @@ export default {
                     })  
                     .then(function (response) {
                       console.log('response------------------------>',response)
-                      this.loading = false;
+                      self.loading = false;
                       self.$router.push({
 												name: 'Settings'
 											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
-                      this.loading = false;
+                      self.loading = false;
                     })
               })
               },
               onCancel: () => {
-                this.loading = false;
+                self.loading = false;
               }
             })                        
           }
@@ -458,7 +465,7 @@ export default {
 
                             }
                           }
-                        },'Do you want this address for all configartion?')
+                        },'Do you want to use this address for all Accounts?')
                       ])
                   },
                   onOk: () => {
@@ -480,15 +487,15 @@ export default {
                         data: params
                       })  
                       .then(function (response) {
-                        console.log('response------------------------>',response)
-                        this.loading = false;
+                        // console.log('response------------------------>',response)
+                        self.loading = false;
                         self.$router.push({
                           name: 'Settings'
                         });
                       })
                       .catch(function (error) {
                         console.log('error',error)
-                        this.loading = false;
+                        self.loading = false;
                       })
                     })
                   }
@@ -504,20 +511,20 @@ export default {
                       data: params
                     })  
                     .then(function (response) {
-                      console.log('response------------------------>',response)
-                      this.loading = false;
+                      // console.log('response------------------------>',response)
+                      self.loading = false;
                       self.$router.push({
 												name: 'Settings'
 											});
                     })
                     .catch(function (error) {
                       console.log('error',error)
-                      this.loading = false;
+                      self.loading = false;
                     })
                   }
                 },
                 onCancel: () => {
-                  this.loading = false;
+                  self.loading = false;
                 }
               })
           }

@@ -266,9 +266,9 @@
        
         methods: {
             capitalize (str) {
-                console.log("str before",str)
+                // console.log("str before",str)
                 str = str[0].toUpperCase() + str.slice(1)
-                console.log("str after",str)                
+                // console.log("str after",str)                
                 return str;
             },
             async getHistory(){

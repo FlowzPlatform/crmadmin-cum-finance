@@ -71,9 +71,9 @@
         },
         methods : {
             capitalize (str) {
-                console.log("str before",str)
+                // console.log("str before",str)
                 str = str[0].toUpperCase() + str.slice(1)
-                console.log("str after",str)                
+                // console.log("str after",str)                
                 return str;
             },
             show (index) {
@@ -84,7 +84,7 @@
             async init(){
                 
                 let self = this
-                console.log("this.row",this.row)
+                // console.log("this.row",this.row)
                 self.spinShow = false;
                 for (let role in this.row.role) {
                     // console.log("role",role)
