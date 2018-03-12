@@ -180,8 +180,8 @@ export default {
         .catch(function (error) {
           console.log("-------",error);
             // self.$Message.error(error)
-            self.$Message.error({
-              content: error,
+            self.$Notice.error({
+              desc: error,
               duration: 4.5
             })
         });
@@ -232,6 +232,13 @@ export default {
               x.add(option);
           })
       })
+      .catch(function (error) {
+          console.log("-------",error);
+            self.$Notice.error({
+              desc: error,
+              duration: 4.5
+            })
+        });
     },
   },
   async mounted(){
