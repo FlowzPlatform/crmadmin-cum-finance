@@ -416,7 +416,11 @@ export default {
         self.data = res.data.data
       })
       .catch(function (error) {
-        self.$Message.error(error)
+        self.$Notice.error({
+              desc: error,
+              duration: 4.5
+            })
+        // self.$Message.error(error)
       });
     },
     async getvidData(){
@@ -463,7 +467,11 @@ export default {
         }).catch(function (error) {
           console.log("-------",error);
           self.$Loading.error();
-            self.$Message.error(error)
+            self.$Notice.error({
+              desc: error,
+              duration: 4.5
+            })
+            // self.$Message.error(error)
         });
       } else if(this.tabIndex == 1){
         await axios({
@@ -497,7 +505,11 @@ export default {
         }).catch(function (error) {
           console.log("-------",error);
           self.$Loading.error();
-            self.$Message.error(error)
+          self.$Notice.error({
+              desc: error,
+              duration: 4.5
+            })
+            // self.$Message.error(error)
         });
       }
     },
@@ -524,7 +536,11 @@ export default {
     async save1 (index) {
       //validation
       if(this.list1[index].hexcode1 == undefined && this.list1[index].imgurl1 == undefined){
-        this.$Message.error('Please enter hexcode or imageurl');
+        self.$Notice.error({
+              desc: 'Please enter hexcode or imageurl',
+              duration: 4.5
+            })
+        // this.$Message.error('Please enter hexcode or imageurl');
       } else {
         let param1
         let regex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(this.list1[index].hexcode1);
@@ -563,7 +579,11 @@ export default {
 
                                }).catch(function (error) {
                                       console.log("-------",error);
-                                   self.$Message.error(error)
+                                      self.$Notice.error({
+                                        desc: error,
+                                        duration: 4.5
+                                      })
+                                   // self.$Message.error(error)
                                });
                         } else {
                                //post data in api
@@ -579,7 +599,11 @@ export default {
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
                                }).catch(function (error) {
                                     console.log("-------",error);
-                                   self.$Message.error(error)
+                                    self.$Notice.error({
+                                        desc: error,
+                                        duration: 4.5
+                                      })
+                                   // self.$Message.error(error)
                                });
 
                         }
@@ -587,7 +611,11 @@ export default {
           }
         } else if(this.list1[index].checkvalue == 'ImageUrl'){
           if(this.list1[index].imgurl1.type != 'image/png' && this.list1[index].imgurl1.type != 'image/jpeg'){
-            this.$Message.error('Please upload valid file');
+            self.$Notice.error({
+                desc: 'Please upload valid file',
+                duration: 4.5
+              })
+            // this.$Message.error('Please upload valid file');
             return false;
           } else {
             param1 = {
@@ -618,11 +646,18 @@ export default {
                                       self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                       self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
 
-                                      self.$Message.success("update successfully")
+                                      // self.$Message.success("update successfully")
+                                      self.$Notice.success({
+                                        desc: "update successfully",
+                                        duration: 4.5
+                                      })
 
                                }).catch(function (error) {
                                       console.log("-------",error);
-                                   self.$Message.error(error)
+                                      self.$Notice.error({
+                                        desc: error,
+                                        duration: 4.5
+                                      })
                                });
                         } else {
                                //post data in api
@@ -631,14 +666,22 @@ export default {
                                       url: config.default.colorTableUrl,
                                       data: param1,
                                }).then(function (res) {
-                                    self.$Message.success("saved successfully")
+                                    self.$Notice.success({
+                                      desc: "saved successfully",
+                                      duration: 4.5
+                                    })
+                                    // self.$Message.success("saved successfully")
                                     // self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.data1[index].hexcode1
                                     self.list1[index].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
                                }).catch(function (error) {
                                     console.log("-------",error);
-                                   self.$Message.error(error)
+                                    self.$Notice.error({
+                                        desc: error,
+                                        duration: 4.5
+                                      })
+                                   // self.$Message.error(error)
                                });
 
                         }
@@ -700,12 +743,20 @@ export default {
     },
     async save2 (index) {
       if(this.data2[index].hexcode2 == undefined && this.data2[index].imgurl2 == undefined){
-        this.$Message.error('Please enter hexcode or imageurl');
+        self.$Notice.error({
+            desc: 'Please enter hexcode or imageurl',
+            duration: 4.5
+          })
+        // this.$Message.error('Please enter hexcode or imageurl');
       } else {
         let regex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(this.data2[index].hexcode2);
         if(this.data2[index].checkvalue == 'Hexcode'){
           if(!regex){
-            this.$Message.error('Please enter valid hexcode');
+            self.$Notice.error({
+              desc: 'Please enter valid hexcode',
+              duration: 4.5
+            })
+            // this.$Message.error('Please enter valid hexcode');
             return false;
           }
         }
@@ -726,11 +777,19 @@ export default {
                                  data: param1,
                           }).then(function (res) {
                                  self.list1[index].colorBox1 = self.list1[index].hexcode1
-                                 self.$Message.success("update successfully")
+                                 self.$Notice.success({
+                                  desc: "update successfully",
+                                  duration: 4.5
+                                })
+                                 // self.$Message.success("update successfully")
 
                           }).catch(function (error) {
                                  console.log("-------",error);
-                              self.$Message.error(error)
+                                 self.$Notice.error({
+                                    desc: error,
+                                    duration: 4.5
+                                  })
+                                 // self.$Message.error(error)
                           });
                    } else {
                           //post data in api
@@ -739,11 +798,19 @@ export default {
                                  url: config.default.colorTableUrl,
                                  data: param1,
                           }).then(function (res) {
-                               self.$Message.success("saved successfully")
+                               // self.$Message.success("saved successfully")
+                               self.$Notice.success({
+                                  desc: "saved successfully",
+                                  duration: 4.5
+                                })
                                self.data2[index].colorBox2 = self.data2[index].hexcode2
                           }).catch(function (error) {
                                console.log("-------",error);
-                              self.$Message.error(error)
+                               self.$Notice.error({
+                                  desc: error,
+                                  duration: 4.5
+                                })
+                              // self.$Message.error(error)
                           });
                    }
       }
@@ -764,7 +831,11 @@ export default {
       })
       .catch(function (error) {
         console.log("-------",error);
-          self.$Message.error(error)
+          self.$Notice.error({
+            desc: error,
+            duration: 4.5
+          })
+          // self.$Message.error(error)
       });
   }
 }
