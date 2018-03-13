@@ -423,7 +423,7 @@
                 }
             },
             {
-                title: 'Paid',
+                title: 'Paid Amount',
                 sortable: true,
                 render : (h , {row}) => { return  accounting.formatMoney((row.TotalAmt-row.Balance)) }
             },
@@ -683,7 +683,7 @@
                 }
             },
              {
-                title: 'Paid',
+                title: 'Paid Amount',
                 key: 'AmountPaid',
                 sortable: true,
                 render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
@@ -1752,11 +1752,21 @@
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {
-              arr.push({
-                title: columnArray[i],
-                key : columnArray[i],
-                sortable: true
-              });
+              if (columnArray[i] == 'Paid' || columnArray[i] == 'Total' ) {
+                arr.push({
+                  title: columnArray[i] + ' Amount',
+                  key : columnArray[i],
+                  sortable: true,
+                  render : (h , {row}) => { return  accounting.formatMoney(row[columnArray[i]]) }
+                });
+              }
+              else {
+                arr.push({
+                  title: columnArray[i],
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
             }
             if(modifiedArray.indexOf("Action") != -1){
               modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);

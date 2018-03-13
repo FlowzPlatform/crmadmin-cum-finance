@@ -189,7 +189,7 @@
                         //   }
                     },
                     {
-                        title: 'Amount',
+                        title: 'Total Amount',
                         key: 'Amount',
                         sortable: true,
                         render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
@@ -233,12 +233,12 @@
                         key: 'Date',
                         sortable: true,
                         render:(h,{row})=>{
-                        var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-                        return date1
+                            var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                            return date1
                         }
                     },
                     {
-                        title: 'Amount',
+                        title: 'Total Amount',
                         key: 'Amount',
                         sortable: true,
                         render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
@@ -246,10 +246,10 @@
                 ],
                 columns3: [
                     {
-                    title: 'Payment Id',
-                    key: 'PaymentId',
-                    sortable: true,
-                    render:(h,{row})=>{ return row.paymentGateway.id }
+                        title: 'Payment Id',
+                        key: 'PaymentId',
+                        sortable: true,
+                        render:(h,{row})=>{ return row.paymentGateway.id }
                     },
                     // {
                     //     title: 'Accounting Id',
@@ -286,7 +286,7 @@
                         }
                     },
                     {
-                        title: 'Amount',
+                        title: 'Total Amount',
                         key: 'Amount',
                         sortable: true,
                         render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
