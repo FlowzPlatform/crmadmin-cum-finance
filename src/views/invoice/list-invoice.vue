@@ -1760,6 +1760,13 @@
                   render : (h , {row}) => { return  accounting.formatMoney(row[columnArray[i]]) }
                 });
               }
+              else if (columnArray[i] == 'Name') {
+                arr.push({
+                  title: 'Customer Name',
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
               else {
                 arr.push({
                   title: columnArray[i],
