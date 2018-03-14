@@ -533,9 +533,9 @@
                     // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                     NameArr.push(obj.paymentAccounting.Contact.Name);
                     if(obj.paymentAccounting.Invoice.InvoiceNumber != undefined){
-                    self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
+                        self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
                     }else{
-                    self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceID);
+                        self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceID);
                     }
                 })
                 // NameArr.sort();
