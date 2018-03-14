@@ -97,7 +97,7 @@ export default {
         "key": "Name"
       },
       {
-        "title": "Email",
+        "title": "EmailAddress",
         "key": "EmailAddress",
         "sortable": true,
         render:(h,{row})=>{
@@ -162,7 +162,14 @@ export default {
         "key": "Addresses",
         "sortable": false,
         render:(h,{row})=>{
-          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+          if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
+          {
+              return "Not available"
+          }
+          else
+          {
+            return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+          }
         }
       },
       {
@@ -196,7 +203,7 @@ export default {
         "key": "DisplayName"
       },
       {
-        "title": "Email",
+        "title": "EmailAddress",
         "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
@@ -241,7 +248,13 @@ export default {
         "key": "BillAddr",
         "sortable": false,
         render:(h,{row})=>{
-              return row.BillAddr.Line1 +", "+row.BillAddr.City
+          if(row.BillAddr == "'")
+          {
+              return "Not available"
+          }
+          else {
+            return row.BillAddr.Line1 +", "+row.BillAddr.City
+          }
         }
       },
       {
