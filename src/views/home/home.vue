@@ -251,19 +251,6 @@
             addNewToDoItem () {
                 this.showAddNewTodo = true;
             },
-            addNew () {
-                if (this.newToDoItemValue.length !== 0) {
-                    this.toDoList.unshift({
-                        title: this.newToDoItemValue
-                    });
-                    setTimeout(() => {
-                        this.newToDoItemValue = '';
-                    }, 200);
-                    this.showAddNewTodo = false;
-                } else {
-                    this.$Message.error('error');
-                }
-            },
             cancelAdd () {
                 this.showAddNewTodo = false;
                 this.newToDoItemValue = '';

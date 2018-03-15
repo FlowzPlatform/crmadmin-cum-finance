@@ -65,7 +65,7 @@
                               <FormItem prop="gateway">
                                 <Select class="" v-model="payDetail.gateway" autofocus>
                                   <Option value="stripe">Stripe</Option>
-                                  <Option value="auth">AuthDotNet</Option>
+                                  <Option value="auth">Authorize.Net</Option>
                                   <Option value="paypal">PayPal</Option>
                                 </Select> 
                             </FormItem>

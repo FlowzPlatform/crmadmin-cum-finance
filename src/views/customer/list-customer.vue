@@ -162,7 +162,14 @@ export default {
         "key": "Addresses",
         "sortable": false,
         render:(h,{row})=>{
-          return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+          if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
+          {
+              return "Not available"
+          }
+          else
+          {
+            return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+          }
         }
       },
       {
@@ -241,7 +248,13 @@ export default {
         "key": "BillAddr",
         "sortable": false,
         render:(h,{row})=>{
+          if(row.BillAddr == "'")
+          {
+              return "Not available"
+          }
+          else {
               return row.BillAddr.Line1 +", "+row.BillAddr.City
+          }
         }
       },
       {
@@ -425,7 +438,7 @@ export default {
       }
     },
     async tabClicked(data){
-      console.log(data)
+      // console.log(data)
       this.tabIndex = data;
       let settingName = this.tabPanes[data].configName;
       let settingId = this.tabPanes[data].id
@@ -453,7 +466,7 @@ export default {
         })
         .then(async function (response) {
           self.$Loading.finish();
-          console.log(response)
+          // console.log(response)
           self.data6 = response.data.data.reverse();
 
           let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
@@ -465,7 +478,6 @@ export default {
                   title: columnArray[i],
                   key : columnArray[i],
                   sortable: true
-
               });
           }
           self.list = await self.mockTableData1(1,pageSize)
@@ -487,10 +499,22 @@ export default {
         })
         .then(async function (response) {
           console.log("$$$$$$$$$$$$$$$$$$$",response)
-          self.data6 = response.data[0].data.reverse();
-          self.$Loading.finish();
-          $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
+          if (response.data[0].data.data) {
+            console.log("inside if")
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.$Notice.error({
+                duration:0, 
+                title: response.data[0].data.data.oauth_problem,
+                desc: settingName + ' : ' + response.data[0].data.data.oauth_problem_advice
+            });
+          }
+          else {
+            self.data6 = response.data[0].data.reverse();
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.list = await self.mockTableData1(1,pageSize)
+          }
         })
         .catch(function (error) {
             console.log("error",error);
@@ -590,7 +614,7 @@ export default {
               let settingName = self.tabPanes[self.tabIndex].configName;            
               let settingId = self.tabPanes[self.tabIndex].id
               let settingDomain = self.tabPanes[self.tabIndex].domain;
-              self.getContactBySettingId(settingId , settingDomain , 0)
+              self.getContactBySettingId(settingId , settingDomain , 0, settingName)
             }
             else {
                 self.$Modal.warning({
