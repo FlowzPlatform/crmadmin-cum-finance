@@ -16,7 +16,7 @@
 						<FormItem label="Gateway" prop="gateway">
 							<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
 							<Option  value='stripe'>Stripe</Option>
-							<Option  value='auth'>Authorize.Net</Option>
+							<Option  value='auth'>AuthrizedDotNet</Option>
 							<Option value='paypal'>PayPal</Option>
 							</Select>
 						</FormItem>
