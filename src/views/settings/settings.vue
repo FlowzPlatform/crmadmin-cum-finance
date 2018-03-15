@@ -144,7 +144,7 @@
                                                             </div>
                                                         </span>
                                                     </p>
-                                                    <p slot="content" @click="generalRoute" v-else style="text-align:center;color:#fd5e5e">
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
                                                         Profile Information is not Available. Add new profile configuration.
                                                     </p>
                                                 </Panel>
@@ -208,7 +208,7 @@
                                                             </TabPane>
                                                         </Tabs>
                                                     </p>
-                                                    <p slot="content" @click="paymentRoute" v-else style="text-align:center;color:#fd5e5e">
+                                                    <p slot="content" v-else style="text-align:center;color:#fd5e5e">
                                                         Payment Information is not Available. Add new payment configuration.
                                                     </p>
                                                 </Panel>
@@ -573,16 +573,6 @@
             }
         },
         methods: {
-            generalRoute() {
-                this.$router.push({
-                    name: 'Profile Settings'
-                });
-            },
-            paymentRoute() {
-                this.$router.push({
-                    name: 'Payment Settings'
-                });
-            },
             getTabValue (inx) {
                 // console.log('inx', inx)
                 return this.tabarr[inx].activetab
@@ -682,10 +672,6 @@
                         }).then(response => {
                             console.log("++++++++++++------------response",response);
                             if(response.status == 200){
-                                console.log("self.data6[card].online_payment",self.data6[card].online_payment)
-                                console.log("response.data",response.data.online_payment)
-                                self.data6[card].online_payment = response.data.online_payment
-                                // self.data6[card].
                                 this.$Message.success("Configuaration updated successfully")
                             }
                             
@@ -742,7 +728,6 @@
                                 subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
-                            console.log("-------patch response",response);
                             if(response.status == 200){
                                 this.$Message.success("Configuaration deleated successfully")
                             }   
@@ -1269,7 +1254,7 @@
 
                     if (item.hasOwnProperty('online_payment')) {
                         let i = 0
-                        console.log('item:: ', item.online_payment, typeof(item.online_payment))
+                        // console.log('item:: ', item.online_payment)
                         if (item.online_payment !== '') {
                             for (let k in item.online_payment) {
                                 item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})

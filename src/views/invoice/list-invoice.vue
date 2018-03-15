@@ -251,94 +251,114 @@
 
   <div v-if="emailDataCustom != ''" ref="email2" style="display:none">
 
-    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
-      <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
-          <div id="logo" style="float: left;margin-top: 8px;">
-              <img :src="emailDataCompany.logo" style="height: 70px;">
-          </div>
-          <div id="company" v-if = "emailDataCompany.address != undefined" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
-              <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
-              <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
-              <div>{{emailDataCompany.address.country}}</div>
-          </div>
-      </header>
-      <main>
-          <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px;font-family: Verdana;">
-              <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
-                  <div  style="color: #777777;">INVOICE TO:</div>
-                  <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{emailDataCustom.Name}}</h2>
-                  <div v-for="i in customaddress">  
-                  <div>{{i}}</div>                   
-                  </div>
-              </div>
-              <div id="invoice" style="float: right;text-align: right;">
-                 <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;">{{emailDataCustom.Invoice_No}}</h1>
-                  <div  style="font-size: 12px;color: #777777;">Date of Invoice: {{createdDate}}</div>
-                  <div  style="font-size: 12px;color: #777777;">Due Date: {{dueDate}}</div>
-              </div>
-          </div>
-          <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
-              <thead>
-                  <tr>
-                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
-                      ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="(item,inx) in DescriptionPdf">
-                      <div v-if="item.description">
-                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>                       
-                        <span>{{item.description}}</span>
-                      </td>
-                      </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.amount)}}</td>
-  
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.qty}}</td>
-                     
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.amount * item.qty) }}</td>
-                  </tr>
-              </tbody>
-              <tfoot>
-                  <tr>
-                      <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
-                  </tr>
-                  <tr>
-                      <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
-                  </tr>
-                  <tr>
-                      <td colspan="3" style="border: none;"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
-                  </tr>
-                  <tr>
-                      <td colspan="3"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
-                  </tr>
-              </tfoot>
-          </table>
-          <div id="thanks" style="font-size: 16px;margin-bottom: 10px;font-family: Verdana;color: #555555;">Thank you!</div>
-      </main>
-      <footer style="font-size:12px;font-family: Verdana;">
-          Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
-              Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
-      </footer>
-    </div>
- 
-  </div>
+  <div class="invoice-box" style="max-width: 800px;margin: auto;padding: 30px;border: 1px solid #eee;box-shadow: 0 0 10px rgba(0, 0, 0, .15);font-size: 16px;line-height: 24px;font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color: #555;">
+          <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+              <tbody><tr class="top">
+                  <td colspan="3" style="padding: 5px;vertical-align: top;">
+                      <table style="width: 100%;line-height: inherit;text-align: left;">
+                          <tbody><tr>
+                              <td class="title" style="font-size: 45px;line-height: 45px;color: #333;padding-bottom: 20px;padding: 5px;vertical-align: top;">
 
+                                  <img :src='emailDataCompany.logo' key="max-logo" style="height: 82px;width: 215px;">
+                              </td>
+
+                              <td style="padding-bottom: 20px;text-align: right;padding: 5px;vertical-align: top;width:50%">
+                                  Invoice #: {{emailDataCustom.Invoice_No}}<br>
+                                  Created: {{createdDate}}<br>
+                                  Due: {{dueDate}}
+                              </td>
+                          </tr>
+                      </tbody></table>
+                  </td>
+              </tr>
+
+              <tr>
+              <td colspan="3" style="padding: 5px;vertical-align: top;">
+                      <table style="width: 100%;line-height: inherit;text-align: left;">
+                          <tbody><tr>
+                              <td style="padding-bottom: 40px;padding: 5px;vertical-align: top;">
+                                  <b>To :</b><br>
+                                  {{emailDataCustom.Name}}<br>
+
+                                  E-169<br>
+                                  New Alkapuri<br>
+                                  Vadodara<br>
+                                  India,799864<br>
+                              </td>
+
+                              <td style="padding-bottom: 40px;text-align: right;padding: 5px;vertical-align: top;">
+                                  <b>From :</b><br>
+                                  Acme Corp.<br>
+                                  John Doe<br>
+
+                              </td>
+                          </tr>
+                      </tbody></table>
+                  </td>
+              </tr>
+
+               <tr>
+                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                      Item
+                  </td>
+
+                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                      Paid Amount
+                  </td>
+
+                  <td style="background: #eee;border-bottom: 1px solid #ddd;font-weight: bold;padding: 5px;vertical-align: top;text-align:center">
+                      Due Amount
+                  </td>
+              </tr>
+
+              <tr>
+                  <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                      {{DescriptionPdf}}
+                  </td>
+
+                  <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: top;text-align:center">
+                      ${{emailDataCustom.Paid}}
+                  </td>
+                  <td style="border-bottom: 1px solid #eee;text-align:center;padding: 5px;vertical-align: top;">
+                      ${{emailDataCustom.Due}}
+                  </td>
+              </tr>
+
+
+              <tr>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+              </tr>
+              <tr>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
+                     Sub Total: ${{emailDataCustom.Total}}
+                  </td>
+              </tr>
+              <tr>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+
+                  <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
+                     Tax: $0
+                  </td>
+              </tr>
+              <tr>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+                  <td style="padding: 5px;vertical-align: top;"></td>
+
+                  <td style="border-top: 2px solid #eee;font-weight: bold;text-align: right;padding: 5px;vertical-align: top; padding: 5px;">
+                     Total Due Amount: ${{emailDataCustom.Due}}
+                  </td>
+              </tr>
+
+
+          </tbody></table>
+      </div>
+
+  </div>
   <div id="editor"></div>
 
 
@@ -379,8 +399,6 @@
     name: 'hello',
     data () {
       return {
-        customaddress: '',
-        customTotaltax: '',
         invnoFilter: [],
         invoiceno:'',
         newList:[],
@@ -423,15 +441,15 @@
                 }
             },
             {
-                title: 'Paid Amount',
+                title: 'Paid',
                 sortable: true,
-                render : (h , {row}) => { return  accounting.formatMoney((row.TotalAmt-row.Balance)) }
+                render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
             },
             {
-                title: 'Total Amount',
+                title: 'Amount',
                 key: 'TotalAmt',
                 sortable: true,
-                render : (h , {row}) => { return  accounting.formatMoney(row.TotalAmt) }
+                render : (h , {row}) => { return '$' + row.TotalAmt }
 
             },
             {
@@ -661,7 +679,7 @@
             }
 
         ],
-        columns1: [
+         columns1: [
             {
                 title: 'Invoice No.',
                 key: 'InvoiceNumber',
@@ -683,16 +701,16 @@
                 }
             },
              {
-                title: 'Paid Amount',
+                title: 'Paid',
                 key: 'AmountPaid',
                 sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
+                render:(h,{row})=>{ return '$' + row.AmountPaid  }
             },
             {
-                title: 'Total Amount',
+                title: 'Total',
                 key: 'Total',
                 sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
+                render:(h,{row})=>{ return '$' + row.Total }
             },
             {
                 title: 'Status',
@@ -915,6 +933,8 @@
             }
 
         ],
+
+
         settingIdForPayment : '',
         data6: [],
         data7: [],
@@ -1752,28 +1772,11 @@
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {
-              if (columnArray[i] == 'Paid' || columnArray[i] == 'Total' ) {
-                arr.push({
-                  title: columnArray[i] + ' Amount',
-                  key : columnArray[i],
-                  sortable: true,
-                  render : (h , {row}) => { return  accounting.formatMoney(row[columnArray[i]]) }
-                });
-              }
-              else if (columnArray[i] == 'Name') {
-                arr.push({
-                  title: 'Customer Name',
-                  key : columnArray[i],
-                  sortable: true
-                });
-              }
-              else {
-                arr.push({
-                  title: columnArray[i],
-                  key : columnArray[i],
-                  sortable: true
-                });
-              }
+              arr.push({
+                title: columnArray[i],
+                key : columnArray[i],
+                sortable: true
+              });
             }
             if(modifiedArray.indexOf("Action") != -1){
               modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
@@ -2023,13 +2026,13 @@
         },1000)
         let self = this;
         console.log(self.tabPanes[self.tabIndex].domain)
+        console.log('id..........',params.Id)
         let id
         if(self.tabPanes[self.tabIndex].domain == "QB"){
           id = params.Id
         } else if(self.tabPanes[self.tabIndex].domain == "Xero"){
           id = params.InvoiceID
         }
-        console.log('id..........',params.Id)
         await axios.get(config.default.serviceUrl + 'transaction', {
               params : {
                   settingId : self.tabPanes[self.tabIndex].id,
@@ -2055,91 +2058,22 @@
           });
       },
 
-       async createPDFCustom(params){
 
-        var self = this
-        this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
+      async createPDFCustom(params){
+        console.log(params.row)
         this.emailDataCustom = params.row;
-        var date = new Date(params.row.Date);
+        var self = this
+        var date = new Date();
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-        var date1 = new Date(params.row.DueDate);
-        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-       
-        console.log("%%%%%%%%%%%%%",this.emailData)
-        console.log("this.createdDate",this.createdDate)
-        console.log("this.dueDate",this.dueDate)
-        await axios({
-              method: 'get',
-              url: config.default.serviceUrl + 'customcustomer',
-              params: {
-                settingId : settingID,
-                Name : params.row.Name
-              },
-              headers:{
-              Authorization : Cookies.get('auth_token')
-          },
-              }).then(function (response) {
-                self.emailDataCustomer = response.data.data[0]
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-                console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
-
-                this.customaddress = self.emailDataCustomer.Address.split(",");
-        await axios({
-              method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
-              headers:{
-                  Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
-              },
-              }).then(function (response) {
-                console.log("ooooooooooooooooo",response);
-                self.emailDataCompany = response.data
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
-
-              self.DescriptionPdf = this.emailDataCustom.products;
-
-              self.customTotaltax = 0
-
-              self.DescriptionPdf.forEach(item => {
-                self.customTotaltax += item.tax
-              })
-
-              console.log("self.customTotaltax---->",self.customTotaltax)
-                // axios.get(config.default.serviceUrl + 'invoice', {
-                //   headers:{
-                //       Authorization : Cookies.get('auth_token')
-                //   },
-                //   params : {
-                //     settingId : settingID,
-                //     Invoice_No : params.row.Invoice_No
-                //   }
-                // })
-                // .then(async function (response) {
-                //   console.log('response>>>>>>>>>>>>>>', response)
-                //   self.DescriptionPdf = response.data[0].data.LineItems;
-
-                // })
-                // .catch(function (error) {
-                // });
+        this.dueDate =  params.row.DueDate
+        console.log('self.$refs.email2.innerHTML', self.$refs.email2.innerHTML)
         setTimeout(function(){
-          self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email2.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
               axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -2149,7 +2083,6 @@
 
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial'
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
@@ -2163,70 +2096,15 @@
           })
          }, 2000);
       },
-      
-       async sendemailCustom(params){
-
-        var self = this
+      async sendemailCustom(params){
         this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
         this.emailDataCustom = params.row;
-        var date = new Date(params.row.Date);
+        var self = this
+        var date = new Date();
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-        var date1 = new Date(params.row.DueDate);
-        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-       
-        console.log("%%%%%%%%%%%%%",this.emailData)
-        console.log("this.createdDate",this.createdDate)
-        console.log("this.dueDate",this.dueDate)
-        await axios({
-              method: 'get',
-              url: config.default.serviceUrl + 'customcustomer',
-              params: {
-                settingId : settingID,
-                Name : params.row.Name
-              },
-              headers:{
-              Authorization : Cookies.get('auth_token')
-          },
-              }).then(function (response) {
-                self.emailDataCustomer = response.data.data[0]
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-                console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
+        this.dueDate =  params.row.DueDate
+        var self = this;
 
-                this.customaddress = self.emailDataCustomer.Address.split(",");
-        await axios({
-              method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
-              headers:{
-                  Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
-              },
-              }).then(function (response) {
-                console.log("ooooooooooooooooo",response);
-                self.emailDataCompany = response.data
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
-
-              self.DescriptionPdf = this.emailDataCustom.products;
-
-              self.customTotaltax = 0
-
-              self.DescriptionPdf.forEach(item => {
-                self.customTotaltax += item.tax
-              })
-
-              console.log("self.customTotaltax---->",self.customTotaltax)
-
-
-        
-        console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
 
         this.$Modal.confirm({
                       title: 'Email would be sent to',
@@ -2235,49 +2113,49 @@
                       render: (h) => {
                           return h('Input', {
                               props: {
-                                  value: self.emailDataCustomer.EmailAddress,
+                                  value: "",
                                   autofocus: true,
+
                                   placeholder: 'Please enter email Id...'
                               },
                               on: {
                                   input: (val) => {
+
                                       self.emailIdTobeSent = val;
                                   }
                               }
                           })
                       },
-                    onOk: ()=>{                   
-                      let myData = {
-                          "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
-                          "from": "obsoftcare@gmail.com",
-                          "subject": "email invoice",
-                          "body": self.$refs.email2.innerHTML
-                        }
-                        myData = JSON.stringify(myData)
-                        axios({
-                          method: 'post',
-                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
-                          data: myData,
-                          headers: {
-                            'authorization':  Cookies.get('auth_token'),
-                            
-                          }
-                          }).then(function (response) {
-                            console.log(response);
-                            self.$Message.success(response.data.success);
-                            self.$Loading.finish();
-                            // self.list[params.index].loading1 = false
-                          })
-                          .catch(function (error) {
-                            self.$Message.warning("email send failed , Please try again later");
-                            self.$Loading.finish();
-                            console.log(error);
-                          });
+                      onOk: ()=>{
+
+                                      let myData = {
+                                            "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                                            "from": "obsoftcare@gmail.com",
+                                            "subject": "email invoice",
+                                            "body": self.$refs.email2.innerHTML
+                                          }
+                                          myData = JSON.stringify(myData)
+                                          axios({
+                                            method: 'post',
+                                            url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                                            data: myData,
+                                            headers: {
+                                              'authorization':  Cookies.get('auth_token')
+                                            }
+                                            }).then(function (response) {
+                                              console.log(response);
+                                              self.$Message.success(response.data.success);
+                                              self.$Loading.finish();
+                                              // self.list[params.index].loading1 = false
+                                            })
+                                            .catch(function (error) {
+                                              self.$Message.warning("email send failed , Please try again later");
+                                              self.$Loading.finish();
+                                              console.log(error);
+                                            });
                       }
                   })
-        
       },
-
       async getAllSettings(){
         let self = this;
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {

@@ -94,15 +94,15 @@
 </template>
 
 <script>
-  import config from '@/config/customConfig.js'
-  import axios from 'axios'
-  import Cookies from 'js-cookie';
-  import Vue from 'vue'
-  import VueWidgets from 'vue-widgets'
-  import 'vue-widgets/dist/styles/vue-widgets.css'
-  import _ from 'lodash'
-  var settingId
-  Vue.use(VueWidgets);
+import config from '@/config/customConfig.js'
+import axios from 'axios'
+import Cookies from 'js-cookie';
+import Vue from 'vue'
+import VueWidgets from 'vue-widgets'
+import 'vue-widgets/dist/styles/vue-widgets.css'
+import _ from 'lodash'
+var settingId
+Vue.use(VueWidgets);
   export default {
         name: 'new-customer',
         data () {
@@ -207,7 +207,7 @@
                 }
               })
               .then(function (response) {
-                console.log("settings get response",response)
+                console.log("response >>>>>>>>>>>>>>>>",response)
                 //resp = response.data
                 
                 if (response.data.data.length != 0)
@@ -233,12 +233,12 @@
               .catch(function (error) {
                 console.log("error",error);
                 if(error.response.status == 403){
-                  self.$Notice.error({
-                    duration:0, 
-                    title: error.response.statusText,
-                    desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                  });
-                }
+                 self.$Notice.error(
+                     {duration:0, 
+                     title: error.response.statusText,
+                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
+                     );
+                  }
               });
               
             },
@@ -320,7 +320,7 @@
                             }
                           })
                           .then(function (response) {
-                            self.$Message.success('Customer created successfully');
+                            self.$Message.success('created customer successfully');
                             self.loading = false;
                             self.$router.push({
                               name:'Customer List'
@@ -330,7 +330,7 @@
                           .catch(function (error) {
                             console.log("error",error);
                             self.loading = false;
-                            self.$Message.error('Error while creating customer')
+                            self.$Message.error('error in create customer')
                           });
                     }
                 })
@@ -354,7 +354,7 @@
             $("#country").on("change",function() {
             // $('#country').change(function(){ 
                 // var value = $(this).val();
-                // console.log("Hii")
+                console.log("Hii")
                 $('.state1').css("display","block")
             });
         }

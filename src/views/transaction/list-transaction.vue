@@ -65,35 +65,23 @@
 
             <Tabs  @on-click="tabClicked" :value="tabIndex" class="my-tab">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-                    <div v-if ="tabPane.domain=='Xero'">
-                        <div v-if=" list.length > 0"><Table :columns="columns1" :data="list" :no-data-text="nodataMsg" border size="small" ref="table" stripe></Table></div>
-                        <div v-else>
-                            <div v-if="flag == false">
-                                <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>                      
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if ="tabPane.domain=='QB'">
-                        <div v-if=" list.length > 0"><Table :columns="columns2" :data="list" border size="small" ref="table" stripe></Table></div>
-                        <div v-else>
-                            <div v-if="flag == false">
-                                <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if ="tabPane.domain=='custom'">
-                        <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" border size="small" ref="table" stripe></Table></div>
-                        <div v-else>
-                            <div v-if="flag == false">
-                                <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
-                            </div>
-                        </div>
-                    </div>
-                    <div style="margin: 10px;overflow: hidden">
+                <div v-if ="tabPane.domain=='Xero'">
+                  <div v-if=" list.length > 0"><Table :columns="columns1" :data="list" :no-data-text="nodataMsg" border size="small" ref="table" stripe></Table></div>
+                  <div v-else style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>
+                </div>
+                <div v-if ="tabPane.domain=='QB'">
+                  <div v-if=" list.length > 0"><Table :columns="columns2" :data="list" border size="small" ref="table" stripe></Table></div>
+                  <div v-else style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>
+                </div>
+                <div v-if ="tabPane.domain=='custom'">
+                  <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" border size="small" ref="table" stripe></Table></div>
+                  <div v-else style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>
+                </div>
+                <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
-                            <Page :total="len" :current="1" @on-change="changePage"></Page>
-                        </div>
+                        <Page :total="len" :current="1" @on-change="changePage"></Page>
                     </div>
+                </div>
 
             </TabPane>
             </Tabs>
@@ -103,464 +91,466 @@
 </template>
 
 <script>
-    import config from '@/config/customConfig.js'
-    import axios from 'axios'
-    import moment from 'moment'
-    import Cookies from 'js-cookie';
-    import _ from 'lodash'
-    const accounting = require('accounting-js');
-
-    var pageSize = 10
-    export default {
-        name: '',
-        props: {
-            list : {
-                default: function () { return [] }
-            },
-            tabIndex : {
-                default: function () { return 0 }
-            }
-        },
-        data() {
-            return {
-                flag: true,
-                invnoFilter : [],
-                nodataMsg: 'No Data',
-                // list1: this.list,
-                tabPanes : [],
-                // tabIndex: 0,
-                spinShow: true,
-                data : [],
-                len:1,
-                // list: [],
-                columns3:[],
-                columns1: [
-                    {
-
-                        title: 'Payment Id',
-                        key: 'PaymentId',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentGateway.id }
-                    },
-                    //   {
-                    //       title: 'Accounting Id',
-                    //       key: 'AccountingId',
-                    //       sortable: true,
-                    //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-                    //   },
+import config from '@/config/customConfig.js'
+import axios from 'axios'
+import moment from 'moment'
+import Cookies from 'js-cookie';
+import _ from 'lodash'
 
 
-                    {
-                        title: 'Invoice No.',
-                        key: 'InvoiceNumber',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceNumber }
-                    },
-                    {
-                        title: 'Customer Name',
-                        key: 'Contact',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
-                    },
-                    {
-                        title: 'Date',
-                        key: 'Date',
-                        sortable: true,
-                        render:(h,{row})=>{
-                            var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-                        //    let date = row.paymentAccounting.Invoice.Date;
-                        //    let initial = date.split(/\//);
-                        //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
+var pageSize = 10
+export default {
+  name: '',
+  props: {
+    //  list : {
+    //      default: function () { return [] }
+    //  },
+    //  tabIndex : {
+    //      default: function () { return 0 }
+    //  }
+  },
+  data() {
+      return {
+       // msg : "weqweq",
+       invnoFilter : [],
+       nodataMsg: 'No Data',
+       // list1: this.list,
+        tabPanes : [],
+        tabIndex: 0,
+        spinShow: true,
+        data : [],
+        len:1,
+        list: [],
+        columns3:[],
+        columns1: [
+          {
 
-                            return date
+              title: 'Payment Id',
+              key: 'PaymentId',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentGateway.id }
+          },
+        //   {
+        //       title: 'Accounting Id',
+        //       key: 'AccountingId',
+        //       sortable: true,
+        //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+        //   },
 
 
-                        }
-                        //   render:(h,{row})=>{
+          {
+              title: 'Invoice No.',
+              key: 'InvoiceNumber',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceNumber }
+          },
+          {
+              title: 'Customer Name',
+              key: 'Contact',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
+          },
+          {
+              title: 'Date',
+              key: 'Date',
+              sortable: true,
+              render:(h,{row})=>{
+                  var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+            //    let date = row.paymentAccounting.Invoice.Date;
+            //    let initial = date.split(/\//);
+            //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
+
+                return date
 
 
-                        //    let date = row.paymentAccounting.Invoice.Date;
-                        //    let initial = date.split(/\//);
-                        //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
-
-                        //     return moment(formatDate).format("ll")
+              }
+            //   render:(h,{row})=>{
 
 
-                        //   }
-                    },
-                    {
-                        title: 'Total Amount',
-                        key: 'Amount',
-                        sortable: true,
-                        render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
-                    }
-                ],
-                columns2: [
-                    {
+            //    let date = row.paymentAccounting.Invoice.Date;
+            //    let initial = date.split(/\//);
+            //     let formatDate = [ initial[1], initial[0], initial[2] ].join('/'); //=> 'mm/dd/yyyy'
 
-                    title: 'Payment Id',
-                    key: 'PaymentId',
-                    sortable: true,
-                    render:(h,{row})=>{ return row.paymentGateway.id }
-                    },
-                    // {
-                    //     title: 'Accounting Id',
-                    //     key: 'AccountingId',
-                    //     sortable: true,
-                    //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-                    // },
-                    {
+            //     return moment(formatDate).format("ll")
 
-                        title: 'Account Id',
-                        key: 'value',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Account.value }
-                    },
-                    {
-                        title: 'Invoice No',
-                        key: 'InvoiceId',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceID }
-                    },
-                    {
-                        title: 'Customer Name',
-                        key: 'Contact',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
-                    },
-                    {
-                        title: 'Date',
-                        key: 'Date',
-                        sortable: true,
-                        render:(h,{row})=>{
-                            var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-                            return date1
-                        }
-                    },
-                    {
-                        title: 'Total Amount',
-                        key: 'Amount',
-                        sortable: true,
-                        render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
-                    }
-                ],
-                columns3: [
-                    {
-                        title: 'Payment Id',
-                        key: 'PaymentId',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentGateway.id }
-                    },
-                    // {
-                    //     title: 'Accounting Id',
-                    //     key: 'AccountingId',
-                    //     sortable: true,
-                    //     render:(h,{row})=>{ return row.id }
-                    // },
-                    // {
-                    //     title: 'Account Id',
-                    //     key: 'value',
-                    //     sortable: true,
-                    //     render:(h,{row})=>{ return row.paymentAccounting.Account.value }
-                    // },
-                    {
-                        title: 'Invoice No',
-                        key: 'InvoiceId',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceNumber }
-                    },
-                    {
-                        title: 'Customer Name',
-                        key: 'Contact',
-                        sortable: true,
-                        render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
-                    },
-                    {
-                        title: 'Payment Date',
-                        key: 'Date',
-                        sortable: true,
-                        render:(h,{row})=>{
-                            var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-                            return date1
-                            // return row.paymentAccounting.Invoice.Date
-                        }
-                    },
-                    {
-                        title: 'Total Amount',
-                        key: 'Amount',
-                        sortable: true,
-                        render:(h,{row})=>{ return  accounting.formatMoney(row.paymentAccounting.Amount) }
-                    }
-                ],
-                filterArray: [],
-                cname: '',
-                invoiceId : '',
-                dategt: '',
-                datelt: ''
-            }
-        },
-        methods: {
-            filterMethod (value, option) {
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-            },
-            // getData() {
-            //   if (this.list1.length <= 0) {
-            //     return this.list
-            //   } else {
-            //     return this.list1
+
             //   }
+          },
+          {
+              title: 'Amount',
+              key: 'Amount',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentAccounting.Amount }
+          }
+        ],
+        columns2: [
+            {
+
+              title: 'Payment Id',
+              key: 'PaymentId',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentGateway.id }
+            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
             // },
-            // changeMessage(event) {
-            //             this.message = event.target.value;
-            //             this.$emit('messageChanged', this.message);
+            {
+
+                title: 'Account Id',
+                key: 'value',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Account.value }
+            },
+            {
+                title: 'Invoice No',
+                key: 'InvoiceId',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceID }
+            },
+            {
+                title: 'Customer Name',
+                key: 'Contact',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
+            },
+            {
+                title: 'Date',
+                key: 'Date',
+                sortable: true,
+                render:(h,{row})=>{
+                var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                return date1
+                }
+            },
+            {
+                title: 'Amount',
+                key: 'Amount',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Amount }
+            }
+        ],
+        columns3: [
+            {
+              title: 'Payment Id',
+              key: 'PaymentId',
+              sortable: true,
+              render:(h,{row})=>{ return row.paymentGateway.id }
+            },
+            // {
+            //     title: 'Accounting Id',
+            //     key: 'AccountingId',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.id }
             // },
-            reset() {
-                this.cname = '';
-                this.invoiceId = '';
-                this.dategt = '';
-                this.datelt = '';
-                this.getAllSettings();
+            // {
+            //     title: 'Account Id',
+            //     key: 'value',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return row.paymentAccounting.Account.value }
+            // },
+            {
+                title: 'Invoice No',
+                key: 'InvoiceId',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceNumber }
             },
-            async changeData() {
-                console.log("this.data", this.data)
-                this.filterArray = this.data
-                var self = this
-
-                if(this.cname != ''){
-                console.log("this.cname", this.cname)
-                this.filterArray = _.filter(this.filterArray,  function(item){
-                    console.log("item",item)
-                    return item.paymentAccounting.Contact.Name === self.cname;
-
-                });
-                console.log("myarr",this.filterArray)
-                this.list = await this.mockTableData2(1,pageSize)
-                }else{
-                    console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
-                }
-
-                if(this.invoiceId != ''){
-                    console.log("this.invoiceId", this.invoiceId)
-                    this.filterArray = _.filter(this.filterArray,  function(item){
-                        console.log("item",item)
-                        //   return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
-                        if(item.paymentAccounting.Invoice.InvoiceNumber != undefined){
-                            return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
-                        }else{
-                            return item.paymentAccounting.Invoice.InvoiceID === self.invoiceId;
-                        }
-                    });
-                    console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
-                }
-
-                //  if(this.dategt != ''){
-                //     console.log("this.dategt", this.dategt)
-                //     this.filterArray = _.filter(this.filterArray,  function(item){
-                //       // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
-                //       //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
-                //       //   return item;
-                //       // }
-                //       console.log("item",item.paymentAccounting.Invoice.Date)
-                //       var newdate = moment(self.dategt).format('DD/MM/YYYY');
-                //       console.log("newdate",newdate)
-                //       console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
-                //       return item.paymentAccounting.Invoice.Date >= newdate;
-                //     });
-                //      console.log("myarr",this.filterArray)
-                //      this.list = await this.mockTableData2(1,pageSize)
-
-                //   }
-
-                //   if(this.datelt != ''){
-                //     console.log("this.datelt", this.datelt)
-                //     this.filterArray = _.filter(this.filterArray,  function(item){
-                //       console.log("item",item.paymentAccounting.Invoice.Date)
-                //       var newdate = moment(self.datelt).format('DD/MM/YYYY');
-                //       console.log("newdate",newdate)
-                //       return item.paymentAccounting.Invoice.Date <= newdate;
-                //     });
-                //      console.log("myarr",this.filterArray)
-                //      this.list = await this.mockTableData2(1,pageSize)
-                //   }
-
-                if(this.dategt != ''){
-                    console.log("this.dategt", this.dategt)
-                    this.filterArray = _.filter(this.filterArray,  function(item){
-                    if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.dategt).format(), 'days') >= 0){
-                        return item;
-                    }
-                    });
-                    console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
-
-                }
-
-                if(this.datelt != ''){
-                    console.log("this.datelt", this.datelt)
-                    this.filterArray = _.filter(this.filterArray,  function(item){
-                    if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.datelt).format(), 'days') <= 0){
-                        return item;
-                    }
-                    });
-                    console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
-                }
-
+            {
+                title: 'Customer Name',
+                key: 'Contact',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
             },
-            async mockTableData2 (p,size) {
-                console.log("p-------------->",p)
-                console.log("p-------------->",size)
-                console.log("console.log------------>",this.filterArray)
-                this.len = this.filterArray.length
-                return this.filterArray.slice((p - 1) * size, p * size);
-            },
-            async getAllSettings(){
-                let self = this;
+            {
+                title: 'Payment Date',
+                key: 'Date',
+                sortable: true,
+                render:(h,{row})=>{
 
-                axios.get(config.default.serviceUrl + 'settings', {
-                    params : {
-                        isActive : true
-                    },
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
-                    },
-                })
-                .then(function (response) {
-                    console.log("setting response",response);
-                    self.list = self.list
-                    self.spinShow = false;
-                    if (response.data.data.length != 0)
-                    {
-                        self.tabPanes = response.data.data;
-                        $('.preload').css("display","none")
-                        console.log('this.tabPanes', self.tabPanes)
-                        console.log('this.tabIndex', self.tabIndex)
-                        let settingId = self.tabPanes[self.tabIndex].id;
-                        // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
-
-                        self.getTransaction(settingId)
-                    }
-                    else {
-                        self.$Modal.warning({
-                        title: 'No Configuration available',
-                        okText : "Go to Settings",
-                        content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
-                        onOk: () => {
-                            self.$router.push({
-                                name: 'Settings'
-                            })
-                        }
-                        });
-                    }
-                })
-                .catch(function (error) {
-                    console.log("error",error);
-                    self.spinShow = false;
-                });
-            },
-            async tabClicked(data){
-                console.log(this.tabPanes)
-                console.log(">>>>>>>>>>>>>>>>>> " , data)
-                this.reset();
-                this.tabIndex = data;
-                let settingId = this.tabPanes[data].id
-                this.getTransaction(settingId);
-            },
-
-            async mockTableData1 (p,size) {
-                this.len = this.data.length
-                return this.data.slice((p - 1) * size, p * size);
-            },
-            async changePage (p) {
-                this.page = p
-                console.log("not inside",this.filterArray.length)
-                if(this.filterArray.length == 0){
-                    console.log("inside",this.filterArray)
-                    this.list = await this.mockTableData1(p,pageSize);
-                }else{
-                    this.list = await this.mockTableData2(p,pageSize);
+                return row.paymentAccounting.Invoice.Date
                 }
             },
-            async getTransaction(settingId) {
-                this.flag = true;
-                this.$Loading.start();
-                this.data = [];
-                let self = this;
-                self.list = [];
-                await axios.get(config.default.serviceUrl + 'transaction', {
-                    params : {
-                        settingId : settingId
-                    }
-                })
-                .then(async function (response) {
-                    console.log("transaction response",response);
-                    var deep = _.cloneDeep(response.data.data);
-                    _(deep).each(function(item , index){
-                        var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
-                        item.paymentAccounting.Invoice.Date = dt._d
-                    })
-                    var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
-                    self.data = desc;
-                    self.invnoFilter = [];
-
-                    // self.data = response.data.data;
-                    self.$Loading.finish();
-                    self.flag = false
-                    $('.preload').css("display","none")
-                    if(self.list.length == 0){
-                        self.list = await self.mockTableData1(1,pageSize)
-                    } else {
-                    // if(self.list[0].key){
-                    //   self.list = []
-                    // } else {
-                    // }
-                    // $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
-
-                    }
-                })
-                .catch(function (error) {
-                    console.log("error",error);
-                    self.$Loading.error();
-                    self.flag = false
-                });
-
-                var NameArr = [];
-                $('#selectCustomer').children('option:not(:first)').remove();
-                self.data.forEach (obj => {
-                    // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
-                    NameArr.push(obj.paymentAccounting.Contact.Name);
-                    if(obj.paymentAccounting.Invoice.InvoiceNumber != undefined){
-                        self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
-                    }else{
-                        self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceID);
-                    }
-                })
-                // NameArr.sort();
-                NameArr = _.chain(NameArr).sort().uniq().value();
-                NameArr.forEach(item => {
-                    var x = document.getElementById("selectCustomer");
-                    var option = document.createElement("option");
-                    option.text = item;
-                    // console.log()
-                    x.add(option);
-                })
+            {
+                title: 'Amount',
+                key: 'Amount',
+                sortable: true,
+                render:(h,{row})=>{ return row.paymentAccounting.Amount }
             }
-        },
-        mounted() {
-            this.getAllSettings()
+        ],
+        filterArray: [],
+        cname: '',
+        invoiceId : '',
+        dategt: '',
+        datelt: ''
+      }
+  },
+  methods: {
+      filterMethod (value, option) {
+          return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+      },
+    // getData() {
+    //   if (this.list1.length <= 0) {
+    //     return this.list
+    //   } else {
+    //     return this.list1
+    //   }
+    // },
+    // changeMessage(event) {
+    //             this.message = event.target.value;
+    //             this.$emit('messageChanged', this.message);
+    // },
+    reset() {
+      this.cname = '';
+      this.invoiceId = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      console.log("this.data", this.data)
+      this.filterArray = this.data
+      var self = this
 
-        },
-        watch: {
-            '$route': function (id) {
-            console.log(id)
+      if(this.cname != ''){
+       console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        console.log("item",item)
+          return item.paymentAccounting.Contact.Name === self.cname;
 
-            // this.activetab = "2"
+      });
+       console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,pageSize)
+      }else{
+        console.log("myarr",this.filterArray)
+        this.list = await this.mockTableData2(1,pageSize)
+      }
+
+      if(this.invoiceId != ''){
+        console.log("this.invoiceId", this.invoiceId)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+            console.log("item",item)
+            //   return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+            if(item.paymentAccounting.Invoice.InvoiceNumber != undefined){
+                return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
+            }else{
+                return item.paymentAccounting.Invoice.InvoiceID === self.invoiceId;
             }
+        });
+         console.log("myarr",this.filterArray)
+         this.list = await this.mockTableData2(1,pageSize)
+      }
+
+    //  if(this.dategt != ''){
+    //     console.log("this.dategt", this.dategt)
+    //     this.filterArray = _.filter(this.filterArray,  function(item){
+    //       // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
+    //       //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+    //       //   return item;
+    //       // }
+    //       console.log("item",item.paymentAccounting.Invoice.Date)
+    //       var newdate = moment(self.dategt).format('DD/MM/YYYY');
+    //       console.log("newdate",newdate)
+    //       console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
+    //       return item.paymentAccounting.Invoice.Date >= newdate;
+    //     });
+    //      console.log("myarr",this.filterArray)
+    //      this.list = await this.mockTableData2(1,pageSize)
+
+    //   }
+
+    //   if(this.datelt != ''){
+    //     console.log("this.datelt", this.datelt)
+    //     this.filterArray = _.filter(this.filterArray,  function(item){
+    //       console.log("item",item.paymentAccounting.Invoice.Date)
+    //       var newdate = moment(self.datelt).format('DD/MM/YYYY');
+    //       console.log("newdate",newdate)
+    //       return item.paymentAccounting.Invoice.Date <= newdate;
+    //     });
+    //      console.log("myarr",this.filterArray)
+    //      this.list = await this.mockTableData2(1,pageSize)
+    //   }
+
+        if(this.dategt != ''){
+            console.log("this.dategt", this.dategt)
+            this.filterArray = _.filter(this.filterArray,  function(item){
+            if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.dategt).format(), 'days') >= 0){
+                return item;
+            }
+            });
+            console.log("myarr",this.filterArray)
+            this.list = await this.mockTableData2(1,pageSize)
+
         }
+
+        if(this.datelt != ''){
+            console.log("this.datelt", this.datelt)
+            this.filterArray = _.filter(this.filterArray,  function(item){
+            if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.datelt).format(), 'days') <= 0){
+                return item;
+            }
+            });
+            console.log("myarr",this.filterArray)
+            this.list = await this.mockTableData2(1,pageSize)
+        }
+
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
+    async getAllSettings(){
+      let self = this;
+
+      axios.get(config.default.serviceUrl + 'settings', {
+        params : {
+            isActive : true
+        },
+        headers:{
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
+        },
+      })
+      .then(function (response) {
+        console.log("setting response",response);
+        self.list = self.list
+        self.spinShow = false;
+        if (response.data.data.length != 0)
+        {
+
+          self.tabPanes = response.data.data;
+          $('.preload').css("display","none")
+          console.log('this.tabPanes', self.tabPanes)
+          console.log('this.tabIndex', self.tabIndex)
+          let settingId = self.tabPanes[self.tabIndex].id;
+          // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
+
+          self.getTransaction(settingId)
+
+        }
+        else {
+            self.$Modal.warning({
+            title: 'No Configuration available',
+            okText : "Go to Settings",
+            content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+            onOk: () => {
+                self.$router.push({
+                    name: 'Settings'
+                })
+              }
+            });
+        }
+      })
+      .catch(function (error) {
+
+        console.log("error",error);
+        self.spinShow = false;
+      });
+    },
+    async tabClicked(data){
+        console.log(this.tabPanes)
+        console.log(">>>>>>>>>>>>>>>>>> " , data)
+        this.reset();
+        this.tabIndex = data;
+        let settingId = this.tabPanes[data].id
+        this.getTransaction(settingId);
+    },
+
+    async mockTableData1 (p,size) {
+              this.len = this.data.length
+              return this.data.slice((p - 1) * size, p * size);
+    },
+    async changePage (p) {
+      this.page = p
+      console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,pageSize);
+      }
+    },
+    async getTransaction(settingId) {
+
+
+        this.$Loading.start();
+        this.data = [];
+        let self = this;
+        self.list = [];
+        await axios.get(config.default.serviceUrl + 'transaction', {
+            params : {
+                settingId : settingId
+            }
+        })
+        .then(async function (response) {
+            console.log("transaction response",response);
+            var deep = _.cloneDeep(response.data.data);
+            _(deep).each(function(item , index){
+                var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                item.paymentAccounting.Invoice.Date = dt._d
+            })
+            var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+            self.data = desc;
+            self.invnoFilter = [];
+
+            // self.data = response.data.data;
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            if(self.list.length == 0){
+              self.list = await self.mockTableData1(1,pageSize)
+            } else {
+              // if(self.list[0].key){
+              //   self.list = []
+              // } else {
+              // }
+              // $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
+
+            }
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+        });
+
+        var NameArr = [];
+
+            self.data.forEach (obj => {
+                // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                NameArr.push(obj.paymentAccounting.Contact.Name);
+                if(obj.paymentAccounting.Invoice.InvoiceNumber != undefined){
+                  self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
+                }else{
+                  self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceID);
+                }
+              })
+            // NameArr.sort();
+            NameArr = _.chain(NameArr).sort().uniq().value();
+
+            NameArr.forEach(item => {
+                var x = document.getElementById("selectCustomer");
+                var option = document.createElement("option");
+                option.text = item;
+                // console.log()
+                x.add(option);
+            })
     }
+  },
+  mounted() {
+      this.getAllSettings()
+
+  },
+  watch: {
+    '$route': function (id) {
+      console.log(id)
+
+     // this.activetab = "2"
+    }
+  }
+}
 </script>
 
 <style>
