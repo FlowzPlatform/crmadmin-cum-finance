@@ -97,7 +97,7 @@ export default {
         "key": "Name"
       },
       {
-        "title": "EmailAddress",
+        "title": "Email",
         "key": "EmailAddress",
         "sortable": true,
         render:(h,{row})=>{
@@ -203,7 +203,7 @@ export default {
         "key": "DisplayName"
       },
       {
-        "title": "EmailAddress",
+        "title": "Email",
         "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
@@ -253,7 +253,7 @@ export default {
               return "Not available"
           }
           else {
-            return row.BillAddr.Line1 +", "+row.BillAddr.City
+              return row.BillAddr.Line1 +", "+row.BillAddr.City
           }
         }
       },
@@ -499,26 +499,22 @@ export default {
         })
         .then(async function (response) {
           console.log("$$$$$$$$$$$$$$$$$$$",response)
-          self.data6 = response.data[0].data.reverse();
-           self.$Loading.finish();
-           $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
-          // if (response.data[0].data.data) {
-          //   console.log("inside if")
-          //   self.$Loading.finish();
-          //   $('.preload').css("display","none")
-          //   self.$Notice.error({
-          //       duration:0, 
-          //       title: response.data[0].data.data.oauth_problem,
-          //       desc: settingName + ' : ' + response.data[0].data.data.oauth_problem_advice
-          //   });
-          // }
-          // else {
-          //   self.data6 = response.data[0].data.reverse();
-          //   self.$Loading.finish();
-          //   $('.preload').css("display","none")
-          //   self.list = await self.mockTableData1(1,pageSize)
-          // }
+          if (response.data[0].data.data) {
+            console.log("inside if")
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.$Notice.error({
+                duration:0, 
+                title: response.data[0].data.data.oauth_problem,
+                desc: settingName + ' : ' + response.data[0].data.data.oauth_problem_advice
+            });
+          }
+          else {
+            self.data6 = response.data[0].data.reverse();
+            self.$Loading.finish();
+            $('.preload').css("display","none")
+            self.list = await self.mockTableData1(1,pageSize)
+          }
         })
         .catch(function (error) {
             console.log("error",error);

@@ -423,17 +423,15 @@
                 }
             },
             {
-                title: 'Paid',
+                title: 'Paid Amount',
                 sortable: true,
-                render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
-                // render : (h , {row}) => { return  accounting.formatMoney((row.TotalAmt-row.Balance)) }
+                render : (h , {row}) => { return  accounting.formatMoney((row.TotalAmt-row.Balance)) }
             },
             {
                 title: 'Total Amount',
                 key: 'TotalAmt',
                 sortable: true,
-                render : (h , {row}) => { return '$' + row.TotalAmt }
-                // render : (h , {row}) => { return  accounting.formatMoney(row.TotalAmt) }
+                render : (h , {row}) => { return  accounting.formatMoney(row.TotalAmt) }
 
             },
             {
@@ -685,18 +683,16 @@
                 }
             },
              {
-                title: 'Paid',
+                title: 'Paid Amount',
                 key: 'AmountPaid',
                 sortable: true,
-                render:(h,{row})=>{ return '$' + row.AmountPaid  }
-                // render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
+                render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
             },
             {
                 title: 'Total Amount',
                 key: 'Total',
                 sortable: true,
-                render:(h,{row})=>{ return '$' + row.Total }
-                // render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
+                render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
             },
             {
                 title: 'Status',
@@ -1756,11 +1752,28 @@
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {
-              arr.push({
-                title: columnArray[i],
-                key : columnArray[i],
-                sortable: true
-              });
+              if (columnArray[i] == 'Paid' || columnArray[i] == 'Total' ) {
+                arr.push({
+                  title: columnArray[i] + ' Amount',
+                  key : columnArray[i],
+                  sortable: true,
+                  render : (h , {row}) => { return  accounting.formatMoney(row[columnArray[i]]) }
+                });
+              }
+              else if (columnArray[i] == 'Name') {
+                arr.push({
+                  title: 'Customer Name',
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
+              else {
+                arr.push({
+                  title: columnArray[i],
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
             }
             if(modifiedArray.indexOf("Action") != -1){
               modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
