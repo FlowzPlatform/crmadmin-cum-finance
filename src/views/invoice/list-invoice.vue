@@ -669,9 +669,14 @@
             },
             {
                 title: 'Customer Name',
-               // key: 'Contact',
                 sortable: true,
-                render:(h,{row})=>{ return row.Contact.Name }
+                render:(h,{row})=>{ 
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
+                  return h('div', [
+                                
+                                h('span', row.Contact.Name)
+                            ]);
+                }
             },
             {
                 title: 'Date',
