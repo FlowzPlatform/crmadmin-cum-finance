@@ -103,10 +103,18 @@ export default {
         render:(h,{row})=>{
           if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
             {
-              return "Not available"
+              // return "Not available"
+              return h('div', [
+                                
+                                h('span', "Not available")
+                            ]);
             }
             else {
-              return row.EmailAddress
+              // return row.EmailAddress
+              return h('div', [
+                                
+                                h('span', row.EmailAddress)
+                            ]);
             }
           }
       },
@@ -118,10 +126,18 @@ export default {
         render:(h,{row})=>{
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
-              return "Not available"
+              // return "Not available"
+               return h('div', [
+                                
+                                h('span', "Not available")
+                            ]);
             }
             else {
-              return row.Phones[3].PhoneNumber
+              // return row.Phones[3].PhoneNumber
+               return h('div', [
+                                
+                                h('span', row.Phones[3].PhoneNumber)
+                            ]);
             }
           }
       },
@@ -133,10 +149,18 @@ export default {
         render:(h,{row})=>{
           if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
-              return "Not available"
+              // return "Not available"
+               return h('div', [
+                                
+                                h('span', "Not available")
+                            ]);
             }
             else{
-              return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
+              // return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
+               return h('div', [
+                                
+                                h('span', row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber)
+                            ]);
             }
           }
       },
@@ -149,11 +173,19 @@ export default {
           console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
           if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
-              return "Not available"
+              // return "Not available"
+               return h('div', [
+                                
+                                h('span', "Not available")
+                            ]);
             }
           else
             {
-              return row.Phones[2].PhoneNumber
+              // return row.Phones[2].PhoneNumber
+               return h('div', [
+                                
+                                h('span', row.Phones[2].PhoneNumber)
+                            ]);
             }
           }
       },
@@ -164,11 +196,19 @@ export default {
         render:(h,{row})=>{
           if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
           {
-              return "Not available"
+              // return "Not available"
+               return h('div', [
+                                
+                                h('span',  "Not available")
+                            ]);
           }
           else
           {
-            return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+            // return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+             return h('div', [
+                                
+                                h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
+                            ]);
           }
         }
       },

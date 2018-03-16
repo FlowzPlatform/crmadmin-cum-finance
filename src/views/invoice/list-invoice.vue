@@ -684,20 +684,37 @@
                 sortable: true,
                 render:(h,{row})=>{
                   var date1 = moment(row.Date).format('DD-MMM-YYYY')
-                  return date1
+                  
+                  return h('div', [
+                                
+                                h('span', date1)
+                            ]);
+                
                 }
             },
              {
                 title: 'Paid Amount',
                 key: 'AmountPaid',
                 sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
+                render:(h,{row})=>{ 
+                  // return  accounting.formatMoney(row.AmountPaid)  
+                  return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.AmountPaid))
+                            ]);
+                  }
             },
             {
                 title: 'Total Amount',
                 key: 'Total',
                 sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
+                render:(h,{row})=>{ 
+                  // return  accounting.formatMoney(row.Total) 
+                  return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.AmountPaid))
+                            ]);
+                  }
             },
             {
                 title: 'Status',
