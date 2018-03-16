@@ -669,31 +669,31 @@
             },
             {
                 title: 'Customer Name',
-                key: 'Contact',
+               // key: 'Contact',
                 sortable: true,
                 render:(h,{row})=>{ return row.Contact.Name }
             },
             {
                 title: 'Date',
-                key: 'Date',
+                //key: 'Date',
                 sortable: true,
                 render:(h,{row})=>{
                   var date1 = moment(row.Date).format('DD-MMM-YYYY')
                   return date1
                 }
             },
-             {
-                title: 'Paid Amount',
-                key: 'AmountPaid',
-                sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
-            },
-            {
-                title: 'Total Amount',
-                key: 'Total',
-                sortable: true,
-                render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
-            },
+            //  {
+            //     title: 'Paid Amount',
+            //     key: 'AmountPaid',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
+            // },
+            // {
+            //     title: 'Total Amount',
+            //     key: 'Total',
+            //     sortable: true,
+            //     render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
+            // },
             {
                 title: 'Status',
                 key: 'Status',
