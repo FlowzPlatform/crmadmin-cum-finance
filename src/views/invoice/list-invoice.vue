@@ -97,9 +97,9 @@
 
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-            <Table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
+            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></i-table>
+            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></i-table>
+            <i-table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></i-table>
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
@@ -682,18 +682,18 @@
                   return date1
                 }
             },
-            //  {
-            //     title: 'Paid Amount',
-            //     key: 'AmountPaid',
-            //     sortable: true,
-            //     render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
-            // },
-            // {
-            //     title: 'Total Amount',
-            //     key: 'Total',
-            //     sortable: true,
-            //     render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
-            // },
+             {
+                title: 'Paid Amount',
+                key: 'AmountPaid',
+                sortable: true,
+                render:(h,{row})=>{ return  accounting.formatMoney(row.AmountPaid)  }
+            },
+            {
+                title: 'Total Amount',
+                key: 'Total',
+                sortable: true,
+                render:(h,{row})=>{ return  accounting.formatMoney(row.Total) }
+            },
             {
                 title: 'Status',
                 key: 'Status',

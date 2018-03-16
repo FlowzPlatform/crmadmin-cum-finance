@@ -56,9 +56,9 @@
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-        <Table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-        <Table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-        <Table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" border size="small" ref="table" stripe></Table>
+        <i-table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" border size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage"></Page>
