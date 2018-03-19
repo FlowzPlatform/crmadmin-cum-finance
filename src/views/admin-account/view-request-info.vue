@@ -32,7 +32,7 @@
         <Panel name="1">
           PRODUCT
           <p slot="content">
-            <label>
+            <label style="width:-webkit-fill-available;">
           <div class="panel-body" v-for="item in row.productInfo">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
@@ -41,7 +41,7 @@
                   </div>
                 </div>
                 <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
-                  <h1 class="heading-2">{{item.product_name}}</h1>
+                  <h2 class="heading-2">{{item.product_name}}</h2>
                   <div class="skuprice">
                     <div style="text-align: -webkit-center;background: #f5f5f5;
             padding: 7px 0;">Item Number :
@@ -103,14 +103,18 @@
                   <div class="estimate-tag-block">
                     <h3 class="">Product Description</h3>
                       <div class="row">
-                        <div class="estimate-row" v-html="item.description"></div>
+                        <div class="col-sm-12">
+                          <div class="estimate-row" v-html="item.description"></div>
+                        </div>
                       </div>
                     </div>
                 </div>
               <h3>Special Instructions</h3>
               <div class="estimate-tag-block">
-                <div>
-                 {{row.instruction}}
+                <div class="row">
+                  <div class="col-sm-12">
+                    {{row.instruction}}
+                  </div>
                 </div>
               </div>
               </div>
@@ -120,9 +124,9 @@
         </Panel>
         <Panel name="2">
           MY INFORMATION
-            <!-- <p slot="content">
+            <p slot="content">
               <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12">
-                <h4>{{row.user_info.fullname}}</h4>
+                <h4>{{row.productInfo[0].username}}</h4>
                 <p>
                   <span class="address">Office Address</span>
                   <br>
@@ -145,11 +149,11 @@
                   </li>
                   <li>
                     <Icon type="ios-email" size="15"></Icon>
-                    <label style="font-weight:500">{{row.user_info.email}}</label>
+                    <label style="font-weight:500">{{row.productInfo[0].username}}</label>
                   </li>
                 </ul>
               </label>
-            </p> -->
+            </p>
           </Panel>
       </Collapse>
     </Card>
@@ -323,10 +327,6 @@ export default {
     font-weight: 500;
     color: #404040;
 }
-.row {
-    margin-right: -15px;
-    margin-left: -15px;
-}
 .product-color-price-table {
     margin-bottom: 20px;
 
@@ -379,7 +379,5 @@ h3 {
     margin-right: 2px;
     margin-bottom: 2px;
 }
-.panel-body{
-  width: 139%;
-}
+
 </style>

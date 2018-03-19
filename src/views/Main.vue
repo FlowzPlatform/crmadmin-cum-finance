@@ -102,6 +102,7 @@
                                 
                                 <DropdownMenu slot="list">
                                     <!-- <DropdownItem name="ownSpace">Personel Center</DropdownItem> -->
+                                    <DropdownItem name="changePassword" divided>Change Password</DropdownItem>
                                     <DropdownItem name="loginout" divided>Sign Out</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
@@ -299,6 +300,11 @@
                         name: 'login'
                     });
                     this.$Message.success({content:'You have Succesfully Logged Out',duration:3})
+                }
+                else if (name === 'changePassword') {
+                    this.$router.push({
+                        name: 'Change Password'
+                    });
                 }
             },
             checkTag (name) {

@@ -617,7 +617,12 @@
         },
         mounted() {
             this.billData = this.row
-            this.invoiceData()
+            // this.invoiceData()
+        },
+         watch: {
+            'row': async function(id) {
+                  this.invoiceData()
+            }
         }
     };
 </script>

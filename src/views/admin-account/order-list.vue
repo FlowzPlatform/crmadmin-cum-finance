@@ -23,6 +23,15 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#sku"></span>
+                                      <label>Item Number</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="sku">
+                                      <AutoComplete v-model="itemno" :data="itemnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      </AutoComplete>
+                                  </div>
+                              </div>
+                              <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
                                       <label>Name</label>
                                   </div>
@@ -70,7 +79,7 @@
     import moment from 'moment';
     import config from '../../config/customConfig.js'
     import expandRow from './view-order-list.vue';
-
+    import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
     let axios = require('axios'); 
@@ -88,6 +97,8 @@
                 modal1: false,
                 orderid: '',
                 orderidFilter:[],
+                itemno: '',
+                itemnoFilter:[],
                 cname:'',
                 email:'',
                 websiteList: {},
@@ -118,14 +129,20 @@
                         title: 'Name',
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.user_billing_info.name
+                            return h('div', [
+                                
+                                h('span', row.user_billing_info.name)
+                            ]);
                         }
                     },
                     {
                         title: 'Email',
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.user_billing_info.email
+                            return h('div', [
+                                
+                                h('span', row.user_billing_info.email)
+                            ]);
                         }
                     },
                     {
@@ -134,7 +151,10 @@
                         align:  'center',
                         render : (h , {row}) => {
                             var date = moment(row.products[0].createdAt).format('DD-MMM-YYYY')
-                            return date
+                            return h('div', [
+                                
+                                h('span', date)
+                            ]);
                         }
                     },
                     {
@@ -152,14 +172,22 @@
                         width: 115,
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.products.length
+                            return h('div', [
+                                
+                                h('span', row.products.length)
+                            ]);
                         }
                     },
                     {
                         title: 'Total Amount',
                         width: 115,
                         align:  'center',
-                        render : (h , {row}) => { return accounting.formatMoney(row.total) }
+                        render : (h , {row}) => { 
+                            return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.total))
+                            ]);
+                        }
                     },
                     {
                         title: 'Download Order',
@@ -188,7 +216,8 @@
                     }
                 ],
                 data1: [],
-                list1: []
+                list1: [],
+                finalresult: []
             }
         },
         methods: {
@@ -196,13 +225,14 @@
               this.orderid = '';
               this.cname = '';
               this.email = '';
+              this.itemno = '';
             },
             async changeData() {
               console.log("Before this.filterArray------->",this.filterArray)
               this.filterArray = this.list1
                console.log("After this.filterArray------->",this.filterArray)
               var self = this
-
+                self.finalresult = [];
               if(this.orderid != ''){
                 console.log("this.orderid", this.orderid)
                 this.filterArray = _.filter(this.filterArray,  function(item){
@@ -244,6 +274,28 @@
                 this.data1 = this.filterArray
               }
 
+              if(this.itemno != ''){
+                console.log("this.itemno", this.itemno)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                  console.log("item",item)
+                    item.products.forEach(obj => {
+                        console.log("*****************",obj)
+                        if(obj.product_description.sku == self.itemno){
+                            self.finalresult.push(item)
+                            console.log("matched",obj)
+                        }
+                      })
+                    //   return finalresult                
+                });
+                console.log("myarr result",self.finalresult)
+                this.filterArray = self.finalresult
+                 this.data1 = this.filterArray
+              }else{
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+                console.log("myarr",this.filterArray)
+                this.data1 = this.filterArray 
+              }
+
 
             },
             filterMethod (value, option) {
@@ -269,13 +321,33 @@
                     self.websiteList = result
                     console.log("self.websiteList", self.websiteList[0].websiteId)                    
                     self.website = self.websiteList[0].websiteId                  
-                }).catch(function (error) {
-                      console.log("-------",error);
+                }).catch(error => {
+                    console.log("-------",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
-                          desc: error,
-                          duration: 4.5
+                            title: error.response.statusText,
+                            desc: error.response.data.message,
+                            duration: 4.5
                         })
-                    });
+                    }else {
+                        self.$Notice.error({
+                            title: 'Error',
+                            desc: error,
+                            duration: 4.5
+                        })
+                    }
+                });
             },
             listData (val) {
                 this.reset();
@@ -294,8 +366,7 @@
                     //   'Authorization': Cookies.get('auth_token'),
                     //   // 'subscriptionId': Cookies.get('subscriptionId')
                     // }
-                })
-                .then(function (response){
+                }).then(function (response){
                     console.log("response val", response.data)
 
                     self.data1 = _.orderBy(response.data.data, ['created_at'],['desc']);
@@ -304,6 +375,9 @@
                       self.orderidFilter.push(item.id)
                       Namearr.push(item.user_billing_info.name)
                       Emailarr.push(item.user_billing_info.email)
+                      item.products.forEach(obj => {
+                          self.itemnoFilter.push(obj.product_description.sku)
+                      })
                     })
 
                     Namearr = _.chain(Namearr).sort().uniq().value();
@@ -354,11 +428,10 @@
                     data: {
                         "html" : $('#orderList').html()
                     },  
-                })
-                .then(function (response) {
-                    self.$Loading.finish()
+                }).then(function (response) {
                     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
+                    self.$Loading.finish()
                     var arrayBufferView = new Uint8Array( response.data.data );
                     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                     var link=document.createElement('a');

@@ -86,8 +86,8 @@ export const otherRouter = {
         { path: 'General-settings', title: 'Profile Settings', name: 'Profile Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
         { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}}
-
+        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}},
+        { path: 'change-password', title: 'Change Password', icon: 'locked', name: 'Change Password', component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}}
        // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
         
                 
@@ -205,57 +205,89 @@ export const appRouter = [
         ]
     },
     {
-        path: '/admin-account',
-        icon: 'person',
-        title: 'ADMIN ACCOUNT',
-        name: 'adminaccount',
+        path: '/order-list',
+        icon: 'ios-cart',
+        title: 'ORDER LIST',
+        name: 'ORDER LIST',
         component: Main,
         children: [
             { 
                 path: 'order-list', 
-                title: 'Order List',
+                title: 'Ordered List',
                 icon: 'ios-cart',
                 name: 'Ordered List', 
                 component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
-            },
+            }
+        ]
+    },
+    {
+        path: '/request-quote',
+        icon: 'pull-request',
+        title: 'REQUEST QUOTES',
+        name: 'REQUESTED QUOTES',
+        component: Main,
+        children: [
             { 
                 path: 'request-quote', 
                 title: 'Request Quote',
                 icon: 'pull-request',
                 name: 'Requested Quotes', 
                 component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
-            },
-            // { 
-            //     path: 'address-book', 
-            //     title: 'Address Book',
-            //     icon: 'ios-compose',
-            //     name: 'Address book', 
-            //     component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
-            // },
-           // { 
-             //   path: 'list-billing', 
-               // title: 'List of Bills',
-               // icon: 'ios-list-outline',
-              //  name: 'Billing List', 
-               // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
-           // },
-            
-            {
-                path: 'set-swatches',
-                title: 'Set Swatches',
-                icon: 'android-color-palette',
-                name: 'Set Swatches',
-                component: resolve => { require(['@/views/admin-account/set-swatches.vue'], resolve);}
-            },
-            {
-                path: 'change-password',
-                title: 'Change Password',
-                icon: 'locked',
-                name: 'Change Password',
-                component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
             }
         ]
     },
+    // {
+    //     path: '/admin-account',
+    //     icon: 'person',
+    //     title: 'ADMIN ACCOUNT',
+    //     name: 'adminaccount',
+    //     component: Main,
+    //     children: [
+    //         { 
+    //             path: 'order-list', 
+    //             title: 'Order List',
+    //             icon: 'ios-cart',
+    //             name: 'Ordered List', 
+    //             component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
+    //         },
+    //         { 
+    //             path: 'request-quote', 
+    //             title: 'Request Quote',
+    //             icon: 'pull-request',
+    //             name: 'Requested Quotes', 
+    //             component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
+    //         },
+    //         // { 
+    //         //     path: 'address-book', 
+    //         //     title: 'Address Book',
+    //         //     icon: 'ios-compose',
+    //         //     name: 'Address book', 
+    //         //     component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
+    //         // },
+    //        // { 
+    //          //   path: 'list-billing', 
+    //            // title: 'List of Bills',
+    //            // icon: 'ios-list-outline',
+    //           //  name: 'Billing List', 
+    //            // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
+    //        // },
+            
+    //         {
+    //             path: 'set-swatches',
+    //             title: 'Set Swatches',
+    //             icon: 'android-color-palette',
+    //             name: 'Set Swatches',
+    //             component: resolve => { require(['@/views/admin-account/set-swatches.vue'], resolve);}
+    //         },
+    //         {
+    //             path: 'change-password',
+    //             title: 'Change Password',
+    //             icon: 'locked',
+    //             name: 'Change Password',
+    //             component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}
+    //         }
+    //     ]
+    // },
     {
         path: '/invite',
         icon: 'cash',

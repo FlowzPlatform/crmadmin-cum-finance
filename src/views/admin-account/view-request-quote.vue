@@ -32,7 +32,7 @@
         <Panel name="1">
           PRODUCT
           <p slot="content">
-            <label>
+            <label style="width: -webkit-fill-available;">
           <div class="panel-body">
             <div class="row">
               <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
@@ -101,7 +101,7 @@
 
                           <tr>
                             <td>
-                              <i class="white-color-box">
+                              <i class="white-color-box" :style="{ backgroundColor: inx }" >
                                 <img src="">
                               </i>
                             </td>
@@ -119,31 +119,31 @@
                     <h3 class="">Shipping Method</h3>
                       <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                          <div class="estimate-row">Shipping Charge : <span>{{item.shipping_detail.shipping_charge}}</span></div>
+                          <div class="estimate-row"><strong>Shipping Charge : </strong><span v-if="item.shipping_detail.shipping_charge == ''">&nbsp;&nbsp;&nbsp;-</span><span v-else>{{item.shipping_detail.shipping_charge}}</span></div>
                             <div class="estimate-row">
-                              <div>Shipping Address :
+                              <div><strong>Shipping Address :</strong>
                                 <br>{{item.shipping_address.name}},
-                                <br>{{item.shipping_address.city}}
-                                <br>{{item.shipping_address.state}}
+                                <br>{{item.shipping_address.city}} - {{item.shipping_address.postalcode}},
+                                <br>{{item.shipping_address.state}},
                                 <br>{{item.shipping_address.country}}
-                              </div><br>
-                              <div>Postal Code : <span>{{item.shipping_address.postalcode}}</span></div>
+                              </div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                           <div class="estimate-row">
-                            <div>Shipping carrier : <span>{{item.shipping_detail.shipping_carrier}}</span></div>
+                            <div><strong>Shipping Type : </strong><span>{{row.shipping_method.shipping_type}}</span></div>
                           </div>
                           <div class="estimate-row">
-                            <div>Ship Method : <span>{{item.shipping_detail.shipping_method}}</span></div>
+                            <div><strong>Shipping carrier : </strong><span v-if="item.shipping_detail.shipping_carrier == ''">&nbsp;&nbsp;&nbsp;-</span><span v-else>{{item.shipping_detail.shipping_carrier}}</span></div>
+                          </div>
+                          <div class="estimate-row">
+                            <div><strong>Method : </strong><span v-if="item.shipping_detail.shipping_method == ''">&nbsp;&nbsp;&nbsp;-</span><span v-else>{{item.shipping_detail.shipping_method}}</span></div>
                           </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                           <div class="estimate-row">
-                            <div>Requested In Hand Date : <span>{{item.shipping_detail.on_hand_date}}</span></div>
-                          </div>
-                          <div class="estimate-row">
-                            <div>Ship on my account : <span></span></div>
+                            <div><strong>In Hand Date :</strong> <span v-if="item.shipping_detail.on_hand_date == ''">&nbsp;&nbsp;&nbsp;-</span>
+                            <span v-else>{{item.shipping_detail.on_hand_date}}</span></div>
                           </div>
                         </div>
                       </div>
@@ -172,12 +172,14 @@
                     </div>
                   </div>
                 </div>
+            <div v-if="row.special_instruction != ''">    
               <h3>Special Instructions</h3>
               <div class="estimate-tag-block">
                 <div>
                  {{row.special_instruction}}
                 </div>
               </div>
+            </div>
               </div>
             </div>
             </label>
@@ -271,7 +273,7 @@ export default {
         text-align: center;
         background-color: #3f4145;
         padding: 2px;
-        border-top: 3px solid #C11E19
+        /*border-top: 3px solid #C11E19*/
     }
     .data {
         font-weight: 500;
@@ -289,7 +291,7 @@ export default {
   .quantity-price,
   .product-summary {
     background: #f3f2f2;
-    border-left: 5px solid #c51327;
+    /*border-left: 5px solid #c51327;*/
     color: #7e7e7e;
     display: block;
     font-family: 'Roboto',sans-serif;
@@ -316,8 +318,8 @@ export default {
 }
 .quantity-table .table-heading {
     background: #999 none repeat scroll 0 0;
-    border-right: 1px solid #fff;
-    border-top: 0 none;
+    /*border-right: 1px solid #fff;
+    border-top: 0 none;*/
     color: #fff;
     font-family: 'Roboto Condensed',sans-serif;
     font-weight: 300;
@@ -336,7 +338,7 @@ export default {
 }
 .quantity-table .table-content {
     background: #e6e6e6 none repeat scroll 0 0;
-    border: 1px solid #fff;
+    /*border: 1px solid #fff;*/
     color: #444;
     font-size: 16px;
     padding: 6px;
@@ -363,7 +365,7 @@ export default {
     font-weight: 300;
 }
 .border-bottom {
-    border-bottom: 1px #ebebeb solid;
+    /*border-bottom: 1px #ebebeb solid;*/
 }
 .estimate-row {
     margin-bottom: 8px;
@@ -386,8 +388,10 @@ export default {
 }
 .product-color-price-table {
     margin-bottom: 20px;
-    width: 100%;
-    border-color: white;
+    /*width: 100%;*/
+    border-top: solid 1px #e9eaec;
+    border-left: solid 1px #e9eaec;
+    /*border-color: white;*/
 }
 .product-color-price-table td {
     padding-right: 20px;
@@ -404,6 +408,7 @@ export default {
     display: inline-block;
     text-align: left;
 }
+
 i.white-color-box {
     border: solid 1px #ccc;
     height: 30px;
@@ -411,10 +416,12 @@ i.white-color-box {
     background: #fff;
     display: block;
     width: 30px;
+    margin-left: 10px;
+    margin-top: 5px;
 }
 h3 {
     background: #f3f2f2;
-    border-left: 5px solid #c51327;
+    /*border-left: 5px solid #c51327;*/
     color: #7e7e7e;
     display: block;
     font-family: 'Roboto',sans-serif;
@@ -425,7 +432,8 @@ h3 {
     width: 100%;
     line-height: 1.1;
 }
-.product-color-price-table>tr>td{
-  border: none;
+
+.panel-body{
+  width: 100%;
 }
 </style>
