@@ -1,7 +1,7 @@
 <template>
   <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-    <Tabs type="card">
-        <TabPane label="Requested Quote">
+    <Tabs type="card" @on-click="click">
+        <TabPane label="Request Quote">
           <div class="drpdwn" style="display: inline;">
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
@@ -46,8 +46,8 @@
           </div>
           <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
         </TabPane>
-        <TabPane label="Requested Info">
-          <requestInfo></requestInfo>
+        <TabPane label="Request Info">
+          <requestInfo :row="websiteList"></requestInfo>
         </TabPane>
     </Tabs>
     <Modal
@@ -79,7 +79,7 @@ export default {
   return {
     requestQuote: {},
     modal1: false,
-    websiteList: {},
+    websiteList: [],
     website: '',
     userid:'',
     cname: '',
@@ -105,14 +105,20 @@ export default {
           "title": "Name",
           "key": "user_info",
           render: (h,params) => {
-            return params.row.user_info.fullname
+            // return params.row.user_info.fullname
+            return h('div', [
+                h('span', params.row.user_info.fullname)
+              ]); 
           }
       },
       {
           "title": "Product Name",
           "key": "product_name",
           render: (h,params) => {
-            return params.row.product_description.product_name
+            // return params.row.product_description.product_name
+            return h('div', [
+                h('span', params.row.product_description.product_name)
+              ]);
           }
       },
       {
@@ -124,7 +130,10 @@ export default {
         "key": "created_at",
         render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
-                return date1
+                // return date1
+                return h('div', [
+                  h('span', date1)
+                ]);
               }
       },
       {
@@ -158,6 +167,62 @@ export default {
     }
   },
   methods: {
+     click (index) {
+      console.log("Tab clicked", index)
+      if(index == 1){
+        this.getReuestInfoData()
+      }else {
+        this.getReuestQuoteData()
+      }
+    },
+    async getReuestInfoData () {
+      console.log("getReuestInfoData getReuestInfoData getReuestInfoData")
+      var self = this;
+      await axios({
+        method: 'get',
+        url: config.default.subscriptionWebsitesapi,
+        // params : {
+        //   userId:self.userid,
+        // },
+        headers:{
+          'Authorization': Cookies.get('auth_token'),
+          'subscriptionId': Cookies.get('subscriptionId')    
+        }
+        }).then(async function (response) {
+          console.log('response------>',response)
+          // self.list = response.data.data
+          var result = _.uniqBy(response.data.data,'websiteId')
+          self.websiteList = result
+          console.log("self.websiteList self.websiteList self.websiteList", self.websiteList)
+          // self.website = self.websiteList[0].websiteId
+        }).catch(error => {
+            console.log("-------",error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message,
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: 'Error',
+                    desc: error,
+                    duration: 4.5
+                })
+            }
+        });
+    },
     reset() {
       this.cname = '';
       this.pname = '';
@@ -248,17 +313,45 @@ export default {
           'subscriptionId': Cookies.get('subscriptionId')
         } 
         }).then(async function (response) {
-          console.log('response request quote>',response)
-          var result = _.uniqBy(response.data.data,'websiteId')
-          self.websiteList = result
-          self.website = self.websiteList[0].websiteId
-        })
-        .catch(function (error) {
-          console.log("-------",error);
+          console.log('response request quote------>',response.data.data)
+          if(response.data.data.length == 0){
+            console.log("in if condition")
             self.$Notice.error({
-              desc: error,
+              desc: 'Websites not available for this plan',
               duration: 4.5
             })
+          }else{    
+            console.log("in else condition")       
+            var result = _.uniqBy(response.data.data,'websiteId')
+            self.websiteList = result
+            self.website = self.websiteList[0].websiteId
+          }
+        }).catch(error => {
+            console.log("-------",error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message,
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: 'Error',
+                    desc: error,
+                    duration: 4.5
+                })
+            }
         });
     },
     listData (val) {
@@ -281,7 +374,7 @@ export default {
       })
       .then(function (response){
           console.log("response val", response.data)
-          self.list = response.data.data
+          self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.data = self.list
           self.data.forEach(obj => {
             Namearr.push(obj.user_info.fullname)

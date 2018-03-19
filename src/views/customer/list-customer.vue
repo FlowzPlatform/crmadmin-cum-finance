@@ -104,17 +104,15 @@ export default {
           if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
             {
               // return "Not available"
-              return h('div', [
-                                
-                                h('span', "Not available")
-                            ]);
+              return h('div', [              
+                  h('span', "Not available")
+              ]);
             }
             else {
               // return row.EmailAddress
-              return h('div', [
-                                
-                                h('span', row.EmailAddress)
-                            ]);
+              return h('div', [                
+                  h('span', row.EmailAddress)
+              ]);
             }
           }
       },
@@ -127,17 +125,15 @@ export default {
           if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
             {
               // return "Not available"
-               return h('div', [
-                                
-                                h('span', "Not available")
-                            ]);
+               return h('div', [            
+                    h('span', "Not available")
+                ]);
             }
             else {
               // return row.Phones[3].PhoneNumber
-               return h('div', [
-                                
-                                h('span', row.Phones[3].PhoneNumber)
-                            ]);
+               return h('div', [              
+                  h('span', row.Phones[3].PhoneNumber)
+              ]);
             }
           }
       },
@@ -150,17 +146,15 @@ export default {
           if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
             {
               // return "Not available"
-               return h('div', [
-                                
-                                h('span', "Not available")
-                            ]);
+               return h('div', [              
+                  h('span', "Not available")
+              ]);
             }
             else{
               // return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
-               return h('div', [
-                                
-                                h('span', row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber)
-                            ]);
+               return h('div', [              
+                  h('span', row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber)
+              ]);
             }
           }
       },
@@ -174,18 +168,16 @@ export default {
           if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
               // return "Not available"
-               return h('div', [
-                                
-                                h('span', "Not available")
-                            ]);
+               return h('div', [            
+                    h('span', "Not available")
+                ]);
             }
           else
             {
               // return row.Phones[2].PhoneNumber
-               return h('div', [
-                                
-                                h('span', row.Phones[2].PhoneNumber)
-                            ]);
+               return h('div', [            
+                    h('span', row.Phones[2].PhoneNumber)
+                ]);
             }
           }
       },
@@ -197,18 +189,16 @@ export default {
           if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
           {
               // return "Not available"
-               return h('div', [
-                                
-                                h('span',  "Not available")
-                            ]);
+               return h('div', [            
+                    h('span',  "Not available")
+                ]);
           }
           else
           {
             // return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
-             return h('div', [
-                                
-                                h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
-                            ]);
+             return h('div', [                
+                h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
+            ]);
           }
         }
       },
@@ -247,8 +237,11 @@ export default {
         "key": "PrimaryEmailAddr",
         "sortable": true,
         render:(h,{row})=>{
-          return row.PrimaryEmailAddr.Address
-          }
+          // return row.PrimaryEmailAddr.Address
+          return h('div', [
+                h('span', row.PrimaryEmailAddr.Address)
+            ]);
+        }
       },
       {
         "title": "Mobile No.",
@@ -256,7 +249,10 @@ export default {
         "sortable": true,
         "align":"center",
         render:(h,{row})=>{
-              return "Not available"
+              // return "Not available"
+            return h('div', [
+                h('span', "Not available")
+            ]);
           }
       },
       {
@@ -267,10 +263,16 @@ export default {
         render:(h,{row})=>{
           if(row.PrimaryPhone.FreeFormNumber == "'")
             {
-              return "Not available"
+              // return "Not available"
+              return h('div', [
+                  h('span', "Not available")
+              ]);
             }
             else {
-              return row.PrimaryPhone.FreeFormNumber
+              // return row.PrimaryPhone.FreeFormNumber
+              return h('div', [
+                  h('span', row.PrimaryPhone.FreeFormNumber)
+              ]);
             }
           }
       },
@@ -280,7 +282,10 @@ export default {
         "sortable": true,
         "align":"center",
         render:(h,{row})=>{
-              return "Not available"
+              // return "Not available"
+              return h('div', [
+                  h('span', "Not available")
+              ]);
           }
       },
       {
@@ -290,10 +295,16 @@ export default {
         render:(h,{row})=>{
           if(row.BillAddr == "'")
           {
-              return "Not available"
+              // return "Not available"
+              return h('div', [
+                  h('span', "Not available")
+              ]);
           }
           else {
-              return row.BillAddr.Line1 +", "+row.BillAddr.City
+              // return row.BillAddr.Line1 +", "+row.BillAddr.City
+              return h('div', [
+                  h('span', row.BillAddr.Line1 +", "+row.BillAddr.City)
+              ]);
           }
         }
       },
@@ -305,10 +316,16 @@ export default {
         render:(h,{row})=>{
           if(row.Active == true)
             {
-              return "ACTIVE"
+              // return "ACTIVE"
+              return h('div', [
+                  h('span', "ACTIVE")
+              ]);
             }
             else {
-              return 'INACTIVE'
+              // return 'INACTIVE'
+              return h('div', [
+                  h('span', "ACTIVE")
+              ]);
           }
         },
         filters: [
@@ -336,36 +353,51 @@ export default {
         "title": "Customer Name",
         "key": "Name",
         render:(h,{row})=>{
-          console.log("-------------row",row)
-          return row.Name
+          // console.log("-------------row",row)
+          // return row.Name
+            return h('div', [
+                  h('span', row.Name)
+              ]);
           }
       },
       {
         "title": "Email Address",
         "key": "EmailAddress",
         render:(h,{row})=>{
-          return row.EmailAddress
+          // return row.EmailAddress
+          return h('div', [
+                  h('span', row.EmailAddress)
+              ]);
           }
       },
       {
         "title": "Phone Number",
         "key": "PhoneNumber",
         render:(h,{row})=>{
-          return row.PhoneNumber
+          // return row.PhoneNumber
+          return h('div', [
+                  h('span', row.PhoneNumber)
+              ]);
           }
       },
       {
         "title": "Address",
         "key": "Address",
         render:(h,{row})=>{
-          return row.Address
+          // return row.Address
+          return h('div', [
+                  h('span', row.Address)
+              ]);
           }
       },
       {
         "title": "Status",
         "key": "ContactStatus",
         render:(h,{row})=>{
-          return row.ContactStatus
+          // return row.ContactStatus
+          return h('div', [
+                  h('span', row.ContactStatus)
+              ]);
           }
       }
     ],

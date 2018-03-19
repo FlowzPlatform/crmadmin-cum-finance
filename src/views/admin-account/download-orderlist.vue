@@ -1,8 +1,8 @@
 <template>
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Roboto Condensed', sans-serif;font-size:10px">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Open Sans',Helvetica,Arial,sans-serif;font-size:10px">
         <tr>
             <td align="center" valign="top">
-                <table border="0" cellspacing="0" cellpadding="0" width="100%" style="background-color:#f0f0f0;">
+                <table border="0" cellspacing="0" cellpadding="0" width="100%" style="background-color:#f0f0f0;font-family: 'Open Sans',Helvetica,Arial,sans-serif">
                     <tr>
                         <td align="left" valign="top" width="20"></td>
                         <td align="left" valign="top">
@@ -189,27 +189,27 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td align="left" valign="top" style="color:#404040;font-size:10px;border-left:1px solid #ddd;border-right:1px solid #ddd;background-color:#fff;text-align: center">
+                                                <td align="left" valign="top" style="color:#404040;font-size:10px;border-left:1px solid #ddd;border-right:1px solid #ddd;background-color:#fff;text-align: center;width:100%">
                                                     <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                                         <tr>
                                                             <td width="20"></td>
                                                             <td align="left" valign="top" style="text-align: center;line-height: 25px">
-                                                                <table border="0" cellspacing="0" cellpadding="">
+                                                                <table border="0" cellspacing="0" cellpadding="" style="width:50%">
                                                                     <tr>
                                                                         <td valign="top" height="10" align="left"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;">Color</th>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;" width="50">QUANTITY</th>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;" width="50">TOTAL</th>
+                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;">Color</th>
+                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">QUANTITY</th>
+                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">TOTAL</th>
                                                                     </tr>
                                                                     <tr>
                                                                         <td valign="top" height="5" align="left"></td>
                                                                     </tr>
                                                                     <tr v-for="(item,inx) in item.color">
-                                                                        <td style="border-bottom: 1px solid #DDD; font-size:10px;" width="50">{{inx}}</td>
-                                                                        <td style="border-bottom: 1px solid #DDD; font-size:10px;color: #666">{{item}}</td>
-                                                                        <td style="border-bottom: 1px solid #DDD; font-size:10px;color: #666">{{item}}</td>
+                                                                        <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;" width="50">{{inx}}</td>
+                                                                        <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;color: #666">{{item}}</td>
+                                                                        <td style="border-bottom: 1px solid #DDD; font-size:10px;text-align:left;color: #666">{{item}}</td>
                                                                     </tr>
                                                                 </table>
                                                             </td>
@@ -274,7 +274,7 @@
                                                 <td align="left" valign="top" style="color:#fff;font-size:15px;background-color:#ec008c;">
                                                     <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                                         <tr>
-                                                            <td height="10" colspan="4"></td>
+                                                            <td height="8" colspan="4"></td>
                                                         </tr>
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
@@ -283,7 +283,7 @@
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td height="10" colspan="4"></td>
+                                                            <td height="8" colspan="4"></td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -301,7 +301,7 @@
                                     <td align="left" valign="top" style="color:#fff;font-size:15px;background-color:#ec008c;">
                                         <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                             <tr>
-                                                <td height="10" colspan="4"></td>
+                                                <td height="8" colspan="4"></td>
                                             </tr>
                                             <tr>
                                                 <td width="20" align="left" valign="top"></td>
@@ -310,7 +310,7 @@
                                                 <td width="20" align="left" valign="top"></td>
                                             </tr>
                                             <tr>
-                                                <td height="10" colspan="4"></td>
+                                                <td height="8" colspan="4"></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -318,14 +318,18 @@
                                 <tr>
                                     <td valign="top" height="10" align="left"></td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-size:10px;text-align:center;bottom:0px;width: 100%;padding-bottom:5px">
+                                            Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
+                                        </div>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                         <td align="left" valign="top" width="20"></td>
                     </tr>
                 </table>
-                <div style="font-size:10px;margin-top: 1%;bottom: 0px;position: inherit;width: 100%;text-align: -webkit-center;">
-                    Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-                </div>
             </td>
         </tr>
     </table>
