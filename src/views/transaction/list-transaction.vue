@@ -191,45 +191,242 @@ export default {
               sortable: true,
               render:(h,{row})=>{ return row.paymentGateway.id }
             },
-            // {
-            //     title: 'Accounting Id',
-            //     key: 'AccountingId',
-            //     sortable: true,
-            //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
-            // },
-            {
 
-                title: 'Account Id',
-                key: 'value',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.Account.value }
-            },
-            {
-                title: 'Invoice No',
-                key: 'InvoiceId',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.Invoice.InvoiceID }
-            },
-            {
-                title: 'Customer Name',
-                key: 'Contact',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.Contact.Name }
-            },
-            {
-                title: 'Date',
-                key: 'Date',
-                sortable: true,
-                render:(h,{row})=>{
-                var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
-                return date1
-                }
-            },
-            {
-                title: 'Amount',
-                key: 'Amount',
-                sortable: true,
-                render:(h,{row})=>{ return row.paymentAccounting.Amount }
+            tabIndex : {
+                default: function () { return 0 }
+            }
+        },
+        data() {
+            return {
+                flag: true,
+                invnoFilter : [],
+                nodataMsg: 'No Data',
+                // list1: this.list,
+                tabPanes : [],
+                // tabIndex: 0,
+                spinShow: true,
+                data : [],
+                len:1,
+                // list: [],
+                columns3:[],
+                columns1: [
+                    {
+
+                        title: 'Payment Id',
+                        key: 'PaymentId',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                            // return row.paymentGateway.id
+                            return h('div', [
+                              h('span', row.paymentGateway.id)
+                            ]); 
+                        }
+                    },
+                    //   {
+                    //       title: 'Accounting Id',
+                    //       key: 'AccountingId',
+                    //       sortable: true,
+                    //       render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+                    //   },
+
+
+                    {
+                        title: 'Invoice No.',
+                        key: 'InvoiceNumber',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                            // return row.paymentAccounting.Invoice.InvoiceNumber
+                            return h('div', [
+                              h('span', row.paymentAccounting.Invoice.InvoiceNumber)
+                            ]); 
+                        }
+                    },
+                    {
+                        title: 'Customer Name',
+                        key: 'Contact',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                            // return row.paymentAccounting.Contact.Name 
+                            return h('div', [
+                              h('span', row.paymentAccounting.Contact.Name)
+                            ]); 
+                        }
+                    },
+                    {
+                        title: 'Date',
+                        key: 'Date',
+                        sortable: true,
+                        render:(h,{row})=>{
+                            var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                            return h('div', [
+                                h('span', date)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Total Amount',
+                        key: 'Amount',
+                        sortable: true,
+                        render:(h,{row})=>{
+                          return h('div', [
+                            h('span', accounting.formatMoney(row.paymentAccounting.Amount))
+                          ]);  
+                          // return  accounting.formatMoney(row.paymentAccounting.Amount) 
+                        }
+                    }
+                ],
+                columns2: [
+                    {
+
+                    title: 'Payment Id',
+                    key: 'PaymentId',
+                    sortable: true,
+                    render:(h,{row})=>{ 
+                      // return row.paymentGateway.id 
+                      return h('div', [
+                          h('span', row.paymentGateway.id)
+                        ]);
+                      }
+                    },
+                    // {
+                    //     title: 'Accounting Id',
+                    //     key: 'AccountingId',
+                    //     sortable: true,
+                    //     render:(h,{row})=>{ return row.paymentAccounting.PaymentID }
+                    // },
+                    {
+
+                        title: 'Account Id',
+                        key: 'value',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentAccounting.Account.value 
+                          return h('div', [
+                              h('span', row.paymentAccounting.Account.value)
+                            ]); 
+                        }
+                    },
+                    {
+                        title: 'Invoice No',
+                        key: 'InvoiceId',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentAccounting.Invoice.InvoiceID
+                          return h('div', [
+                              h('span', row.paymentAccounting.Invoice.InvoiceID)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Customer Name',
+                        key: 'Contact',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentAccounting.Contact.Name
+                          return h('div', [
+                              h('span', row.paymentAccounting.Contact.Name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Date',
+                        key: 'Date',
+                        sortable: true,
+                        render:(h,{row})=>{
+                            var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                            return h('div', [
+                              h('span', date1)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Total Amount',
+                        key: 'Amount',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                           return h('div', [
+                              h('span', accounting.formatMoney(row.paymentAccounting.Amount))
+                            ]);
+                        }
+                    }
+                ],
+                columns3: [
+                    {
+                        title: 'Payment Id',
+                        key: 'PaymentId',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentGateway.id
+                          return h('div', [
+                              h('span', row.paymentGateway.id)
+                            ]);
+                          }
+                    },
+                    // {
+                    //     title: 'Accounting Id',
+                    //     key: 'AccountingId',
+                    //     sortable: true,
+                    //     render:(h,{row})=>{ return row.id }
+                    // },
+                    // {
+                    //     title: 'Account Id',
+                    //     key: 'value',
+                    //     sortable: true,
+                    //     render:(h,{row})=>{ return row.paymentAccounting.Account.value }
+                    // },
+                    {
+                        title: 'Invoice No',
+                        key: 'InvoiceId',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentAccounting.Invoice.InvoiceNumber
+                          return h('div', [
+                              h('span', row.paymentAccounting.Invoice.InvoiceNumber)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Customer Name',
+                        key: 'Contact',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return row.paymentAccounting.Contact.Name
+                          return h('div', [
+                              h('span', row.paymentAccounting.Contact.Name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Payment Date',
+                        key: 'Date',
+                        sortable: true,
+                        render:(h,{row})=>{
+                            var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
+                            // return date1
+                            return h('div', [
+                              h('span', date1)
+                            ]);
+                            // return row.paymentAccounting.Invoice.Date
+                        }
+                    },
+                    {
+                        title: 'Total Amount',
+                        key: 'Amount',
+                        sortable: true,
+                        render:(h,{row})=>{ 
+                          // return  accounting.formatMoney(row.paymentAccounting.Amount)
+                          return h('div', [
+                              h('span', accounting.formatMoney(row.paymentAccounting.Amount))
+                            ]);
+                        }
+                    }
+                ],
+                filterArray: [],
+                cname: '',
+                invoiceId : '',
+                dategt: '',
+                datelt: ''
+
             }
         ],
         columns3: [

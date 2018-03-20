@@ -2,7 +2,7 @@
   <div>
     <div class="drpdwn" style="text-align:center">
       <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-          <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+          <Option v-for="item in row" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
       </Select>
     </div>
     <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
@@ -19,6 +19,9 @@ import _ from 'lodash'
 export default {
   name: 'myaccount',
   components: { expandRow },
+  props: {
+    row: Array
+  },
   data () {
   return {
     websiteList: {},
@@ -41,11 +44,36 @@ export default {
           "key": "id"
       },
       {
+
+          "title": "Name",
+          "key": "username",
+          render: (h,params) => {
+            // return params.row.productInfo[0].username
+             return h('div', [
+                h('span', params.row.productInfo[0].username)
+              ]); 
+          }
+      },
+      {
+          "title": "Product Name",
+          "key": "product_name",
+          render: (h,params) => {
+            // return params.row.productInfo[0].product_name
+            return h('div', [
+                h('span', params.row.productInfo[0].product_name)
+              ]);
+          }
+      },
+      {
+
         "title": "TOTAL ITEM",
         // "key": "productInfo",
         render:(h,{row})=>{
           var total = row.productInfo.length
-          return total
+          // return total
+          return h('div', [
+                h('span', total)
+              ]);
         }
       },
       {
@@ -53,7 +81,10 @@ export default {
         // "key": "created_at",
         render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
-                return date1
+                return h('div', [
+                  h('span', date1)
+                ]);
+                // return date1
               }
       }
     ],
@@ -61,33 +92,50 @@ export default {
     }
   },
   methods: {
-    async getReuestQuoteData () {
-      var self = this;
-      await axios({
-        method: 'get',
-        url: config.default.subscriptionWebsitesapi,
-        // params : {
-        //   userId:self.userid,
-        // },
-        headers:{
-          'Authorization': Cookies.get('auth_token'),
-          'subscriptionId': Cookies.get('subscriptionId')    
-        }
-        }).then(async function (response) {
-          console.log('response------>',response)
-          // self.list = response.data.data
-          var result = _.uniqBy(response.data.data,'websiteId')
-          self.websiteList = result
-          self.website = self.websiteList[0].websiteId
-        })
-        .catch(function (error) {
-          console.log("-------",error);
-            // self.$Message.error(error)
-            self.$Message.error({
-              content: error,
-              duration: 4.5
-            })
+
+    reset() {
+      this.cname = '';
+      this.pname = '';
+    },
+    async changeData() {
+      console.log("Before this.filterArray------->",this.filterArray)
+      this.filterArray = this.data
+       console.log("After this.filterArray------->",this.filterArray)
+      var self = this
+
+      if(this.cname != ''){
+        console.log("this.cname", this.cname)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)                  
+            return item.productInfo[0].username === self.cname;                  
         });
+        console.log("myarr",this.filterArray)
+        console.log(" Filter this.filterArray------->",this.filterArray)
+        this.list = this.filterArray
+        console.log("After Filter this.filterArray------->",this.filterArray)
+      }else{
+        console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+        console.log("myarr",this.filterArray)
+        this.list = this.filterArray
+      }
+
+      if(this.pname != ''){
+        console.log("this.pname", this.pname)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+          console.log("item",item)                  
+            return item.productInfo[0].product_name === self.pname;                  
+
+        });
+        console.log("myarr",this.filterArray)
+        console.log(" Filter this.filterArray------->",this.filterArray)
+        this.list = this.filterArray
+        console.log("After Filter this.filterArray------->",this.filterArray)
+      }else{
+        console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.pname)
+        console.log("myarr",this.filterArray)
+        this.list = this.filterArray
+      }
+
     },
     listData (val) {
       var self = this
@@ -106,25 +154,32 @@ export default {
       })
       .then(function (response){
           console.log("response val", response.data)
-          self.list = response.data.data
+
+          self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
+          self.data = self.list
+          self.data.forEach(obj => {
+            Namearr.push(obj.productInfo[0].username)
+            Productarr.push(obj.productInfo[0].product_name)
+          })
+          Namearr = _.chain(Namearr).sort().uniq().value();
+          Productarr = _.chain(Productarr).sort().uniq().value();
+          Namearr.forEach(item => {
+              var x = document.getElementById("selectCustomer");
+              var option = document.createElement("option");
+              option.text = item;
+              console.log()
+              x.add(option);
+          })
+          Productarr.forEach(item => {
+              var x = document.getElementById("selectProduct");
+              var option = document.createElement("option");
+              option.text = item;
+              console.log()
+              x.add(option);
+          })
+
       })
     },
-  },
-  async mounted(){
-    // var self = this
-    // await axios({
-    //   method: 'get',
-    //   url: config.default.userDetail,
-    //   headers: {'Authorization': Cookies.get('auth_token')}
-    //   }).then(async function (response) {
-    //     self.userid = response.data.data._id
-    //     console.log('user detail response------>',self.userid)
-    //   })
-    //   .catch(function (error) {
-    //     console.log("-------",error);
-    //       self.$Message.error(error)
-    //   });
-  this.getReuestQuoteData();
   }
 }
 </script>

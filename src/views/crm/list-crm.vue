@@ -6,6 +6,7 @@
 	import axios from 'axios'
 	import Cookies from 'js-cookie';
 	import _ from 'lodash';
+	import psl from 'psl';
 	var crmpostapiurl = config.default.serviceUrl;
 	export default {
 		data () {
@@ -30,10 +31,14 @@
 						sortable: true,
 						render : (h,{row})=>{
 							if(Array.isArray(row.assignee)){
-								return row.assignee.join()	
+								return h('div', [
+                                	h('span', row.assignee.join())
+                            	]);	
 							} 
 							else {
-									return row.assignee
+								return h('div', [
+                                	h('span', row.assignee)
+                            	]);
 							}	
 						}
 					},
@@ -98,24 +103,45 @@
 						width: 100,
 						align: 'center',
 						render: (h, params) => {
-							return h('Button', {
-				          props: {
+							return h('div', [
+                                h('Button', {
+                                    props: {
 										type: 'text',
 										size: 'large',
 										icon: 'ios-compose-outline'
-				          },
-				          style: {
+				          			},
+				          			style: {
 										marginRight: '3px',
 										padding: '0px',
 										fontSize: '20px',
 										color: '#2d8cf0'
-				          },
-				          on: {
-				            click: () => {
-				              this.show(params.row.id)
-				            }
-				          }
-				      }, '')
+				          			},
+                                    on: {
+				            			click: () => {
+				              				this.show(params.row.id)
+				            			}
+				          			}
+                                }, ''),
+                                h('Button', {
+									props: {
+										type: 'text',
+										size: 'large',
+										icon: 'ios-trash-outline'
+									},
+									style: {
+										color: 'red',
+										marginLeft: '3px',
+										padding: '0px',
+										fontSize: '20px',
+									},
+									on: {
+										click: () => {
+											// this.flag = true
+											this.deleteList(params.row)
+										}
+									}
+								})
+                            ]);
 						}
 					}
 				],
@@ -126,6 +152,48 @@
 			show(index) {
 				console.log('!!!!!!!!', index)
 				this.$router.push('/edit-crm/'+index)
+			},
+			deleteList(item){
+				console.log("params params params", item)
+				var itemId = item.id
+				console.log('deleteItem', itemId)
+				let self = this
+				this.$Modal.confirm({
+					okText: 'OK',
+					cancelText: 'Cancel',
+					title: 'Title',
+					content: '<p>Are you sure to delete?<p>',
+					onOk: () => {
+						var userid = Cookies.get('user')
+            			self.$Message.success('CRM Case Deleted Successfully');						
+						var data1= {
+							"isDeleted": true,
+							"deletedBy": userid,
+							"deletedAt": new Date()
+						}
+						axios({
+							method:'patch',
+							url: crmpostapiurl +'crm-case/' + itemId,
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							},
+							data: data1
+						})
+						.then(function(response) {
+							console.log("delete response.....",response)
+							for(let i=0;i<self.data5.length;i++){
+								console.log("for..................",self.data5[i])
+								if(response.data.id == self.data5[i].id){
+									self.data5.splice(i,1)
+								}
+							}
+						});
+					},
+					onCancel: () => {
+						// this.$Message.info('Clicked cancel');
+					}
+				})
+				// console.log("params params params after", params)
 			}
 		},
 		mounted() {
@@ -133,21 +201,51 @@
 			self.$Loading.start()
 			axios.get(crmpostapiurl +'crm-case/', {
 				headers: {
-						Authorization : Cookies.get('auth_token')
+						'Authorization' : Cookies.get('auth_token'),
+						'subscriptionId': Cookies.get('subscriptionId')
 					}
 			})
 			.then(function (response) {
-				console.log(response)
+				console.log(response.data.data)
 				 // setTimeout(function(){
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)
-				self.data5 = _.orderBy(response.data.data, ['createdAt'],['desc']);
+				response.data.data.forEach(function(item,index){
+					console.log("item index",item )
+					if (!item.hasOwnProperty('isDeleted') || !item.isDeleted){
+						self.data5.push(item);
+					}
+				})
+				self.data5 = _.orderBy(self.data5, ['createdAt'],['desc']);
 				self.$Loading.finish()
 				console.log( "response.data.data", self.data5)
-			 })
-			 .catch(function (error) {
-				console.log(error);
-			 });
+			 }).catch(error => {
+                    console.log("-------",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message,
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: 'Error',
+                            desc: error,
+                            duration: 4.5
+                        })
+                    }
+                });
 		}
 	 }
 </script>
@@ -156,4 +254,3 @@
         word-break: break-word;
     }
 </style>
-

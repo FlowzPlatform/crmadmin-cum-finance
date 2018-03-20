@@ -97,9 +97,9 @@
 
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
-            <Table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></Table>
-            <Table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></Table>
+            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></i-table>
+            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></i-table>
+            <i-table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></i-table>
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
@@ -429,7 +429,12 @@
                 title: 'Customer Name',
                 key: 'CustomerRef',
                 sortable: true,
-                render : (h , {row}) => { return row.CustomerRef.name}
+                render : (h , {row}) => { 
+                  // return row.CustomerRef.name
+                  return h('div', [
+                    h('span', row.CustomerRef.name)
+                  ]);
+                }
             },
             {
                 title: 'Date',
@@ -437,19 +442,37 @@
                 sortable: true,
                 render : (h,{row}) => {
                   var date1 = moment(row.TxnDate).format('DD-MMM-YYYY')
-                  return date1
+                  // return date1
+                  return h('div', [
+                                
+                                h('span', date1)
+                            ]);
                 }
             },
             {
                 title: 'Paid',
                 sortable: true,
-                render : (h , {row}) => { return '$' + (row.TotalAmt-row.Balance) }
+
+                render : (h , {row}) => { 
+                  // return  accounting.formatMoney((row.TotalAmt-row.Balance)) 
+                  return h('div', [
+                    h('span', accounting.formatMoney((row.TotalAmt-row.Balance)))
+                  ]);
+                }
+
             },
             {
                 title: 'Amount',
                 key: 'TotalAmt',
                 sortable: true,
-                render : (h , {row}) => { return '$' + row.TotalAmt }
+
+                render : (h , {row}) => { 
+                  // return  accounting.formatMoney(row.TotalAmt)
+                  return h('div', [
+                    h('span', accounting.formatMoney((row.TotalAmt-row.Balance)))
+                  ]);
+                }
+
 
             },
             {
@@ -457,9 +480,15 @@
                 sortable: true,
                 render : (h , {row}) => {
                     if(row.TotalAmt-row.Balance != row.TotalAmt){
-                     return "AUTHORISED"
+                      return h('div', [
+                        h('span',"AUTHORISED")
+                      ]);
+                     // return "AUTHORISED"
                    }else{
-                     return "PAID"
+                      return h('div', [
+                        h('span',"PAID")
+                      ]);
+                     // return "PAID"
                    }
                 }
             },
@@ -687,30 +716,56 @@
             },
             {
                 title: 'Customer Name',
-                key: 'Contact',
                 sortable: true,
-                render:(h,{row})=>{ return row.Contact.Name }
+                render:(h,{row})=>{ 
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
+                  return h('div', [
+                                
+                                h('span', row.Contact.Name)
+                            ]);
+                }
             },
             {
                 title: 'Date',
-                key: 'Date',
+                //key: 'Date',
                 sortable: true,
                 render:(h,{row})=>{
                   var date1 = moment(row.Date).format('DD-MMM-YYYY')
-                  return date1
+                  
+                  return h('div', [
+                                
+                                h('span', date1)
+                            ]);
+                
                 }
             },
              {
                 title: 'Paid',
                 key: 'AmountPaid',
                 sortable: true,
-                render:(h,{row})=>{ return '$' + row.AmountPaid  }
+
+                render:(h,{row})=>{ 
+                  // return  accounting.formatMoney(row.AmountPaid)  
+                  return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.AmountPaid))
+                            ]);
+                  }
+
             },
             {
                 title: 'Total',
                 key: 'Total',
                 sortable: true,
-                render:(h,{row})=>{ return '$' + row.Total }
+
+                render:(h,{row})=>{ 
+                  // return  accounting.formatMoney(row.Total) 
+                  return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.AmountPaid))
+                            ]);
+                  }
+
             },
             {
                 title: 'Status',
@@ -1772,11 +1827,35 @@
             let arr = [];
             let len = columnArray.length;
             for (let i = 0; i < len; i++) {
-              arr.push({
-                title: columnArray[i],
-                key : columnArray[i],
-                sortable: true
-              });
+
+              if (columnArray[i] == 'Paid' || columnArray[i] == 'Total' ) {
+                arr.push({
+                  title: columnArray[i] + ' Amount',
+                  key : columnArray[i],
+                  sortable: true,
+                  render:(h,{row})=>{ 
+                    return h('div', [
+                      h('span', accounting.formatMoney(row[columnArray[i]]))
+                    ]);
+                  }
+                  // render : (h , {row}) => { return  accounting.formatMoney(row[columnArray[i]]) }
+                });
+              }
+              else if (columnArray[i] == 'Name') {
+                arr.push({
+                  title: 'Customer Name',
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
+              else {
+                arr.push({
+                  title: columnArray[i],
+                  key : columnArray[i],
+                  sortable: true
+                });
+              }
+
             }
             if(modifiedArray.indexOf("Action") != -1){
               modifiedArray.push(modifiedArray.splice(modifiedArray.indexOf("Action"), 1)[0]);
