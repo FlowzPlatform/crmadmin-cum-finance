@@ -4,10 +4,12 @@
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
             </Select>
+
+            <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+       
         </div>
 
-          <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
-        <div class="panel panel-default panel-group" id="accordion13" style="border: none;margin-top:1%;text-align: -webkit-left;">
+           <div class="panel panel-default panel-group" id="accordion13" style="border: none;margin-top:1%;text-align: -webkit-left;">
               <!-- <div class="panel-heading">
               </div> -->
               <div class="panel-collapse collapse" id="collapseTwo">
@@ -194,7 +196,7 @@
                         }
                     },
                     {
-                        title: 'Download Order',
+                        title: 'Download',
                         width: 100, 
                         align:  'center',
                         render: (h, params) => {
@@ -345,8 +347,8 @@
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
                             title: error.response.statusText,
-                            desc: error.response.data.message,
-                            duration: 4.5
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
                         })
                     }else {
                         self.$Notice.error({

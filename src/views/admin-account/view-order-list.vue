@@ -152,6 +152,7 @@
     	margin-bottom: 15px;
     }
     
+    
 </style>
 <style>
     .quantity-table .owl-carousel .owl-nav.disabled{
@@ -179,6 +180,10 @@
         .quantity-table .quantity-table-disc {
             overflow: inherit !important;
         }
+         .ivu-collapse-content {
+            overflow: hidden !important;
+        }
+
 </style>
 <template>
     <div>
@@ -616,11 +621,12 @@
             }
         },
         mounted() {
-            this.billData = this.row
+            
             // this.invoiceData()
         },
          watch: {
             'row': async function(id) {
+                  this.billData = this.row
                   this.invoiceData()
             }
         }

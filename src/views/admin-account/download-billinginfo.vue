@@ -4,7 +4,7 @@
             <div id="logo" style="float: left;margin-top: 8px;">
                 <img :src="emailDataCompany.logo" style="height: 70px;">
             </div>
-            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
+            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
                 <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
                 <div>{{emailDataCompany.address.country}}</div>
@@ -15,7 +15,7 @@
 
         </header>
         <main>
-            <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px;font-family: Verdana;">
+            <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
                     <div  style="color: #777777;">INVOICE TO:</div>
                     <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.user_billing_info.name}}</h2>
@@ -31,7 +31,7 @@
                     <!--<div  style="font-size: 12px;color: #777777;">Due Date: {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}}</div>-->
                 </div>
             </div>
-            <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
+            <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;margin-bottom:20px;">
                 <thead>
                     <tr>
                         <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
@@ -81,9 +81,9 @@
                     </tr>
                 </tfoot>
             </table>
-            <div id="thanks" style="font-size: 16px;margin-bottom: 10px;font-family: Verdana;color: #555555;">Thank you!</div>
+            <div id="thanks" style="font-size: 16px;margin-bottom: 10px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;color: #555555;">Thank you!</div>
         </main>
-        <footer style="font-size:12px;font-family: Verdana;">
+        <footer style="font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
             Invoice was created on a computer and is valid without the signature and seal.
             <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
                 Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.

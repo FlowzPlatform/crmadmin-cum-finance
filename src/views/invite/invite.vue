@@ -6,10 +6,10 @@
                             <span>Invite</span>
                         </header>
         <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <el-input placeholder="Please enter email id" v-model="input"></el-input>
         </div>  
-        <div class="col-md-4" >
+        <div class="col-md-3" >
             <el-select no-data-text="No Role Found" v-model="value1" placeholder="Select Role" style="width:38   0px">
             <el-option
             v-for="item in options"
@@ -19,7 +19,7 @@
             </el-option>
         </el-select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <el-select no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
                 <el-option
                 v-for="item in options2"
@@ -28,7 +28,10 @@
                 :value="item.value2">
                 </el-option>
             </el-select>
-        <el-button type="primary" :loading="loading" @click="inviteNow()">Invite Now</el-button>
+        
+        </div>
+        <div class="col-md-3">
+            <el-button type="primary" :loading="loading" @click="inviteNow()">Invite Now</el-button>
         </div>
         </div>
 
