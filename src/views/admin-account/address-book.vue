@@ -313,10 +313,7 @@
                 })
                 .catch(function (error) {
                     console.log("-------",error);
-                    self.$Notice.error({
-		              desc: error,
-		              duration: 4.5
-		            })
+                    self.$Message.error(error)
             });
             this.init()
         }

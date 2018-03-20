@@ -1,47 +1,10 @@
 <template>
-  <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-    <div class="drpdwn" style="display: inline;">
+  <div>
+    <div class="drpdwn" style="text-align:center">
       <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
           <Option v-for="item in row" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
       </Select>
     </div>
-              <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion11" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
-        <div class="panel panel-default panel-group" id="accordion11" style="border: none;margin-top:1%;text-align: -webkit-left;">
-              <!-- <div class="panel-heading">
-              </div> -->
-              <div class="panel-collapse collapse" id="collapseTwo">
-                  <div class="panel-body">
-                      <form>
-                          <div class="collapse-maindiv maindiv" >
-                              <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#username"></span>
-                                      <label>Name</label>
-                                  </div>
-                                  <div class="panel-collapse collapse" id="username">
-                                      <select class="form-control"  v-model="cname" id="selectCustomer">
-                                        <option value="">All</option>
-                                      </select>
-                                  </div>
-                              </div>
-                              <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#productname"></span>
-                                      <label>Product Name</label>
-                                  </div>
-                                  <div class="panel-collapse collapse" id="productname">
-                                      <select class="form-control"  v-model="pname" id="selectProduct">
-                                        <option value="">All</option>
-                                      </select>
-                                  </div>
-                              </div>
-                              <div style="margin-top: 5px;">
-                                <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
-                                <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
-                              </div>
-                          </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
     <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
   </div>
 </template>
@@ -64,8 +27,6 @@ export default {
     websiteList: {},
     website: '',
     userid:'',
-    cname: '',
-    pname: '',
     columns1:[
       {
         type: 'expand',
@@ -83,6 +44,7 @@ export default {
           "key": "id"
       },
       {
+
           "title": "Name",
           "key": "username",
           render: (h,params) => {
@@ -103,6 +65,7 @@ export default {
           }
       },
       {
+
         "title": "TOTAL ITEM",
         // "key": "productInfo",
         render:(h,{row})=>{
@@ -125,11 +88,11 @@ export default {
               }
       }
     ],
-    list: [],
-    data: []
+    list: []
     }
   },
   methods: {
+
     reset() {
       this.cname = '';
       this.pname = '';
@@ -161,6 +124,7 @@ export default {
         this.filterArray = _.filter(this.filterArray,  function(item){
           console.log("item",item)                  
             return item.productInfo[0].product_name === self.pname;                  
+
         });
         console.log("myarr",this.filterArray)
         console.log(" Filter this.filterArray------->",this.filterArray)
@@ -174,12 +138,6 @@ export default {
 
     },
     listData (val) {
-      this.reset();
-      var Namearr = []
-      var Productarr = []            
-      $('#selectCustomer').children('option:not(:first)').remove();
-      $('#selectProduct').children('option:not(:first)').remove();
-               
       var self = this
       var len
       console.log("val", val)
@@ -196,6 +154,7 @@ export default {
       })
       .then(function (response){
           console.log("response val", response.data)
+
           self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.data = self.list
           self.data.forEach(obj => {
@@ -218,14 +177,8 @@ export default {
               console.log()
               x.add(option);
           })
+
       })
-      .catch(function (error) {
-          console.log("-------",error);
-            self.$Notice.error({
-              desc: error,
-              duration: 4.5
-            })
-        });
     },
   }
 }

@@ -1,10 +1,11 @@
 <template>
-    <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-        <div class="drpdwn" style="display: inline;">
+    <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; ">
+        <div class="drpdwn" style="text-align:center">
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
             </Select>
         </div>
+
           <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
         <div class="panel panel-default panel-group" id="accordion13" style="border: none;margin-top:1%;text-align: -webkit-left;">
               <!-- <div class="panel-heading">
@@ -60,6 +61,7 @@
                   </div>
               </div>
           </div>
+
         <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
@@ -91,16 +93,18 @@
         name: 'orderlist',
         components: { expandRow , downloadOrderList},
         data() {
-            return {
-                filterArray: [],
+            return { 
                 value1: '1',
+
                 modal1: false,
+
                 orderid: '',
                 orderidFilter:[],
                 itemno: '',
                 itemnoFilter:[],
                 cname:'',
                 email:'',
+
                 websiteList: {},
                 website: '',
                 orderList: {},
@@ -194,27 +198,28 @@
                         width: 100, 
                         align:  'center',
                         render: (h, params) => {
-                            return h('Button', {
-                                props: {
-                                    type: 'text',
-                                    size: 'large',
-                                    icon: 'ios-cloud-download-outline'
-                                },
-                                style: {
-                                    marginRight: '3px',
-                                    padding: '0px',
-                                    fontSize: '20px',
-                                    color: '#2d8cf0'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.show(params)
-                                    }
-                                }
-                            }, '')
-                        }
+							return h('Button', {
+				                props: {
+									type: 'text',
+									size: 'large',
+									icon: 'ios-cloud-download-outline'
+				                },
+				                style: {
+									marginRight: '3px',
+									padding: '0px',
+									fontSize: '20px',
+									color: '#2d8cf0'
+				                },
+				                on: {
+				                    click: () => {
+				                        this.show(params)
+				                    }
+				                }
+				            }, '')
+						}
                     }
                 ],
+
                 data1: [],
                 list1: [],
                 finalresult: []
@@ -301,6 +306,7 @@
             filterMethod (value, option) {
               return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
+
             init () {
                 var self = this
                 console.log("config.default.orderapi", config.default.orderapi)
@@ -314,13 +320,15 @@
                       'Authorization': Cookies.get('auth_token'),
                       'subscriptionId': Cookies.get('subscriptionId')
                     } 
-                }).then(function (response){
+                })
+                .then(function (response){
                     console.log("response", response.data)
                     var result = _.uniqBy(response.data.data,'websiteId')
                     console.log("result", result)
                     self.websiteList = result
                     console.log("self.websiteList", self.websiteList[0].websiteId)                    
                     self.website = self.websiteList[0].websiteId                  
+
                 }).catch(error => {
                     console.log("-------",error);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -348,14 +356,10 @@
                         })
                     }
                 });
+
             },
             listData (val) {
-                this.reset();
                 var self = this
-                var Namearr = []
-                var Emailarr = []
-                $('#selectCustomer').children('option:not(:first)').remove();
-                $('#selectEmail').children('option:not(:first)').remove();
                 var len
                 console.log("val", val)
                 axios.get( config.default.orderapi , {
@@ -368,8 +372,8 @@
                     // }
                 }).then(function (response){
                     console.log("response val", response.data)
-
                     self.data1 = _.orderBy(response.data.data, ['created_at'],['desc']);
+
                     self.list1 = self.data1
                     self.data1.forEach(item => {
                       self.orderidFilter.push(item.id)
@@ -403,6 +407,7 @@
                           duration: 4.5
                         })
                     });
+
             },
             show (params) {
                 var self = this
@@ -420,7 +425,7 @@
             },
             async download() {
                 var self = this
-                self.$Loading.start()
+		        self.$Loading.start()
 
                 await axios({
                     method: 'post',
@@ -438,13 +443,7 @@
                     link.href=window.URL.createObjectURL(blob);
                     link.download=self.orderList.id == undefined ? "custom_Invoice" : self.orderList.id;
                     link.click();
-                }).catch(function (error) {
-                      console.log("-------",error);
-                        self.$Notice.error({
-                          desc: error,
-                          duration: 4.5
-                        })
-                    });    
+                })    
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);

@@ -133,6 +133,18 @@ export default {
           this.showConfirmpassword = "password"
         }
       }
+      // if(this.showCurrentpassword == "password"){
+      //   this.showCurrentpassword = "text"
+      // } else if(this.showCurrentpassword == "text") {
+      //   this.showCurrentpassword = "password"
+      // }
+      //
+      // if(this.showNewpassword == "password"){
+      //   this.showNewpassword = "text"
+      // } else if(this.showNewpassword == "text") {
+      //   this.showNewpassword = "password"
+      // }
+
     },
     forgotPassword(){
       this.showForgotPassword = true;
@@ -158,18 +170,12 @@ export default {
               .then(function(response) {
                   console.log(response)
                   if (response.data.code == 200) {
-                    self.$Notice.success({
-                      desc: response.data.message,
-                      duration: 4.5
-                    })
+                      self.$message.success(response.data.message);
                       self.formValidate1.email = ""
                   }
               })
               .catch(function(error) {
-                self.$Notice.error({
-                    desc: "email  is incorrect",
-                    duration: 4.5
-                  })
+                  self.$message.error("email  is incorrect");
               });
         } else {
 
@@ -197,8 +203,8 @@ export default {
                       			success: function (result) {
                               console.log('result',result)
                               if(result.code == 201){
-                                self.$Notice.success({
-                                    desc: result.message,
+                                self.$Message.success({
+                                    content: result.message,
                                     duration: 5
                                 });
                                 self.handleReset(name)
@@ -207,8 +213,8 @@ export default {
                       			},
                       			error: function(err) {
                               console.log('err', err.response)
-                              self.$Notice.error({
-                                  desc: 'incorrect current password',
+                              self.$Message.error({
+                                  content: 'incorrect current password',
                                   duration: 5
                               });
                       			}
