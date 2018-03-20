@@ -771,7 +771,7 @@
                 }
                 
                 let self = this;
-                this.name = Cookies.get('user');
+                this.name = await Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 var resp;
                 await axios.get(serviceUrl+"settings", {

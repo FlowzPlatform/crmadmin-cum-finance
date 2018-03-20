@@ -437,3 +437,10 @@ h3 {
   width: 100%;
 }
 </style>
+
+<style>
+  .ivu-collapse-content {
+            overflow: hidden !important;
+        }
+
+</style>

@@ -87,11 +87,11 @@ export default {
       },
       {
 
-        "title": "TOTAL ITEM",
+        "title": "Total Item",
         "key": "total_qty"
       },
       {
-        "title": "REQUESTED ON",
+        "title": "Requested On",
         "key": "created_at",
         render:(h,{row})=>{
                 var date1 = moment(row.created_at).format('DD-MMM-YYYY')
@@ -102,7 +102,7 @@ export default {
               }
       },
       {
-          title: 'Download Request_Quote',
+          title: 'Download',
           width: 100,
           align:  'center',
           render: (h, params) => {
@@ -176,8 +176,8 @@ export default {
             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                 self.$Notice.error({
                     title: error.response.statusText,
-                    desc: error.response.data.message,
-                    duration: 4.5
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 0
                 })
             }else {
                 self.$Notice.error({
@@ -310,8 +310,8 @@ export default {
             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                 self.$Notice.error({
                     title: error.response.statusText,
-                    desc: error.response.data.message,
-                    duration: 4.5
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 0
                 })
             }else {
                 self.$Notice.error({

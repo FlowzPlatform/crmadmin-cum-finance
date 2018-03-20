@@ -355,8 +355,8 @@
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
                             title: error.response.statusText,
-                            desc: error.response.data.message,
-                            duration: 4.5
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
                         })
                     }else {
                         self.$Notice.error({

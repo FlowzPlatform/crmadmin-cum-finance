@@ -381,3 +381,11 @@ h3 {
 }
 
 </style>
+
+
+<style>
+  .ivu-collapse-content {
+            overflow: hidden !important;
+        }
+
+</style>

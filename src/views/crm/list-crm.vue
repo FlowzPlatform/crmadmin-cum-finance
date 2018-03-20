@@ -104,7 +104,17 @@
 						align: 'center',
 						render: (h, params) => {
 							return h('div', [
-                                h('Button', {
+								 h('Tooltip', {
+									props: {
+									placement: 'top',
+									content: 'View Details'
+									},
+									style:{
+									float:'left',
+									cursor:'pointer'
+									}
+								},[
+									h('Button', {
                                     props: {
 										type: 'text',
 										size: 'large',
@@ -121,8 +131,19 @@
 				              				this.show(params.row.id)
 				            			}
 				          			}
-                                }, ''),
-                                h('Button', {
+                                }, '')
+								]),
+								 h('Tooltip', {
+									props: {
+									placement: 'top',
+									content: 'Delete'
+									},
+									style:{
+									float:'left',
+									cursor:'pointer'
+									}
+								},[
+									h('Button', {
 									props: {
 										type: 'text',
 										size: 'large',
@@ -141,6 +162,8 @@
 										}
 									}
 								})
+								])
+                                
                             ]);
 						}
 					}
@@ -161,11 +184,10 @@
 				this.$Modal.confirm({
 					okText: 'OK',
 					cancelText: 'Cancel',
-					title: 'Title',
-					content: '<p>Are you sure to delete?<p>',
+					content: '<p>Are you sure you want to delete this relation ? <p>',
 					onOk: () => {
 						var userid = Cookies.get('user')
-            			self.$Message.success('CRM Case Deleted Successfully');						
+            			self.$Message.success('Relationship Deleted Successfully');						
 						var data1= {
 							"isDeleted": true,
 							"deletedBy": userid,
@@ -235,8 +257,8 @@
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
                             title: error.response.statusText,
-                            desc: error.response.data.message,
-                            duration: 4.5
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
                         })
                     }else {
                         self.$Notice.error({
