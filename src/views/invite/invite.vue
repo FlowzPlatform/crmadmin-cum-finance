@@ -227,8 +227,8 @@
                                 var date1 = moment(params.assignDate).format('DD-MMM-YYYY')
                                 // return date1
                                 return h('div', [
-                                    h('span', date1);
-                                ])
+                                    h('span', date1)
+                                ]);
                         }
                         
                     },
