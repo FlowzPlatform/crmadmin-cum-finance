@@ -1,13 +1,48 @@
 <template>
-
   <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
     <Tabs type="card" @on-click="click">
         <TabPane label="Request Quote">
           <div class="drpdwn" style="display: inline;">
-
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
             </Select>
+          </div>
+          <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion12" href="#collapseT"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+        <div class="panel panel-default panel-group" id="accordion12" style="border: none;margin-top:1%;text-align: -webkit-left;">
+              <!-- <div class="panel-heading">
+              </div> -->
+              <div class="panel-collapse collapse" id="collapseT">
+                  <div class="panel-body">
+                      <form>
+                          <div class="collapse-maindiv maindiv" >
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#uname"></span>
+                                      <label>Name</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="uname">
+                                      <select class="form-control"  v-model="cname" id="selectCustom">
+                                        <option value="">All</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#prname"></span>
+                                      <label>Product Name</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="prname">
+                                      <select class="form-control"  v-model="pname" id="selectPro">
+                                        <option value="">All</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div style="margin-top: 5px;">
+                                <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                                <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
           </div>
           <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
         </TabPane>
@@ -127,7 +162,9 @@ export default {
           }
       }
     ],
-    list: []
+    list: [],
+    cname: '',
+    pname: ''
     }
   },
   methods: {
@@ -326,6 +363,8 @@ export default {
       var self = this
       var len
       console.log("val", val)
+      let Namearr = [];
+      let Productarr = [];
       axios.get(api, {
           params: {
               website_id: val,
