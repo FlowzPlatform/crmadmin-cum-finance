@@ -193,6 +193,7 @@
 					email: '',
 					phone: '',
 					config: '', 
+					subscriptionId: ''
 				},
 						momdata: [],
 						mData: [],
@@ -413,6 +414,7 @@
 									"url":reader.result
 								}
 								self.finaldata.fileupload.push(fileupObj);
+								self.finaldata.subscriptionId = Cookies.get('subscriptionId')
 								await $.ajax({
 									type: 'POST',
 									headers: {

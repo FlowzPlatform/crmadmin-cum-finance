@@ -229,12 +229,13 @@
 			})
 			.then(function (response) {
 				console.log(response.data.data)
+				var subscriptionId1 = Cookies.get('subscriptionId')
 				 // setTimeout(function(){
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)
 				response.data.data.forEach(function(item,index){
 					console.log("item index",item )
-					if (!item.hasOwnProperty('isDeleted') || !item.isDeleted){
+					if ((!item.hasOwnProperty('isDeleted') || !item.isDeleted) && (item.subscriptionId == subscriptionId1)){
 						self.data5.push(item);
 					}
 				})
