@@ -43,8 +43,8 @@
                 <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
                   <h2 class="heading-2">{{item.product_name}}</h2>
                   <div class="skuprice">
-                    <div style="text-align: -webkit-center;background: #f5f5f5;
-            padding: 7px 0;">Item Number :
+                    <div style="text-align: -webkit-center;background: #f5f5f5;padding: 7px 0;">
+                      Item Code :
                       <span>{{item.sku}}</span>
                     </div>
                   </div>
@@ -66,7 +66,7 @@
                             <div>
                               <div class="table-heading" v-if="element.qty.lte">{{element.qty.gte}} - {{element.qty.lte}}</div>
                               <div class="table-heading" v-else>{{element.qty.gte}} + </div>
-                              <div class="table-content">$ {{element.price}}</div>
+                              <div class="table-content"> {{accounting(element.price)}}</div>
                             </div>
                           </li>
                         </ul>
@@ -164,6 +164,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import moment from 'moment';
+const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
 export default {
   props: {
@@ -181,6 +182,9 @@ export default {
   methods: {
     getImgUrl (url) {
       return this.imgurl + url
+    },
+    accounting(item) {
+      return accounting.formatMoney(item)
     }
   },
   computed: {
@@ -390,6 +394,8 @@ h3 {
   .ulList {
             list-style-type: none ;
         }
-
+  .estimate-row ul {
+    list-style-type: none;
+  }
 
 </style>
