@@ -364,6 +364,8 @@
                 var self = this
                 var len
                 console.log("val", val)
+                let Namearr = [];
+                let Emailarr = [];
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
@@ -374,7 +376,7 @@
                     // }
                 }).then(function (response){
                     console.log("response val", response.data)
-                    self.data1 = _.orderBy(response.data.data, ['created_at'],['desc']);
+                    self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
 
                     self.list1 = self.data1
                     self.data1.forEach(item => {

@@ -604,16 +604,16 @@
 
                     if (i == 0) {
                         data1.push(0.00);
-                        data2.push(data_arr[i]);
+                        data2.push(accounting.formatMoney(data_arr[i]));
                         data3.push('-');
                     }
                     else if (diff > 0) {
-                        data1.push(data_arr[i-1]);
+                        data1.push(accounting.formatMoney(data_arr[i-1]));
                         data2.push(diff);
                         data3.push('-');
                     }
                     else if (diff < 0) {
-                        data1.push(data_arr[i]);
+                        data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push('-');
                         data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
                         symbol : '',
@@ -622,7 +622,7 @@
                     }));
                     }
                     else {
-                        data1.push(data_arr[i]);
+                        data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push(diff);
                         data3.push('-');
                     }

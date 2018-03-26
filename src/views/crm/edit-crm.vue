@@ -393,13 +393,19 @@
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
-            self.finaldata = res.data
-            self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
-            self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
-            if(self.finaldata.fileupload != undefined){
-              self.data1 = self.finaldata.fileupload;
+            console.log("==========-----------subscriptionId",res.data.subscriptionId,Cookies.get('subscriptionId'))
+            if (res.data.subscriptionId !== Cookies.get('subscriptionId')) {
+                self.$router.push("/relationship/list-relationship")
             }
-            CKEDITOR.instances.editor1.setData(self.finaldata.description)
+            else {
+              self.finaldata = res.data
+              self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
+              self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
+              if(self.finaldata.fileupload != undefined){
+                self.data1 = self.finaldata.fileupload;
+              }
+              CKEDITOR.instances.editor1.setData(self.finaldata.description)
+            }
            // return res.data
           }).catch(err => {
             console.log('Error >>>>>>>>>>>>>>', err)
@@ -744,7 +750,7 @@
             });
           },
           onCancel: () => {
-            this.$Message.info('Clicked cancel');
+            // this.$Message.info('Clicked cancel');
           }
         })
       }

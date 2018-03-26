@@ -45,7 +45,7 @@
                 <tbody>
                     <tr v-for="(item, inx) in row.products">
                         <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                        <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                        <td  style="text-align: left;font-weight: normal;padding: 5px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
                             <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_description.product_name}}</h3>
                             {{text(item.product_description.description)}}</td>
                         <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.unit_price)}}</td>
@@ -66,18 +66,18 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -157,6 +157,22 @@
                 }
                 let res = charge - sum
                 return accounting.formatMoney(res)                
+            },
+            invoiceData(){
+                let self = this;
+                axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
+                    headers:{
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    },
+                })
+                .then(function (response) {
+                    console.log("response------>iuy",response.data);
+                    self.emailDataCompany = response.data
+                })
+                .catch(function (error) {
+                    console.log("error",error);
+                });
             }
             
         },
@@ -166,20 +182,12 @@
             }
         },
         mounted() {
-            let self = this;
-            axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
-            headers:{
-                Authorization : Cookies.get('auth_token'),
-                subscriptionId : Cookies.get('subscriptionId')
-            },
-            })
-            .then(function (response) {
-            console.log("response------>iuy",response.data);
-            self.emailDataCompany = response.data
-            })
-            .catch(function (error) {
-                console.log("error",error);
-            });
+            
+        },
+        watch: {
+            'row': async function(id) {
+                  this.invoiceData()
+            }
         }
     };
 </script>

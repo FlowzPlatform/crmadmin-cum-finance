@@ -7,7 +7,7 @@ let util = {
 
 };
 util.title = function (title) {
-    title = title || 'crm';
+    title = title || 'Flowz CRM';
     window.document.title = title;
 };
 

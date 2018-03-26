@@ -183,7 +183,9 @@
          .ivu-collapse-content {
             overflow: hidden !important;
         }
-
+        .ulList {
+            list-style-type: none ;
+        }
 </style>
 <template>
     <div>
@@ -237,7 +239,7 @@
                                 </p>
                             </label>
                             <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
-                                <ul>
+                                <ul class="ulList">
                                     <li>
                                         <Icon type="ios-telephone" size="15"></Icon> 
                                         <label style="font-weight:500">{{row.user_billing_info.phone}}</label>
@@ -622,7 +624,7 @@
         },
         mounted() {
             
-            // this.invoiceData()
+            this.invoiceData()
         },
          watch: {
             'row': async function(id) {

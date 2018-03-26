@@ -61,12 +61,12 @@
                   <div class="quantity-table-disc">
                     <div class="quantity-table-col owl-carousel owl-theme" style="opacity: 1; display: block;">
                       <div class="owl-wrapper-outer" v-for="element in item.price_range">
-                        <ul class="owl-wrapper" style="width: 808px; left: 0px; display: block; transition: all 0ms ease; transform: translate3d(0px, 0px, 0px);">
+                        <ul class="owl-wrapper ulList" style="width: 808px; left: 0px; display: block; transition: all 0ms ease; transform: translate3d(0px, 0px, 0px);">
                           <li class="owl-item" style="width: 101px;">
                             <div>
                               <div class="table-heading" v-if="element.qty.lte">{{element.qty.gte}} - {{element.qty.lte}}</div>
                               <div class="table-heading" v-else>{{element.qty.gte}} + </div>
-                              <div class="table-content">$ {{element.price}}</div>
+                              <div class="table-content">{{accounting(element.price)}}</div>
                             </div>
                           </li>
                         </ul>
@@ -205,7 +205,7 @@
                 </p>
               </label>
               <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12">
-                <ul>
+                <ul class="ulList">
                   <li>
                     <Icon type="ios-telephone" size="15"></Icon>
                     <label style="font-weight:500">9978532084</label>
@@ -227,6 +227,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import moment from 'moment';
+const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
 export default {
   props: {
@@ -242,6 +243,9 @@ export default {
   methods: {
     getImgUrl (url) {
       return this.imgurl + url
+    },
+    accounting(item) {
+      return accounting.formatMoney(item)
     }
   },
   mounted(){
@@ -441,6 +445,9 @@ h3 {
 <style>
   .ivu-collapse-content {
             overflow: hidden !important;
+        }
+  .ulList {
+            list-style-type: none ;
         }
 
 </style>

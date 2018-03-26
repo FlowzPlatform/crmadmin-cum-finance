@@ -450,7 +450,7 @@
                 }
             },
             {
-                title: 'Paid',
+                title: 'Paid Amount',
                 sortable: true,
 
                 render : (h , {row}) => { 
@@ -462,7 +462,7 @@
 
             },
             {
-                title: 'Amount',
+                title: 'Total Amount',
                 key: 'TotalAmt',
                 sortable: true,
 
@@ -718,7 +718,7 @@
                 title: 'Customer Name',
                 sortable: true,
                 render:(h,{row})=>{ 
-                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
+                  // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
                   return h('div', [
                                 
                                 h('span', row.Contact.Name)
@@ -740,7 +740,7 @@
                 }
             },
              {
-                title: 'Paid',
+                title: 'Paid Amount',
                 key: 'AmountPaid',
                 sortable: true,
 
@@ -754,7 +754,7 @@
 
             },
             {
-                title: 'Total',
+                title: 'Total Amount',
                 key: 'Total',
                 sortable: true,
 
@@ -762,7 +762,7 @@
                   // return  accounting.formatMoney(row.Total) 
                   return h('div', [
                                 
-                                h('span', accounting.formatMoney(row.AmountPaid))
+                                h('span', accounting.formatMoney(row.Total))
                             ]);
                   }
 
