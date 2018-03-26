@@ -624,7 +624,7 @@
         },
         mounted() {
             
-            // this.invoiceData()
+            this.invoiceData()
         },
          watch: {
             'row': async function(id) {

@@ -762,7 +762,7 @@
                   // return  accounting.formatMoney(row.Total) 
                   return h('div', [
                                 
-                                h('span', accounting.formatMoney(row.AmountPaid))
+                                h('span', accounting.formatMoney(row.Total))
                             ]);
                   }
 
