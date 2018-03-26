@@ -220,7 +220,13 @@ export default {
 
       })
     },
-  }
+  },
+   watch: {
+          'row': async function(id) {
+            console.log("row---------------->",this.row)
+            this.website = this.row[0].websiteId
+          }
+   }
 }
 </script>
 
