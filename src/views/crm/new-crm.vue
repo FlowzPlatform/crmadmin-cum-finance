@@ -274,7 +274,8 @@
 								}).then(function (response) {
 								
 									resp = response.data
-									self.customerData = resp[0].data
+									self.customerData = _.sortBy(resp[0].data,['Name']);
+									 
 								})
 								.catch(function (error) {
 									console.log(error);

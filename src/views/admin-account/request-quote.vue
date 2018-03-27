@@ -44,7 +44,7 @@
                   </div>
               </div>
           </div>
-          <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+          <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
         </TabPane>
         <TabPane label="Request Info">
           <requestInfo :row="websiteList"></requestInfo>

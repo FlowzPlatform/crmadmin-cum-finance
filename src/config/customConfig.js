@@ -82,6 +82,7 @@ module.exports = {
         // serviceUrl :            'http://localhost:3037/',
         baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
+        usersubscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/user-subscription',
         projecturl: 'https://api.' + process.env.domainkey + '/mom/',
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
         orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',

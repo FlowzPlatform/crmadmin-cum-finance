@@ -337,7 +337,7 @@
       <div style="text-align:center">
         <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
           <form-item prop="value">
-            <i-input v-model.trim="formValidate.value" placeholder="Enter your Value"></i-input>
+            <i-input v-model.trim="formValidate.value" placeholder="Enter Your Comment"></i-input>
           </form-item>
         </i-form>
       </div>
@@ -377,7 +377,7 @@
                 },
                 ruleInline: {
                     value: [
-                        { required: true, message: 'Please fill the value', trigger: 'blur' }
+                        { required: true, message:  "Please Enter Comment", trigger: 'blur' }
                     ]
                 },
       }
@@ -619,7 +619,8 @@
           })
           .then(function(response) {
             console.log("save response.....",response)
-            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
+            // self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
+            self.commentData.splice(0, 0, {comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
             console.log("this.commentData", self.commentData)
           });
           
@@ -647,7 +648,8 @@
           })          
           
           console.log("++++++++++++++self.commentData",self.commentData)
-          self.commentData = _.sortBy(self.commentData, 'created_at')
+          self.commentData = _.orderBy(self.commentData, ['created_at'],['desc']);
+          
         });
       }
     },
