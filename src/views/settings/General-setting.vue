@@ -717,3 +717,9 @@ export default {
 }
 
 </style>
+
+<style>
+.ivu-upload-list{
+    display: none;
+}
+</style>

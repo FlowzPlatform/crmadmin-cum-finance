@@ -24,8 +24,8 @@
 
 console.log("???????????????????????? ", process.env.domainkey)
 
-//let frontEndUrl = 'https://localhost:8081/#/login';
-let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
+let frontEndUrl = 'http://localhost:8081/#/login';
+//let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
 
 module.exports = {
     default: {
@@ -67,10 +67,15 @@ module.exports = {
         flowzDbetlUrl: 'https://www.dbetl.' + process.env.domainkey,
 
         loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
+        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/google',
         loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
+        // loginWithFacebookUrl : 'http://social.'+process.env.domainkey+'/auth/facebook',
+        // loginWithGoogleUrl : 'http://social.'+process.env.domainkey+'/auth/google',
+        // loginWithTwitterUrl : 'http://social.'+process.env.domainkey+'/auth/twitter',
+        // loginWithGithubUrl : 'http://social.'+process.env.domainkey+'/auth/github',
+        // loginWithLinkedInUrl : 'http://social.'+process.env.domainkey+'/auth/linkedin',
 
         // loginWithFacebookUrl: 'https://auth.flowzcluster.tk/auth/facebook',
         // loginWithGoogleUrl: 'https://auth.flowzcluster.tk/auth/Gplus',
