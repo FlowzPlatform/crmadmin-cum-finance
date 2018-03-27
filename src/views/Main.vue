@@ -35,7 +35,7 @@
                         <Icon type="navicon" size="32"></Icon>
                     </Button>
                 </div>
-                <div class="header-middle-con" style="width: 72%;">
+                <div class="header-middle-con">
                     <div class="main-breadcrumb">
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
@@ -53,7 +53,7 @@
                         </el-select>
                     </div>
                 </div>
-                <div class="header-avator-con" style="width: 23%;">
+                <div class="header-avator-con">
                      
                     <div class="headerMenu">
                        
