@@ -24,8 +24,8 @@
 
 console.log("???????????????????????? ", process.env.domainkey)
 
-let frontEndUrl = 'http://localhost:8081/#/login';
-//let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
+//let frontEndUrl = 'http://localhost:8081/#/login';
+let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
 
 module.exports = {
     default: {
