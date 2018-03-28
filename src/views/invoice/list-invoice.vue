@@ -94,12 +94,12 @@
                   <Spin size="large"></Spin>
     </div>
     <div v-else>
-
+            
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" border size="small" ref="table" stripe></i-table>
-            <i-table @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" border size="small" ref="table" stripe></i-table>
-            <i-table @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list" border size="small" ref="table" stripe></i-table>
+            <Table   stripe @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list"  size="small" ref="table" ></Table>
+            <Table  stripe @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list"  size="small" ref="table" ></Table>
+            <Table  stripe @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list"  size="small" ref="table" ></Table>
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
@@ -2295,7 +2295,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style>
-
+ 
+.ivu-table-stripe .ivu-table-body tr:nth-child(2n) td, .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n) td {
+    background-color: #f8f8f9 !important;
+}
   .panel {
     margin-bottom: 7px;
   }

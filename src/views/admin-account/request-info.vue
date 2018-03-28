@@ -42,7 +42,7 @@
                   </div>
               </div>
           </div>
-    <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+    <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
   </div>
 </template>
 
@@ -220,7 +220,13 @@ export default {
 
       })
     },
-  }
+  },
+   watch: {
+          'row': async function(id) {
+            console.log("row---------------->",this.row)
+            this.website = this.row[0].websiteId
+          }
+   }
 }
 </script>
 

@@ -26,7 +26,7 @@
                </div>
             </div>
          </div>
-         <form id="form-facebook" name="form-facebook" :action="loginWithFacebookUrl" method="post">
+         <!-- <form id="form-facebook" name="form-facebook" :action="loginWithFacebookUrl" method="post">
             <input type="hidden" name="success_url" :value="facebookSuccessCallbackUrl">
         </form>
         <form id="form-google" name="form-google" :action = "loginWithGoogleUrl" method="post">
@@ -40,7 +40,31 @@
         </form>
         <form id="form-linkedIn" name="form-linkedIn" :action ="loginWithLinkedInUrl" method="post">
             <input type="hidden" name="success_url" :value="linkedInSuccessCallbackUrl">
+        </form> -->
+
+
+        <form id="form-facebook2" name="form-facebook2" :action="loginWithFacebookUrl" method="get">
+            <input type="hidden" name="success_url" :value="facebookSuccessCallbackUrl">
+            <input type="hidden" name="failure_url" :value="facebookSuccessCallbackUrl">
         </form>
+        <form id="form-google2" name="form-google2" :action = "loginWithGoogleUrl" method="get">
+            <input type="hidden" name="success_url" :value="googleSuccessCallbackUrl">
+            <input type="hidden" name="failure_url" :value="googleSuccessCallbackUrl">
+        </form>
+        <form id="form-twitter2" name="form-twitter2" :action ="loginWithTwitterUrl" method="get">
+            <input type="hidden" name="success_url" :value="twitterSuccessCallbackUrl">
+            <input type="hidden" name="failure_url" :value="twitterSuccessCallbackUrl">
+        </form>
+        <form id="form-github2" name="form-github2" :action ="loginWithGithubUrl" method="get">
+            <input type="hidden" name="success_url" :value="githubSuccessCallbackUrl">
+            <input type="hidden" name="failure_url" :value="githubSuccessCallbackUrl">
+        </form>
+        <form id="form-linkedIn2" name="form-linkedIn2" :action ="loginWithLinkedInUrl" method="get">
+            <input type="hidden" name="success_url" :value="linkedInSuccessCallbackUrl">
+            <input type="hidden" name="failure_url" :value="linkedInSuccessCallbackUrl">
+        </form>
+
+
          <div class="frontbox">
             <div class="login">
                <h2 v-if="!showForgotPassword">LOG IN</h2>
@@ -92,7 +116,7 @@
                   </div>
                   <button type="submit" style="display:none"></button>
                </form>
-               <div class="social">
+               <!-- <div class="social">
                   <span @click="facebookLogin()">
                   <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
                   </span>
@@ -106,6 +130,24 @@
                   <i class="fa fa-github-square fa-2x" aria-hidden="true"></i>
                   </span>
                   <span @click="linkdinLogin()">
+                  <i class="fa fa-linkedin-square  fa-2x" aria-hidden="true"></i>
+                  </span>
+               </div> -->
+
+               <div class="social">
+                  <span @click="facebookLogin2()">
+                  <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+                  </span>
+                  <span @click="googleLogin2()">
+                  <i class="fa fa-google-plus-square fa-2x" aria-hidden="true"></i>
+                  </span>
+                  <span @click="twitterLogin2()">
+                  <i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+                  </span>
+                  <span @click="githubLogin2()">
+                  <i class="fa fa-github-square fa-2x" aria-hidden="true"></i>
+                  </span>
+                  <span @click="linkdinLogin2()">
                   <i class="fa fa-linkedin-square  fa-2x" aria-hidden="true"></i>
                   </span>
                </div>
@@ -321,6 +363,28 @@ export default {
            // this.isSocialLogin = true;
             $("#form-linkedIn").submit();
         },
+
+
+        facebookLogin2() {
+            // this.isSocialLogin = true;
+             $("#form-facebook2").submit() 
+        },
+        googleLogin2() {
+            ////this.isSocialLogin = true;
+             $("#form-google2").submit();
+        },
+        twitterLogin2() {
+           // this.isSocialLogin = true;
+            $("#form-twitter2").submit();
+        },
+        githubLogin2() {
+            //this.isSocialLogin = true;
+            $("#form-github2").submit();
+        },
+        linkdinLogin2() {
+           // this.isSocialLogin = true;
+            $("#form-linkedIn2").submit();
+        },
        
         tabsClicked(val) {
             this.login.email = ''
@@ -534,6 +598,11 @@ export default {
         // }
     },
     created(){
+
+        
+        if(this.$route.query.errcode == 401){
+            this.$message.error("Couldn't found a valid email address.Please try to login with another account")
+        }
         let self = this;
        var configObj = {};
         if(location.search){

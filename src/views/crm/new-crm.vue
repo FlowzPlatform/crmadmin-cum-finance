@@ -274,7 +274,8 @@
 								}).then(function (response) {
 								
 									resp = response.data
-									self.customerData = resp[0].data
+									self.customerData = _.sortBy(resp[0].data,['Name']);
+									 
 								})
 								.catch(function (error) {
 									console.log(error);
@@ -398,6 +399,8 @@
 				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
 				var phone = phone_re.test(self.finaldata.phone);
 				var mail = re.test(self.finaldata.email);
+				self.finaldata.subscriptionId = Cookies.get('subscriptionId')
+				self.finaldata.isDeleted = "false"
 				if(self.finaldata.assignee != "" && self.finaldata.cname != ""){
 					if (mail != false && phone != false) {
 						this.loading = true
@@ -414,7 +417,9 @@
 									"url":reader.result
 								}
 								self.finaldata.fileupload.push(fileupObj);
-								self.finaldata.subscriptionId = Cookies.get('subscriptionId')
+								
+								console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
+								console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
 								await $.ajax({
 									type: 'POST',
 									headers: {

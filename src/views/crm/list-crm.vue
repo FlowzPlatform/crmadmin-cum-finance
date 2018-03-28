@@ -1,5 +1,5 @@
 <template>
-	<Table border stripe :columns="columns5" :data="data5"></Table>
+	<Table stripe :columns="columns5" :data="data5"></Table>
 </template>
 <script>
 	import config from '../../config/customConfig.js'
@@ -228,14 +228,14 @@
 					}
 			})
 			.then(function (response) {
-				console.log(response.data.data)
+				console.log("crm-case response",response.data.data)
 				var subscriptionId1 = Cookies.get('subscriptionId')
 				 // setTimeout(function(){
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)
 				response.data.data.forEach(function(item,index){
-					console.log("item index",item )
-					if ((!item.hasOwnProperty('isDeleted') || !item.isDeleted) && (item.subscriptionId == subscriptionId1)){
+					// console.log("item index",item )
+					if (item.isDeleted == "false" && item.subscriptionId == subscriptionId1){
 						self.data5.push(item);
 					}
 				})
