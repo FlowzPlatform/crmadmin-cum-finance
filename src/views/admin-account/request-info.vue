@@ -203,6 +203,7 @@ export default {
           })
           Namearr = _.chain(Namearr).sort().uniq().value();
           Productarr = _.chain(Productarr).sort().uniq().value();
+          
           Namearr.forEach(item => {
               var x = document.getElementById("selectCustomer");
               var option = document.createElement("option");

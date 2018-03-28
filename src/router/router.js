@@ -63,11 +63,11 @@ export const preview = {
     component: resolve => { require(['@/views/form/article-publish/preview.vue'], resolve); }
 };
 
-export const locking = {
-    path: '/locking',
-    name: 'locking',
-    component: resolve => { require(['@/views/main-components/lockscreen/components/locking-page.vue'], resolve); }
-};
+// export const locking = {
+//     path: '/locking',
+//     name: 'locking',
+//     component: resolve => { require(['@/views/main-components/lockscreen/components/locking-page.vue'], resolve); }
+// };
 
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
 export const otherRouter = {
@@ -488,7 +488,7 @@ export const routers = [
     resetPasswordRouter,
     otherRouter,
     preview,
-    locking,
+    // locking,
     ...appRouter,
     page500,
     page403,

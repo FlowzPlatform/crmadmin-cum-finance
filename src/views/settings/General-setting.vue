@@ -167,7 +167,10 @@ export default {
         PostalCode:[
           { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
           { validator: validateNum, trigger: 'blur' }
-        ]
+        ],
+        // mobile:[
+        //   { validator: validateNum, trigger: 'blur' }
+        // ]
       }
     }
   },
