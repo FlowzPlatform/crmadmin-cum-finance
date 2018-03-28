@@ -64,7 +64,7 @@
               </div>
           </div>
 
-        <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
+        <Table stripe @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
             v-model="modal1"

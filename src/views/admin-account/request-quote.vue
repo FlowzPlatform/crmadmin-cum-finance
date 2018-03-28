@@ -44,7 +44,7 @@
                   </div>
               </div>
           </div>
-          <Table :columns="columns1" :data="list" border size="small" ref="table" stripe></Table>
+          <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
         </TabPane>
         <TabPane label="Request Info">
           <requestInfo :row="websiteList"></requestInfo>
@@ -191,10 +191,24 @@ export default {
           'subscriptionId': Cookies.get('subscriptionId')    
         }
         }).then(async function (response) {
-          console.log('response------>',response)
+           if(response.data.data.length == 0){
+            console.log("in if condition")
+            self.$Notice.error({
+              desc: 'Websites not available for this subscription',
+              title: 'Error',
+              duration: 4.5
+            })
+          }else{    
+            console.log("in else condition")       
+            var result = _.uniqBy(response.data.data,'websiteId')
+            self.websiteList = result
+            // self.website = self.websiteList[0].websiteId
+            // console.log("websiteList websiteList", self.website)
+          }
+          // console.log('response------>',response)
           // self.list = response.data.data
-          var result = _.uniqBy(response.data.data,'websiteId')
-          self.websiteList = result
+          // var result = _.uniqBy(response.data.data,'websiteId')
+          // self.websiteList = result
           console.log("self.websiteList self.websiteList self.websiteList", self.websiteList)
           // self.website = self.websiteList[0].websiteId
         }).catch(error => {
@@ -321,8 +335,8 @@ export default {
           if(response.data.data.length == 0){
             console.log("in if condition")
             self.$Notice.error({
-              desc: 'Websites not available for this plan',
-
+              title: "Error",
+              desc: 'Websites not available for this subscription',
               duration: 4.5
             })
           }else{    

@@ -601,10 +601,15 @@
                         precision : 2,
                         thousand  : ''
                     });
+                    let dataarr1 = accounting.formatMoney(data_arr[i], {
+                        symbol : '',
+                        precision : 2,
+                        thousand  : ''
+                    });
 
                     if (i == 0) {
                         data1.push(0.00);
-                        data2.push(accounting.formatMoney(data_arr[i]));
+                        data2.push(dataarr1);
                         data3.push('-');
                     }
                     else if (diff > 0) {
@@ -615,11 +620,7 @@
                     else if (diff < 0) {
                         data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push('-');
-                        data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
-                        symbol : '',
-                        precision : 2,
-                        thousand  : ''
-                    }));
+                        data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i])));
                     }
                     else {
                         data1.push(accounting.formatMoney(data_arr[i]));

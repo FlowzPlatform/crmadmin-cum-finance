@@ -155,37 +155,12 @@
     
 </style>
 <style>
-    .quantity-table .owl-carousel .owl-nav.disabled{
-            position: absolute;
-            right: 5px;
-            top: -17px;
-            display:inline-block;
-        }
-        .quantity-table .owl-carousel .owl-nav.disabled .owl-prev {
-            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll 0 0;
-            border-radius: 0;
-            height: 15px;
-            width: 15px;
-            font-size: 0;
-            float: left;
-        }
-        .quantity-table .owl-carousel .owl-nav.disabled .owl-next {
-            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll -16px center;
-            border-radius: 0!important;
-            height: 15px;
-            width: 15px;
-            font-size: 0px;
-            float: left;
-        }
-        .quantity-table .quantity-table-disc {
-            overflow: inherit !important;
-        }
-         .ivu-collapse-content {
-            overflow: hidden !important;
-        }
-        .ulList {
-            list-style-type: none ;
-        }
+    .ivu-collapse-content {
+        overflow: hidden !important;
+    }
+    .ulList {
+        list-style-type: none ;
+    }
 </style>
 <template>
     <div>
