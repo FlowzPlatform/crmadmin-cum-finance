@@ -79,9 +79,9 @@
 			},
 			handleSubmit (name) {
 				var self = this
-				self.loading = true;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
+						self.loading = true;
 						console.log('formValidate----------------------------->',this.formValidate)
 						if(this.formValidate.configuration === 'all'){ 
 							this.$Modal.confirm({

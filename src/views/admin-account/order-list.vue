@@ -325,11 +325,20 @@
                 })
                 .then(function (response){
                     console.log("response", response.data)
-                    var result = _.uniqBy(response.data.data,'websiteId')
-                    console.log("result", result)
-                    self.websiteList = result
-                    console.log("self.websiteList", self.websiteList[0].websiteId)                    
-                    self.website = self.websiteList[0].websiteId                  
+                    if(response.data.data.length == 0){
+                      console.log("in if condition")
+                      self.$Notice.error({
+                        desc: 'Websites not available for this subscription',
+                        title: 'Error',
+                        duration: 4.5
+                      })
+                    }else{    
+                      var result = _.uniqBy(response.data.data,'websiteId')
+                      console.log("result", result)
+                      self.websiteList = result
+                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                      self.website = self.websiteList[0].websiteId
+                    }                  
 
                 }).catch(error => {
                     console.log("-------",error);
