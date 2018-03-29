@@ -65,7 +65,7 @@
                               <FormItem prop="gateway">
                                 <Select class="" v-model="payDetail.gateway" autofocus>
                                   <Option value="stripe">Stripe</Option>
-                                  <Option value="auth">AuthDotNet</Option>
+                                  <Option value="auth">Authorize.Net</Option>
                                   <Option value="paypal">PayPal</Option>
                                 </Select> 
                             </FormItem>
@@ -98,9 +98,9 @@
                             </div>
                         <div class="row">
                             <div class="col-xs-7 col-md-7">
-                                <div class="form-group" style="text-align:left">EXPIRY DATE
+                                <div class="form-group" style="text-align:left">
                                   <div class="row">
-                                    <div class="col-xs-6 col-lg-6 col-md-6">
+                                    <div class="col-xs-6 col-lg-6 col-md-6">EXPIRY MONTH
                                       <FormItem prop="expiryMM">
                                         <Select class="" v-model="payDetail.expiryMM" placeholder="Please select month">
                                           <Option value="01">Jan</Option>
@@ -118,9 +118,9 @@
                                         </Select> 
                                       </FormItem>
                                     </div>
-                                    <div class="col-xs-6 col-lg-6 col-md-6">
+                                    <div class="col-xs-6 col-lg-6 col-md-6">EXPIRY YEAR
                                       <FormItem prop="expiryYY">  
-                                        <date-picker type="year" v-model="payDetail.expiryYY"placeholder="Select year" style="width: 200px"></date-picker>
+                                        <date-picker type="year" :options="options3" v-model="payDetail.expiryYY"placeholder="Select year" style="width: 200px"></date-picker>
                                       </FormItem>
                                     </div>
                                   </div>
@@ -194,26 +194,31 @@ export default {
         gateway: '',
         amount: '',
       },
+      options3: {
+        disabledDate (date) {
+            return (date.getYear() <= new Date().getYear() - 1);
+        }
+      },
       rulesValidation: {
         cardtype: [
-          { required: true, message: 'choose cardtype', trigger: 'change' }
+          { required: true, message: 'Please Select Card Type', trigger: 'change' }
         ],
         gateway: [
-          { required: true, message: 'choose gateway', trigger: 'blur' }
+          { required: true, message: 'Please Select Payment Gateway', trigger: 'blur' }
         ],
         cardNumber: [
-          { required: true, max: 16, min:16, message: 'Please Enter 16-digit cardNumber', trigger: 'blur' }, {
+          { required: true, max: 16, min:16, message: 'Please Enter 16-digit Card Number', trigger: 'blur' }, {
             validator: validateNum, trigger: 'blur'
           }
         ],
         expiryMM: [
-          { required: true, message: 'Please select expiry month', trigger: 'blur' }
+          { required: true, message: 'Please select Expiry Month', trigger: 'blur' }
         ],
         expiryYY: [
-          { required: true, type:'date', message: 'Please select expiry year', trigger: 'change' }
+          { required: true, type:'date', message: 'Please select Expiry Year', trigger: 'change' }
         ],
         cvCode: [
-          { required: true, max: 3, min:3, message: 'Please Enter 3-digit cv code', trigger: 'blur' }, {
+          { required: true, max: 3, min:3, message: 'Please Enter 3-digit Cvv Code', trigger: 'blur' }, {
             validator: validateNum, trigger: 'blur'
           }
         ]
@@ -394,7 +399,7 @@ export default {
             })
             .then(function (res) {
               
-              self.$Message.success('payment done successfully');
+              self.$Message.success('Payment Done Successfully');
               self.loading = false
               self.backFunction()
             })
@@ -473,18 +478,21 @@ export default {
           if(self.responseDataForPayment.Balance != undefined){
             DueAmount = self.responseDataForPayment.Balance
           }
-          if(self.payDetail.amount <= DueAmount)
+          if(self.payDetail.amount > 0)
           {
-          if(self.responseDataForPayment.settingId != undefined){
-            self.payNow('custom');
+
+            if(self.payDetail.amount <= DueAmount ){             
+              if(self.responseDataForPayment.settingId != undefined){
+                self.payNow('custom');
+              }else{
+                self.payNow();
+              }
+            }
+            else{  
+              self.$Message.error('Please Enter Amount less than Due Amount');
+            }
           }else{
-            self.payNow();
-          }
-            //self.payNow();
-            
-          }else{
-            
-            self.$Message.error('Enter Amount less than Due Amount');
+            self.$Message.error('Please Enter Valid Amount');
           }
         } else {
           self.$Message.error('Enter Valid Input');
