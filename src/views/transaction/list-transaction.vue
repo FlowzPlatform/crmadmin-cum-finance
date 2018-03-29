@@ -182,13 +182,14 @@
                         key: 'Date',
                         sortable: true,
                         render:(h,{row})=>{
+                            // console.log("row.paymentAccounting.Invoice.Date",row.paymentAccounting.Invoice)
                             var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
                             return h('div', [
                                 h('span', date)
                             ]);
                         }
                     },
-                    {
+                    { 
                         title: 'Total Amount',
                         key: 'Amount',
                         sortable: true,
@@ -258,9 +259,10 @@
                         key: 'Date',
                         sortable: true,
                         render:(h,{row})=>{
+                          console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEE",row.paymentAccounting.Invoice.Date);
                             var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
                             return h('div', [
-                              h('span', date1)
+                              h('span', row.paymentAccounting.Invoice.Date)
                             ]);
                         }
                     },

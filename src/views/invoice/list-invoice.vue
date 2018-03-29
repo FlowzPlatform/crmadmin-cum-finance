@@ -2079,7 +2079,14 @@
               if(response.data.data.length == 0){
                 self.newList = []
               } else {
-                self.newList = response.data.data;
+                var deep = _.cloneDeep(response.data.data);
+                  _(deep).each(function(item , index){
+                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                      item.paymentAccounting.Invoice.Date = dt._d
+                  })
+                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                    // self.data = desc;
+                  self.newList = desc;
               }
               // self.$Loading.finish();
               // $('.preload').css("display","none")
@@ -2128,7 +2135,14 @@
                 // self.newList = [{key : "No transaction has been made for this Invoice"}]
                 self.newList = []
               } else {
-                self.newList = response.data.data;
+                  var deep = _.cloneDeep(response.data.data);
+                  _(deep).each(function(item , index){
+                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                      item.paymentAccounting.Invoice.Date = dt._d
+                  })
+                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                    // self.data = desc;
+                  self.newList = desc;
               }
           })
           .catch(function (error) {
