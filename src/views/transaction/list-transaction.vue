@@ -139,6 +139,7 @@
 
                         title: 'Payment Id',
                         key: 'PaymentId',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                             // return row.paymentGateway.id
@@ -158,6 +159,7 @@
                     {
                         title: 'Invoice No.',
                         key: 'InvoiceNumber',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                             // return row.paymentAccounting.Invoice.InvoiceNumber
@@ -169,6 +171,7 @@
                     {
                         title: 'Customer Name',
                         key: 'Contact',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                             // return row.paymentAccounting.Contact.Name 
@@ -180,6 +183,7 @@
                     {
                         title: 'Date',
                         key: 'Date',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{
                             var date = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
@@ -191,6 +195,7 @@
                     {
                         title: 'Total Amount',
                         key: 'Amount',
+                        align: 'right',
                         sortable: true,
                         render:(h,{row})=>{
                           return h('div', [
@@ -205,6 +210,7 @@
 
                     title: 'Payment Id',
                     key: 'PaymentId',
+                    align: 'center',
                     sortable: true,
                     render:(h,{row})=>{ 
                       // return row.paymentGateway.id 
@@ -223,6 +229,7 @@
 
                         title: 'Account Id',
                         key: 'value',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentAccounting.Account.value 
@@ -234,6 +241,7 @@
                     {
                         title: 'Invoice No',
                         key: 'InvoiceId',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentAccounting.Invoice.InvoiceID
@@ -245,6 +253,7 @@
                     {
                         title: 'Customer Name',
                         key: 'Contact',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentAccounting.Contact.Name
@@ -256,6 +265,7 @@
                     {
                         title: 'Date',
                         key: 'Date',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{
                             var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
@@ -267,6 +277,7 @@
                     {
                         title: 'Total Amount',
                         key: 'Amount',
+                        align: 'right',
                         sortable: true,
                         render:(h,{row})=>{ 
                            return h('div', [
@@ -279,6 +290,7 @@
                     {
                         title: 'Payment Id',
                         key: 'PaymentId',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentGateway.id
@@ -302,6 +314,7 @@
                     {
                         title: 'Invoice No',
                         key: 'InvoiceId',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentAccounting.Invoice.InvoiceNumber
@@ -313,6 +326,7 @@
                     {
                         title: 'Customer Name',
                         key: 'Contact',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return row.paymentAccounting.Contact.Name
@@ -324,6 +338,7 @@
                     {
                         title: 'Payment Date',
                         key: 'Date',
+                        align: 'center',
                         sortable: true,
                         render:(h,{row})=>{
                             var date1 = moment(row.paymentAccounting.Invoice.Date).format('DD-MMM-YYYY')
@@ -337,6 +352,7 @@
                     {
                         title: 'Total Amount',
                         key: 'Amount',
+                        align: 'right',
                         sortable: true,
                         render:(h,{row})=>{ 
                           // return  accounting.formatMoney(row.paymentAccounting.Amount)

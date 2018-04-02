@@ -215,7 +215,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
+                                var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
                                 this.daterange1 = s
                                 return [start, end];
                             }
@@ -225,7 +225,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 92);
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                                 return [start, end];
                             }
                         },
@@ -234,7 +234,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 184);
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
                                 return [start, end];
                             }
                         }
@@ -887,14 +887,14 @@
         async mounted() {
             
             let self = this
-            this.daterange1 = await this.getDate(92);
+            this.daterange1 = await this.getDate(90);
             console.log("daterange1",this.daterange1)
             console.log("daterange1",this.daterange1[0])
             // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
             setTimeout(function() {
                 self.init()
-            }, 1000);    
+            }, 2000);    
         }
 
     };
