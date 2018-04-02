@@ -75,7 +75,7 @@
 <script>
 let config = require("@/config/customConfig.js")
 import Cookies from 'js-cookie';
-console.log(config)
+// console.log(config)
 let feathersUrl =  config.default.serviceUrl;
 var _ = require('lodash');
 var pageSize = 10
@@ -164,7 +164,7 @@ export default {
         "sortable": true,
         "align":"center",
         render:(h,{row})=>{
-          console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
+          // console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
           if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
             {
               // return "Not available"
@@ -365,7 +365,7 @@ export default {
           }
       },
       {
-        "title": "Email Address",
+        "title": "Email",
         "key": "EmailAddress",
         render:(h,{row})=>{
           // return row.EmailAddress
@@ -375,7 +375,7 @@ export default {
           }
       },
       {
-        "title": "Phone Number",
+        "title": "Phone No",
         "key": "PhoneNumber",
         render:(h,{row})=>{
           // return row.PhoneNumber
@@ -422,33 +422,33 @@ export default {
       this.getAllSettings();
     },
     async changeData() {
-      console.log("this.data6", this.data6)
+      // console.log("this.data6", this.data6)
       this.filterArray = this.data6
       var self = this
 
       if(this.cname != ''){
-       console.log("this.cname", this.cname)
+      //  console.log("this.cname", this.cname)
        this.filterArray = _.filter(this.filterArray,  function(item){
-        console.log("item",item)
+        // console.log("item",item)
           if(item.Name != undefined){
             return item.Name === self.cname;
           }else{
             return item.DisplayName === self.cname;
           }
       });
-       console.log("myarr",this.filterArray)
+      //  console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
       }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-          console.log("myarr",this.filterArray)
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+          // console.log("myarr",this.filterArray)
           this.list = await this.mockTableData2(1,pageSize)
         }
 
 
       if(this.status != ''){
-        console.log("this.status", this.status)
+        // console.log("this.status", this.status)
         this.filterArray = _.filter(this.filterArray,  function(item){
-        console.log("item",item)
+        // console.log("item",item)
           if(item.ContactStatus != undefined){
             return item.ContactStatus === self.status;
           }else{
@@ -463,18 +463,18 @@ export default {
             }
           }
         });
-       console.log("myarr",this.filterArray)
+      //  console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
       }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-          console.log("myarr",this.filterArray)
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          // console.log("myarr",this.filterArray)
           this.list = await this.mockTableData2(1,pageSize)
         }
       
       if(this.email != ''){
-       console.log("this.email", this.email)
+      //  console.log("this.email", this.email)
        this.filterArray = _.filter(this.filterArray,  function(item){
-        console.log("item",item)
+        // console.log("item",item)
         if(item.EmailAddress != undefined){
           return item.EmailAddress === self.email;
         }
@@ -484,18 +484,18 @@ export default {
         }
         }
       });
-       console.log("myarr",this.filterArray)
+      //  console.log("myarr",this.filterArray)
        this.list = await this.mockTableData2(1,pageSize)
       }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-          console.log("myarr",this.filterArray)
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          // console.log("myarr",this.filterArray)
           this.list = await this.mockTableData2(1,pageSize)
         }
     },
     async mockTableData2 (p,size) {
-      console.log("p-------------->",p)
-      console.log("p-------------->",size)
-      console.log("console.log------------>",this.filterArray)
+      // console.log("p-------------->",p)
+      // console.log("p-------------->",size)
+      // console.log("console.log------------>",this.filterArray)
       this.len = this.filterArray.length
       return this.filterArray.slice((p - 1) * size, p * size);
     },
@@ -505,16 +505,16 @@ export default {
     },
     async changePage (p) {
       this.page = p
-      console.log("not inside",this.filterArray.length)
+      // console.log("not inside",this.filterArray.length)
       if(this.filterArray.length == 0){
-        console.log("inside",this.filterArray)
+        // console.log("inside",this.filterArray)
         this.list = await this.mockTableData1(p,pageSize);
       }else{
         this.list = await this.mockTableData2(p,pageSize);
       }
     },
     async tabClicked(data){
-      console.log(data)
+      // console.log(data)
       this.tabIndex = data;
       let settingName = this.tabPanes[data].configName;
       let settingId = this.tabPanes[data].id
@@ -528,7 +528,7 @@ export default {
       self.list = [];
 
       if(settingDomain == 'custom'){
-        console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
+        // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
         let customerUrl = this.tabPanes[data].customer_url;
         await axios({
             method: 'get',
@@ -542,7 +542,7 @@ export default {
         })
         .then(async function (response) {
           self.$Loading.finish();
-          console.log(response)
+          // console.log("custom customer get response",response)
           self.data6 = response.data.data.reverse();
 
           let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
@@ -562,7 +562,7 @@ export default {
         })
         .catch(function (error) {
           self.$Loading.error();
-          console.log(error);
+          console.log("error in get customer",error);
         });
       }
       else{
@@ -575,7 +575,7 @@ export default {
           }
         })
         .then(async function (response) {
-          console.log("$$$$$$$$$$$$$$$$$$$",response)
+          // console.log("$$$$$$$$$$$$$$$$$$$",response)
           self.data6 = response.data[0].data.reverse();
           self.$Loading.finish();
           $('.preload').css("display","none")
@@ -603,7 +603,7 @@ export default {
 
 
       self.data6.forEach (obj => {
-        console.log("obj------------------->",obj);
+        // console.log("obj------------------->",obj);
         if(obj.Name != undefined){
           NameArr.push(obj.Name);
           StatusArr.push(obj.ContactStatus);
@@ -615,7 +615,7 @@ export default {
         }else{
           NameArr.push(obj.DisplayName)
           if(obj.PrimaryEmailAddr != undefined){
-            console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+            // console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
             EmailArr.push(obj.PrimaryEmailAddr.Address)
           }
           if(obj.Active != undefined){            
@@ -625,7 +625,7 @@ export default {
                 StatusArr.push("INACTIVE");
               }
           }
-          console.log('StatusArr------------>',StatusArr)
+          // console.log('StatusArr------------>',StatusArr)
         }
       })
 
@@ -669,8 +669,8 @@ export default {
             },
         })
         .then(function (response) {
-            console.log("response------>iuy",response);
-            console.log('this.tabIndex', self.tabIndex)
+            // console.log("response------>iuy",response);
+            // console.log('this.tabIndex', self.tabIndex)
             self.spinShow = false;
             if (response.data.data.length != 0)
             {
@@ -699,12 +699,12 @@ export default {
             console.log("error",error);
             self.spinShow = false;
             if(error.response.status == 403){
-               self.$Notice.error(
-                   {duration:0, 
-                   title: error.response.statusText,
-                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                   );
-                }
+                self.$Notice.error({
+                  duration:0, 
+                  title: error.response.statusText,
+                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                });
+            }
         });
     },
     exportData (type) {

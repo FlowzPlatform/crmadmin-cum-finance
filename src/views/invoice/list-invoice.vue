@@ -423,11 +423,13 @@
             {
                 title: 'Invoice No.',
                 key: 'Id',
+                align: 'center',
                 sortable: true
             },
             {
                 title: 'Customer Name',
                 key: 'CustomerRef',
+                align: 'center',
                 sortable: true,
                 render : (h , {row}) => { 
                   // return row.CustomerRef.name
@@ -439,6 +441,7 @@
             {
                 title: 'Date',
                 key: 'TxnDate',
+                align: 'center',
                 sortable: true,
                 render : (h,{row}) => {
                   var date1 = moment(row.TxnDate).format('DD-MMM-YYYY')
@@ -452,11 +455,15 @@
             {
                 title: 'Paid Amount',
                 sortable: true,
-
+                align: 'right',
                 render : (h , {row}) => { 
                   // return  accounting.formatMoney((row.TotalAmt-row.Balance)) 
                   return h('div', [
-                    h('span', accounting.formatMoney((row.TotalAmt-row.Balance)))
+                    h('div',{
+                      style: {
+                          textAlign: 'right'
+                      }
+                    }, accounting.formatMoney((row.TotalAmt-row.Balance)))
                   ]);
                 }
 
@@ -465,11 +472,15 @@
                 title: 'Total Amount',
                 key: 'TotalAmt',
                 sortable: true,
-
+                align: 'right',
                 render : (h , {row}) => { 
                   // return  accounting.formatMoney(row.TotalAmt)
                   return h('div', [
-                    h('span', accounting.formatMoney((row.TotalAmt-row.Balance)))
+                    h('div',{
+                      style: {
+                          textAlign: 'right'
+                      }
+                    }, accounting.formatMoney((row.TotalAmt-row.Balance)))
                   ]);
                 }
 
@@ -478,6 +489,7 @@
             {
                 title: 'Status',
                 sortable: true,
+                align: 'center',
                 render : (h , {row}) => {
                     if(row.TotalAmt-row.Balance != row.TotalAmt){
                       return h('div', [
@@ -712,10 +724,12 @@
             {
                 title: 'Invoice No.',
                 key: 'InvoiceNumber',
+                align: 'center',
                 sortable: true
             },
             {
                 title: 'Customer Name',
+                align: 'center',
                 sortable: true,
                 render:(h,{row})=>{ 
                   // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
@@ -728,6 +742,7 @@
             {
                 title: 'Date',
                 //key: 'Date',
+                align: 'center',
                 sortable: true,
                 render:(h,{row})=>{
                   var date1 = moment(row.Date).format('DD-MMM-YYYY')
@@ -743,33 +758,41 @@
                 title: 'Paid Amount',
                 key: 'AmountPaid',
                 sortable: true,
-
+                align: 'right',
                 render:(h,{row})=>{ 
                   // return  accounting.formatMoney(row.AmountPaid)  
                   return h('div', [
-                                
-                                h('span', accounting.formatMoney(row.AmountPaid))
-                            ]);
-                  }
+                        h('div',{
+                          style: {
+                              textAlign: 'right'
+                          }
+                        }, accounting.formatMoney(row.AmountPaid))
+                    ]);
+                }
 
             },
             {
                 title: 'Total Amount',
                 key: 'Total',
+                align: 'right',
                 sortable: true,
 
                 render:(h,{row})=>{ 
                   // return  accounting.formatMoney(row.Total) 
                   return h('div', [
-                                
-                                h('span', accounting.formatMoney(row.Total))
-                            ]);
+                    h('div',{
+                        style: {
+                            textAlign: 'right'
+                        }
+                      }, accounting.formatMoney(row.Total))
+                    ]);
                   }
 
             },
             {
                 title: 'Status',
                 key: 'Status',
+                align: 'center',
                 sortable: true
             },
             {
@@ -1832,6 +1855,7 @@
                 arr.push({
                   title: columnArray[i] + ' Amount',
                   key : columnArray[i],
+                  align: 'right',
                   sortable: true,
                   render:(h,{row})=>{ 
                     return h('div', [
@@ -1845,6 +1869,7 @@
                 arr.push({
                   title: 'Customer Name',
                   key : columnArray[i],
+                  align: 'center',
                   sortable: true
                 });
               }
@@ -1852,6 +1877,7 @@
                 arr.push({
                   title: columnArray[i],
                   key : columnArray[i],
+                  align: 'center',
                   sortable: true
                 });
               }
@@ -2079,7 +2105,14 @@
               if(response.data.data.length == 0){
                 self.newList = []
               } else {
-                self.newList = response.data.data;
+                var deep = _.cloneDeep(response.data.data);
+                  _(deep).each(function(item , index){
+                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                      item.paymentAccounting.Invoice.Date = dt._d
+                  })
+                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                    // self.data = desc;
+                  self.newList = desc;
               }
               // self.$Loading.finish();
               // $('.preload').css("display","none")
@@ -2128,7 +2161,14 @@
                 // self.newList = [{key : "No transaction has been made for this Invoice"}]
                 self.newList = []
               } else {
-                self.newList = response.data.data;
+                  var deep = _.cloneDeep(response.data.data);
+                  _(deep).each(function(item , index){
+                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                      item.paymentAccounting.Invoice.Date = dt._d
+                  })
+                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                    // self.data = desc;
+                  self.newList = desc;
               }
           })
           .catch(function (error) {

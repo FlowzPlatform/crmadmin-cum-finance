@@ -16,7 +16,7 @@
 						<FormItem label="Gateway" prop="gateway">
 							<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
 							<Option  value='stripe'>Stripe</Option>
-							<Option  value='auth'>AuthrizedDotNet</Option>
+							<Option  value='auth'>Authrize.Net</Option>
 							<Option value='paypal'>PayPal</Option>
 							</Select>
 						</FormItem>
@@ -79,9 +79,9 @@
 			},
 			handleSubmit (name) {
 				var self = this
-				self.loading = true;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
+						self.loading = true;
 						console.log('formValidate----------------------------->',this.formValidate)
 						if(this.formValidate.configuration === 'all'){ 
 							this.$Modal.confirm({
@@ -259,6 +259,7 @@
 				})
 			},
 			handleReset (name) {
+				this.loading = false;
 				this.formValidate.gateway = '',
 				this.formValidate.x_api_login = '',
 				this.formValidate.x_api_token = ''
