@@ -168,9 +168,9 @@
                           </Panel>
                           <Panel :name="item.configName + '3'">
                               Online Payment
-                              <p slot="content" v-if="item.online_payment && item.online_payment !== '' && item.online_payment.alldeleted == false">
+                              <p slot="content" v-if="item.online_payment && item.online_payment !== ''">
                                   <Tabs :value="getTabValue(inx)" @on-click="setTabValue">
-                                      <TabPane v-if="v.length > 0" v-for="(v, k) in item.online_payment" :label="keyName(k)" :name="setname(k, inx)" :key="k">
+                                      <TabPane v-for="(v, k) in item.online_payment" v-if="v.length > 0 && item.online_payment[k].alldeleted === false" :label="keyName(k)" :name="setname(k, inx)" :key="k">
                                           <div class="schema-form ivu-table-wrapper">
                                               <div class="ivu-table ivu-table-border">
                                                   <div v-if="v.length > 0" class="ivu-table-body">
@@ -229,6 +229,9 @@
                                                   </div>
                                               </div>
                                           </div>
+                                      </TabPane>
+                                      <TabPane v-else style="text-align:center;color:#fd5e5e" :label="keyName(k)" :name="setname(k, inx)" :key="k">
+                                        {{keyName(k)}} Payment Information is deleted. <a @click="addNewPaymentSettings">Create New One</a>
                                       </TabPane>
                                   </Tabs>
                               </p>
@@ -617,6 +620,9 @@
             keyName(k) {
                 if (k === 'auth') {
                     return 'Authorize.Net'
+                }
+                else if (k === 'paypal') {
+                    return 'PayPal'
                 }
                 else {
                     return k
@@ -1457,23 +1463,25 @@
                         // console.log('item:: ', item.online_payment)
                         if (item.online_payment !== '') {
                             for (let k in item.online_payment) {
-                                console.log("1",item.online_payment[k])
+                                console.log("before",item.online_payment[k])
                                 item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
                                 if (item.online_payment[k].length > 0) {
                                     if (i === 0) {
                                         // self.alldata = false;
-                                        item.online_payment.alldeleted = false;
+                                        // item.online_payment[k].alldeleted = false;
                                         self.tabarr.push({activetab : k+inx})
                                         i++
                                     }
+                                    item.online_payment[k].alldeleted = false;
                                 }
                                 else {
                                     //message
                                     console.log(2);
                                     // self.alldata = true;
-                                    item.online_payment.alldeleted = true;
+                                    item.online_payment[k].alldeleted = true;
                                     self.tabarr.push({activetab : ''})
                                 }
+                                console.log("after",item.online_payment[k])
                             }
                         }
                         else {
