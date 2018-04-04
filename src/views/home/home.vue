@@ -620,7 +620,11 @@
                     else if (diff < 0) {
                         data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push('-');
-                        data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i])));
+                        data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
+                        symbol : '',
+                        precision : 2,
+                        thousand  : ''
+                    }));
                     }
                     else {
                         data1.push(accounting.formatMoney(data_arr[i]));
