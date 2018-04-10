@@ -26,11 +26,10 @@ console.log("???????????????????????? ", process.env.domainkey)
 
 //let frontEndUrl = 'http://localhost:8081/#/login';
 let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
+let socketPort = process.env.socket_port ? process.env.socket_port : '4032';
 
 module.exports = {
     default: {
-
-
 
         loginUrl: "https://api." + process.env.domainkey + "/auth/api/login",
         ldapLoginUrl: "https://api." + process.env.domainkey + "/auth/api/ldapauth",
@@ -49,16 +48,11 @@ module.exports = {
         filterColorUrl: "https://api."+process.env.domainkey+"/pdmnew/filters/colors",
         colorTableUrl: "https://api."+process.env.domainkey+"/serverapi/color-table",
 
-
-
-
         facebookSuccessCallbackUrl: frontEndUrl,
         googleSuccessCallbackUrl: frontEndUrl,
         twitterSuccessCallbackUrl: frontEndUrl,
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
-
-
 
         flowzDashboardUrl: 'https://www.dashboard.' + process.env.domainkey,
         flowzBuilderUrl: 'https://www.webbuilder.' + process.env.domainkey,
@@ -94,7 +88,9 @@ module.exports = {
 
         requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
-        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites'
+        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',
+        commentrequestapi: 'https://api.' + process.env.domainkey + '/serverapi/comment-request',
+        socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort
     }
 
 }

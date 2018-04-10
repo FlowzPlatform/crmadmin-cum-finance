@@ -44,7 +44,7 @@
                   </div>
               </div>
           </div>
-          <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
+          <Table :columns="columns1" :data="list" size="small"  ref="table" stripe></Table>
         </TabPane>
         <TabPane label="Request Info">
           <requestInfo :row="websiteList"></requestInfo>
@@ -177,6 +177,17 @@ export default {
         this.getReuestQuoteData()
       }
     },
+    // async viewDetails(params,status){
+    //   console.log("params and status", status , params)
+    //     if (!status) {
+    //       console.log("if", status)
+    //       return
+    //     }
+    //     else{
+    //       console.log("else", status)
+    //     $('.ivu-table-cell-expand-expanded').click()
+    //     }  
+    // },
     async getReuestInfoData () {
       console.log("getReuestInfoData getReuestInfoData getReuestInfoData")
       var self = this;
