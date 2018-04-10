@@ -732,20 +732,35 @@
                             
                         })
                         .catch(error => {
-                                console.log(error)
+                            console.log(error)
+                            if(error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
                                 
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location}) 
-                                    Cookies.remove('subscriptionId' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
-                                    });
-                                }
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
                     },
                     onCancel() {
@@ -791,20 +806,35 @@
                             console.log("EEEEEEEEEEEEe",self.data6[card].online_payment[tabname][rowinx])
                         })
                         .catch(error => {
-                                console.log(error)
+                            console.log(error)
+                            if(error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
                                 
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location})
-                                    Cookies.remove('subscriptionId' ,{domain: location})  
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
-                                    });
-                                }
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
                     },
                     render: (h) => {
@@ -887,20 +917,35 @@
                             
                         })
                         .catch(error => {
-                                console.log(error)
+                            console.log(error)
+                            if(error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
                                 
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location}) 
-                                    Cookies.remove('subscriptionId' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
-                                    });
-                                }
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
                     },
                     render: (h) => {
@@ -965,20 +1010,35 @@
                             }
                         })
                         .catch(error => {
-                                console.log(error)
+                            console.log(error)
+                            if(error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
                                 
-                                if(error.response.status == 401){
-                                    let location = psl.parse(window.location.hostname)
-                                    location = location.domain === null ? location.input : location.domain
-                                    
-                                    Cookies.remove('auth_token' ,{domain: location}) 
-                                    Cookies.remove('subscriptionId' ,{domain: location}) 
-                                    this.$store.commit('logout', this);
-                                    
-                                    this.$router.push({
-                                        name: 'login'
-                                    });
-                                }
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
                     },
 
@@ -1093,13 +1153,29 @@
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                             
-                            Cookies.remove('auth_token' ,{domain: location})
-                            Cookies.remove('subscriptionId' ,{domain: location})  
-                            this.$store.commit('logout', this);
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
                             
-                            this.$router.push({
+                            self.$router.push({
                                 name: 'login'
                             });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.response.status == 403){
+                            self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                            });
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
                         }
                 });
             },
@@ -1150,17 +1226,33 @@
                           console.log(error)
                           self.disabled = false;
                           if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                          }
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
                     }, false);
 
@@ -1205,17 +1297,33 @@
                           console.log(error)
                           self.disabled = false;
                           if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                          }
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
 
                 }else {
@@ -1354,17 +1462,33 @@
                         console.log(error)
                         this.disabled = false;
                         if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
-                            this.$store.commit('logout', this);
-                            
-                            this.$router.push({
-                                name: 'login'
-                            });
-                        }
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 403){
+                                self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                 });
             }
         },
@@ -1452,6 +1576,12 @@
                                     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
                                 });
                             }
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
                         }
                     });
                 }
@@ -1528,7 +1658,13 @@
                     //     desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
                     //     );
                 
-                }
+                }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                 self.$Loading.error();
             });
             // -------------------------

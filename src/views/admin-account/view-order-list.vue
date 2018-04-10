@@ -515,7 +515,37 @@
                         self.spinShow = false;
                         console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
                         self.invoice = response.data[0].data
-                })    
+                    }).catch(function (error){
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 0
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    })    
                 console.log('invoice', self.invoice)
             },
             getMulti(a, b) {
@@ -579,17 +609,47 @@
                     },
                     
                     }).then(function (response) {
-		            self.$Loading.finish()
-                    document.querySelector('#myfooter').style.position = 'initial'
-                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                    console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
-                    var arrayBufferView = new Uint8Array( response.data.data );
-                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                    var link=document.createElement('a');
-                    link.href=window.URL.createObjectURL(blob);
-                    link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
-                    link.click();
-                })    
+                        self.$Loading.finish()
+                        document.querySelector('#myfooter').style.position = 'initial'
+                        console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                        console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
+                        var arrayBufferView = new Uint8Array( response.data.data );
+                        var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                        var link=document.createElement('a');
+                        link.href=window.URL.createObjectURL(blob);
+                        link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
+                        link.click();
+                    }).catch(function (error){
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 0
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    })    
             }
         },
         filters: {

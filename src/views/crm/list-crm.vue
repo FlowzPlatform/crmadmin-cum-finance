@@ -209,7 +209,37 @@
 									self.data5.splice(i,1)
 								}
 							}
-						});
+						}).catch(function (error){
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+						})
 					},
 					onCancel: () => {
 						// this.$Message.info('Clicked cancel');
@@ -254,7 +284,12 @@
                         
                         self.$router.push({
                             name: 'login'
-                        });
+						});
+						self.$Notice.error({
+							title: error.response.data.name,
+							desc: error.response.data.message,
+							duration: 10
+						})
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
                             title: error.response.statusText,
@@ -263,9 +298,9 @@
                         })
                     }else {
                         self.$Notice.error({
-                            title: 'Error',
-                            desc: error,
-                            duration: 4.5
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
                         })
                     }
                 });

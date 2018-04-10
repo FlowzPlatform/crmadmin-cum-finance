@@ -175,6 +175,34 @@
 										.catch(function (error) {
 											self.loading = false;
 											console.log('error',error)
+											if(error.response.status == 401){
+												let location = psl.parse(window.location.hostname)
+												location = location.domain === null ? location.input : location.domain
+												
+												Cookies.remove('auth_token' ,{domain: location}) 
+												self.$store.commit('logout', self);
+												
+												self.$router.push({
+													name: 'login'
+												});
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}else if(error.response.status == 403){
+												self.$Notice.error({
+												duration:0, 
+												title: error.response.statusText,
+												desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+												});
+											}else {
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}
 										})
 									})
 								},
@@ -280,6 +308,34 @@
 											.catch(function (error) {
 												self.loading = false;
 												console.log('error',error)
+												if(error.response.status == 401){
+													let location = psl.parse(window.location.hostname)
+													location = location.domain === null ? location.input : location.domain
+													
+													Cookies.remove('auth_token' ,{domain: location}) 
+													self.$store.commit('logout', self);
+													
+													self.$router.push({
+														name: 'login'
+													});
+													self.$Notice.error({
+														title: error.response.data.name,
+														desc: error.response.data.message,
+														duration: 10
+													})
+												}else if(error.response.status == 403){
+													self.$Notice.error({
+													duration:0, 
+													title: error.response.statusText,
+													desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+													});
+												}else {
+													self.$Notice.error({
+														title: error.response.data.name,
+														desc: error.response.data.message,
+														duration: 10
+													})
+												}
 											})
 										})
 									}
@@ -305,6 +361,34 @@
 										.catch(function (error) {
 											self.loading = false;
 											console.log('error',error)
+											if(error.response.status == 401){
+												let location = psl.parse(window.location.hostname)
+												location = location.domain === null ? location.input : location.domain
+												
+												Cookies.remove('auth_token' ,{domain: location}) 
+												self.$store.commit('logout', self);
+												
+												self.$router.push({
+													name: 'login'
+												});
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}else if(error.response.status == 403){
+												self.$Notice.error({
+												duration:0, 
+												title: error.response.statusText,
+												desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+												});
+											}else {
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}
 										})
 									}
 								},
@@ -367,22 +451,33 @@
 				.catch(function (error) {
 					console.log("error",error.response);
 					if(error.response.status == 401){
-						let location = psl.parse(window.location.hostname)
-						location = location.domain === null ? location.input : location.domain
-						
-						Cookies.remove('auth_token' ,{domain: location}) 
-						this.$store.commit('logout', this);
-						
-						this.$router.push({
-							name: 'login'
-						});
-					}else if(error.response.status == 403){
-						self.$Notice.error(
-						{duration:0, 
-						title: error.response.statusText,
-						desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-						);
-					}
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                          }else if(error.response.status == 403){
+                            self.$Notice.error({
+                              duration:0, 
+                              title: error.response.statusText,
+                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                              });
+                          }else {
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                          }
 				});
 			
 			},
