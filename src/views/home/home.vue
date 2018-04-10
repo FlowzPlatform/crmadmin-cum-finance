@@ -288,7 +288,7 @@
                     console.log("chart data",chartdata)
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    console.log("error",error.response);
                     self.$Loading.error()
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
@@ -541,6 +541,7 @@
             //Cashflow
             async waterfall(date1,date2,settingId,settingName,contact) {
                 var chartdata;
+                var self = this
                 await axios.get(serviceUrl+"invoice", {
                     params: {
                         chart : 'cashflow',
@@ -727,6 +728,7 @@
 
             async totalAmt(date1,date2,settingId,settingName,contact) {
                 var statsData;
+                var self = this
                 await axios.get(serviceUrl+"invoice", {
                     params: {
                         stats : true,
@@ -932,7 +934,7 @@
             },
 
             async init() {
-                
+                var self = this
                 if(Cookies.get('auth_token')){
                     axios({
                         method: 'get',
@@ -977,7 +979,6 @@
                     })
                 }
                 
-                let self = this;
                 this.name = await Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 var resp;
