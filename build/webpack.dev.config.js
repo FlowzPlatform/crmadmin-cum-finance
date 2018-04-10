@@ -29,11 +29,12 @@ module.exports = merge(webpackBaseConfig, {
             minChunks: Infinity
         }),
         new HtmlWebpackPlugin({
-            title: 'iView admin v' + package.version,
+            title: 'Flowz CRM',
             filename: '../index.html',
             template: './src/template/index.ejs',
             inject: false
         }),
+        new webpack.EnvironmentPlugin(['domainkey']),
         new CopyWebpackPlugin([
             {
                 from: 'src/views/main-components/theme-switch/theme'

@@ -1,167 +1,189 @@
 <template>
-<div class="container-fluid">
-  <div class="form-group row">
-      <div class="panel col-sm-12" id="c16894">
-          <label>New CRM case</label>
-      </div>
-      <div class="row">
-          <div class="col-sm-6">
-              <div class="col-sm-12">
-                  <div class="panel" id="c16913">
-                      <p id="c16917"><i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
-                          <label
-                          id="c16925">Basic attributes:</label>
-                      </p>
-                      <p>
-                      	<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
-                          <!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
-                      </p>
-                      <textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
-                      <!-- <p id="c16943"> -->
-                      	<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/"
-                      	style="padding-top:15px">
-										        <div style="padding: 20px 0">
-										            <icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
-										            <p>Click or drag files here to upload</p>
-										        </div>
-										    </upload>
-                          <!-- <input id="c16947" name="myFile" type="file" /> -->
-                      <!-- </p> -->
-                  </div>
-              </div>
-          </div>
-          <div class="col-sm-6">
-              <div class="col-sm-12">
-                  <div class="panel" id="c16961">
-                      <div>
-                          <p id="c16969"><i class="fa fa-users" id="c16973" aria-hidden="true"></i>
-                              <label id="c16977">Add Related Contact:</label>
-                          </p>
-                      </div>
-                      <div id="c16980">
-                          <p>
-                              <label class="col-xs-3 autoCompleteDropdown" id="c16988">Customer</label>
-                              <auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable>
-							 </auto-complete>
-								<!-- <i-select v-model="finaldata.cname" style="width:100px">
-								<i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option>
-							</i-select> -->
-                          </p>
-                      </div>
-                  </div>
-                  <div class="panel" id="c17000">
-                      <div>
-                          <p id="c17008"><i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
-                              <label
+	<div class="container-fluid">
+		<div class="form-group row">
+			<div class="panel col-sm-12" id="c16894">
+				<label>New CRM case</label>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="col-sm-12">
+						<div class="panel" id="c16913">
+							<p id="c16917">
+								<i class="fa fa-file-text-o" id="c16921" aria-hidden="true"></i>
+								<label id="c16925">Basic attributes:</label>
+							</p>
+							<p>
+								<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
+								<!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
+							</p>
+							<textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
+							<!-- <p id="c16943"> -->
+							<!--<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="padding-top:15px">
+								<div style="padding: 20px 0">
+									<icon type="ios-cloud-upload" size="52" style="color: #3399ff"></icon>
+									<p>Click or drag files here to upload</p>
+								</div>
+							</upload> -->
+							<!-- <input id="c16947" name="myFile" type="file" /> -->
+							<!-- </p> -->
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px"> 
+								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
+							</Upload>
+							<div v-if="file !== ''" style="margin-left:20px">Selected file: {{ file.name }} 
+								<Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
+							</div>
+
+							<!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
+						
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="col-sm-12">
+						<div class="panel" id="c16961">
+							<div>
+								<p id="c16969">
+									<i class="fa fa-users" id="c16973" aria-hidden="true"></i>
+									<label id="c16977">Add Related Contact:</label>
+								</p>
+							</div>
+							<div id="c16980">
+								<p>
+									<Select v-model="finaldata.config" style="width:86% !important;margin-bottom:10px" placeholder="Select Config" @on-change="configChange">
+							          <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
+							        </Select>
+									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
+							        <!-- <div id="CustomerName"> -->
+									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
+										<div v-if="domainConfig=='Xero'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='custom'">
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										</div>
+										<div v-if="domainConfig=='QB'">
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+										</div>
+									</Select>
+								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
+									 </div> -->
+									<!-- <i-select v-model="finaldata.cname" style="width:100px"><i-option v-for="item in data" :value="item.cname" :key="item.cname">{{ item.cname }}</i-option></i-select> -->
+								</p>
+							</div>
+						</div>
+						<div class="panel" id="c17000">
+							<div>
+								<p id="c17008">
+									<i class="fa fa-file-text-o" id="c17012" aria-hidden="true"></i>
+									<label
                               id="c17016">Additional attributes:</label>
-                          </p>
-                      </div>
-                      <div id="c17019">
-                          <p>
-                              <label class="col-xs-3" id="c17027">Project</label>
-                              <i-select v-model="finaldata.project" style="width:100px" filterable>
-													      <i-option v-for="item in momdata" :value="item.project_name" :key="item.project_name">{{ item.project_name }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17043">Status</label>
-                              <i-select v-model="finaldata.status" style="width:100px">
-													      <i-option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17059">Assignee</label>
-                              <i-select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
-													      <i-option v-for="item in assigneedata" :value="item.fullname" :key="item.fullname">{{ item.fullname }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17075">Product line</label>
-                              <i-select v-model="finaldata.product_line" style="width:100px">
-													      <i-option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</i-option>
-													    </i-select>
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17091">Contract date</label>
-                              <!-- <form-item prop="date"> -->
-				                        <date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:60% !important"></date-picker>
-				                    	<!-- </form-item> -->
-                              <!-- <input class="form-control" type="date" id="contractdate"
+								</p>
+							</div>
+							<div id="c17019">
+								<p>
+									<label class="col-xs-3" id="c17027">Project</label> 
+									<Select v-model="finaldata.project" style="width:100px" filterable>
+										<Option v-for="(t, inx) in momdata" :value="t.value" :key="inx">{{ t.label }}</Option>
+									</Select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17043">Status</label>
+									<Select v-model="finaldata.status" style="width:100px">
+										<Option v-for="item in crmdata.crmStatus" :value="item.name" :key="item.name">{{ item.name }}</Option>
+									</Select>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17059">Assignee</label>
+									<Select v-model="finaldata.assignee" style="width:100px"  filterable multiple>
+										<Option v-for="(t, inx) in assigneedata" :value="t.value" :key="inx">{{ t.label }}</Option>
+									</Select>
+								</p>
+								<!-- <p><label class="col-xs-3" id="c17075">Product line</label><Select v-model="finaldata.product_line" style="width:100px"><Option v-for="item in crmdata" :value="item.product_line" :key="item.product_line">{{ item.product_line }}</Option></Select></p> -->
+								<p>
+									<label class="col-xs-3" id="c17091">Contract date</label>
+									<!-- <el-date-picker v-model="finaldata.contractdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
+									<!-- <form-item prop="date"> -->
+									<date-picker type="date" placeholder="Select date" v-model="finaldata.contractdate" style="width:60% !important"></date-picker>
+									<!-- </form-item> -->
+									<!-- <input class="form-control" type="date" id="contractdate"
                               /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17104">Next Action</label>
-                              <date-picker type="date" placeholder="Select date" v-model="finaldata.nextdate" style="width:60% !important"></date-picker>
-                              <!-- <input class="form-control" type="date" id="nextdate"
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17104">Next Action</label>
+									<!-- <el-date-picker v-model="finaldata.nextdate" type="date" placeholder="Select date" style="width:60% !important"></el-date-picker> -->
+									<date-picker type="date" placeholder="Select date" v-model="finaldata.nextdate" style="width:60% !important"></date-picker>
+									<!-- <input class="form-control" type="date" id="nextdate"
                               /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17117">Price</label>
-                              <Input v-model="finaldata.priceinput" placeholder="Enter Price..." style="width: 30%"></Input>
-                              
-							  <Input v-model="finaldata.price" readonly style="width: 30%"></Input>
-                              <!-- <i-select v-model="finaldata.price" style="width:30% !important">
-													      <i-option v-for="item in crmdata.currency" :value="item.name" :key="item.name">{{ item.name }}</i-option>
-													    </i-select>                                     -->
-													</p>
-                          <p>
-                              <label class="col-xs-3" id="c17139">Email</label>
-                              <Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%"></Input>
-                              <!-- <input class="form-control" type="text" id="email" /> -->
-                          </p>
-                          <p>
-                              <label class="col-xs-3" id="c17152">Phone</label>
-                              <Input v-model="finaldata.phone" placeholder="Enter Phone..." style="width: 60%"></Input>
-                              <!-- <input class="form-control" type="text" id="phone" /> -->
-                          </p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <span class="panel" id="c17165">
-            <button class="form-control" id="create" @click="postdata()">Create</button>
-            <!-- <button class="form-control" id="createandcontinue">Create and Continue</button> -->
-          </span>
-      </div>
-  </div>
-</div>
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17117">Price</label>
+									<Input v-model="finaldata.priceinput" placeholder="Enter Price..." style="width: 30%"></Input>
+									<Input v-model="finaldata.price" readonly style="width: 30%"></Input>
+									<!-- <i-select v-model="finaldata.price" style="width:30% !important"><i-option v-for="item in crmdata.currency" :value="item.name" :key="item.name">{{ item.name }}</i-option></i-select>                                     -->
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17139">Email</label>
+									<Input v-model="finaldata.email" placeholder="Enter Email..." style="width: 60%" type="email"></Input>
+									<!-- <input class="form-control" type="text" id="email" /> -->
+								</p>
+								<p>
+									<label class="col-xs-3" id="c17152">Phone</label>
+									<Input v-model="finaldata.phone" placeholder="Enter Phone..." style="width: 60%"></Input>
+									<!-- <input class="form-control" type="text" id="phone" /> -->
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<span class="panel" id="c17165">
+					<Button class="form-control" id="create" :loading="loading" @click="postdata()">Create</Button>
+					<!-- <button class="form-control" id="createandcontinue">Create and Continue</button> -->
+				</span>
+			</div>
+		</div>
+	</div>
 </template>
 <script>
-import config from '../../config/customConfig.js'
-import Cookies from 'js-cookie';
-var nextdate;
-var priceinput;
-var price;
-var email;
-var phone;
-var serviceUrl = config.default.serviceUrl;
-
-var apiurl = config.default.serviceUrl + "contacts/";
-var databaseurl = config.default.serviceUrl + "crm-service/";
-var result;
-var result1;
-var name;
-var cname;
-var project;
-var status;
-var assignee;
-var product_line;
-var contractdate;
-var momapi = config.default.projecturl + "project"
-var databasepost = config.default.serviceUrl + "crm-case/";
-var assigneeapi = config.default.assigneeapi;
+	import config from '../../config/customConfig.js'
+	import Cookies from 'js-cookie';
+	import axios from 'axios';
+	import psl from 'psl';	
+	let _ = require('lodash')
+	var serviceUrl = config.default.serviceUrl;
+	var nextdate;
+	var priceinput;
+	var price;
+	var email;
+	var phone;
+	var result;
+	var result1;
+	var name;
+	var cname;
+	var project;
+	var status;
+	var assignee;
+	var product_line;
+	var contractdate;
+	var momapi = config.default.projecturl + "project"
+	var assigneeapi = config.default.assigneeapi;
 
 	export default {
-    name: 'newcrm',
-    data() {
-      return {
-        customerData:[],
-        crmdata: [],
-        finaldata: {
-        	name: '',
-			cname: '',
-        	project: '',
+		name: 'newcrm',
+		data() {
+			return {
+				uploadlist : false,
+				customerData:[],
+				customCustomerUrl: '',
+				crmdata: [],
+				domainConfig: "",
+				loading: false,
+				file: '',
+				finaldata: {
+					name: '',
+					cname: '',
+					project: '',
 					status: '',
+					fileupload: [],
 					assignee: [],
 					product_line: '',
 					contractdate: '',
@@ -169,127 +191,389 @@ var assigneeapi = config.default.assigneeapi;
 					priceinput: '',
 					price: '',
 					email: '',
-					phone: '', 
-        },
-		momdata: [],
-		description:'',
-        assigneedata: []
-      }
-    },
-    methods: {
-    	async calldata() {
-			let self=this;
-	    	await $.ajax({
-					type: 'GET',
-					url: serviceUrl +"contacts",
-					async: true,
-					dataType: 'json',
-					headers: {
-					'authorization':  Cookies.get('auth_token')
-					},
-					success: function (data) {
-						console.log("data>>>>>>>>>>>>>> " , data)
-						data.forEach(function(contacts) {
-							var cnt = contacts.data
-							console.log("%%%%%%%%%%",cnt.length)
-							for (var i=0; i<cnt.length; i++) {
-								self.customerData.push(cnt[i].Name)
-							}
-						})
+					phone: '',
+					config: '', 
+					subscriptionId: ''
+				},
+						momdata: [],
+						mData: [],
+						// config1: '',
+						description:'',
+					assigneedata: []
+				}
+			},
+		methods: {
+			removefile(){
+				this.file = ''
+			},
+			async handleUpload (file) {
+				var self = this
+				console.log('file',file)
+				if(file.size >= 51200){
+					this.$Notice.error({
+						title: 'File Limit',
+						desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+					});
+					self.removefile()
+					return true
+				}
+				self.file = file
+				return false;
+			},
+			async calldata() {
+				let resp
+				let self = this
 
-						// console.log(data)
-					},error: function(err) {
-						console.log("Error",err)
+				var settingId = self.finaldata.config
+				await axios({
+					method:'get',
+					url: config.default.serviceUrl + 'settings/'+settingId,
+					headers:{
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
+					},
+				})
+				.then(async function(response) {
+						self.domainConfig=response.data.domain
+					console.log(response)
+					if(response.data.domain == 'custom'){
+
+							self.customCustomerUrl = response.data.customer_url;
+							self.customInvoiceUrl = response.data.invoice_url;
+							
+						await axios({
+							method: 'get',
+							url: self.customCustomerUrl,
+							params : {settingId : response.data.id},
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							}
+							})
+							.then(function (response) {
+							console.log(response)
+							resp = response.data.data
+							self.customerData = resp
+							console.log("self.customerData", self.customerData)
+							})
+							.catch(function (error) {
+							console.log(error.response)
+							self.$Message.error(error.response.data.data[0].message)
+							});
+
+					}else{
+							await axios({
+									method: 'get',
+									url: config.default.serviceUrl + 'contacts',
+									params: {
+									settingId : settingId
+									},
+									headers:{
+										Authorization : Cookies.get('auth_token')
+									},
+								}).then(function (response) {
+								
+									resp = response.data
+									self.customerData = _.sortBy(resp[0].data,['Name']);
+									 
+								})
+								.catch(function (error) {
+									console.log(error);
+								});
 					}
 				});
-	        // console.log("resp data",result);
-	        result.forEach(item => {
-						var customer = item.Name;
-						this.data.push(customer)
-					})
-    	},
-    	async dbdata() {
-    		var self = this
-    		await $.ajax({
-			    url: databaseurl,
-			    success: function (data) {
-					result1 = data.data[0];
-					console.log(">>>>>>>>>>>>>> " ,data)
-			        self.crmdata = result1
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-				});
-	    },
-    	async postdata() {
+				
+				
+				console.log("response------>iuy",resp);
+				$('.customer').css("display","inline-block")				
+				// resp.forEach(obj =>{
+				//   console.log(obj[0].data)
+					// alert(self.formItem.configuration)
+					
+				//})
+				// 	let self=this;
+				// 	self.customerData = [];
+				// await $.ajax({
+				// 		type: 'GET',
+				// 		url: serviceUrl +"contacts",
+				// 		data: {
+				//         settingId : self.finaldata.config,   
+				//     },
+				// 		success: function (data) {
+				// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
+				// 			data.forEach(function(contacts) {
+				// 				var cnt = contacts.data
+				// 				for (var i=0; i<cnt.length; i++) {
+				// 					console.log("%%%%%%%%%%",cnt[i].Name)
+				// 					self.customerData.push(cnt[i].Name)
+				// 				}
+				// 			})
+
+				// 			// console.log(data)
+				// 		},error: function(err) {
+				// 			console.log("Error",err)
+				// 		}
+				// 	});
+				// console.log("resp data",result);
+				//     result.forEach(item => {
+						// 	var customer = item.Name;
+						// 	this.data.push(customer)
+						// })
+			},
+			init() {
+				let self = this;
+				self.$Loading.start();
+				axios.get(serviceUrl+"settings", {
+					params: {
+						isActive : true
+					},
+					headers: {
+						Authorization : Cookies.get('auth_token'),
+						subscriptionId : Cookies.get('subscriptionId')
+					}
+				})
+				.then(function (response) {
+					// console.log("config data list",response)
+					// self.mData = response.data.data;
+					var newConf = response.data.data
+					console.log("self.configs---------------->before",newConf)
+					self.mData = _.sortBy(newConf, ['configName']);
+					console.log("self.configs---------------->after",self.mData)
+					// self.config1 = self.mData[0].id;
+					// self.calldata()    
+				}).catch(error => {
+                    console.log("-------",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: 'Error',
+                            desc: error,
+                            duration: 4.5
+                        })
+                    }
+                });
+			},
+			configChange(data){
+				console.log(data)
+				$('.autoCompleteDropdown').css("display","inline-block")
+				this.calldata(data);
+			},
+			async dbdata() {
+				var self = this
+				await $.ajax({
+					type: 'GET',
+					url: serviceUrl + "crm-service/",
+					success: function (data) {
+						result1 = data.data[0];
+						console.log("databaseurl data.............." ,data)
+						self.crmdata = result1
+						var newarr = self.crmdata.crmStatus;
+						self.crmdata.crmStatus = _.sortBy(newarr,['name']);
+					},error: function(err){
+						console.log("error",err);
+					}
+					});
+			},
+			async postdata() {
 				let desc = CKEDITOR.instances.editor1.getData()
 				this.finaldata.description = desc
+				
 				let self = this
+				var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
+				var phone = phone_re.test(self.finaldata.phone);
+				var mail = re.test(self.finaldata.email);
+				self.finaldata.subscriptionId = Cookies.get('subscriptionId')
+				self.finaldata.isDeleted = "false"
+				if(self.finaldata.assignee != "" && self.finaldata.cname != ""){
+					if (mail != false && phone != false) {
+						this.loading = true
+						var file = this.file
+						console.log('file------->',file)
+						if(file != ''){
+							var reader = new FileReader();
+							console.log('uuuuuu',file)
+							reader.readAsDataURL(file);
+						  	reader.addEventListener("load", async function () {
+								console.log('uuuuuu',file.name)
+								var fileupObj = {
+									"filename":file.name,
+									"url":reader.result
+								}
+								self.finaldata.fileupload.push(fileupObj);
+								
+								console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
+								console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
+								await $.ajax({
+									type: 'POST',
+									headers: {
+										'Authorization': Cookies.get('auth_token'),
+										'subscriptionId': Cookies.get('subscriptionId')
+									},
+									url: serviceUrl  + "crm-case/",
+									data: self.finaldata,
+									success: function (data1) {
+										result = data1;
+										console.log("json data******123",result);
+										self.loading = false,
+										self.$Notice.success({
+											title: 'Sucess',
+											desc: 'New CRM case is Saved. ',
+											duration: 4.5
+										});
+										self.$router.push( "list-relationship")
+									},error: function(err){
+										self.loading = false,
+									console.log("error",err);
+									}
+								});
+							});
+
+						}else{
+							await $.ajax({
+								type: 'POST',
+								headers: {
+									'Authorization': Cookies.get('auth_token')
+								},
+								url: serviceUrl  + "crm-case/",
+								data: self.finaldata,
+								success: function (data1) {
+									result = data1;
+									console.log("json data******123",result);
+									self.loading = false,
+									self.$Notice.success({
+										title: 'Sucess',
+										desc: 'New CRM case is Saved. ',
+										duration: 4.5
+									});
+									self.$router.push( "list-relationship")
+								},error: function(err){
+									self.loading = false,
+								console.log("error",err);
+								}
+							});
+						}
+						
+							// var params = self.finaldata
+							// console.log("json data******123this.finaldata",params);
+
+						
+					} else {
+						// alert("Enter Valid Email Address OR Phone Number")
+						this.$Notice.error({
+							title: 'Error',
+							desc: 'Enter Valid Email Address OR Phone Number. ',
+							duration: 4.5
+						});
+					}
+				}else{
+					this.$Notice.error({
+							title: 'Error',
+							desc: 'Please Select Customer OR Assignee. ',
+							duration: 4.5
+						});
+				}			
+			},
+			filterMethod (value, option) {
+				return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+			},
+			async projectlist() {
+				var self = this
 				await $.ajax({
-					type: 'POST',
-				    url: databasepost,
-				    data: this.finaldata,
-				    success: function (data1) {
-				        result = data1;
-						console.log("json data******123",result);
-						self.$router.push( "list-relationship")
-				    },error: function(err){
-				       console.log("error",err);
-				    }
-				});
-    },
-    show() {
-      this.$router.push('/edit-crm/'+index)
-    },
-    filterMethod (value, option) {
-      return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-  	},
-  	async projectlist() {
-  		var self = this
-  		await $.ajax({
-			    url: momapi,
-			    success: function (data) {
-					console.log(">>>>>>>>>>>>>>> " , data)
-			        result1 = data;
-			        self.momdata = result1;
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-			});
-  	},
-  	async assigneelist() {
-  		var self = this
-  		await $.ajax({
-  				headers: {
-  					'Authorization': Cookies.get('auth_token')
-  				},
-			    url: assigneeapi,
-			    success: function (data) {
-			        result1 = data.data;
-			        console.log(data)
-			        self.assigneedata = result1;
-			    },error: function(err){
-			       console.log("error",err);
-			    }
-			});
-  	}
-    },
-    mounted() {
-		this.finaldata.price = "$";
-    	CKEDITOR.replace("editor1"),
-    	this.calldata(),
-    	this.dbdata()
-    	this.projectlist()
-    	this.assigneelist()
+						type: 'GET',
+						url: momapi,
+						success: function (data) {
+							console.log(">>>>>>>>>>>>>>> " , data)
+							result1 = data;
+							var proArr = [];
+							proArr = _.map(result1, (d) => {
+								return {label: d.project_name, value: d.project_name}
+							})
+							self.momdata = _.sortBy(proArr, ['value']);
+						},error: function(err){
+						console.log("error",err);
+						}
+					});
+			},
+			async assigneelist() {
+				var self = this
+				await $.ajax({
+						type: 'GET',
+						headers: {
+							'Authorization': Cookies.get('auth_token')
+						},
+						url: assigneeapi,
+						success: function (data) {
+							result1 = data.data;
+							console.log(data)
+							var myarr = []
+							_.forEach(result1, (d) => {
+										if (d.hasOwnProperty('fullname')) {
+											if (d.fullname !== undefined) {
+												if (d.fullname !== null) {
+													if (d.fullname.trim() !== '') {
+														let checkname = _.findIndex(myarr,{value: d.fullname})
+														if (checkname === -1) {
+															myarr.push({label: d.fullname, value: d.fullname})
+														}
+													}
+												}
+											}
+										}
+							})
+							self.assigneedata = _.sortBy(myarr,['value']);
+							self.$Loading.finish()
+							console.log('self.assigneedata', self.assigneedata)
+						},error: function(err){
+						console.log("error",err);
+						}
+					});
+			}
+		},
+		mounted() {
+			this.finaldata.price = "$";
+			CKEDITOR.replace("editor1"),
+			this.init(),
+			this.dbdata()
+			this.projectlist()
+			this.assigneelist()
+		}
 	}
-}
+
 </script>
+
 <style scoped>
 	* {
 	    box-sizing: border-box;
 	}
 	body {
 	    margin: 0;
+	}
+	.ivu-date-picker-header {
+		height: 32px;
+	    line-height: 32px;
+	    text-align: center;
+	    border-bottom: 1px solid #e9eaec;
+	    width: 120% !important;
+	}
+	.ivu-picker-panel-content {
+		width: 120% !important;
 	}
 	.row {
 	    display: table;
@@ -955,5 +1239,8 @@ var assigneeapi = config.default.assigneeapi;
 	}
 	.col-xs-3 {
 	    float: none;
+	}
+	.ivu-upload-list{
+		display: none;
 	}
 </style>

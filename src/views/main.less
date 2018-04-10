@@ -8,6 +8,37 @@
     transform: translate(-50%,-50%);
     transition: all 3s;
 }
+
+.headerMenu > .ivu-menu{
+    // position: absolute
+}
+
+.headerMenu{
+    // text-align: left;
+    display:inline-block;
+    vertical-align:middle
+}
+
+    .main-header .header-avator-con {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 324px;
+        text-align: right;
+    }  
+    .main-header-con .main-header .header-avator-con .user-dropdown-menu-con {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: auto;
+    height: 100%;
+    display: inline-block;
+    }
+    .header-avator-con > .ivu-tooltip {
+    display: inline-block;
+    vertical-align: middle;
+    }
 .main{
     position: absolute;
     width: 100%;
@@ -114,7 +145,7 @@
             right: 0;
             top: 0;
             height: 100%;
-            width: 300px;
+            width: 324px;
             .switch-theme-con{
                 display: inline-block;
                 width: 40px;
@@ -209,7 +240,18 @@
     padding: 8px;
     text-align: center;
     img{
-        height: 44px;
+
+        height: 85px;
+
         width: auto;
     }
+}
+
+.ivu-menu-horizontal .ivu-menu-submenu {
+    float: left;
+    padding: 0px 10px;
+    /* position: relative; */
+    cursor: pointer;
+    z-index: 3;
+    transition: all .2s ease-in-out;
 }

@@ -1,0 +1,36 @@
+2018-02-16T16:32:42.837692453 0.251902s notice: Recursively removing directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data/tmp
+2018-02-16T16:32:42.886413392 0.300621s notice: Initializing directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data
+2018-02-16T16:32:42.886571622 0.300779s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data' did not already exist or is empty.)
+2018-02-16T16:32:42.886655518 0.300863s notice: Running rethinkdb 2.3.5~0xenial (GCC 5.3.1)...
+2018-02-16T16:32:42.913436841 0.327647s notice: Running on Linux 4.4.0-112-generic x86_64
+2018-02-16T16:32:42.913556702 0.327764s notice: Loading data from directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data
+2018-02-16T16:32:42.959326349 0.373534s info: Automatically using cache size of 997 MB
+2018-02-16T16:32:43.014200995 0.428409s notice: Listening for intracluster connections on port 29015
+2018-02-16T16:32:43.021568461 0.435777s notice: Listening for client driver connections on port 28015
+2018-02-16T16:32:43.029987842 0.444196s error: Could not bind to http port: The address at localhost:8080 is reserved or already in use.
+2018-02-16T16:33:14.536755409 0.058494s notice: Running rethinkdb 2.3.5~0xenial (GCC 5.3.1)...
+2018-02-16T16:33:14.544922900 0.066664s notice: Running on Linux 4.4.0-112-generic x86_64
+2018-02-16T16:33:14.544983418 0.066722s notice: Loading data from directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data
+2018-02-16T16:33:14.568860532 0.090601s info: Automatically using cache size of 992 MB
+2018-02-16T16:33:14.577579231 0.099318s notice: Listening for intracluster connections on port 29015
+2018-02-16T16:33:14.578309631 0.100049s notice: Listening for client driver connections on port 28015
+2018-02-16T16:33:14.584187966 0.105927s error: Could not bind to http port: The address at localhost:8080 is reserved or already in use.
+2018-02-16T16:33:23.203500066 0.044518s notice: Running rethinkdb 2.3.5~0xenial (GCC 5.3.1)...
+2018-02-16T16:33:23.209881842 0.050904s notice: Running on Linux 4.4.0-112-generic x86_64
+2018-02-16T16:33:23.210013691 0.051031s notice: Loading data from directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data
+2018-02-16T16:33:23.229665905 0.070683s info: Automatically using cache size of 1296 MB
+2018-02-16T16:33:23.238702936 0.079720s notice: Listening for intracluster connections on port 29015
+2018-02-16T16:33:23.239806668 0.080824s notice: Listening for client driver connections on port 28015
+2018-02-16T16:33:23.245390545 0.086408s error: Could not bind to http port: The address at localhost:8080 is reserved or already in use.
+2018-02-16T16:33:42.624346610 0.046192s notice: Running rethinkdb 2.3.5~0xenial (GCC 5.3.1)...
+2018-02-16T16:33:42.630072649 0.051924s notice: Running on Linux 4.4.0-112-generic x86_64
+2018-02-16T16:33:42.630210958 0.052056s notice: Loading data from directory /var/www/R&D/GO/All_flowz/FLOWZCRM/Account/accounting_iview_dashboard/iviewadminfrontandbackfromDEVELOP/frontend/crmadmin-cum-finance/rethinkdb_data
+2018-02-16T16:33:42.653610752 0.075456s info: Automatically using cache size of 3612 MB
+2018-02-16T16:33:42.669175302 0.091021s notice: Listening for intracluster connections on port 29015
+2018-02-16T16:33:42.670975190 0.092821s notice: Listening for client driver connections on port 28015
+2018-02-16T16:33:42.672132370 0.093978s notice: Listening for administrative HTTP connections on port 8080
+2018-02-16T16:33:42.680755799 0.102602s notice: Listening on cluster addresses: 127.0.0.1, 172.17.0.1, 172.18.0.1, 172.16.160.229, ::1, fe80::47d1:6269:1f55:3f26%3
+2018-02-16T16:33:42.689064262 0.110910s notice: Listening on driver addresses: 127.0.0.1, 172.17.0.1, 172.18.0.1, 172.16.160.229, ::1, fe80::47d1:6269:1f55:3f26%3
+2018-02-16T16:33:42.697862226 0.119708s notice: Listening on http addresses: 127.0.0.1, 172.17.0.1, 172.18.0.1, 172.16.160.229, ::1, fe80::47d1:6269:1f55:3f26%3
+2018-02-16T16:33:42.697883449 0.119728s notice: Server ready, "OBLAP29_jyw" d84a3ebe-5297-4653-bbf0-300724e10913
+2018-02-16T16:33:44.212610094 1.634456s notice: A newer version of the RethinkDB server is available: 2.3.6. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
