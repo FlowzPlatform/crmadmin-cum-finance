@@ -313,7 +313,7 @@ export default {
       app.service("comment-request").on("created" , (message) =>{
         self.messageDataDisplay = message.message
         setTimeout(function(){
-          height = document.getElementsByClassName("chat")[0].scrollHeight;
+          let height = document.getElementsByClassName("chat")[0].scrollHeight;
           console.log('WWWWWWWWWWWWWWWWW',height)
           $('.chat').animate({scrollTop: height });
         },1000)
@@ -322,7 +322,7 @@ export default {
       app.service("comment-request").on("updated" , (message) =>{
         self.messageDataDisplay = message.message
         setTimeout(function(){
-          height = document.getElementsByClassName("chat")[0].scrollHeight;
+          let height = document.getElementsByClassName("chat")[0].scrollHeight;
           console.log('WWWWWWWWWWWWWWWWW',height)
           $('.chat').animate({scrollTop: height });
         },1000)
