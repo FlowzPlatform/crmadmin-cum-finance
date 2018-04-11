@@ -409,7 +409,13 @@
            // return res.data
           }).catch(error => {
             console.log('Error >>>>>>>>>>>>>>', error)
-            if(error.response.status == 401){
+            if(error.message == 'Network Error'){
+                self.$Notice.error({
+                    title: "Error",
+                    desc: 'API service unavailable',
+                    duration: 10
+                })
+            }else if(error.response.status == 401){
               
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -523,7 +529,8 @@
                 settingId : settingId
               },
               headers:{
-                  Authorization : Cookies.get('auth_token')
+                  Authorization : Cookies.get('auth_token'),
+                  subscriptionId : Cookies.get('subscriptionId')
               },
             })
             .then(function (response) {
@@ -753,152 +760,163 @@
         var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
         var phone = phone_re.test(self.finaldata.phone);
         var mail = re.test(self.finaldata.email);
-        
-        if (mail != false && phone != false) {
-          this.loading = true
-            var file = this.file
-            console.log('uuuuuu',file)
-            if(file != ''){
-              if(this.finaldata.fileupload != undefined){
-                var noOfFiles = this.finaldata.fileupload.length
-                console.log('&&&&&&&&&&&&',noOfFiles)
+        if(self.finaldata.assignee != "" && self.finaldata.cname != ""){
+          if (mail != false && phone != false) {
+            this.loading = true
+              var file = this.file
+              console.log('uuuuuu',file)
+              if(file != ''){
+                if(this.finaldata.fileupload != undefined){
+                  var noOfFiles = this.finaldata.fileupload.length
+                  console.log('&&&&&&&&&&&&',noOfFiles)
+                }else{
+                  var noOfFiles = 0
+                }
+                if(noOfFiles < 5){
+                  var reader = new FileReader();
+                  reader.readAsDataURL(file);
+                  // console.log('reader',reader);
+                  reader.addEventListener("load", async function () {
+                    console.log('uuuuuu',file.name)
+                    var fileupObj = {
+                      "filename":file.name,
+                      "url":reader.result
+                    }
+                    if(self.finaldata.fileupload == undefined){
+                      self.finaldata['fileupload'] = []
+                      
+                    }
+                    console.log('**************************************',self.finaldata)
+                    self.finaldata.fileupload.push(fileupObj);
+                    await $.ajax({
+                      type: 'PATCH',
+                      url: databasepost + self.$route.params.id,
+                      headers:{
+                        Authorization : Cookies.get('auth_token')
+                      },
+                      data: self.finaldata,
+                      success: function (data1) {
+                        result = data1;
+                        self.loading = false
+                        self.$Notice.success({
+                                title: 'Sucess',
+                                desc: 'Edit CRM case is Saved. ',
+                          duration: 4.5
+                              });
+                        console.log("json data******123",result);
+                        self.$router.push("/relationship/list-relationship")
+                      },error: function(error){
+                        self.loading = false,
+                          console.log("error",error);
+                          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                              name: 'login'
+                            });
+                            self.$Notice.error({
+                              title: error.response.data.name,
+                              desc: error.response.data.message,
+                              duration: 10
+                          })
+                          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                              title: error.response.statusText,
+                              desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                              duration: 0
+                            })
+                          }else {
+                            self.$Notice.error({
+                              title: error.responseJSON.name,
+                              desc: error.responseJSON.message,
+                              duration: 10
+                            })
+                          }
+                        }
+                    });
+                });
+                }
+                else{
+                  this.$Message.error('You can not add more than 5 files');
+                  this.loading = false
+                }
               }else{
-                var noOfFiles = 0
-              }
-              if(noOfFiles < 5){
-                var reader = new FileReader();
-                reader.readAsDataURL(file);
-                // console.log('reader',reader);
-                 reader.addEventListener("load", async function () {
-                  console.log('uuuuuu',file.name)
-                  var fileupObj = {
-                    "filename":file.name,
-                    "url":reader.result
-                  }
-                  if(self.finaldata.fileupload == undefined){
-                    self.finaldata['fileupload'] = []
-                    
-                  }
-                  console.log('**************************************',self.finaldata)
-                  self.finaldata.fileupload.push(fileupObj);
-                  await $.ajax({
-                    type: 'PATCH',
-                    url: databasepost + self.$route.params.id,
-                    headers:{
-                      Authorization : Cookies.get('auth_token')
-                    },
-                    data: self.finaldata,
-                    success: function (data1) {
-                      result = data1;
-                      self.loading = false
-                      self.$Notice.success({
-                              title: 'Sucess',
-                              desc: 'Edit CRM case is Saved. ',
-                        duration: 4.5
-                            });
-                      console.log("json data******123",result);
-                      self.$router.push("/relationship/list-relationship")
-                    },error: function(error){
-                      self.loading = false,
-                        console.log("error",error);
-                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                          
-                          let location = psl.parse(window.location.hostname)
-                          location = location.domain === null ? location.input : location.domain
-                          
-                          Cookies.remove('auth_token' ,{domain: location}) 
-                          Cookies.remove('subscriptionId' ,{domain: location}) 
-                          self.$store.commit('logout', self);
-                          
-                          self.$router.push({
-                            name: 'login'
-                          });
-                          self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                          self.$Notice.error({
-                            title: error.response.statusText,
-                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                            duration: 0
-                          })
-                        }else {
-                          self.$Notice.error({
-                            title: error.responseJSON.name,
-                            desc: error.responseJSON.message,
-                            duration: 10
-                          })
-                        }
-                      }
-                  });
-              });
-              }
-              else{
-                this.$Message.error('You can not add more than 5 files');
-                this.loading = false
-              }
-            }else{
 
-              console.log("running else condition")
-              console.log("**********************",self.finaldata);
-              await $.ajax({
-                    type: 'PATCH',
-                    url: databasepost + self.$route.params.id,
-                    headers:{
-                      Authorization : Cookies.get('auth_token')
-                    },
-                    data: self.finaldata,
-                    success: function (data1) {
-                      result = data1;
-                      self.loading = false
-                      self.$Notice.success({
-                              title: 'Sucess',
-                              desc: 'Edit CRM case is Saved. ',
-                        duration: 4.5
+                console.log("running else condition")
+                console.log("**********************",self.finaldata);
+                await $.ajax({
+                      type: 'PATCH',
+                      url: databasepost + self.$route.params.id,
+                      headers:{
+                        Authorization : Cookies.get('auth_token')
+                      },
+                      data: self.finaldata,
+                      success: function (data1) {
+                        result = data1;
+                        self.loading = false
+                        self.$Notice.success({
+                                title: 'Sucess',
+                                desc: 'Edit CRM case is Saved. ',
+                          duration: 4.5
+                              });
+                        console.log("json data******123",result);
+                        self.$router.push("/relationship/list-relationship")
+                      },error: function(error){
+                        self.loading = false,
+                          console.log("error",error);
+                          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                              name: 'login'
                             });
-                      console.log("json data******123",result);
-                      self.$router.push("/relationship/list-relationship")
-                    },error: function(error){
-                      self.loading = false,
-                        console.log("error",error);
-                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                          
-                          let location = psl.parse(window.location.hostname)
-                          location = location.domain === null ? location.input : location.domain
-                          
-                          Cookies.remove('auth_token' ,{domain: location}) 
-                          Cookies.remove('subscriptionId' ,{domain: location}) 
-                          self.$store.commit('logout', self);
-                          
-                          self.$router.push({
-                            name: 'login'
-                          });
-                          self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                          self.$Notice.error({
-                            title: error.response.statusText,
-                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                            duration: 0
+                            self.$Notice.error({
+                              title: error.response.data.name,
+                              desc: error.response.data.message,
+                              duration: 10
                           })
-                        }else {
-                          self.$Notice.error({
-                            title: error.responseJSON.name,
-                            desc: error.responseJSON.message,
-                            duration: 10
-                          })
+                          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                              title: error.response.statusText,
+                              desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                              duration: 0
+                            })
+                          }else {
+                            self.$Notice.error({
+                              title: error.responseJSON.name,
+                              desc: error.responseJSON.message,
+                              duration: 10
+                            })
+                          }
                         }
-                      }
-                  });
-            }
-        } else {
-          alert("Enter Valid Email Address OR Phone Number")
-        }
+                    });
+              }
+          } else {
+            self.$Notice.error({
+              title: "Error",
+              desc: "Enter Valid Email Address OR Phone Number",
+              duration:4.5
+            })
+          }
+        }else{
+					this.$Notice.error({
+							title: 'Error',
+							desc: 'Please Select Customer OR Assignee. ',
+							duration: 4.5
+						});
+				}		
       },
       init() {
         let self = this;

@@ -233,7 +233,13 @@ Vue.use(VueWidgets);
               })
               .catch(function (error) {
                 console.log("error",error);
-                if(error.response.status == 403){
+                if(error.message == 'Network Error'){
+                    self.$Notice.error({
+                        title: "Error",
+                        desc: 'API service unavailable',
+                        duration: 10
+                    })
+                }else if(error.response.status == 403){
                  self.$Notice.error(
                      {duration:0, 
                      title: error.response.statusText,

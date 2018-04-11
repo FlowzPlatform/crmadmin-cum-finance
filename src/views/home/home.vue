@@ -1030,9 +1030,14 @@
                     
                 })
                 .catch(function (error) {
-                    
                     self.disabled = false;
-                    if(error.response.status == 401){
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         
