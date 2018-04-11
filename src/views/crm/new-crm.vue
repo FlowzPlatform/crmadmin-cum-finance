@@ -401,7 +401,13 @@
 					// self.calldata()    
 				}).catch(error => {
                     console.log("-------",error);
-                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+					if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         
@@ -639,9 +645,6 @@
 							duration: 4.5
 						});
 				}			
-			},
-			filterMethod (value, option) {
-				return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
 			},
 			async projectlist() {
 				var self = this
