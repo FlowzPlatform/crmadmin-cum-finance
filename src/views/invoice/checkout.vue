@@ -348,6 +348,35 @@ export default {
             .catch(function (error) {
               self.$Spin.hide();
               console.log(error);
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
             });
       }
       
@@ -403,18 +432,44 @@ export default {
               self.loading = false
               self.backFunction()
             })
-            .catch(function (err) {
+            .catch(function (error) {
               self.loading = false
-              console.log("errror in payment",err.response);
-              if (err.response.data.code === '404') {
+              console.log("errror in payment",error.response);
+              if (error.response.data.code === '404') {
                 self.$Notice.error({
                       duration:0, 
                       title: "Payment Credential Not Available",
-                      desc: err.response.data.message
+                      desc: error.response.data.message
                   });
               }
-              else {
-                self.$Message.error(err.response.data.message)
+              else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
               }
 
             });
@@ -449,9 +504,38 @@ export default {
               self.loading = false
               self.backFunction()
             })
-            .catch(function (err) {
+            .catch(function (error) {
               self.loading = false
-              self.$Message.error(err.response.data.message)
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
+              // self.$Message.error(err.response.data.message)
             });
             
       }

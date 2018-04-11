@@ -101,6 +101,7 @@ import Vue from 'vue'
 import VueWidgets from 'vue-widgets'
 import 'vue-widgets/dist/styles/vue-widgets.css'
 import _ from 'lodash'
+import psl from 'psl'
 var settingId
 Vue.use(VueWidgets);
   export default {
@@ -238,7 +239,29 @@ Vue.use(VueWidgets);
                      title: error.response.statusText,
                      desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
                      );
-                  }
+                  }else if(error.response.status == 401){
+                    
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    self.$store.commit('logout', self);
+                    
+                    self.$router.push({
+                        name: 'login'
+                    });
+                    self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                }else {
+                  self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                  })
+                }
               });
               
             },
@@ -296,6 +319,35 @@ Vue.use(VueWidgets);
                           .catch(function (error) {
                             self.loading = false;
                             console.log("error",error);
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                           });
 
                     }else{
@@ -330,7 +382,36 @@ Vue.use(VueWidgets);
                           .catch(function (error) {
                             console.log("error",error);
                             self.loading = false;
-                            self.$Message.error('error in create customer')
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                            // self.$Message.error('error in create customer')
                           });
                     }
                 })
@@ -338,12 +419,33 @@ Vue.use(VueWidgets);
                   console.log("error",error);
                   self.loading = false;
                   if(error.response.status == 403){
-                  self.$Notice.error(
-                      {duration:0, 
+                    self.$Notice.error({
+                      duration:0, 
                       title: error.response.statusText,
-                      desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                      );
-                    }
+                      desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                    });
+                  }else if(error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    self.$store.commit('logout', self);
+                    
+                    self.$router.push({
+                        name: 'login'
+                    });
+                    self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                    })
+                  }else {
+                    self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                    })
+                  }
                 });     
               
             }
