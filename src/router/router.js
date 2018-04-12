@@ -21,6 +21,16 @@ export const resetPasswordRouter = {
     component: resolve => { require(['@/views/reset-password.vue'], resolve) }
 };
 
+export const purchaseOrderReceived = {
+    path: '/purchaseorderreceived/:id',
+    name: 'purchaseorderreceived',
+    
+    meta: {
+        title: 'purchaseorderreceived'
+    },
+    component: resolve => { require(['@/views/purchaseorderreceived.vue'], resolve) }
+};
+
 export const varifyEmailRouter = {
     path: '/varifyEmail',
     name: 'varifyEmail',
@@ -486,6 +496,7 @@ export const routers = [
     loginRouter,
     varifyEmailRouter,
     resetPasswordRouter,
+    purchaseOrderReceived,
     otherRouter,
     preview,
     // locking,
