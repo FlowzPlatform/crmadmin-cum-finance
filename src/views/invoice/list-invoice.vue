@@ -2592,17 +2592,26 @@
           })
           .then(async function (response) {
               console.log("response------>iuy",response);
-
-              self.data6 = response.data[0].data.reverse();
-              self.invnoFilter = []
-              if(response.data[0].data[0].InvoiceNumber != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.InvoiceNumber)
-                })
-              }else if(response.data[0].data[0].Id != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.Id)
-                })
+              if (response.data[0].data.data.oauth_problem === 'token_rejected') {
+                  self.$Loading.error();
+                  self.$Notice.error({
+                    duration:0, 
+                    title: "Xero : Credential Expired",
+                    desc: "The organisation for <u>" +settingName + "</u> is not active "
+                  });
+              }
+              else {
+                self.data6 = response.data[0].data.reverse();
+                self.invnoFilter = []
+                if(response.data[0].data[0].InvoiceNumber != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.InvoiceNumber)
+                  })
+                }else if(response.data[0].data[0].Id != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.Id)
+                  })
+                }
               }
               self.$Loading.finish();
               $('.preload').css("display","none")

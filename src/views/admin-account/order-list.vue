@@ -1,3 +1,4 @@
+
 <template>
     <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; ">
         <div class="drpdwn" style="text-align:center">
@@ -82,7 +83,8 @@
 <script>
     import moment from 'moment';
     import config from '../../config/customConfig.js'
-    import expandRow from './view-order-list.vue';
+    import orderList from './view-order-list.vue';
+    import purchaseOrderList from '../settings/purchaseOrder-list.vue';
     import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
@@ -93,11 +95,10 @@
     var res;
     export default {
         name: 'orderlist',
-        components: { expandRow , downloadOrderList},
+        components: { orderList, purchaseOrderList , downloadOrderList},
         data() {
             return { 
                 value1: '1',
-
                 modal1: false,
 
                 orderid: '',
@@ -119,11 +120,31 @@
                         width: 50,
                         render: (h, params) => {
                             // console.log('rowwwwwwwwwwwwww-------Expand', params.row)
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
+                            // return h(expandRow, {
+                            //     props: {
+                            //         row: params.row
+                            //     }
+                            // })
+                            return h('Tabs', [
+                                h('TabPane', {
+                                    props : {
+                                        label : 'Order Detail'
+                                    }
+                                },[
+                                    h(orderList, {
+                                        props: {
+                                            row: params.row
+                                        }
+                                    })
+                                ]),
+                                h('TabPane', {
+                                    props : {
+                                        label : 'Purchase Order Detail'
+                                    }
+                                },[
+                                    h(purchaseOrderList)
+                                ])
+                            ])
                         }
                     },
                     {
