@@ -299,8 +299,8 @@ export default {
                   title: '',
                   content: '',
                   width: 500,
-                  okText: 'Agree',
-                  cancelText: 'Disagree',
+                  okText: 'Configure it',
+                  cancelText: 'Cancel',
                   render: (h) => {
                       return h('div', {
                       }, [
@@ -314,7 +314,7 @@ export default {
                             input: (val) => {
                             }
                           }
-                        },'This address will be configured for ' + data000[0].configName),
+                        },'This logo will be configured for ' + data000[0].configName),
                         h('div', {
                           style:{
                               height:'50px'
@@ -331,7 +331,7 @@ export default {
 
                             }
                           }
-                        },'Do you want to use this address for all Accounts?')
+                        },'Do you want to use this logo for all Accounts?')
                       ])
                   },
                   onOk: () => {
@@ -545,8 +545,8 @@ export default {
                   title: '',
                   content: '',
                   width: 500,
-                  okText: 'Agree',
-                  cancelText: 'Disagree',
+                  okText: 'Configure it',
+                  cancelText: 'Cancel',
                   render: (h) => {
                       return h('div', {
                       }, [
@@ -574,7 +574,12 @@ export default {
                             input: (val) => {
                               checkConfig = val
                               console.log("val",checkConfig)
-
+                              if (checkConfig != ""){
+                                okText: 'Configure all'
+                                console.log('Configure All')
+                              } else {
+                                console.log('else configure it')
+                              }
                             }
                           }
                         },'Do you want to use this address for all Accounts?')

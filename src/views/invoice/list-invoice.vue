@@ -2,7 +2,7 @@
   <div>
     <div style="padding: 10px; margin: 5px; display: block;" >
       <div style="text-align:left;">
-          <h1>Invoice List </h1>
+          <!-- <h1>Invoice List </h1> -->
           <div class="panel panel-default panel-group" id="accordion">
               <div class="panel-heading">
                   <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>

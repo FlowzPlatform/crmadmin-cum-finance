@@ -40,24 +40,28 @@
         font-size: 15px;
         font-weight: 700
     }
-    .table {
+    .table, .table1 {
         border: 1px solid #e3e3e3;
         margin-bottom: 0px;
         table-layout: auto;
     }
     .table thead tr th,
      .table1 thead tr th {
-        text-align: -webkit-center;
+        text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .table1 {
         width: -webkit-fill-available;
+        border-top: 0px; 
         table-layout: auto;
     }
     .table1 tbody tr td {
         text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .table1 tbody tr th {
         text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .ivu-table-border td,
     .ivu-table-border th {
@@ -140,8 +144,6 @@
     }
     .product-quantity-list thead tr th {
         background: #fafafa!important;
-        border-bottom: 1px dashed #e3e3e3;
-        border-top: 1px solid #e3e3e3;
         text-align: left;
     }
     .size-quantity-table {
@@ -150,6 +152,8 @@
     	margin-left: 30px;
     	table-layout: auto;
     	margin-bottom: 15px;
+        border-left: 1px solid #e3e3e3;
+        border-top: 1px solid #e3e3e3;
     }
     
     
@@ -169,7 +173,7 @@
         </div>
         <div v-else>
             <Card>
-                <div style="text-align:center">
+                <!-- <div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12 header">
                             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
@@ -178,7 +182,7 @@
                             </p>
                         </div>
                     </div>
-                </div>    
+                </div>     -->
                 <div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12">
@@ -300,7 +304,7 @@
                                                                                     </div>
                                                                                 </td>
                                                                                 <td class="estimate-detail" style="width:20%">
-                                                                                    <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
+                                                                                    <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align:left;">
                                                                                         <div class="estimate-row heading">
                                                                                             <span>Print Position: {{element.imprint_position_name}}</span>
                                                                                             <div class="estimate-row">
@@ -336,21 +340,21 @@
                                                                                                     <div class="quantity-item">1</div>
                                                                                                     Product Quantity 
                                                                                                 </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping</th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping Charge</th>
+                                                                                                <th style="text-align:center;">Shipping Address </th>
+                                                                                                <th style="text-align:center;">Shipping</th>
+                                                                                                <th style="text-align:center;">Shipping Charge</th>
                                                                                                 <!--<th style="text-align: -webkit-center;">Tax</th>-->
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:38%">
+                                                                                                <td style="width:42%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
-                                                                                                                <th style="text-align: -webkit-center;">COLOR</th>
-                                                                                                                <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                                <th style="text-align: -webkit-center;">TOTAL</th>
+                                                                                                                <th style="text-align: center;">COLOR</th>
+                                                                                                                <th style="text-align: center;">QUANTITY</th>
+                                                                                                                <th style="text-align: center;">TOTAL</th>
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
@@ -375,13 +379,13 @@
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                                 </td>
-                                                                                                <td style="width:20%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:22%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
                                                                                                     <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                                                     <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                     <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                                 </td>
-                                                                                                <td style="width:16%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                                 </td>
                                                                                                 <!--<td style="width:10%"></td>-->
@@ -500,6 +504,7 @@
         methods: {
             async invoiceData() {
                 var self = this
+                console.log("billData", self.billData)
                 // self.$Loading.start()
                 await axios({
                     method: 'get',
@@ -658,12 +663,11 @@
             }
         },
         mounted() {
-            
+            this.billData = this.row            
             this.invoiceData()
         },
          watch: {
             'row': async function(id) {
-                  this.billData = this.row
                   this.invoiceData()
             }
         }
