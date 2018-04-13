@@ -42,7 +42,7 @@
                   </div>
               </div>
           </div>
-    <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
+    <Table :columns="columns1" :data="list" @on-expand="viewDetails" size="small" ref="table" stripe></Table>
   </div>
 </template>
 
@@ -135,6 +135,10 @@ export default {
     reset() {
       this.cname = '';
       this.pname = '';
+    },
+    async viewDetails(params,status){
+        if (!status) return
+        $('.ivu-table-cell-expand-expanded').click()
     },
     async changeData() {
       console.log("Before this.filterArray------->",this.filterArray)
