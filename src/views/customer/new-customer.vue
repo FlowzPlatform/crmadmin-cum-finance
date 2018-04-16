@@ -116,6 +116,24 @@ Vue.use(VueWidgets);
               callback();
             }
           };
+          // const validateBlank = async(rule, value, callback) => {
+          //   let blankPatt = /^\S*$/g
+          //   console.log("------------value", typeof value)
+          //   let blankTest = value.match(blankPatt)
+          //   console.log("======================_res",blankTest);
+          //   if (!blankTest) {
+          //     callback(new Error('Password Does not Allow Spaces'))
+          //   } else {
+          //     callback();
+          //   }
+          // };
+          const validateBlank = (rule, value, callback) => {
+            if (value.trim() === '') {
+              callback(new Error('Space is not allowed'));
+            } else {
+              callback();
+            }
+          };
           return {
               loading: false,
               customCustomerUrl:'',
@@ -135,19 +153,19 @@ Vue.use(VueWidgets);
               configs:[],
               ruleValidate: {
                   name: [
-                    { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'The name cannot be empty', validator: validateBlank, trigger: 'blur' }
                   ],
                   configuration: [
                     { required: true, message: 'Please choose configuration name', trigger: 'chahnge' }
                   ],
                   AddressLine1:[
-                     { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
+                     { required: true, message: 'The addressline1 cannot be empty', validator: validateBlank, trigger: 'blur' }
                   ],
-                  AddressLine2:[
-                    { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
-                  ],
+                  // AddressLine2:[
+                  //   { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
+                  // ],
                   city:[
-                    { required: true, message: 'The city cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'The city cannot be empty', validator: validateBlank, trigger: 'blur' }
                   ],
                   state: [
                     { required: true, message: 'Please select state', trigger: 'blur' }
@@ -156,7 +174,7 @@ Vue.use(VueWidgets);
                     { required: true, message: 'Please select Country', trigger: 'blur' }
                   ],
                   PostalCode:[
-                    { required: true, message: 'The Zip Code cannot be empty', trigger: 'blur' },
+                    { required: true, message: 'The Zip Code cannot be empty', validator: validateBlank, trigger: 'blur' },
                     { validator: validateNum, trigger: 'blur' },
                     {
                         max: 6 ,min:6, message: 'Please Enter 6 digit Zip Code', trigger: 'blur' 
@@ -167,20 +185,20 @@ Vue.use(VueWidgets);
                       { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
                   ],
                   mobile: [
-                      { required: true, message: 'Mobile number can not be empty', trigger: 'blur' },
+                      { required: true, message: 'Mobile number can not be empty', validator: validateBlank, trigger: 'blur' },
                       { validator: validateNum, trigger: 'blur' },
                       {
                         max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' 
                       }
-                  ],
-                  phone: [
-                      { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
-                      { validator: validateNum, trigger: 'blur' }
-                  ],
-                  fax: [
-                      { required: true, message: 'Mobile no cannot be empty', trigger: 'blur' },
-                      { validator: validateNum, trigger: 'blur' }
                   ]
+                  // phone: [
+                  //     { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
+                  //     { validator: validateNum, trigger: 'blur' }
+                  // ],
+                  // fax: [
+                  //     { required: true, message: 'Mobile no cannot be empty', trigger: 'blur' },
+                  //     { validator: validateNum, trigger: 'blur' }
+                  // ]
               }
           }
         },
@@ -292,16 +310,15 @@ Vue.use(VueWidgets);
                 .then(async function(response) {
                     console.log(response)
                     if(response.data.domain == 'custom'){
-
-                      var params = {
-                        settingId : settingId,
-                        Name: self.formValidate.name,
-                        ContactStatus: 'ACTIVE',
-                        EmailAddress:self.formValidate.mail,
-                        Address: self.formValidate.AddressLine1+","+self.formValidate.AddressLine2+","+self.formValidate.city+","+self.formValidate.state+","+self.formValidate.PostalCode+","+self.formValidate.country,
-                        
-                        PhoneNumber:self.formValidate.mobile
-                      }
+                        var params = {
+                          settingId : settingId,
+                          Name: self.formValidate.name.trim(),
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:self.formValidate.mail.trim(),
+                          Address: self.formValidate.AddressLine1.trim()+","+self.formValidate.AddressLine2.trim()+","+self.formValidate.city.trim()+","+self.formValidate.state+","+self.formValidate.PostalCode.trim()+","+self.formValidate.country,
+                          PhoneNumber:self.formValidate.mobile.trim()
+                        }
+                        console.log("contact post params",params);
 
                           self.customCustomerUrl = response.data.customer_url;
                           self.customInvoiceUrl = response.data.invoice_url;
@@ -357,18 +374,18 @@ Vue.use(VueWidgets);
                           });
 
                     }else{
-                      var params1 = {
-                        settingId : settingId,
-                        Name: self.formValidate.name,
-                        ContactStatus: 'ACTIVE',
-                        EmailAddress:self.formValidate.mail,
-                        AddressLine1:self.formValidate.AddressLine1,
-                        AddressLine2:self.formValidate.AddressLine2,
-                        City:self.formValidate.city,
-                        Country:self.formValidate.country,
-                        PostalCode:self.formValidate.PostalCode,
-                        PhoneNumber:self.formValidate.mobile
-                      }
+                        var params1 = {
+                          settingId : settingId,
+                          Name: self.formValidate.name.trim(),
+                          ContactStatus: 'ACTIVE',
+                          EmailAddress:self.formValidate.mail.trim(),
+                          AddressLine1:self.formValidate.AddressLine1.trim(),
+                          AddressLine2:self.formValidate.AddressLine2.trim(),
+                          City:self.formValidate.city.trim(),
+                          Country:self.formValidate.country,
+                          PostalCode:self.formValidate.PostalCode.trim(),
+                          PhoneNumber:self.formValidate.mobile.trim()
+                        }
                           axios({
                             method: 'post',
                             url: config.default.serviceUrl + 'contacts',
@@ -462,7 +479,6 @@ Vue.use(VueWidgets);
             $("#country").on("change",function() {
             // $('#country').change(function(){ 
                 // var value = $(this).val();
-                console.log("Hii")
                 $('.state1').css("display","block")
             });
         }

@@ -126,6 +126,13 @@ export default {
         callback();
       }
     };
+    const validateBlank = (rule, value, callback) => {
+      if (value.trim() === '') {
+        callback(new Error('Space is not allowed'));
+      } else {
+        callback();
+      }
+    };
     return {
       loading:false,
       logoLoading:false,
@@ -147,16 +154,16 @@ export default {
     configs:[],
     ruleValidate: {
         name:[
-          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+          { required: true, message: 'The name cannot be empty', validator: validateBlank, trigger: 'blur' }
         ],
         AddressLine1:[
-          { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
+          { required: true, message: 'The addressline1 cannot be empty', validator: validateBlank, trigger: 'blur' }
         ],
         AddressLine2:[
-          { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
+          { required: false, message: 'The addressline2 cannot be empty', trigger: 'blur' }
         ],
         city:[
-          { required: true, message: 'The city cannot be empty', trigger: 'blur' }
+          { required: true, message: 'The city cannot be empty', validator: validateBlank, trigger: 'blur' }
         ],
         state: [
           { required: true, message: 'Please select state', trigger: 'blur' }
@@ -203,10 +210,13 @@ export default {
       // this.logoLoading = true;
       var self = this;
       var checkConfig;
+      let file_ext;
       console.log('**************',this.file)
       console.log("self.file.type", this.file.type)
       // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
-      let file_ext = this.file.name.split('.').pop()
+      if (this.file != '') {
+        file_ext = this.file.name.split('.').pop()
+      }
       console.log("self.file.type file_ext", file_ext)      
       if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
         this.logoLoading = true;
