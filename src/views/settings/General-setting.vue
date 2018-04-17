@@ -26,12 +26,12 @@
             <FormItem label="Address" prop="AddressLine1">
             <Row>
             <Col span="12">
-              <FormItem prop="Address">
+              <FormItem prop="AddressLine1">
                   <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
               </FormItem>
             </Col>
             <Col span="12">
-              <FormItem  prop="AddressLine2">
+              <FormItem>
                 <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
               </FormItem>
             </Col>
@@ -152,9 +152,6 @@ export default {
         AddressLine1:[
           { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
         ],
-        AddressLine2:[
-          { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
-        ],
         city:[
           { required: true, message: 'The city cannot be empty', trigger: 'blur' }
         ],
@@ -185,7 +182,7 @@ export default {
     async handleUpload (file) {
       var self = this
       console.log('file',file)
-      if(file.size >= 51200){
+      if(file.size >= 1e+8){
           this.$Notice.error({
             title: 'File Limit',
             desc: 'File size should be less than or equal to 50Kb. ',

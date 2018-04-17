@@ -22,13 +22,13 @@ export const resetPasswordRouter = {
 };
 
 export const purchaseOrderReceived = {
-    path: '/purchaseorderreceived/:id',
+    path: '/purchase-order-received/:id',
     name: 'purchaseorderreceived',
     
     meta: {
         title: 'purchaseorderreceived'
     },
-    component: resolve => { require(['@/views/purchaseorderreceived.vue'], resolve) }
+    component: resolve => { require(['@/views/purchase-order-received.vue'], resolve) }
 };
 
 export const varifyEmailRouter = {

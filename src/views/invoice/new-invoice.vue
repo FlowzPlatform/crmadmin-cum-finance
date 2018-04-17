@@ -72,7 +72,7 @@ export default {
       }
     };
     const validateAmount = async(rule, value, callback) => {
-      let patt = new RegExp('^[0-9].+$')
+      let patt = new RegExp('^(-?0[.]\\d+)$|^(-?[1-9]+\\d*([.]\\d+)?)$|^0$')
       let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
