@@ -257,8 +257,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                                                <td><img :src="getImgUrl(item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                                                <td><img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
                                                 <td> {{item.product_description.sku}}</td>
                                                 <td> {{item.product_description.product_name}}</td>
                                                 <td> {{item.total_qty}}</td>
@@ -493,7 +492,7 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                imgurl: this.row.product_image_url,
                 invoice: {}
             }
         },
@@ -526,8 +525,12 @@
                 sum = sum + item;
                 return accounting.formatMoney(sum)
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (url , img) {
+                // if(this.imgurl == undefined) {
+                //     return config.default.productImageUrl + url        
+                // }
+                console.log(url+img)
+                return url + img
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;

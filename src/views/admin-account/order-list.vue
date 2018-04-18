@@ -461,9 +461,6 @@
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
-            getImgUrl (url) {
-                return this.imgurl + url
-            },
             getSubTotal (a, b, c) {
                 var res = c.hasOwnProperty('charges')
                 if ( res == false) {

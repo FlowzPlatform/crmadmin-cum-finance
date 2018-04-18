@@ -109,7 +109,6 @@
         },
         data() {
             return {
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
                 moment: moment,
                 emailDataCompany: ''
             }
@@ -117,9 +116,6 @@
         methods: {
             getMulti(a, b) {
                 return accounting.formatMoney(a * b) ;
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;
