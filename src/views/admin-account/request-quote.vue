@@ -242,6 +242,7 @@ export default {
     reset() {
       this.cname = '';
       this.pname = '';
+      this.listData(this.website);
     },
      async changeData() {
         console.log("Before this.filterArray------->",this.filterArray)
@@ -379,6 +380,8 @@ export default {
       console.log("val", val)
       let Namearr = [];
       let Productarr = [];
+      $('#selectCustom').children('option:not(:first)').remove();
+      $('#selectPro').children('option:not(:first)').remove();
       axios.get(api, {
           params: {
               website_id: val,
@@ -394,6 +397,7 @@ export default {
           self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.data = self.list
           self.data.forEach(obj => {
+            
             Namearr.push(obj.user_info.fullname)
             Productarr.push(obj.product_description.product_name)
           })

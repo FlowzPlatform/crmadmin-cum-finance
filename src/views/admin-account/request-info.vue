@@ -135,6 +135,7 @@ export default {
     reset() {
       this.cname = '';
       this.pname = '';
+      this.listData(this.website);
     },
     async changeData() {
       console.log("Before this.filterArray------->",this.filterArray)
@@ -195,6 +196,8 @@ export default {
           console.log("response val", response.data)
           let Namearr = [];
           let Productarr = [];
+          $('#selectCustomer').children('option:not(:first)').remove();
+          $('#selectProduct').children('option:not(:first)').remove();
           self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.data = self.list
           self.data.forEach(obj => {

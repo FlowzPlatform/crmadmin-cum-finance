@@ -145,7 +145,7 @@ export const appRouter = [
     {
         path: '/relationship',
         icon: 'ios-people',
-        title: 'RELATIONSHIP',
+        title: 'SALES FUNNEL',
         name: 'RELATIONSHIP',
         component: Main,
         children: [
@@ -153,14 +153,14 @@ export const appRouter = [
                 path: 'new-relationship', 
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'New Relationship', 
+                name: 'New Sales Funnel', 
                 component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
             },
             { 
                 path: 'list-relationship', 
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'Relationship List', 
+                name: 'Sales Funnel List', 
                 component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
             }
         ]
