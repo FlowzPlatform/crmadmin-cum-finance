@@ -184,7 +184,7 @@
                         <div class="col-sm-12">
                             <div class="order-title">
                                 <div class="col-md-4 col-sm-4">
-                                Order ID : {{row.id}}
+                                Order ID : {{row.order_id}}
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     Created Date : {{moment(row.products[0].createdAt).format('DD-MMM-YYYY')}} 
@@ -236,7 +236,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th> ORDER ID : {{row.id}} </th>
+                                                <th> ORDER ID : {{row.order_id}} </th>
                                                 <th> ORDER TYPE : {{item.order_type | upper}} </th>
                                                 <th> SHIPPING : {{item.shipping_method.shipping_type | upper}} </th>
                                                 <th> <a @click="clicked(inx)">
@@ -299,24 +299,27 @@
                                                                                     </div>
                                                                                 </td>
                                                                                 <td class="estimate-detail" style="width:20%">
-                                                                                    <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
-                                                                                        <div class="estimate-row heading">
-                                                                                            <span>Print Position: {{element.imprint_position_name}}</span>
-                                                                                            <div class="estimate-row">
-                                                                                                <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                                    <span v-if="item.imprint">
+                                                                                        <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
+                                                                                            <div class="estimate-row heading">
+                                                                                                <span>Print Position: {{element.imprint_position_name}}</span>
+                                                                                                <div class="estimate-row">
+                                                                                                    <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div class="estimate-row" v-if="element.no_of_color">
-                                                                                                How many colours : <span>{{element.no_of_color}} Colour </span>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                        <div class="estimate-row" v-if="element.selected_colors">
-                                                                                            <div v-for="(item) in element.selected_colors">
-                                                                                                Colour : <span>{{item}}</span>
+                                                                                            <div class="estimate-row" v-if="element.no_of_color">
+                                                                                                    How many colours : <span>{{element.no_of_color}} Colour </span>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                    </div> 
+                                                                                            <div v-else></div>
+                                                                                            <div class="estimate-row" v-if="element.selected_colors">
+                                                                                                <div v-for="(item) in element.selected_colors">
+                                                                                                    Colour : <span>{{item}}</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                        </div> 
+                                                                                    </span>
+                                                                                    <span v-else> N/A </span>
                                                                                 </td>
                                                                                 <td>
                                                                                     <span v-if="item.charges">{{Object.keys(item.charges)[0]}}-{{item.charges.setup_charge | upper}}</span>
@@ -343,7 +346,7 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:38%">
+                                                                                                <td style="width:42%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
@@ -374,13 +377,13 @@
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                                 </td>
-                                                                                                <td style="width:20%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:22%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
                                                                                                     <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                                                     <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                     <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                                 </td>
-                                                                                                <td style="width:16%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                                 </td>
                                                                                                 <!--<td style="width:10%"></td>-->

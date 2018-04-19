@@ -128,7 +128,7 @@
                     },
                     {
                         title: 'Order Id',
-                        key: 'id',
+                        key: 'order_id',
                         align:  'center'
                     },
                     {

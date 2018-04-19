@@ -50,7 +50,7 @@
                                                         <tr>
                                                             <td align="left" valign="middle" width="10"></td>
                                                             <td align="left" valign="top" style="width: 50%;">ORDER ID :
-                                                                <br>{{row.id}}</td>
+                                                                <br>{{row.order_id}}</td>
                                                             <td align="left" valign="top">ORDER TYPE :
                                                                 <br>{{item.order_type | upper}}</td>
                                                             <td align="left" valign="top">SHIPPING :
