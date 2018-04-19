@@ -7,7 +7,7 @@
 			<div class="row">
 				<div class="col-md-12" style="margin-top: 20px;">
 					<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-						<FormItem label="Configuration Name" prop="configName">
+						<FormItem label="Configuration Name" prop="configuration">
 							<Select v-model="formValidate.configuration" style="width:100%;text-align:left">
 								<!--<Option  value='all'>All</Option>-->
 								<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
@@ -84,7 +84,7 @@
 				},
 				configs: [],
 				ruleValidate: {
-					configName: [
+					configuration: [
 						{ required: true, message: 'Please select Configuration Name', trigger: 'blur' }	
 					],
 					gateway: [
