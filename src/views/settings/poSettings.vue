@@ -2,18 +2,52 @@
     <div>
         <div style="width:96%;">
             <Row>
-                <Col span="12" offset="6">
+                <Col span="20" offset="3">
                     <Card>
                         <p slot="title">Purchase Order Configuration</p>
-                        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140" style="width:100%;align:center;">
-                            <FormItem label="PO Generate" prop="POMode">
+                       
+                        
+                        <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140" style="width:100%;align:center;padding: 27px;">
+                            
+                             <FormItem label="Select Website" prop="POMode">
+                                <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 86%;text-align: -webkit-left;" @on-change="listData">
+                                    <Option v-for="item in websiteList" :value="item.vid" :key="item.websiteId" >{{ item.websiteName }}</Option>
+                                </Select>
+                               
+                            </FormItem>
+                            <FormItem label="Select Suppliers" prop="POMode">
+                                <Row>
+                                    <Col span="22">
+                                        <transfer
+                                            :data="data3"
+                                            :target-keys="targetKeys3"
+                                            :list-style="listStyle"
+                                            :render-format="render3"
+                                            :operations="['Set to Manual','Set to Auto']"
+                                            :titles="['Manual' , 'Auto']"
+                                            filterable
+                                            @on-change="handleChange3">
+                                        </transfer>
+                                    </Col>
+                                    <Col span="2">
+                                        <Tooltip style="float:right" placement="top">
+                                            <Icon  type="ios-help-outline" size=28></Icon>
+                                            <div slot="content">
+                                                <p>Set the mode to Auto/Manual for different <br/>supplier.In auto mode Purchase order will<br/> be generated and sent to the supplier as <br/>soon as a order is generated.In manual<br/> mode you will have a option to generate <br/>and edit PO from Order List segment</p>
+                                                
+                                            </div>
+                                        </Tooltip>                                    
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <!-- <FormItem label="PO Generate" prop="POMode">
                                 <radio-group v-model="formValidate.POMode">
                                     <radio label="Manual"></radio>
                                     <radio label="Auto"></radio>
                                 </radio-group>
-                            </FormItem>
-                            <FormItem label="Thank You Note" prop="note">
-                                <textarea style="width:100%;" v-model="formValidate.note" placeholder="Enter a thank ypu note(Max 200 words)"></textarea>
+                            </FormItem> -->
+                            <FormItem label="Thank You Note" >
+                                <textarea style="width:86%;padding: 0px 6px;"  placeholder="Enter a thank you note(Max 200 words)"></textarea>
                             </FormItem>
                             <div style="text-align:center;">
                                 <Button type="primary" @click="poSubmit('formValidate')" :loading="loading1">Submit</Button>
@@ -45,16 +79,80 @@
         data () {
             return {
                 loading1: false,
+                websiteList: {},
+                website: '',
                 formValidate: {
                     POMode: '',
                     note: ''
                 },
                 ruleValidate: {
                     
+                },
+                data3: [],
+                targetKeys3: this.getTargetKeys(),
+                listStyle: {
+                    width: '250px',
+                    height: '300px'
                 }
             }
         },
+         async mounted() {
+            var self = this
+            // await axios({
+            //     method: 'get',
+            //     url: config.default.userDetail,
+            //     headers: {'Authorization': Cookies.get('auth_token')}
+            //     }).then(async function (response) {
+            //         self.userid = response.data.data._id               
+            //         console.log('user detail response------>',self.userid)
+            //     })
+            //     .catch(function (error) {
+            //         console.log("-------",error);
+            //         self.$Message.error(error)
+            // });
+            this.init()
+        },
         methods: {
+            async listData (val) {
+                var self = this
+                var len
+                console.log(val)
+                await self.getSupplierData(val);
+            },
+            getMockData (response) {
+                console.log(response)
+                if(response != undefined){
+                    this.data3 = response.data.aggregations.group_by_username.buckets;
+                }
+                
+                let mockData = [];
+
+                for (let i = 1; i <= 20; i++) {
+                    mockData.push({
+                        key: i.toString(),
+                        label: 'Content ' + i,
+                        description: 'The desc of content  ' + i
+                        
+                    });
+                }
+                
+                return mockData;
+            },
+            getTargetKeys () {
+                return this.getMockData()
+                        .filter(() => Math.random() * 2 > 1)
+                        .map(item => item.key);
+            },
+            handleChange3 (newTargetKeys) {
+                this.targetKeys3 = newTargetKeys;
+            },
+            render3 (item) {
+                return item.key ;
+            },
+            reloadMockData () {
+                this.data3 = this.getMockData();
+                this.targetKeys3 = this.getTargetKeys();
+            },
             poSubmit() {
                 let self = this;
 				this.$refs[name].validate((valid) => {
@@ -99,6 +197,125 @@
                 this.formValidate.POMode = '';
                 this.formValidate.note = '';
             },
+            init () {
+                
+                var self = this
+                axios({
+                    method: 'get',
+                    url: config.default.subscriptionWebsitesapi,
+                    // params: {
+                    //   owner_id: self.userid
+                    // },
+                    headers: {
+                      'Authorization': Cookies.get('auth_token'),
+                      'subscriptionId': Cookies.get('subscriptionId')
+                    } 
+                })
+                .then(async function (response){
+                    console.log("------------------------response",response);
+                    if(response.data.data.length == 0){
+                      console.log("in if condition")
+                      self.$Notice.error({
+                        desc: 'Websites not available for this subscription',
+                        title: 'Error',
+                        duration: 4.5
+                      })
+                    }else{    
+                      var result = _.uniqBy(response.data.data,'websiteId')
+                      console.log("result", result)
+                      self.websiteList = result
+                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                      self.website = self.websiteList[0].vid
+                      
+                      await self.getSupplierData(self.website);
+                    }                       
+
+                }).catch(error => {
+                    console.log("-------",error.response);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                });
+
+            },
+            async getSupplierData (vid) {
+               // alert(vid)
+               
+               let self = this;
+                axios({
+                    method: 'get',
+                    url: "https://api.flowzcluster.tk/pdmnew/filters/username",
+                    // params: {
+                    //   owner_id: self.userid
+                    // },
+                    headers: {
+                      'Authorization': Cookies.get('auth_token'),
+                      'vid': vid
+                    } 
+                })
+                .then(async function (response){
+                    //console.log(".>>>>>>>>>>>>>>>>>>> .... ",response)
+                    await self.getMockData(response);
+                }).catch(error => {
+                    console.log("-------",error.response);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                });
+
+            }
         }
     }
 </script>
