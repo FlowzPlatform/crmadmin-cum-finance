@@ -87,6 +87,7 @@
                 </Form>
             </TabPane> -->
         </Tabs>
+        <settingMenu></settingMenu>
     </div>
 </template>
 
@@ -100,11 +101,15 @@
     import axios from "axios"
     const reader  = new FileReader();
     import Cookies from 'js-cookie';
+    import settingMenu from './settingMenu.vue';
 
     Vue.use(VueWidgets);
 
 
     export default {
+        components : {
+            settingMenu
+        },
         data () {
             return {
                 uploadlist: false,

@@ -49,6 +49,7 @@
 				</div>
 			</div>
 		</div>
+		<settingMenu></settingMenu>
 	</div>
 </template>
 
@@ -60,7 +61,11 @@
 	import _ from 'lodash'
 	import Vue from 'vue'
 	import axios from "axios"
+	import settingMenu from './settingMenu.vue';
 	export default {
+		components : {
+			settingMenu
+		},
 		data () {
 			return {
 				loading: false,

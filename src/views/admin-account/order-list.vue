@@ -84,7 +84,7 @@
     import moment from 'moment';
     import config from '../../config/customConfig.js'
     import orderList from './view-order-list.vue';
-    import purchaseOrderList from '../settings/purchaseOrder-list.vue';
+    import purchaseOrderList from '../purchaseOrder/purchaseOrder-list.vue';
     import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
@@ -142,7 +142,11 @@
                                         label : 'Purchase Order Detail'
                                     }
                                 },[
-                                    h(purchaseOrderList)
+                                    h(purchaseOrderList, {
+                                        props: {
+                                            row: params.row
+                                        }
+                                    })
                                 ])
                             ])
                         }

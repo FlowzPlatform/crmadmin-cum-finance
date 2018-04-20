@@ -6,7 +6,7 @@
         <div v-else>
             <div class="panel-heading">
                 <h4 class="panel-title" style="text-align:-webkit-right;">
-                    <button class="btn btn-default btn-sm" type="button" style="background-color: red;color: white; font-weight: bold;">
+                    <button class="btn btn-default btn-sm" type="button" style="background-color: red;color: white; font-weight: bold;" @click="generatePO">
                         <span class="glyphicon glyphicon-file"></span> Generate Purchase Order 
                     </button>
                 </h4>
@@ -23,6 +23,9 @@
     let axios = require('axios'); 
     import Cookies from 'js-cookie';
     export default {
+        props: {
+            row: Object
+        },
         data() {
             return {
                 // spinShow : true,
@@ -76,10 +79,15 @@
             }
         },
         methods: {
-
+            generatePO() {
+                this.$router.push({
+                    name: 'Generate PurchaseOrder',
+                    params: this.row
+                });
+            }
         },
         mounted() {
-
+            console.log("********************generate po",this.row);
         }
     }    
 </script>

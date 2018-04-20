@@ -1,44 +1,10 @@
-<style>
-    .ivu-tree-title {
-        color: hsla(0,0%,100%,.7);
-        padding: 5px 4px;
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-        font-size: 15px;
-    }
-    .ivu-tree-arrow {
-        cursor: pointer;
-        width: 12px;
-        text-align: center;
-        margin: 7px;
-        display: inline-block;
-    }
 
-    .ivu-tree {
-        padding-top: 30px;
-    }
-
-    .ivu-tree-title:hover {
-        color: #fff;
-        background-color: #475060;
-    }
-
-    .ivu-tree-title-selected, .ivu-tree-title-selected:hover {
-        /*background-color: #475060;*/
-        background: #363e4f;
-        color: #2d8cf0  ;
-    }
-</style>
 
 <template>
     <div>
-        <div id="slide" class="slide">
-            <div id="toggle" v-on:click="slide(toggle)">&#9776;</div>
-            <tree :data="treeData" @on-select-change="treeNodeClick"></tree>
-            <!--<div class="box" style="margin-top:20px;" v-on:click="tabClick('account')"><span>ACCOUNT</span></div>
-            <div class="box" v-on:click="tabClick('po')"><span>PURCHASE ORDER</span></div>-->
-        </div>
+        <settingMenu></settingMenu>
 
-        <div v-if="accountTab === true">
+        <div>
             <div style="width:96%;">
                 <div>
                     <Row>
@@ -393,9 +359,6 @@
             </div>
         </div>
 
-        <div v-else>
-            <poSettings></poSettings>
-        </div>
     </div>
 </template>
 
@@ -410,7 +373,7 @@
     let baseUrl = config.default.baseUrl;
     import Cookies from 'js-cookie';
     import psl from 'psl';
-    import poSettings from './poSettings.vue';
+    import settingMenu from './settingMenu.vue';
     // import customSetting from './General-setting.vue'
     // import onlinePayment from './Online-Payment.vue'
     Vue.use(VueWidgets);
@@ -418,7 +381,7 @@
 
     export default {
         components: {
-            poSettings
+            settingMenu
         },
         data () {
             return {
@@ -442,7 +405,9 @@
                     {
                         title: 'PURCHASE ORDER',
                         children: [
-
+                            {
+                                title: 'Add New PO Config',
+                            }
                         ]
                     }
                 ],
@@ -466,7 +431,7 @@
                 editFormItemQB: {
                     input: ''
                 },
-                editFormItemCustom :{
+                editFormItemCustom : {
                     input: ''
                 },
                 editGeneral : {
@@ -540,18 +505,24 @@
                 }
                 else if (data[0].title === "PURCHASE ORDER") {
                     this.accountTab = false;
-                    $('.slide').css("right", "-275px");
+                    $('.slide').addClass('opens');
+                }
+                else if (data[0].title === 'Add New PO Config') {
+                    this.$store.state.settingData = ""
+                    this.$router.push({
+                        name: 'PurchaseOrder Settings'
+                    });
                 }
                 
             },
             slide(toggle1) {
                 let self = this;
                 if (toggle1) {
-                    $('.slide').css("right", "0px");
+                    $('.slide').removeClass('opens');
                     self.toggle = false
                 }
                 else {
-                    $('.slide').css("right", "-275px");
+                    $('.slide').addClass('opens');
                     self.toggle = true
                 }
             },
@@ -1758,8 +1729,8 @@
         position: fixed;
         background: #485060;
         color: #fff;
-        width: 290px; 
-        right: -275px;
+        width: 0px; 
+        right: 20px;
         z-index: 9;
         height: auto;
         transition: right 0.4s ease-in-out;
@@ -1767,15 +1738,21 @@
         -ms-transition: right 0.4s ease-in-out;
         -moz-transition: right 0.4s ease-in-out;
         -webkit-transition: right 0.4s ease-in-out;
+        bottom: 50px;
     }
 
     #toggle{
-        cursor:pointer;
+        cursor: pointer;
         position: absolute;
-        right: 290px;
+        right: 0;
         padding: 10px;
         background: #485060;
         color: #fff;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        border-radius: 23px;
+        box-shadow: 0px 0px 5px #3ac5fc;
     }
     .box {
         padding: 20px;

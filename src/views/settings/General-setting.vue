@@ -14,7 +14,7 @@
         <div class="row">
           <div class="col-md-12">
             <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-            <FormItem label="Configuration Name">
+            <FormItem label="Configuration Name" prop="configuration">
                <Select v-model="formValidate.configuration" style="width:100%;text-align:left" @on-change="configChange">
                 <!-- <Option  value='all'>All</Option> -->
                 <Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
@@ -24,18 +24,18 @@
                 <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
             </FormItem>
             <FormItem label="Address" prop="AddressLine1">
-            <Row>
-            <Col span="12">
-              <FormItem prop="Address">
-                  <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem  prop="AddressLine2">
-                <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
-              </FormItem>
-            </Col>
-            </Row>
+              <Row>
+                <Col span="12">
+                  <FormItem prop="Address">
+                      <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
+                  </FormItem>
+                </Col>
+                <Col span="12">
+                  <FormItem  prop="AddressLine2">
+                    <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
+                  </FormItem>
+                </Col>
+              </Row>
             </FormItem>
              <FormItem label="Country" prop="country">
                 <select v-model="formValidate.country" id="country" name ="country">
@@ -97,247 +97,150 @@
       <div class="margin-50"></div>
       
     </div>
-    
+    <settingMenu></settingMenu>
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import axios from 'axios';
-import _ from 'lodash';
-import config from '@/config/customConfig.js'
-let feathersUrl =  config.default.serviceUrl;
-import Cookies from 'js-cookie';
-var settingId
-export default {
-  name: 'GeneralSettings',
-  props: {
-    options: {
-      type: Object
-    }
-  },
-  data () {
-    const validateNum = async(rule, value, callback) => {
-      let patt = new RegExp('^[0-9]+$')
-      let _res = patt.test(value)
-      if (!_res) {
-        callback(new Error('Not Allowed Special Character'))
-      } else {
-        callback();
+  import Vue from 'vue';
+  import axios from 'axios';
+  import _ from 'lodash';
+  import config from '@/config/customConfig.js'
+  let feathersUrl =  config.default.serviceUrl;
+  import Cookies from 'js-cookie';
+  import settingMenu from './settingMenu.vue';
+  var settingId
+  export default {
+    name: 'GeneralSettings',
+    props: {
+      options: {
+        type: Object
       }
-    };
-    return {
-      loading:false,
-      logoLoading:false,
-      formValidate: {
-        name: '',
-        mobile : '',
-        AddressLine1: '',
-        AddressLine2 : '',
-        city: '',
-        state: '',
-        country: '',
-        PostalCode: ''
+    },
+    components : {
+      settingMenu
+    },
+    data () {
+      const validateNum = async(rule, value, callback) => {
+        let patt = new RegExp('^[0-9]+$')
+        let _res = patt.test(value)
+        if (!_res) {
+          callback(new Error('Not Allowed Special Character'))
+        } else {
+          callback();
+        }
+      };
+      return {
+        loading:false,
+        logoLoading:false,
+        formValidate: {
+          configuration: '',
+          name: '',
+          mobile : '',
+          AddressLine1: '',
+          AddressLine2 : '',
+          city: '',
+          state: '',
+          country: '',
+          PostalCode: ''
+        },
+        formData: {
+          configuration: '',
+          logo: '',
+        },
+        file: '',
+      configs:[],
+      ruleValidate: {
+          configuration:[
+            { required: true, message: 'The config name cannot be empty', trigger: 'blur' }
+          ],
+          name:[
+            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+          ],
+          AddressLine1:[
+            { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
+          ],
+          AddressLine2:[
+            { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
+          ],
+          city:[
+            { required: true, message: 'The city cannot be empty', trigger: 'blur' }
+          ],
+          state: [
+            { required: true, message: 'Please select state', trigger: 'blur' }
+          ],
+          country:[
+            { required: true, message: 'Please select Country', trigger: 'blur' }
+          ],
+          PostalCode:[
+            { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
+            { validator: validateNum, trigger: 'blur' }
+          ]
+        }
+      }
+    },
+    methods: {
+      goToSettingsList(){
+        this.$router.push({
+            name: 'Settings'
+            // params: { tabName: 'General' }
+        });
       },
-      formData: {
-        configuration: 'all',
-        logo: '',
+      configChange(data){              
+        $('#CustomerName').css("display","block")
+        settingId = data;              
       },
-      file: '',
-    configs:[],
-    ruleValidate: {
-        name:[
-          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-        ],
-        AddressLine1:[
-          { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
-        ],
-        AddressLine2:[
-          { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
-        ],
-        city:[
-          { required: true, message: 'The city cannot be empty', trigger: 'blur' }
-        ],
-        state: [
-          { required: true, message: 'Please select state', trigger: 'blur' }
-        ],
-        country:[
-          { required: true, message: 'Please select Country', trigger: 'blur' }
-        ],
-        PostalCode:[
-          { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
-          { validator: validateNum, trigger: 'blur' }
-        ]
-      }
-    }
-  },
-  methods: {
-    goToSettingsList(){
-      this.$router.push({
-          name: 'Settings'
-          // params: { tabName: 'General' }
-      });
-    },
-    configChange(data){              
-      $('#CustomerName').css("display","block")
-      settingId = data;              
-    },
-    async handleUpload (file) {
-      var self = this
-      console.log('file',file)
-      if(file.size >= 51200){
-          this.$Notice.error({
-            title: 'File Limit',
-            desc: 'File size should be less than or equal to 50Kb. ',
-            duration: 4.5
-          });
-          self.file = ''
-          return true
-      }
-      else {
-        self.file = file
-      }
-      return false;
-    },
-    handleLogoUpload () {
-      // this.logoLoading = true;
-      var self = this;
-      var checkConfig;
-      console.log('**************',this.file)
-      console.log("self.file.type", this.file.type)
-      // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
-      let file_ext = this.file.name.split('.').pop()
-      console.log("self.file.type file_ext", file_ext)      
-      if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
-        this.logoLoading = true;
-          console.log('this.file',this.file)
-          var reader = new FileReader();
-          var file = this.file
-          console.log('reader',reader);
-          console.log('IIIIIIIIIIIIIIIIIII',file.name)
+      async handleUpload (file) {
+        var self = this
+        console.log('file',file)
+        if(file.size >= 51200){
+            this.$Notice.error({
+              title: 'File Limit',
+              desc: 'File size should be less than or equal to 50Kb. ',
+              duration: 4.5
+            });
+            self.file = ''
+            return true
+        }
+        else {
+          self.file = file
+        }
+        return false;
+      },
+      handleLogoUpload () {
+        // this.logoLoading = true;
+        var self = this;
+        var checkConfig;
+        console.log('**************',this.file)
+        console.log("self.file.type", this.file.type)
+        // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
+        let file_ext = this.file.name.split('.').pop()
+        console.log("self.file.type file_ext", file_ext)      
+        if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
+          this.logoLoading = true;
+            console.log('this.file',this.file)
+            var reader = new FileReader();
+            var file = this.file
+            console.log('reader',reader);
+            console.log('IIIIIIIIIIIIIIIIIII',file.name)
 
-          reader.addEventListener("load", function () {
-            console.log('reader------->',reader.result)
+            reader.addEventListener("load", function () {
+              console.log('reader------->',reader.result)
 
-            var logoData1 = {'logo': reader.result}
-            // console.log('iiiiiiiiiiiiiiiiii',logoData1)
+              var logoData1 = {'logo': reader.result}
+              // console.log('iiiiiiiiiiiiiiiiii',logoData1)
 
-            if(self.formData.configuration === 'all'){ 
-              self.$Modal.confirm({
-                title: '',
-                content: '<h4>This address will be configured for all of your Accounts</h4>',
-                width: 500,
-                okText: 'Agree',
-                cancelText: 'Disagree',
-                onOk: () => {
-                  console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',self.formData.configuration)
-                  delete self.formData.configuration;
-                  self.configs.forEach(item => {
-                      console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
-                      axios({
-                        method: 'PATCH',
-                        url: feathersUrl +'settings/'+item.id,
-                        headers:{
-                            Authorization : Cookies.get('auth_token'),
-                            subscriptionId : Cookies.get('subscriptionId')
-                        },
-                        data: logoData1
-                      })  
-                      .then(function (response) {
-                        // console.log('response------------------------>',response)
-                        self.logoLoading = false;
-                        self.$router.push({
-                          name: 'Settings'
-                        });
-                      })
-                      .catch(function (error) {
-                        console.log('error',error)
-                        self.logoLoading = false;
-                        if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                              });
-                          }else {
-                              self.$Notice.error({
-                                  title: error.response.data.name,
-                                  desc: error.response.data.message,
-                                  duration: 10
-                              })
-                          }
-                      })
-                  })
-                },
-                onCancel: () => {
-                    self.logoLoading = false;
-                }
-              })                        
-            }
-            else{
-              console.log('this.configs',self.configs)
-              console.log('this.formData.configuration',self.formData.configuration)
-              var data000 = _.filter(self.configs, {'id': self.formData.configuration })
-              console.log("data000----------------------------->",data000)
-              var checkConfig;
-              self.$Modal.confirm({
+              if(self.formData.configuration === 'all'){ 
+                self.$Modal.confirm({
                   title: '',
-                  content: '',
+                  content: '<h4>This address will be configured for all of your Accounts</h4>',
                   width: 500,
                   okText: 'Agree',
                   cancelText: 'Disagree',
-                  render: (h) => {
-                      return h('div', {
-                      }, [
-                          h('span', {
-                            style:{
-                              fontSize:'25px'
-                            },
-                          props: {
-                          },
-                          on: {
-                            input: (val) => {
-                            }
-                          }
-                        },'This address will be configured for ' + data000[0].configName),
-                        h('div', {
-                          style:{
-                              height:'50px'
-                            }
-                      }),
-                        h('Checkbox', {
-                          props: {
-                            value: this.value
-                          },
-                          on: {
-                            input: (val) => {
-                              checkConfig = val
-                              console.log("val",checkConfig)
-
-                            }
-                          }
-                        },'Do you want to use this address for all Accounts?')
-                      ])
-                  },
                   onOk: () => {
-                    // console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
-                    if(checkConfig == true){
-                      self.configs.forEach(item => {
+                    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',self.formData.configuration)
+                    delete self.formData.configuration;
+                    self.configs.forEach(item => {
                         console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
                         axios({
                           method: 'PATCH',
@@ -359,239 +262,396 @@ export default {
                           console.log('error',error)
                           self.logoLoading = false;
                           if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
                               });
-                          }else {
                               self.$Notice.error({
                                   title: error.response.data.name,
                                   desc: error.response.data.message,
                                   duration: 10
                               })
-                          }
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         })
-                      })
-                    }
-                    else{
-                      axios({
-                        method: 'PATCH',
-                        url: feathersUrl +'settings/'+self.formData.configuration,
-                        headers:{
-                            Authorization : Cookies.get('auth_token'),
-                            subscriptionId : Cookies.get('subscriptionId')
-                        },
-                        data: logoData1
-                      })  
-                      .then(function (response) {
-                        // console.log('response------------------------>',response)
-                        self.logoLoading = false;
-                          self.$router.push({
-                            name: 'Settings'
-                          });
-                      })
-                      .catch(function (error) {
-                        console.log('error',error)
-                        self.logoLoading = false;
-                        if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                              });
-                          }else {
-                              self.$Notice.error({
-                                  title: error.response.data.name,
-                                  desc: error.response.data.message,
-                                  duration: 10
-                              })
-                          }
-                      })
-                    }
+                    })
                   },
                   onCancel: () => {
-                    self.logoLoading = false;
+                      self.logoLoading = false;
                   }
-                })
-            }
-          }, false);
+                })                        
+              }
+              else{
+                console.log('this.configs',self.configs)
+                console.log('this.formData.configuration',self.formData.configuration)
+                var data000 = _.filter(self.configs, {'id': self.formData.configuration })
+                console.log("data000----------------------------->",data000)
+                var checkConfig;
+                self.$Modal.confirm({
+                    title: '',
+                    content: '',
+                    width: 500,
+                    okText: 'Agree',
+                    cancelText: 'Disagree',
+                    render: (h) => {
+                        return h('div', {
+                        }, [
+                            h('span', {
+                              style:{
+                                fontSize:'25px'
+                              },
+                            props: {
+                            },
+                            on: {
+                              input: (val) => {
+                              }
+                            }
+                          },'This address will be configured for ' + data000[0].configName),
+                          h('div', {
+                            style:{
+                                height:'50px'
+                              }
+                        }),
+                          h('Checkbox', {
+                            props: {
+                              value: this.value
+                            },
+                            on: {
+                              input: (val) => {
+                                checkConfig = val
+                                console.log("val",checkConfig)
 
-          
-          if (file) {
-            console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
-            reader.readAsDataURL(file);
-          }
-
-      }else {
-           self.$Message.error({
-            content: ' Please, attach a .jpg or .png file!',
-            duration: 4.5
-          });
-           self.logoLoading = false;
-        }
-        
-    },
-    handleSubmit (name) {
-      let self = this;
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          if(this.formValidate.configuration === 'all'){ 
-            this.$Modal.confirm({
-              title: '',
-              content: '<h4>This address will be configured for all of your Accounts</h4>',
-              width: 500,
-              okText: 'Agree',
-              cancelText: 'Disagree',
-              onOk: () => {
-                delete this.formValidate.configuration;
-                console.log('formValidate----------------------------->',this.formValidate)
-                var params = {'address':this.formValidate}
-                this.configs.forEach(item => {
-                    console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
-                    axios({
-                      method: 'PATCH',
-                      url: feathersUrl +'settings/'+item.id,
-                      headers:{
-                          Authorization : Cookies.get('auth_token'),
-                          subscriptionId : Cookies.get('subscriptionId')
-                      },
-                      data: params
-                    })  
-                    .then(function (response) {
-                      console.log('response------------------------>',response)
-                      self.loading = false;
-                      self.$router.push({
-												name: 'Settings'
-											});
-                    })
-                    .catch(function (error) {
-                      console.log('error',error)
-                      self.loading = false;
-                      if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
+                              }
+                            }
+                          },'Do you want to use this address for all Accounts?')
+                        ])
+                    },
+                    onOk: () => {
+                      // console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                      if(checkConfig == true){
+                        self.configs.forEach(item => {
+                          console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                          axios({
+                            method: 'PATCH',
+                            url: feathersUrl +'settings/'+item.id,
+                            headers:{
+                                Authorization : Cookies.get('auth_token'),
+                                subscriptionId : Cookies.get('subscriptionId')
+                            },
+                            data: logoData1
+                          })  
+                          .then(function (response) {
+                            // console.log('response------------------------>',response)
+                            self.logoLoading = false;
                             self.$router.push({
-                                name: 'login'
+                              name: 'Settings'
                             });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                          })
+                          .catch(function (error) {
+                            console.log('error',error)
+                            self.logoLoading = false;
+                            if(error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
                               });
-                          }else {
                               self.$Notice.error({
                                   title: error.response.data.name,
                                   desc: error.response.data.message,
                                   duration: 10
                               })
-                          }
-                    })
-              })
-              },
-              onCancel: () => {
-                self.loading = false;
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                          })
+                        })
+                      }
+                      else{
+                        axios({
+                          method: 'PATCH',
+                          url: feathersUrl +'settings/'+self.formData.configuration,
+                          headers:{
+                              Authorization : Cookies.get('auth_token'),
+                              subscriptionId : Cookies.get('subscriptionId')
+                          },
+                          data: logoData1
+                        })  
+                        .then(function (response) {
+                          // console.log('response------------------------>',response)
+                          self.logoLoading = false;
+                            self.$router.push({
+                              name: 'Settings'
+                            });
+                        })
+                        .catch(function (error) {
+                          console.log('error',error)
+                          self.logoLoading = false;
+                          if(error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                        })
+                      }
+                    },
+                    onCancel: () => {
+                      self.logoLoading = false;
+                    }
+                  })
               }
-            })                        
-          }
-          else{
-            console.log('this.configs',this.configs)
-            console.log('this.formValidate.configuration',this.formValidate.configuration)
-            var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
-            console.log("data000----------------------------->",data000)
-            var checkConfig;
-            this.$Modal.confirm({
-                  title: '',
-                  content: '',
-                  width: 500,
-                  okText: 'Agree',
-                  cancelText: 'Disagree',
-                  render: (h) => {
-                      return h('div', {
-                      }, [
-                          h('span', {
-                            style:{
-                              fontSize:'25px'
-                            },
-                          props: {
-                          },
-                          on: {
-                            input: (val) => {
-                            }
-                          }
-                        },'This address will be configured for ' + data000[0].configName),
-                        h('div', {
-                          style:{
-                              height:'50px'
-                            }
-                      }),
-                        h('Checkbox', {
-                          props: {
-                            value: this.value
-                          },
-                          on: {
-                            input: (val) => {
-                              checkConfig = val
-                              console.log("val",checkConfig)
+            }, false);
 
-                            }
-                          }
-                        },'Do you want to use this address for all Accounts?')
-                      ])
-                  },
-                  onOk: () => {
-                  console.log('data----------------------------->',params)
-                  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
-                  if(checkConfig == true){
-                    delete this.formValidate.configuration;
-                    var params = {'address':this.formValidate}
-                    console.log('UUUUUUUUUUUUUUUUU',this.configs)
-                    this.configs.forEach(item => {
+            
+            if (file) {
+              console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
+              reader.readAsDataURL(file);
+            }
+
+        }else {
+            self.$Message.error({
+              content: ' Please, attach a .jpg or .png file!',
+              duration: 4.5
+            });
+            self.logoLoading = false;
+          }
+          
+      },
+      handleSubmit (name) {
+        let self = this;
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.loading = true;
+            if(this.formValidate.configuration === 'all'){ 
+              this.$Modal.confirm({
+                title: '',
+                content: '<h4>This address will be configured for all of your Accounts</h4>',
+                width: 500,
+                okText: 'Agree',
+                cancelText: 'Disagree',
+                onOk: () => {
+                  delete this.formValidate.configuration;
+                  console.log('formValidate----------------------------->',this.formValidate)
+                  var params = {'address':this.formValidate}
+                  this.configs.forEach(item => {
                       console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
                       axios({
                         method: 'PATCH',
                         url: feathersUrl +'settings/'+item.id,
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: params
+                      })  
+                      .then(function (response) {
+                        console.log('response------------------------>',response)
+                        self.loading = false;
+                        self.$router.push({
+                          name: 'Settings'
+                        });
+                      })
+                      .catch(function (error) {
+                        console.log('error',error)
+                        self.loading = false;
+                        if(error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                      })
+                })
+                },
+                onCancel: () => {
+                  self.loading = false;
+                }
+              })                        
+            }
+            else{
+              console.log('this.configs',this.configs)
+              console.log('this.formValidate.configuration',this.formValidate.configuration)
+              var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
+              console.log("data000----------------------------->",data000)
+              var checkConfig;
+              this.$Modal.confirm({
+                    title: '',
+                    content: '',
+                    width: 500,
+                    okText: 'Agree',
+                    cancelText: 'Disagree',
+                    render: (h) => {
+                        return h('div', {
+                        }, [
+                            h('span', {
+                              style:{
+                                fontSize:'25px'
+                              },
+                            props: {
+                            },
+                            on: {
+                              input: (val) => {
+                              }
+                            }
+                          },'This address will be configured for ' + data000[0].configName),
+                          h('div', {
+                            style:{
+                                height:'50px'
+                              }
+                        }),
+                          h('Checkbox', {
+                            props: {
+                              value: this.value
+                            },
+                            on: {
+                              input: (val) => {
+                                checkConfig = val
+                                console.log("val",checkConfig)
+
+                              }
+                            }
+                          },'Do you want to use this address for all Accounts?')
+                        ])
+                    },
+                    onOk: () => {
+                    console.log('data----------------------------->',params)
+                    console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                    if(checkConfig == true){
+                      delete this.formValidate.configuration;
+                      var params = {'address':this.formValidate}
+                      console.log('UUUUUUUUUUUUUUUUU',this.configs)
+                      this.configs.forEach(item => {
+                        console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                        axios({
+                          method: 'PATCH',
+                          url: feathersUrl +'settings/'+item.id,
+                          headers:{
+                              Authorization : Cookies.get('auth_token'),
+                              subscriptionId : Cookies.get('subscriptionId')
+                          },
+                          data: params
+                        })  
+                        .then(function (response) {
+                          // console.log('response------------------------>',response)
+                          self.loading = false;
+                          self.$router.push({
+                            name: 'Settings'
+                          });
+                        })
+                        .catch(function (error) {
+                          console.log('error',error)
+                          self.loading = false;
+                          if(error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                        })
+                      })
+                    }
+                    else{
+                    var params = {'address':this.formValidate}                
+                      axios({
+                        method: 'PATCH',
+                        url: feathersUrl +'settings/'+this.formValidate.configuration,
                         headers:{
                             Authorization : Cookies.get('auth_token'),
                             subscriptionId : Cookies.get('subscriptionId')
@@ -609,216 +669,164 @@ export default {
                         console.log('error',error)
                         self.loading = false;
                         if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
                               });
-                          }else {
                               self.$Notice.error({
                                   title: error.response.data.name,
                                   desc: error.response.data.message,
                                   duration: 10
                               })
-                          }
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                       })
-                    })
+                    }
+                  },
+                  onCancel: () => {
+                    self.loading = false;
                   }
-                  else{
-                  var params = {'address':this.formValidate}                
-                    axios({
-                      method: 'PATCH',
-                      url: feathersUrl +'settings/'+this.formValidate.configuration,
-                      headers:{
-                          Authorization : Cookies.get('auth_token'),
-                          subscriptionId : Cookies.get('subscriptionId')
-                      },
-                      data: params
-                    })  
-                    .then(function (response) {
-                      // console.log('response------------------------>',response)
-                      self.loading = false;
-                      self.$router.push({
-												name: 'Settings'
-											});
-                    })
-                    .catch(function (error) {
-                      console.log('error',error)
-                      self.loading = false;
-                      if(error.response.status == 401){
-                            let location = psl.parse(window.location.hostname)
-                            location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            self.$store.commit('logout', self);
-                            
-                            self.$router.push({
-                                name: 'login'
-                            });
-                            self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
-                                duration: 10
-                            })
-                          }else if(error.response.status == 403){
-                            self.$Notice.error({
-                              duration:0, 
-                              title: error.response.statusText,
-                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                              });
-                          }else {
-                              self.$Notice.error({
-                                  title: error.response.data.name,
-                                  desc: error.response.data.message,
-                                  duration: 10
-                              })
-                          }
-                    })
-                  }
-                },
-                onCancel: () => {
-                  self.loading = false;
-                }
-              })
+                })
+            }
+          } else {
+            this.$Message.error('Please fill up all the fields correctly');
           }
-        } else {
-          this.$Message.error('Please fill up all the fields correctly');
-        }
-      })
-    },
-    handleReset (name) {
-        this.$refs[name].resetFields();
-    },
-    async settingData () {
-      let self = this
-      await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
-        headers:{
-          Authorization : Cookies.get('auth_token'),
-          subscriptionId : Cookies.get('subscriptionId')
-        }
-      })
-      .then(function (response) {
-        console.log("response >>>>>>>>>>>>>>>>",response)
-        if (response.data.data.length != 0)
-        {
-          var newConf = [];
-          console.log("self.configs---------------->before",newConf)
-          response.data.data.forEach(item => {
-            newConf.push(item);
-          })
-          self.configs = _.sortBy(newConf, ['configName']);
-          console.log("self.configs---------------->after",self.configs)
+        })
+      },
+      handleReset (name) {
+          this.$refs[name].resetFields();
+      },
+      async settingData () {
+        let self = this
+        await axios.get(config.default.serviceUrl + 'settings?isActive=true', {
+          headers:{
+            Authorization : Cookies.get('auth_token'),
+            subscriptionId : Cookies.get('subscriptionId')
+          }
+        })
+        .then(function (response) {
+          console.log("response >>>>>>>>>>>>>>>>",response)
+          if (response.data.data.length != 0)
+          {
+            var newConf = [];
+            console.log("self.configs---------------->before",newConf)
+            response.data.data.forEach(item => {
+              newConf.push(item);
+            })
+            self.configs = _.sortBy(newConf, ['configName']);
+            console.log("self.configs---------------->after",self.configs)
 
-        }
-        else
-        {
-          self.$Message.warning({
-                content: 'Configure or activate at least one Xero , Quickbook or custom account',
-                duration: 5
-            });
+          }
+          else
+          {
+            self.$Message.warning({
+                  content: 'Configure or activate at least one Xero , Quickbook or custom account',
+                  duration: 5
+              });
 
-        }
-      })
-      .catch(function (error) {
-        console.log("error",error);
-        if(error.message == 'Network Error'){
-          self.$Notice.error({
-              title: "Error",
-              desc: 'API service unavailable',
-              duration: 10
-          })
-      }else if(error.response.status == 401){
-          let location = psl.parse(window.location.hostname)
-          location = location.domain === null ? location.input : location.domain
-          
-          Cookies.remove('auth_token' ,{domain: location}) 
-          self.$store.commit('logout', self);
-          
-          self.$router.push({
-              name: 'login'
-          });
-          self.$Notice.error({
-              title: error.response.data.name,
-              desc: error.response.data.message,
-              duration: 10
-          })
-        }else if(error.response.status == 403){
-          self.$Notice.error({
-            duration:0, 
-            title: error.response.statusText,
-            desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+          }
+        })
+        .catch(function (error) {
+          console.log("error",error);
+          if(error.message == 'Network Error'){
+            self.$Notice.error({
+                title: "Error",
+                desc: 'API service unavailable',
+                duration: 10
+            })
+        }else if(error.response.status == 401){
+            let location = psl.parse(window.location.hostname)
+            location = location.domain === null ? location.input : location.domain
+            
+            Cookies.remove('auth_token' ,{domain: location}) 
+            self.$store.commit('logout', self);
+            
+            self.$router.push({
+                name: 'login'
             });
-        }else {
             self.$Notice.error({
                 title: error.response.data.name,
                 desc: error.response.data.message,
                 duration: 10
             })
+          }else if(error.response.status == 403){
+            self.$Notice.error({
+              duration:0, 
+              title: error.response.statusText,
+              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+              });
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
+        });
+        
+      },
+      onFileChange (e) {
+        let self = this
+        console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',e)
+        let files = e.target.files || e.dataTransfer.files
+        console.log('ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp',files)
+        if (!files.length) {
+          return
         }
-      });
-      
+        this.file = files[0]
+        console.log('this.file', this.file)
+      },
     },
-    onFileChange (e) {
-      let self = this
-      console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',e)
-      let files = e.target.files || e.dataTransfer.files
-      console.log('ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp',files)
-      if (!files.length) {
-        return
-      }
-      this.file = files[0]
-      console.log('this.file', this.file)
+
+    created () {
     },
-  },
 
-  created () {
-  },
-
-  async mounted () {
-    this.settingData ();
-    populateCountries("country", "state");
-    $("#country").on("change",function() {
-      $('.state1').css("display","block")
-    });
-    // Collapsing Divs
-    $(document).ready(function($) {        
-      $("#toogleAddressSettings").click(function() {
-          $("#toogleAddressSettingsContent").slideToggle("slow");
-          if ($("#toogleAddressSettings").text() == "Address") {
-              $("#toogleAddressSettings").html("Address")
-          } else {
-              $("#toogleAddressSettings").text("Address")
-          }
+    async mounted () {
+      this.settingData ();
+      populateCountries("country", "state");
+      $("#country").on("change",function() {
+        $('.state1').css("display","block")
       });
+      // Collapsing Divs
+      $(document).ready(function($) {        
+        $("#toogleAddressSettings").click(function() {
+            $("#toogleAddressSettingsContent").slideToggle("slow");
+            if ($("#toogleAddressSettings").text() == "Address") {
+                $("#toogleAddressSettings").html("Address")
+            } else {
+                $("#toogleAddressSettings").text("Address")
+            }
+        });
 
-      $("#toggleUploadLogo").click(function() {
-          $("#toggleUploadLogoContent").slideToggle("slow");
-          if ($("#toggleUploadLogo").text() == "Upload Logo") {
-              $("#toggleUploadLogo").html("Upload Logo")
-          } else {
-              $("#toggleUploadLogo").text("Upload Logo")
-          }
+        $("#toggleUploadLogo").click(function() {
+            $("#toggleUploadLogoContent").slideToggle("slow");
+            if ($("#toggleUploadLogo").text() == "Upload Logo") {
+                $("#toggleUploadLogo").html("Upload Logo")
+            } else {
+                $("#toggleUploadLogo").text("Upload Logo")
+            }
+        });
       });
-    });
-  },
-  watch: {
+    },
+    watch: {
+    }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
