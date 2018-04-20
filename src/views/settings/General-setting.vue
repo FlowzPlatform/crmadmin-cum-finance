@@ -24,18 +24,19 @@
                 <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
             </FormItem>
             <FormItem label="Address" prop="AddressLine1">
-              <Row>
-                <Col span="12">
-                  <FormItem prop="Address">
-                      <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
-                  </FormItem>
-                </Col>
-                <Col span="12">
-                  <FormItem  prop="AddressLine2">
-                    <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
-                  </FormItem>
-                </Col>
-              </Row>
+
+            <Row>
+            <Col span="12">
+              <FormItem prop="AddressLine1">
+                  <Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem>
+                <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
+              </FormItem>
+            </Col>
+            </Row>
             </FormItem>
              <FormItem label="Country" prop="country">
                 <select v-model="formValidate.country" id="country" name ="country">
