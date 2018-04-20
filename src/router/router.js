@@ -92,6 +92,7 @@ export const otherRouter = {
         { path: 'shopping', title: 'Shopping', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
+        { path: 'edit-settingdata', title: 'Edit Settingdata', name: 'Edit Settingdata',props : true, component: resolve => { require(['@/views/settings/edit-settingdata.vue'], resolve); } },        
         { path: 'new-settings', title: 'Account Settings', name: 'Account Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'General-settings', title: 'Profile Settings', name: 'Profile Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
         { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },

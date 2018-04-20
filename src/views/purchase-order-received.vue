@@ -8,7 +8,7 @@
 import axios from 'axios'
 import config from '../config/customConfig'
 export default {
-  name: 'reset-password',
+  name: 'purchase-order-rececived',
   data () {
   return {
     dataObject: [
