@@ -96,13 +96,14 @@ export const otherRouter = {
         { path: 'new-settings', title: 'Account Settings', name: 'Account Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'General-settings', title: 'Profile Settings', name: 'Profile Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
         { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },
+        { path: 'PurchaseOrder-settings', title: 'PurchaseOrder', name: 'PurchaseOrder', component: resolve => { require(['@/views/settings/poSettings.vue'], resolve); } },
+        { path: 'new-poSettings', title: 'PurchaseOrder Settings', name: 'PurchaseOrder Settings', component: resolve => { require(['@/views/settings/new-poSettings.vue'], resolve); } },
+        { path: 'generatePO', title: 'Generate PurchaseOrder', name: 'Generate PurchaseOrder', component: resolve => { require(['@/views/purchaseOrder/generate-purchaseOrder.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
         { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}},
         { path: 'change-password', title: 'Change Password', icon: 'locked', name: 'Change Password', component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}}
        // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
-        
-                
-
+                   
     ]
 };
 

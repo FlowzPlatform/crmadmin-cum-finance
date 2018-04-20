@@ -1,97 +1,98 @@
+
+
 <template>
-  <div>
-    <div class="settings_header">
-        <Button @click="addNewConfig">Add New Account</Button>
-        <Button @click="addNewGeneralSettings">Add New Profile Configuration</Button>
-        <Button @click="addNewPaymentSettings">Add New Payment Configuration</Button>
-    </div>
-
     <div>
-      <Row>
-        <div v-for="(item, inx) in data6">
-          <Col :span="12">
-            <div style="padding: 5px;">
-              <Card style="padding:10px; min-height:500px;">
-                  <p slot="title">{{item.configName}}</p>
-                  
-                  <Tooltip placement="top" slot="extra" content="Toggle active / inactive" style="padding-left:3px;">
-                      <i-switch v-model="item.isActive" :disabled="disabled" @on-change="buttonClicked(item)"></i-switch>
-                  </Tooltip>
-                  <ButtonGroup slot="extra" v-if="item.domain != 'custom'">
-                      <Tooltip placement="top" content="Delete" style="padding-left:3px;">
-                          <Button class="ButtonGroup" @click="deleteConfig(item)"   type="ghost" icon="trash-b"></Button>
-                      </Tooltip>
-                  </ButtonGroup>
-                                  
-                  <div>
-                      <div class="firstPanel">
-                          <table id="t01">
-                                  <tr>
-                                      <td>User</td>
-                                      <td>{{ item.user}}</td>
-                                  </tr>
-                                  <tr>
-                                      <td>Domain</td>
-                                      <td>{{ item.domain}}</td>
-                                  </tr>
+        <settingMenu></settingMenu>
 
-                                  <tr v-if="item.domain == 'Xero'">
-                                      <td >Consumer key </td>
-                                      <td>
-                                          <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
-                                              <Button slot="append" icon="eye" @click="showSecret('consumerKeyType')"></Button>
-                                          </Input>                            
-                                      </td>
-                                  </tr>
-                                  <tr v-if="item.domain == 'QB'">
-                                      <td >Client ID </td>
-                                      <td>
-                                          <Input :type="client_idType" readonly :value='item.client_id'>
-                                              <Button slot="append" icon="eye" @click="showSecret('client_idType')" ></Button>
-                                          </Input>
-                                      </td>
-                                  </tr>
-                                  <tr v-if="item.domain == 'custom'">
-                                      <td >Customer Url </td>
-                                      <td>
-                                          <Input  readonly :value='item.customer_url'>
-                                              
-                                          </Input>
-                                      </td>
-                                  </tr>
+        <div>
+            <div style="width:96%;">
+                <div>
+                    <Row>
+                        <div v-for="(item, inx) in data6">
+                        <Col :span="12">
+                            <div style="padding: 5px;">
+                            <Card style="padding:10px; min-height:500px;">
+                                <p slot="title">{{item.configName}}</p>
+                                
+                                <Tooltip placement="top" slot="extra" content="Toggle active / inactive" style="padding-left:3px;">
+                                    <i-switch v-model="item.isActive" :disabled="disabled" @on-change="buttonClicked(item)"></i-switch>
+                                </Tooltip>
+                                <ButtonGroup slot="extra" v-if="item.domain != 'custom'">
+                                    <Tooltip placement="top" content="Delete" style="padding-left:3px;">
+                                        <Button class="ButtonGroup" @click="deleteConfig(item)"   type="ghost" icon="trash-b"></Button>
+                                    </Tooltip>
+                                </ButtonGroup>
+                                                
+                                <div>
+                                    <div class="firstPanel">
+                                        <table id="t01">
+                                                <tr>
+                                                    <td>User</td>
+                                                    <td>{{ item.user}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Domain</td>
+                                                    <td>{{ item.domain}}</td>
+                                                </tr>
 
-                                  <tr v-if="item.domain == 'Xero'">
-                                      <td >Consumer secret </td>
-                                      <td>
-                                          <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
-                                              <Button slot="append" icon="eye" @click="showSecret('consumerSecretType')"></Button>
-                                          </Input>
-                                      </td>
-                                  </tr>
-                                  <tr v-if="item.domain == 'QB'">
-                                      <td >Client secret </td>
-                                      <td>
-                                          <Input :type="client_secretType" readonly :value='item.client_secret'>
-                                              <Button slot="append" icon="eye" @click="showSecret('client_secretType')"></Button>
-                                          </Input>
-                                      </td>
-                                  </tr>
-                                  <tr v-if="item.domain == 'custom'">
-                                      <td >Invoice Url </td>
-                                      <td>
-                                          <Input  readonly :value='item.invoice_url'>
-                                          </Input>
-                                      </td>
-                                  </tr>
+                                                <tr v-if="item.domain == 'Xero'">
+                                                    <td >Consumer key </td>
+                                                    <td>
+                                                        <Input :type="consumerKeyType" readonly :value='item.consumerKey'>
+                                                            <Button slot="append" icon="eye" @click="showSecret('consumerKeyType')"></Button>
+                                                        </Input>                            
+                                                    </td>
+                                                </tr>
+                                                <tr v-if="item.domain == 'QB'">
+                                                    <td >Client ID </td>
+                                                    <td>
+                                                        <Input :type="client_idType" readonly :value='item.client_id'>
+                                                            <Button slot="append" icon="eye" @click="showSecret('client_idType')" ></Button>
+                                                        </Input>
+                                                    </td>
+                                                </tr>
+                                                <tr v-if="item.domain == 'custom'">
+                                                    <td >Customer Url </td>
+                                                    <td>
+                                                        <Input  readonly :value='item.customer_url'>
+                                                            
+                                                        </Input>
+                                                    </td>
+                                                </tr>
 
-                                  <tr v-if="item.domain == 'Xero'">
-                                      <td >User agent</td>
-                                      <td >{{ item.useragent}}</td>
-                                  </tr>
-                                  <tr v-if="item.domain == 'QB'">
-                                      <td >realmId </td>
-                                      <td >{{item.realmId}}</td>
-                                  </tr>
+                                                <tr v-if="item.domain == 'Xero'">
+                                                    <td >Consumer secret </td>
+                                                    <td>
+                                                        <Input :type="consumerSecretType" readonly :value='item.consumerSecret'>
+                                                            <Button slot="append" icon="eye" @click="showSecret('consumerSecretType')"></Button>
+                                                        </Input>
+                                                    </td>
+                                                </tr>
+                                                <tr v-if="item.domain == 'QB'">
+                                                    <td >Client secret </td>
+                                                    <td>
+                                                        <Input :type="client_secretType" readonly :value='item.client_secret'>
+                                                            <Button slot="append" icon="eye" @click="showSecret('client_secretType')"></Button>
+                                                        </Input>
+                                                    </td>
+                                                </tr>
+                                                <tr v-if="item.domain == 'custom'">
+                                                    <td >Invoice Url </td>
+                                                    <td>
+                                                        <Input  readonly :value='item.invoice_url'>
+                                                        </Input>
+                                                    </td>
+                                                </tr>
+
+                                                <tr v-if="item.domain == 'Xero'">
+                                                    <td >User agent</td>
+                                                    <td >{{ item.useragent}}</td>
+                                                </tr>
+                                                <tr v-if="item.domain == 'QB'">
+                                                    <td >realmId </td>
+                                                    <td >{{item.realmId}}</td>
+                                                </tr>
+
 
                                   <tr v-if="item.domain == 'Xero'">
                                       <td >Certificate </td>
@@ -350,7 +351,6 @@
               
               </Modal> -->
             </div>
-          </Col>
         </div>
       </Row>
     </div>
@@ -369,6 +369,7 @@
     import Cookies from 'js-cookie';
     import editSetting from './edit-settingdata.vue'
     import psl from 'psl';
+    import settingMenu from './settingMenu.vue';
     // import customSetting from './General-setting.vue'
     // import onlinePayment from './Online-Payment.vue'
     Vue.use(VueWidgets);
@@ -377,12 +378,40 @@
     export default {
         components: {
             editSetting
+            settingMenu
         },
         // props:{
         //     settingEditData: this.propDataEdit
         // },
         data () {
             return {
+                accountTab: true,
+                treeData: [
+                    {
+                        title: 'ACCOUNT',
+                        expand: true,
+                        children: [
+                            {
+                                title: 'Add New Account',
+                            },
+                            {
+                                title: 'Add New Profile Configuration',
+                            },
+                            {
+                                title: 'Add New Payment Configuration',
+                            }
+                        ]
+                    },
+                    {
+                        title: 'PURCHASE ORDER',
+                        children: [
+                            {
+                                title: 'Add New PO Config',
+                            }
+                        ]
+                    }
+                ],
+                toggle: true,
                 checked: true,
                 unchecked: false,
                 loading:false,
@@ -405,7 +434,7 @@
                 editFormItemQB: {
                     input: ''
                 },
-                editFormItemCustom :{
+                editFormItemCustom : {
                     input: ''
                 },
                 editGeneral : {
@@ -480,6 +509,47 @@
             }
         },
         methods: {
+            treeNodeClick(data) {
+                console.log("--------treedata",data)
+                if (data[0].title === 'ACCOUNT') {
+                    this.accountTab = true;
+                    // this.$store.state.settingData = ""
+                    // this.$router.push({
+                    //     name: 'Settings'
+                    // });
+                }
+                else if (data[0].title === 'Add New Account') {
+                    this.addNewConfig();
+                }
+                else if (data[0].title === 'Add New Profile Configuration') {
+                    this.addNewGeneralSettings();
+                }
+                else if (data[0].title === 'Add New Payment Configuration') {
+                    this.addNewPaymentSettings();
+                }
+                else if (data[0].title === "PURCHASE ORDER") {
+                    this.accountTab = false;
+                    $('.slide').addClass('opens');
+                }
+                else if (data[0].title === 'Add New PO Config') {
+                    this.$store.state.settingData = ""
+                    this.$router.push({
+                        name: 'PurchaseOrder Settings'
+                    });
+                }
+                
+            },
+            slide(toggle1) {
+                let self = this;
+                if (toggle1) {
+                    $('.slide').removeClass('opens');
+                    self.toggle = false
+                }
+                else {
+                    $('.slide').addClass('opens');
+                    self.toggle = true
+                }
+            },
             keyName(k) {
                 if (k === 'auth') {
                     return 'Authorize.Net'
@@ -614,7 +684,7 @@
                 this.data6.splice(index, 1);
             },
             addNewConfig(){
-                 this.$store.state.settingData = ""
+                this.$store.state.settingData = ""
                 this.$router.push({
                         name: 'Account Settings'
                     });
@@ -1348,6 +1418,39 @@
 </script>
 
 <style scoped>
+    .slide{
+        position: fixed;
+        background: #485060;
+        color: #fff;
+        width: 0px; 
+        right: 20px;
+        z-index: 9;
+        height: auto;
+        transition: right 0.4s ease-in-out;
+        -o-transition: right 0.4s ease-in-out;
+        -ms-transition: right 0.4s ease-in-out;
+        -moz-transition: right 0.4s ease-in-out;
+        -webkit-transition: right 0.4s ease-in-out;
+        bottom: 50px;
+    }
+
+    #toggle{
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        padding: 10px;
+        background: #485060;
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        border-radius: 23px;
+        box-shadow: 0px 0px 5px #3ac5fc;
+    }
+    .box {
+        padding: 20px;
+        cursor: pointer;
+    }
 .settings_header{
     padding : 10px;
     text-align:right;

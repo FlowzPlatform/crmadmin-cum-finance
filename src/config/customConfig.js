@@ -77,8 +77,8 @@ module.exports = {
         // loginWithGithubUrl: 'https://auth.flowzcluster.tk/auth/github',
         // loginWithLinkedInUrl: 'https://auth.flowzcluster.tk/auth/linkedin',
 
-        serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
-        // serviceUrl :            'http://localhost:3037/',
+        // serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
+        serviceUrl :            'http://localhost:3037/',
         baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
         usersubscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/user-subscription',

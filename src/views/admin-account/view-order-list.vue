@@ -169,7 +169,7 @@
         </div>
         <div v-else>
             <Card>
-                <div style="text-align:center">
+                <!--<div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12 header">
                             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
@@ -178,7 +178,7 @@
                             </p>
                         </div>
                     </div>
-                </div>    
+                </div>-->    
                 <div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12">
