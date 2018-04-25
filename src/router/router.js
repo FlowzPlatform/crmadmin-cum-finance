@@ -248,6 +248,22 @@ export const appRouter = [
             }
         ]
     },
+    {
+        path: '/purchaseOrder-list-Raised',
+        icon: 'ios-paper',
+        title: 'PURCHASE ORDER',
+        name: 'PURCHASE ORDER',
+        component: Main,
+        children: [
+            { 
+                path: '/purchaseOrder-list-Raised', 
+                title: 'Raised PO',
+                icon: 'ios-compose',
+                name: 'Raised PO', 
+                component: resolve => { require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);}
+            }
+        ]
+    },
     // {
     //     path: '/admin-account',
     //     icon: 'person',
