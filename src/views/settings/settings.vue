@@ -1,3 +1,4 @@
+
 <template>
     <div>
         <settingMenu></settingMenu>
@@ -237,7 +238,7 @@
                                     </Collapse>
                                 </div>
                             </Card>
-                            <Modal
+                            <!--<Modal
                                 v-model="modal1"
                                 title="Edit Configuration"
                                 ok-text="Save"
@@ -298,8 +299,8 @@
                                     
                                 </Form>            
                             
-                            </Modal>
-                            <Modal
+                            </Modal>-->
+                            <!--<Modal
                                 v-model="model2"
                                 title="Edit Configuration"
                                 ok-text="Save"
@@ -348,7 +349,7 @@
                                     </div>
                                 </Form>            
                             
-                            </Modal>
+                            </Modal>-->
                             </div>
                         </Col>
                         </div>
