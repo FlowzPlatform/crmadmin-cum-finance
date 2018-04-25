@@ -54,7 +54,7 @@
                 })
                 .then(async response => {
                     console.log("po settings response",response)
-                    this.poData = response.data;
+                    this.poData = response.data.data;
                     // this.poData = [
                     //     {
                     //         po_generate_mode : "auto",
