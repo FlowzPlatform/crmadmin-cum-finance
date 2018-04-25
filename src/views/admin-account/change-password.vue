@@ -63,13 +63,14 @@
 </template>
 
 <script>
-import axios from 'axios'
-import Cookies from 'js-cookie';
-import config from '@/config/customConfig.js'
-export default {
-  name: 'change-password',
-  data () {
-    const validatePassCheck = (rule, value, callback) => {
+    import {$} from 'jquery';
+    import axios from 'axios';
+    import Cookies from 'js-cookie';
+    import config from '@/config/customConfig.js';
+    export default {
+        name: 'change-password',
+        data () {
+            const validatePassCheck = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('Please enter valid confirm password!'));
                 } else if (value !== this.formValidate.newpasswd) {
@@ -78,14 +79,14 @@ export default {
                     callback();
                 }
             };
-  return {
-    formValidate: {
+            return {
+                formValidate: {
                     oldpasswd: '',
                     newpasswd: '',
                     confpasswd: ''
                 },
                 formValidate1: {
-                  email: ''
+                    email: ''
                 },
                 showForgotPassword: false,
                 showCurrentpassword: 'password',
@@ -93,158 +94,165 @@ export default {
                 showConfirmpassword: 'password',
                 ruleValidate: {
                     oldpasswd: [
-                        { required: true, message: 'Please enter valid current password!', trigger: 'blur' }
+                        {
+                            required: true,
+                            message: 'Please enter valid current password!',
+                            trigger: 'blur'
+                        }
                     ],
                     newpasswd: [
-                        { required: true, message: 'Please enter valid new password!', trigger: 'blur' }
+                        {
+                            required: true,
+                            message: 'Please enter valid new password!',
+                            trigger: 'blur'
+                        }
                     ],
                     confpasswd: [
-                        { required: true, validator: validatePassCheck, trigger: 'blur' }
+                        {
+                            required: true,
+                            validator: validatePassCheck,
+                            trigger: 'blur'
+                        }
                     ]
                 },
                 ruleValidate1: {
-                  email:[
-                    { required: true, message: 'Email cannot be empty', trigger: 'blur' },
-                    { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
-                  ]
-
+                    email: [
+                        {
+                            required: true,
+                            message: 'Email cannot be empty',
+                            trigger: 'blur'
+                        },
+                        {
+                            type: 'email',
+                            message: 'Incorrect email format',
+                            trigger: 'blur'
+                        }
+                    ]
                 }
-    }
-  },
-  methods: {
-    showpassword(value){
-      console.log('value', value)
-      if(value == "showCurrentpassword"){
-        if(this.showCurrentpassword == "password"){
-          this.showCurrentpassword = "text"
-        } else {
-          this.showCurrentpassword = "password"
-        }
-      } else if(value == "showNewpassword"){
-        if(this.showNewpassword == "password"){
-          this.showNewpassword = "text"
-        } else if(this.showNewpassword == "text") {
-          this.showNewpassword = "password"
-        }
-      } else if(value == "showConfirmpassword"){
-        if(this.showConfirmpassword == "password"){
-          this.showConfirmpassword = "text"
-        } else if(this.showConfirmpassword == "text") {
-          this.showConfirmpassword = "password"
-        }
-      }
-      // if(this.showCurrentpassword == "password"){
-      //   this.showCurrentpassword = "text"
-      // } else if(this.showCurrentpassword == "text") {
-      //   this.showCurrentpassword = "password"
-      // }
-      //
-      // if(this.showNewpassword == "password"){
-      //   this.showNewpassword = "text"
-      // } else if(this.showNewpassword == "text") {
-      //   this.showNewpassword = "password"
-      // }
-
-    },
-    forgotPassword(){
-      this.showForgotPassword = true;
-      $('.card').css("height",'300px');
-    },
-    backtoLogin(){
-      this.showForgotPassword = false;
-      $('.card').css("height",'404px');
-    },
-    forgotPasswordSendEmail(name) {
-      var self = this
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          console.log('config.default.forgotPasswordUrl', config.default.forgotPasswordUrl)
-          console.log('self.formValidate1.email', self.formValidate1.email)
-          axios.post(config.default.forgotPasswordUrl, {
-                  email: self.formValidate1.email.trim(),
-                  url: config.default.resetPasswordRedirectUrl,
-                  headers: {
-                    "authorization": Cookies.get('auth_token')
-                  }
-              })
-              .then(function(response) {
-                  console.log(response)
-                  if (response.data.code == 200) {
-                      self.$message.success(response.data.message);
-                      self.formValidate1.email = ""
-                  }
-              })
-              .catch(function(error) {
-                  self.$message.error("email  is incorrect");
-              });
-        } else {
-
-        }
-      })
-
-    },
-    handleSubmit (name) {
-      var self = this
+            };
+        },
+        methods: {
+            showpassword (value) {
+                if (value == 'showCurrentpassword') {
+                    if (this.showCurrentpassword == 'password') {
+                        this.showCurrentpassword = 'text';
+                    } else {
+                        this.showCurrentpassword = 'password';
+                    }
+                } else if (value == 'showNewpassword') {
+                    if (this.showNewpassword == 'password') {
+                        this.showNewpassword = 'text';
+                    } else if (this.showNewpassword == 'text') {
+                        this.showNewpassword = 'password';
+                    }
+                } else if (value == 'showConfirmpassword') {
+                    if (this.showConfirmpassword == 'password') {
+                        this.showConfirmpassword = 'text';
+                    } else if (this.showConfirmpassword == 'text') {
+                        this.showConfirmpassword = 'password';
+                    }
+                }
+                // if(this.showCurrentpassword == "password"){
+                //   this.showCurrentpassword = "text"
+                // } else if(this.showCurrentpassword == "text") {
+                //   this.showCurrentpassword = "password"
+                // }
+                //
+                // if(this.showNewpassword == "password"){
+                //   this.showNewpassword = "text"
+                // } else if(this.showNewpassword == "text") {
+                //   this.showNewpassword = "password"
+                // }
+            },
+            forgotPassword () {
+                this.showForgotPassword = true;
+                $('.card').css('height', '300px');
+            },
+            backtoLogin () {
+                this.showForgotPassword = false;
+                $('.card').css('height', '404px');
+            },
+            forgotPasswordSendEmail (name) {
+                var self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                      		var passDetails = {"oldpass":this.formValidate.oldpasswd,"newpass":this.formValidate.newpasswd};
-                      		let userToken = Cookies.get('auth_token');
+                        axios.post(config.default.forgotPasswordUrl, {
+                            email: self.formValidate1.email.trim(),
+                            url: config.default.resetPasswordRedirectUrl,
+                            headers: {
+                                'authorization': Cookies.get('auth_token')
+                            }
+                        }).then(function (response) {
+                            if (response.data.code == 200) {
+                                self.$message.success(response.data.message);
+                                self.formValidate1.email = '';
+                            }
+                        }).catch(function () {
+                            self.$message.error('email  is incorrect');
+                        });
+                    }
+                });
+            },
+            handleSubmit (name) {
+                var self = this;
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        var passDetails = {
+                            'oldpass': this.formValidate.oldpasswd,
+                            'newpass': this.formValidate.newpasswd
+                        };
+                        let userToken = Cookies.get('auth_token');
 
-                      		$.ajax({
-                      			type: 'POST',
-                      			url: config.default.changepassword,
-                      			async: true,
-                      			data:  JSON.stringify(passDetails),
-                      			dataType: 'json',
-                      			headers: {
-                      				"authorization": userToken,
-                      				'Content-Type': 'application/json'
-                      			},
-                      			success: function (result) {
-                              console.log('result',result)
-                              if(result.code == 201){
-                                self.$Message.success({
-                                    content: result.message,
+                        $.ajax({
+                            type: 'POST',
+                            url: config.default.changepassword,
+                            async: true,
+                            data: JSON.stringify(passDetails),
+                            dataType: 'json',
+                            headers: {
+                                'authorization': userToken,
+                                'Content-Type': 'application/json'
+                            },
+                            success: function (result) {
+                                if (result.code == 201) {
+                                    self.$Message.success({
+                                        content: result.message,
+                                        duration: 5
+                                    });
+                                    self.handleReset(name);
+                                }
+                            },
+                            error: function () {
+                                self.$Message.error({
+                                    content: 'incorrect current password',
                                     duration: 5
                                 });
-                                self.handleReset(name)
-                              }
-
-                      			},
-                      			error: function(err) {
-                              console.log('err', err.response)
-                              self.$Message.error({
-                                  content: 'incorrect current password',
-                                  duration: 5
-                              });
-                      			}
-                      		});
-                        } else {
+                            }
+                        });
+                    } else {
                         // this.$Message.error('Fail!');
-                      }
-                })
+                    }
+                });
             },
             handleReset (name) {
-              // alert(1)
                 this.$refs[name].resetFields();
             }
-  },
-  mounted(){
-  }
-}
+        },
+        mounted () {}
+    };
 </script>
 
 <style>
-h1 {
-  font-size: 25px;
-  padding: inherit;
-}
-.required-field {
-    color: red;
-    font-family: 'Roboto',sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-    float: right;
-}
+    h1 {
+        font-size: 25px;
+        padding: inherit;
+    }
 
+    .required-field {
+        color: red;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 300;
+        font-size: 14px;
+        float: right;
+    }
 </style>

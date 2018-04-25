@@ -217,143 +217,124 @@
 </template>
 
 <script>
-import axios from 'axios'
+import feathers from 'feathers/client';
+import socketio from 'feathers-socketio/client';
+import config from '@/config/customConfig';
+import io from 'socket.io-client';
+import {$} from 'jquery';
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 const accounting = require('accounting-js');
-// import eye from '../../images/Eye.png'
-import feathers from 'feathers/client';
-import socketio from 'feathers-socketio/client';
-import config from '@/config/customConfig'
-import io from 'socket.io-client';
 export default {
-  props: {
-    row: Object
-  },
-  name: 'list-billing',
-  data () {
-  return {
-    imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
-    data: '',
-    created_date: '',
-    commentMessage: '',
-    userid: '',
-    messageDataDisplay: [],
-    requestUser: '',
-    colors:[]
-    }
-  },
-  methods: {
-    getImgUrl (url) {
-      return this.imgurl + url
+    props: {
+        row: Object
     },
-    accounting(item) {
-      return accounting.formatMoney(item)
+    name: 'list-billing',
+    data () {
+        return {
+            imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+            data: '',
+            created_date: '',
+            commentMessage: '',
+            userid: '',
+            messageDataDisplay: [],
+            requestUser: '',
+            colors: []
+        };
     },
-    getDate (date) {
-        return moment(date).fromNow()
-      },
-    sendcomment() {
-      var self = this
-      let date = new Date()
-
-      let msg = this.commentMessage.trim();
-
-      if(msg != ''){
-        axios({
-       method: 'post',
-       url: config.default.commentrequestapi,
-       headers: {
-          'Authorization': Cookies.get('auth_token')
+    methods: {
+        getImgUrl (url) {
+            return this.imgurl + url;
         },
-       data: {
-          'subscriptionId': Cookies.get('subscriptionId'),
-          "Module":"request-info",
-          "RequestId":this.row.id,
-          "websiteid":this.row.website_id,
-          "message": this.commentMessage
-       }
-       }).then(function (response) {
-        self.messageDataDisplay.push({message: self.commentMessage, created_at: date, created_by: self.userid})
-        let height
-        setTimeout(function(){
-          height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
-          $('.chat').animate({scrollTop: height });
-        },1000)
-        self.commentMessage = '';
-        console.log(response)
-      })
-      }
-    },
-     myFunction(){
-      
-      console.log("$$$$$$$$$$$$$$$$$$$$$",event)
-        if(event.key == "Enter" && event.ctrlKey == true){
-          this.sendcomment();
-        } 
-    },
-  },
-  computed: {
-    // styles() {
-    //    return {
-    //     'background-color': this.colors[0]
-    //     };
-    // }
-  },
-  mounted(){
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
-    var self = this
-    this.requestUser = this.row.productInfo[0].username
-    console.log("^^^^^^^^^^^^^^^^^^^^^^^",config.default.socketUrlapi)
-    let socketurl = io(config.default.socketUrlapi,{reconnection: true})
-    const app = feathers().configure(socketio(socketurl))
-    // const app = feathers().configure(socketio(io('http://localhost:4032')))
-
-      app.service("comment-request").on("created" , (message) =>{
-        self.messageDataDisplay = message.message
-        setTimeout(function(){
-          let height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
-          $('.chat').animate({scrollTop: height });
-        },1000)
-      })
-
-      app.service("comment-request").on("updated" , (message) =>{
-        self.messageDataDisplay = message.message
-        setTimeout(function(){
-          let height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
-          $('.chat').animate({scrollTop: height });
-        },1000)
-      })
-    this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
-    axios({
-       method: 'get',
-       url: config.default.commentrequestapi,
-       headers: {
-          'Authorization': Cookies.get('auth_token')
+        accounting (item) {
+            return accounting.formatMoney(item);
         },
-       params:{
-        RequestId: self.row.id
-       }
-       }).then(function (response) {
-        self.userid = Cookies.get('user')
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@",self.userid,response.data)
-        if(response.data.data.length != 0){
-          self.messageDataDisplay = response.data.data[0].message
-          // self.messageData = _.filter(response.data.data[0].message, ['created_by', self.userid]);
-          console.log("##################",self.messageDataDisplay)
-          let height
-          setTimeout(function(){
-             height = document.getElementsByClassName("chat")[0].scrollHeight;
-            console.log('WWWWWWWWWWWWWWWWW',height)
-            $('.chat').animate({scrollTop: height });
-          },1000)
+        getDate (date) {
+            return moment(date).fromNow();
+        },
+        sendcomment () {
+            let self = this;
+            let date = new Date();
+
+            let msg = this.commentMessage.trim();
+
+            if (msg != '') {
+                axios({
+                    method: 'post',
+                    url: config.default.commentrequestapi,
+                    headers: {
+                        'Authorization': Cookies.get('auth_token')
+                    },
+                    data: {
+                        'subscriptionId': Cookies.get('subscriptionId'),
+                        'Module': 'request-info',
+                        'RequestId': this.row.id,
+                        'websiteid': this.row.website_id,
+                        'message': this.commentMessage
+                    }
+                }).then(function (response) {
+                    self.messageDataDisplay.push({message: self.commentMessage, created_at: date, created_by: self.userid});
+                    let height;
+                    setTimeout(function () {
+                        height = document.getElementsByClassName('chat')[0].scrollHeight;
+                        $('.chat').animate({scrollTop: height});
+                    }, 1000);
+                    self.commentMessage = '';
+                });
+            }
+        },
+        myFunction () {
+            if (event.key == 'Enter' && event.ctrlKey == true) {
+                this.sendcomment();
+            }
         }
-      })
-  }
-}
+    },
+    computed: {
+    },
+    mounted () {
+        let self = this;
+        this.requestUser = this.row.productInfo[0].username;
+        let socketurl = io(config.default.socketUrlapi, {reconnection: true});
+        const app = feathers().configure(socketio(socketurl));
+        app.service('comment-request').on('created', (message) => {
+            self.messageDataDisplay = message.message;
+            setTimeout(function () {
+                let height = document.getElementsByClassName('chat')[0].scrollHeight;
+                $('.chat').animate({scrollTop: height});
+            }, 1000);
+        });
+
+        app.service('comment-request').on('updated', (message) => {
+            self.messageDataDisplay = message.message;
+            setTimeout(function () {
+                let height = document.getElementsByClassName('chat')[0].scrollHeight;
+                $('.chat').animate({scrollTop: height});
+            }, 1000);
+        });
+        this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY');
+        axios({
+            method: 'get',
+            url: config.default.commentrequestapi,
+            headers: {
+                'Authorization': Cookies.get('auth_token')
+            },
+            params: {
+                RequestId: self.row.id
+            }
+        }).then(function (response) {
+            self.userid = Cookies.get('user');
+            if (response.data.data.length != 0) {
+                self.messageDataDisplay = response.data.data[0].message;
+                let height;
+                setTimeout(function () {
+                    height = document.getElementsByClassName('chat')[0].scrollHeight;
+                    $('.chat').animate({scrollTop: height});
+                }, 1000);
+            }
+        });
+    }
+};
 </script>
 
 <style scoped>

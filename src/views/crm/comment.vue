@@ -351,441 +351,414 @@
 
 <script>
   import Cookies from 'js-cookie';
-  import gravatar from 'gravatar'
-  import moment from 'moment'
-  import axios from 'axios'
-  import config from '../../config/customConfig.js'
-  var userid
-  var crm_id
-  var created_date
-  var new_comment
-  var relationshipcomments = config.default.serviceUrl
+  import gravatar from 'gravatar';
+  import {$} from 'jquery';
+  import moment from 'moment';
+  import axios from 'axios';
+  import psl from 'psl';
+  import config from '../../config/customConfig.js';
+  import _ from 'lodash';
+  let userid;
+  let crmId;
+  let createdAt;
+  let newComment;
+  let relationshipcomments = config.default.serviceUrl;
   export default {
-    data() {
-      return { 
-        isActive:false,
-        userId: '',
-        modal2: false,
-        modal_loading: false,
-        // isEdit:false,
-        index: '',
-        itemId: '',
-        src : '',
-        commentData: [],
-        formValidate: {
+      data () {
+          return {
+              isActive: false,
+              userId: '',
+              modal2: false,
+              modal_loading: false,
+              // isEdit:false,
+              index: '',
+              itemId: '',
+              src: '',
+              commentData: [],
+              formValidate: {
                 	value: ''
-                },
-                ruleInline: {
-                    value: [
-                        { required: true, message:  "Please Enter Comment", trigger: 'blur' }
-                    ]
-                },
-      }
-    },
-    methods: {
-      close () {
-        var editor = CKEDITOR.instances.editor2
-        editor.destroy();
-        this.isActive = !this.isActive
-        document.getElementById("editor2").style.display = "none";
-        document.getElementById("block").style.display = "inline-block";
+              },
+              ruleInline: {
+                  value: [
+                      { required: true, message: 'Please Enter Comment', trigger: 'blur' }
+                  ]
+              }
+          };
       },
-      deleteItem (item) {
-        var itemId = item.id
-        console.log('deleteItem', item)
-        let self = this
-        this.$Modal.confirm({
-          okText: 'OK',
-          cancelText: 'Cancel',
-          title: 'Title',
-          content: '<p>Are you sure to delete?<p>',
-          onOk: () => {
-            var userid = Cookies.get('user')
-            var data1= {
-              "isDeleted": true,
-              "deleted_by": userid,
-              "deleted_at": new Date()
-            }
-            axios({
-              method:'patch',
-              url: relationshipcomments + 'relationshipcomments/' + itemId,
-              data: data1
-            })
-            .then(function(response) {
-              console.log("delete response.....",response)
-              for(let i=0;i<self.commentData.length;i++){
-                console.log("for..................",self.commentData[i])
-                if(response.data.id == self.commentData[i].id){
-                  self.commentData.splice(i,1)
-                }
-              }
-            }).catch(function (error){
-              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                let location = psl.parse(window.location.hostname)
-                location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
-                self.$store.commit('logout', self);
-                
-                self.$router.push({
-                    name: 'login'
-                });
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 0
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }
-            })
+      methods: {
+          close () {
+              let editor = CKEDITOR.instances.editor2;
+              editor.destroy();
+              this.isActive = !this.isActive;
+              document.getElementById('editor2').style.display = 'none';
+              document.getElementById('block').style.display = 'inline-block';
           },
-          onCancel: () => {
-            // this.$Message.info('Clicked cancel');
-          }
-        })
-      },
-      clicked (item, index) {
-        var data1
-        var msg = this.commentData[index].comment
-        console.log("msg[0]",msg[0])
-        if(msg[0] == '<'){
-          var msg1 = $(msg).text()
-          var comment = msg1
-          console.log("inside if", comment)
-        }else{
-          var comment = msg
-          console.log("inside else", comment)          
-        }
-        let comment1 = ''
-        console.log("************", comment)
-        this.modal2 = true
-        this.formValidate.value = comment
-        this.index = index
-        this.itemId = item.id
-      },
-      onOk (){
-        var self = this
-        self.modal_loading = true;
-        self.$refs['formValidate'].validate((valid) => {
-          if (valid) {
-            var index = self.index
-            var itemId = self.itemId
-            var userid = Cookies.get('user')
-            var comment = self.formValidate.value
-            self.commentData[index].comment = comment
-            self.commentData[index].created_at = new Date()
-            self.modal2 = false;
-            self.modal_loading = false;
-            let data1 = {
-              "comment": self.commentData[index].comment,
-              "edited_by": userid,
-              "edited_at": new Date(),
-              "isEdited": true
-              // "created_at": created_date,
-              // "created_by": userid,
-              // "crm_id": crm_id,
-              // "user_id": userid,
-              // "isDeleted": false,
-              // "deleted_by": "",
-              // "deleted_at": ""
-            }
-            axios({
-              method:'patch',
-              url: relationshipcomments + 'relationshipcomments/' + itemId,
-              data: data1
-            })
-            .then(function(response) {
-              console.log("update response.....",response)
-              self.$Notice.success({
-                title: 'Success',
-                desc: 'Comment edited successfully',
+          deleteItem (item) {
+              let itemId = item.id;
+              let self = this;
+              this.$Modal.confirm({
+                  okText: 'OK',
+                  cancelText: 'Cancel',
+                  title: 'Title',
+                  content: '<p>Are you sure to delete?<p>',
+                  onOk: () => {
+                      let userid = Cookies.get('user');
+                      let data1 = {
+                          'isDeleted': true,
+                          'deleted_by': userid,
+                          'deleted_at': new Date()
+                      };
+                      axios({
+                          method: 'patch',
+                          url: relationshipcomments + 'relationshipcomments/' + itemId,
+                          data: data1
+                      })
+                          .then(function (response) {
+                              for (let i = 0; i < self.commentData.length; i++) {
+                                  if (response.data.id == self.commentData[i].id) {
+                                      self.commentData.splice(i, 1);
+                                  }
+                              }
+                          }).catch(function (error) {
+                              if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                                  let location = psl.parse(window.location.hostname);
+                                  location = location.domain === null ? location.input : location.domain;
+  
+                                  Cookies.remove('auth_token', {domain: location});
+                                  Cookies.remove('subscriptionId', {domain: location});
+                                  self.$store.commit('logout', self);
+  
+                                  self.$router.push({
+                                      name: 'login'
+                                  });
+                                  self.$Notice.error({
+                                      title: error.response.data.name,
+                                      desc: error.response.data.message,
+                                      duration: 10
+                                  });
+                              } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                                  self.$Notice.error({
+                                      title: error.response.statusText,
+                                      desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                                      duration: 0
+                                  });
+                              } else {
+                                  self.$Notice.error({
+                                      title: error.response.data.name,
+                                      desc: error.response.data.message,
+                                      duration: 10
+                                  });
+                              }
+                          });
+                  },
+                  onCancel: () => {
+                      // this.$Message.info('Clicked cancel');
+                  }
               });
-              self.commentData[index].edited_at = new Date() 
-              self.commentData[index].isEdited = true
-              self.commentData[index].edited_by = userid
-            }).catch(function (error){
-              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                let location = psl.parse(window.location.hostname)
-                location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
-                self.$store.commit('logout', self);
-                
-                self.$router.push({
-                    name: 'login'
-                });
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 0
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
+          },
+          clicked (item, index) {
+              let msg = this.commentData[index].comment;
+              if (msg[0] == '<') {
+                  let msg1 = $(msg).text();
+                  let comment = msg1;
+              } else {
+                  let comment = msg;
               }
-            })
-          }else {
-              self.modal_loading = false;
-            }
-        })
-      },
-      cancel () {
-        this.modal2 = false
-      },
-        // this.$Modal.confirm({
-        //   okText: 'OK',
-        //   cancelText: 'Cancel',
-        //   render: (h) => {
-        //     return h('Input', {
-        //       props: {
-        //         value: comment,
-        //         autofocus: true
-        //       },
-        //       on: {
-        //         input: (val) => {
-        //           console.log('val', val)
-        //           comment1 = val;
-        //           if(comment1 == ""){
-        //             this.$Notice.error({
-        //               title: 'Error',
-        //               desc: 'Please Enter Comment'
-        //             });
-        //           }
-        //         }
-        //       }
-        //     })
-        //   },
-        //   onOk: () => {
-        //     var self = this
-        //     var userid = Cookies.get('user')
-        //     console.log("comment....",comment)
-        //     if(comment1 != ""){
-        //       console.log("inside if",comment1)
-        //       self.commentData[index].comment = comment1
-        //       self.commentData[index].created_at = new Date() 
-        //       data1 = {
-        //         "comment": self.commentData[index].comment,
-        //         "edited_by": userid,
-        //         "edited_at": new Date(),
-        //         "isEdited": true
-        //         // "created_at": created_date,
-        //         // "created_by": userid,
-        //         // "crm_id": crm_id,
-        //         // "user_id": userid,
-        //         // "isDeleted": false,
-        //         // "deleted_by": "",
-        //         // "deleted_at": ""
-        //       }
-        //       axios({
-        //         method:'patch',
-        //         url: relationshipcomments + 'relationshipcomments/' + itemId,
-        //         data: data1
-        //       })
-        //       .then(function(response) {
-        //         console.log("update response.....",response)
-        //         self.$Notice.success({
-        //           title: 'Success',
-        //           desc: 'Comment edited successfully',
-        //         });
-        //         self.commentData[index].edited_at = new Date() 
-        //         self.commentData[index].isEdited = true
-        //         self.commentData[index].edited_by = userid
-        //       });
-        //     }else {
-        //       self.$Notice.error({
-        //         title: 'Error',
-        //         desc: 'Please Enter Comment'
-        //       });
-        //       // console.log("inside else",comment)              
-        //       // this.commentData[index].comment = comment              
-        //     }
-        //   },
-        //   onCancel: () => {
-        //     // this.$Message.error('Clicked cancel');
-        //   }
-        // })
-      // },
-      getDate (date) {
-        return moment(date).fromNow()
-      },
-      openEditor() {
-        var editor = CKEDITOR.instances.editor2
-        if (!this.isActive) {
-          CKEDITOR.replace("editor2")
-          CKEDITOR.instances.editor2.setData("")
-          this.isActive = !this.isActive
-          document.getElementById("block").style.display = "inline-block";
-        } 
-        else {
-          
-          // this.$Message.success('Comment Saved')
-          var data1
-          var self = this
-          console.log('else')
-          var content = CKEDITOR.instances['editor2'].getData();
-          new_comment = content
-          created_date = new Date();
-          crm_id = self.$route.params.id
-          userid = Cookies.get('user')
-          console.log("text.....",new_comment,"date.....",created_date)
-          console.log("Save called", this.commentData)
-          // this.commentData.forEach(function(element) {
-            // console.log(element);
-            data1 = {
-              "comment": new_comment,
-              "created_at": created_date,
-              "created_by": userid,
-              "crm_id": crm_id,
-              "user_id": userid,
-              "isEdited": false,
-              "isDeleted": false,
-              "deleted_by": "",
-              "deleted_at": "",
-              "edited_by": "",
-              "edited_at": "",
-            }
-          // });
-          console.log('data1', data1)
-          axios({
-            method:'post',
-            url: relationshipcomments + 'relationshipcomments',
-            data: data1
-          })
-          .then(function(response) {
-            console.log("save response.....",response)
-            // self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
-            self.commentData.splice(0, 0, {comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
-            console.log("this.commentData", self.commentData)
-            this.$Notice.success({
-              title: 'Success',
-              desc: 'Comment Saved',
-              duration: 4.5
-            });
-          })
-          .catch(function (error){
-            if(error.message == 'Network Error'){
-                self.$Notice.error({
-                    title: "Error",
-                    desc: 'API service unavailable',
-                    duration: 10
-                })
-            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                let location = psl.parse(window.location.hostname)
-                location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
-                self.$store.commit('logout', self);
-                
-                self.$router.push({
-                    name: 'login'
-                });
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 0
+              let comment1 = '';
+              
+              this.modal2 = true;
+              this.formValidate.value = comment;
+              this.index = index;
+              this.itemId = item.id;
+          },
+          onOk () {
+              let self = this;
+              self.modal_loading = true;
+              self.$refs['formValidate'].validate((valid) => {
+                  if (valid) {
+                      let index = self.index;
+                      let itemId = self.itemId;
+                      let userid = Cookies.get('user');
+                      let comment = self.formValidate.value;
+                      self.commentData[index].comment = comment;
+                      self.commentData[index].created_at = new Date();
+                      self.modal2 = false;
+                      self.modal_loading = false;
+                      let data1 = {
+                          'comment': self.commentData[index].comment,
+                          'edited_by': userid,
+                          'edited_at': new Date(),
+                          'isEdited': true
+                          // "created_at": createdAt,
+                          // "created_by": userid,
+                          // "crmId": crmId,
+                          // "user_id": userid,
+                          // "isDeleted": false,
+                          // "deleted_by": "",
+                          // "deleted_at": ""
+                      };
+                      axios({
+                          method: 'patch',
+                          url: relationshipcomments + 'relationshipcomments/' + itemId,
+                          data: data1
+                      })
+                          .then(function (response) {
+                              self.$Notice.success({
+                                  title: 'Success',
+                                  desc: 'Comment edited successfully'
+                              });
+                              self.commentData[index].edited_at = new Date();
+                              self.commentData[index].isEdited = true;
+                              self.commentData[index].edited_by = userid;
+                          }).catch(function (error) {
+                              if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                                  let location = psl.parse(window.location.hostname);
+                                  location = location.domain === null ? location.input : location.domain;
+  
+                                  Cookies.remove('auth_token', {domain: location});
+                                  Cookies.remove('subscriptionId', {domain: location});
+                                  self.$store.commit('logout', self);
+  
+                                  self.$router.push({
+                                      name: 'login'
+                                  });
+                                  self.$Notice.error({
+                                      title: error.response.data.name,
+                                      desc: error.response.data.message,
+                                      duration: 10
+                                  });
+                              } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                                  self.$Notice.error({
+                                      title: error.response.statusText,
+                                      desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                                      duration: 0
+                                  });
+                              } else {
+                                  self.$Notice.error({
+                                      title: error.response.data.name,
+                                      desc: error.response.data.message,
+                                      duration: 10
+                                  });
+                              }
+                          });
+                  } else {
+                      self.modal_loading = false;
+                  }
+              });
+          },
+          cancel () {
+              this.modal2 = false;
+          },
+          // this.$Modal.confirm({
+          //   okText: 'OK',
+          //   cancelText: 'Cancel',
+          //   render: (h) => {
+          //     return h('Input', {
+          //       props: {
+          //         value: comment,
+          //         autofocus: true
+          //       },
+          //       on: {
+          //         input: (val) => {
+          //           comment1 = val;
+          //           if(comment1 == ""){
+          //             this.$Notice.error({
+          //               title: 'Error',
+          //               desc: 'Please Enter Comment'
+          //             });
+          //           }
+          //         }
+          //       }
+          //     })
+          //   },
+          //   onOk: () => {
+          //     let self = this
+          //     let userid = Cookies.get('user')
+          //     if(comment1 != ""){
+          //       self.commentData[index].comment = comment1
+          //       self.commentData[index].created_at = new Date()
+          //       data1 = {
+          //         "comment": self.commentData[index].comment,
+          //         "edited_by": userid,
+          //         "edited_at": new Date(),
+          //         "isEdited": true
+          //         // "created_at": createdAt,
+          //         // "created_by": userid,
+          //         // "crmId": crmId,
+          //         // "user_id": userid,
+          //         // "isDeleted": false,
+          //         // "deleted_by": "",
+          //         // "deleted_at": ""
+          //       }
+          //       axios({
+          //         method:'patch',
+          //         url: relationshipcomments + 'relationshipcomments/' + itemId,
+          //         data: data1
+          //       })
+          //       .then(function(response) {
+          //         self.$Notice.success({
+          //           title: 'Success',
+          //           desc: 'Comment edited successfully',
+          //         });
+          //         self.commentData[index].edited_at = new Date()
+          //         self.commentData[index].isEdited = true
+          //         self.commentData[index].edited_by = userid
+          //       });
+          //     }else {
+          //       self.$Notice.error({
+          //         title: 'Error',
+          //         desc: 'Please Enter Comment'
+          //       });
+          //       // 
+          //       // this.commentData[index].comment = comment
+          //     }
+          //   },
+          //   onCancel: () => {
+          //     // this.$Message.error('Clicked cancel');
+          //   }
+          // })
+          // },
+          getDate (date) {
+              return moment(date).fromNow();
+          },
+          openEditor () {
+              let editor = CKEDITOR.instances.editor2;
+              if (!this.isActive) {
+                  CKEDITOR.replace('editor2');
+                  CKEDITOR.instances.editor2.setData('');
+                  this.isActive = !this.isActive;
+                  document.getElementById('block').style.display = 'inline-block';
+              } else {
+                  // this.$Message.success('Comment Saved')
+                  let data1;
+                  let self = this;
+                  
+                  let content = CKEDITOR.instances['editor2'].getData();
+                  newComment = content;
+                  createdAt = new Date();
+                  crmId = self.$route.params.id;
+                  userid = Cookies.get('user');
+                  data1 = {
+                      'comment': newComment,
+                      'created_at': createdAt,
+                      'created_by': userid,
+                      'crmId': crmId,
+                      'user_id': userid,
+                      'isEdited': false,
+                      'isDeleted': false,
+                      'deleted_by': '',
+                      'deleted_at': '',
+                      'edited_by': '',
+                      'edited_at': ''
+                  };
+                  axios({
+                      method: 'post',
+                      url: relationshipcomments + 'relationshipcomments',
+                      data: data1
                   })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
+                      .then(function (response) {
+                          self.commentData.splice(0, 0, {comment: newComment, created_at: createdAt, id: response.data.id, created_by: userid, user_id: response.data.user_id});
+                          this.$Notice.success({
+                              title: 'Success',
+                              desc: 'Comment Saved',
+                              duration: 4.5
+                          });
+                      })
+                      .catch(function (error) {
+                          if (error.message == 'Network Error') {
+                              self.$Notice.error({
+                                  title: 'Error',
+                                  desc: 'API service unavailable',
+                                  duration: 10
+                              });
+                          } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                              let location = psl.parse(window.location.hostname);
+                              location = location.domain === null ? location.input : location.domain;
+                              Cookies.remove('auth_token', {domain: location});
+                              Cookies.remove('subscriptionId', {domain: location});
+                              self.$store.commit('logout', self);
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              });
+                          } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                              self.$Notice.error({
+                                  title: error.response.statusText,
+                                  desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                                  duration: 0
+                              });
+                          } else {
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              });
+                          }
+                      });
+                  editor.destroy();
+                  this.isActive = !this.isActive;
+                  document.getElementById('editor2').style.display = 'none';
+                  document.getElementById('block').style.display = 'inline-block';
               }
-          })
-          
-          editor.destroy();
-          this.isActive = !this.isActive
-          document.getElementById("editor2").style.display = "none";
-          document.getElementById("block").style.display = "inline-block";
-        }
-        console.log('outer',this.isActive)
+          },
+          getData () {
+              let self = this;
+              let crmId = self.$route.params.id;
+              this.userId = Cookies.get('user');
+              axios({
+                  method: 'GET',
+                  url: relationshipcomments + 'relationshipcomments'
+              })
+                  .then(function (response) {
+                      response.data.data.forEach(function (item, index) {
+                          if (item.crmId == crmId && item.isDeleted == false) {
+                              // if (item.crmId == crmId){
+                              self.commentData.push(item);
+                          }
+                      });
+                      self.commentData = _.orderBy(self.commentData, ['created_at'], ['desc']);
+                  })
+                  .catch(function (error) {
+                      if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                          let location = psl.parse(window.location.hostname);
+                          location = location.domain === null ? location.input : location.domain;
+  
+                          Cookies.remove('auth_token', {domain: location});
+                          Cookies.remove('subscriptionId', {domain: location});
+                          self.$store.commit('logout', self);
+  
+                          self.$router.push({
+                              name: 'login'
+                          });
+                          self.$Notice.error({
+                              title: error.response.data.name,
+                              desc: error.response.data.message,
+                              duration: 10
+                          });
+                      } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                          self.$Notice.error({
+                              title: error.response.statusText,
+                              desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                              duration: 0
+                          });
+                      } else {
+                          self.$Notice.error({
+                              title: error.response.data.name,
+                              desc: error.response.data.message,
+                              duration: 10
+                          });
+                      }
+                  });
+          }
       },
-      getData () {
-        var self = this
-        var crm_id = self.$route.params.id
-        this.userId = Cookies.get('user')
-        axios({
-          method:'GET',
-          url: relationshipcomments + 'relationshipcomments',
-        })
-        .then(function(response) {
-          response.data.data.forEach(function(item,index){
-            if (item.crm_id == crm_id && item.isDeleted == false){
-            // if (item.crm_id == crm_id){
-              self.commentData.push(item);
-            }
-          })          
-          
-          console.log("++++++++++++++self.commentData",self.commentData)
-          self.commentData = _.orderBy(self.commentData, ['created_at'],['desc']);
-          
-        })
-        .catch(function (error){
-          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                let location = psl.parse(window.location.hostname)
-                location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
-                self.$store.commit('logout', self);
-                
-                self.$router.push({
-                    name: 'login'
-                });
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 0
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }
-        })
+      mounted () {
+          this.src = gravatar.url('dweepp@officebrain.com', {s: '200', r: 'pg', d: '404'});
+          this.getData();
       }
-    },
-    mounted() {
-      this.src= gravatar.url('dweepp@officebrain.com', {s: '200', r: 'pg', d: '404'})
-      this.getData()
-    }
-  }
+  };
 </script>
 
