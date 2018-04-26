@@ -67,7 +67,7 @@
         bottom: 15px;
         right: 10px;
         z-index: 1;
-        background-color: #000;
+        background-color: #485060;
         padding-top: 0;
         padding: 10px;
         border-radius: 5px;
@@ -115,7 +115,7 @@
         position: absolute;
         bottom: -17px;
         transform: rotate(90deg);
-        color: #000;
+        color: #485060;
         font-size: 28px;
         right: 8px;
     }
@@ -157,11 +157,11 @@
                     },
                     {
                         title: 'PURCHASE ORDER',
-                        children: [
-                            {
-                                title: 'Add New PO Config',
-                            }
-                        ]
+                        // children: [
+                        //     {
+                        //         title: 'Add New PO Config',
+                        //     }
+                        // ]
                     }
                 ],
             }
@@ -209,16 +209,16 @@
                     this.accountTab = false;
                     this.$store.state.settingData = ""
                     this.$router.push({
-                        name: 'PurchaseOrder'
+                        name: 'Purchase Order Settings'
                     });
                     $('.slide').addClass('opens');
                 }
-                else if (data[0].title === 'Add New PO Config') {
-                    this.$store.state.settingData = ""
-                    this.$router.push({
-                        name: 'PurchaseOrder Settings'
-                    });
-                }   
+                // else if (data[0].title === 'Add New PO Config') {
+                //     this.$store.state.settingData = ""
+                //     this.$router.push({
+                //         name: 'PurchaseOrder Settings'
+                //     });
+                // }   
             }
         }
     }

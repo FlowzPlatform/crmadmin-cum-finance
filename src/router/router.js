@@ -4,7 +4,6 @@ import Main from '@/views/Main.vue';
 export const loginRouter = {
     path: '/login',
     name: 'login',
-    
     meta: {
         title: 'Login'
     },
@@ -14,21 +13,19 @@ export const loginRouter = {
 export const resetPasswordRouter = {
     path: '/reset-password',
     name: 'resetpassword',
-    
     meta: {
         title: 'ResetPassword'
     },
-    component: resolve => { require(['@/views/reset-password.vue'], resolve) }
+    component: resolve => { require(['@/views/reset-password.vue'], resolve); }
 };
 
 export const purchaseOrderReceived = {
     path: '/purchase-order-received/:id',
     name: 'purchaseorderreceived',
-    
     meta: {
         title: 'purchaseorderreceived'
     },
-    component: resolve => { require(['@/views/purchase-order-received.vue'], resolve) }
+    component: resolve => { require(['@/views/purchase-order-received.vue'], resolve); }
 };
 
 export const varifyEmailRouter = {
@@ -92,18 +89,16 @@ export const otherRouter = {
         { path: 'shopping', title: 'Shopping', name: 'shopping', component: resolve => { require(['@/views/advanced-router/component/shopping-info.vue'], resolve); } }, // 用于展示带参路由
         { path: 'message', title: 'message', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
         { path: 'settings', title: 'Settings', name: 'Settings', component: resolve => { require(['@/views/settings/settings.vue'], resolve); } },
-        { path: 'edit-settingdata', title: 'Edit Settingdata', name: 'Edit Settingdata',props : true, component: resolve => { require(['@/views/settings/edit-settingdata.vue'], resolve); } },        
+        { path: 'edit-settingdata', title: 'Edit Settingdata', name: 'Edit Settingdata', props: true, component: resolve => { require(['@/views/settings/edit-settingdata.vue'], resolve); } },
         { path: 'new-settings', title: 'Account Settings', name: 'Account Settings', component: resolve => { require(['@/views/settings/new-settings.vue'], resolve); } },
         { path: 'General-settings', title: 'Profile Settings', name: 'Profile Settings', component: resolve => { require(['@/views/settings/General-setting.vue'], resolve); } },
         { path: 'Payment-settings', title: 'Payment Settings', name: 'Payment Settings', component: resolve => { require(['@/views/settings/Online-Payment.vue'], resolve); } },
-        { path: 'PurchaseOrder-settings', title: 'PurchaseOrder', name: 'PurchaseOrder', component: resolve => { require(['@/views/settings/poSettings.vue'], resolve); } },
-        { path: 'new-poSettings', title: 'PurchaseOrder Settings', name: 'PurchaseOrder Settings', component: resolve => { require(['@/views/settings/new-poSettings.vue'], resolve); } },
+        { path: 'Purchase-Order-Settings', title: 'Purchase Order Settings', name: 'Purchase Order Settings', component: resolve => { require(['@/views/settings/new-poSettings.vue'], resolve); } },
         { path: 'generatePO', title: 'Generate PurchaseOrder', name: 'Generate PurchaseOrder', component: resolve => { require(['@/views/purchaseOrder/generate-purchaseOrder.vue'], resolve); } },
         { path: 'checkout/:id', title: 'Checkout', name: 'Checkout', component: resolve => { require(['@/views/invoice/checkout.vue'], resolve); } },
-        { path: 'edit-crm/:id',title: 'edit-crm',icon: 'ios-edit-outline',name: 'Edit-relationship',component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve)}},
-        { path: 'change-password', title: 'Change Password', icon: 'locked', name: 'Change Password', component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve);}}
-       // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}        
-                   
+        { path: 'edit-crm/:id', title: 'edit-crm', icon: 'ios-edit-outline', name: 'Edit-relationship', component: resolve => { require(['@/views/crm/edit-crm.vue'], resolve); } },
+        { path: 'change-password', title: 'Change Password', icon: 'locked', name: 'Change Password', component: resolve => { require(['@/views/admin-account/change-password.vue'], resolve); } }
+        // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve); } }
     ]
 };
 
@@ -130,7 +125,6 @@ export const appRouter = [
     //         { path: 'index', title: '权限测试页', name: 'accesstest_index', access: 0, component: resolve => { require(['@/views/access/access-test.vue'], resolve); } }
     //     ]
     // },
-    
     {
         path: '/customer',
         icon: 'person',
@@ -138,20 +132,20 @@ export const appRouter = [
         name: 'CUSTOMER',
         component: Main,
         children: [
-            { 
-                path: 'new-customer', 
+            {
+                path: 'new-customer',
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'New Customer', 
-                component: resolve => { require(['@/views/customer/new-customer.vue'], resolve);}
+                name: 'New Customer',
+                component: resolve => { require(['@/views/customer/new-customer.vue'], resolve); }
             },
-            { 
-                path: 'list-customer', 
+            {
+                path: 'list-customer',
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'Customer List', 
-                component: resolve => { require(['@/views/customer/list-customer.vue'], resolve);}
-            }  
+                name: 'Customer List',
+                component: resolve => { require(['@/views/customer/list-customer.vue'], resolve); }
+            }
         ]
     },
     {
@@ -161,19 +155,19 @@ export const appRouter = [
         name: 'RELATIONSHIP',
         component: Main,
         children: [
-            {    
-                path: 'new-relationship', 
+            {
+                path: 'new-relationship',
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'New Relationship', 
-                component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
+                name: 'New Relationship',
+                component: resolve => { require(['@/views/crm/new-crm.vue'], resolve); }
             },
-            { 
-                path: 'list-relationship', 
+            {
+                path: 'list-relationship',
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'Relationship List', 
-                component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
+                name: 'Relationship List',
+                component: resolve => { require(['@/views/crm/list-crm.vue'], resolve); }
             }
         ]
     },
@@ -184,19 +178,19 @@ export const appRouter = [
         name: 'INVOICE',
         component: Main,
         children: [
-            { 
-                path: 'new-invoice', 
+            {
+                path: 'new-invoice',
                 title: 'New',
                 icon: 'ios-plus-outline',
-                name: 'New Invoice', 
-                component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve);}
+                name: 'New Invoice',
+                component: resolve => { require(['@/views/invoice/new-invoice.vue'], resolve); }
             },
-            { 
-                path: 'list-invoice', 
+            {
+                path: 'list-invoice',
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'Invoice List', 
-                component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve);}
+                name: 'Invoice List',
+                component: resolve => { require(['@/views/invoice/list-invoice.vue'], resolve); }
             }
         ]
     },
@@ -207,12 +201,12 @@ export const appRouter = [
         name: 'TRANSACTION LIST',
         component: Main,
         children: [
-            { 
-                path: 'list-transaction', 
+            {
+                path: 'list-transaction',
                 title: 'List',
                 icon: 'ios-list-outline',
-                name: 'Transaction List', 
-                component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
+                name: 'Transaction List',
+                component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve); }
             }
         ]
     },
@@ -223,12 +217,12 @@ export const appRouter = [
         name: 'ORDER LIST',
         component: Main,
         children: [
-            { 
-                path: 'order-list', 
+            {
+                path: 'order-list',
                 title: 'Ordered List',
                 icon: 'ios-cart',
-                name: 'Ordered List', 
-                component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
+                name: 'Ordered List',
+                component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve); }
             }
         ]
     },
@@ -239,12 +233,12 @@ export const appRouter = [
         name: 'REQUESTED QUOTES',
         component: Main,
         children: [
-            { 
-                path: 'request-quote', 
+            {
+                path: 'request-quote',
                 title: 'Request Quote',
                 icon: 'pull-request',
-                name: 'Requested Quotes', 
-                component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
+                name: 'Requested Quotes',
+                component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve); }
             }
         ]
     },
@@ -255,35 +249,34 @@ export const appRouter = [
     //     name: 'adminaccount',
     //     component: Main,
     //     children: [
-    //         { 
-    //             path: 'order-list', 
+    //         {
+    //             path: 'order-list',
     //             title: 'Order List',
     //             icon: 'ios-cart',
-    //             name: 'Ordered List', 
-    //             component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
+    //             name: 'Ordered List',
+    //             component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve); }
     //         },
-    //         { 
-    //             path: 'request-quote', 
+    //         {
+    //             path: 'request-quote',
     //             title: 'Request Quote',
     //             icon: 'pull-request',
-    //             name: 'Requested Quotes', 
-    //             component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
+    //             name: 'Requested Quotes',
+    //             component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve); }
     //         },
-    //         // { 
-    //         //     path: 'address-book', 
+    //         // {
+    //         //     path: 'address-book',
     //         //     title: 'Address Book',
     //         //     icon: 'ios-compose',
-    //         //     name: 'Address book', 
+    //         //     name: 'Address book',
     //         //     component: resolve => { require(['@/views/admin-account/address-book.vue'], resolve);}
     //         // },
-    //        // { 
-    //          //   path: 'list-billing', 
+    //        // {
+    //          //   path: 'list-billing',
     //            // title: 'List of Bills',
     //            // icon: 'ios-list-outline',
-    //           //  name: 'Billing List', 
+    //           //  name: 'Billing List',
     //            // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
     //        // },
-            
     //         {
     //             path: 'set-swatches',
     //             title: 'Set Swatches',
@@ -307,31 +300,31 @@ export const appRouter = [
         name: 'INVITE',
         component: Main,
         children: [
-            { 
-                path: 'invite', 
+            {
+                path: 'invite',
                 title: 'Invite',
                 icon: 'ios-list-outline',
-                name: 'Invite', 
-                component: resolve => { require(['@/views/invite/invite.vue'], resolve);}
+                name: 'Invite',
+                component: resolve => { require(['@/views/invite/invite.vue'], resolve); }
             }
         ]
-    },
-        // {
-        //     path: '/invite',
-        //     icon: 'cash',
-        //     title: 'INVITE',
-        //     name: 'INVITE',
-        //     component: Main,
-        //     children: [
-        //         { 
-        //             path: 'list-transaction', 
-        //             title: 'List',
-        //             icon: 'ios-list-outline',
-        //             name: 'Transaction List', 
-        //             component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
-        //         }
-        //     ]
-        // },
+    }
+    // {
+    //     path: '/invite',
+    //     icon: 'cash',
+    //     title: 'INVITE',
+    //     name: 'INVITE',
+    //     component: Main,
+    //     children: [
+    //         {
+    //             path: 'list-transaction',
+    //             title: 'List',
+    //             icon: 'ios-list-outline',
+    //             name: 'Transaction List',
+    //             component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
+    //         }
+    //     ]
+    // },
     // {
     //     path: '/crm',
     //     icon: 'person-stalker',
@@ -339,18 +332,18 @@ export const appRouter = [
     //     name: 'CRM',
     //     component: Main,
     //     children: [
-    //         { 
-    //             path: 'new-crm', 
+    //         {
+    //             path: 'new-crm',
     //             title: 'new-crm',
     //             icon: 'ios-plus-outline',
-    //             name: 'newcrm', 
+    //             name: 'newcrm',
     //             component: resolve => { require(['@/views/crm/new-crm.vue'], resolve);}
     //         },
-    //         { 
-    //             path: 'list-crm', 
+    //         {
+    //             path: 'list-crm',
     //             title: 'list-crm',
     //             icon: 'ios-list-outline',
-    //             name: 'listcrm', 
+    //             name: 'listcrm',
     //             component: resolve => { require(['@/views/crm/list-crm.vue'], resolve);}
     //         }
     //     ]
@@ -489,7 +482,6 @@ export const appRouter = [
     //         { path: 'index', title: '错误页面', name: 'errorpage_index', component: resolve => { require(['@/views/error-page/error-page.vue'], resolve); } }
     //     ]
     // }
-    
 
 ];
 
