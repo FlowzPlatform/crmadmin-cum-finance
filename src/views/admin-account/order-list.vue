@@ -84,7 +84,7 @@
     import moment from 'moment';
     import config from '../../config/customConfig.js'
     import orderList from './view-order-list.vue';
-    import purchaseOrderList from '../purchaseOrder/purchaseOrder-list.vue';
+    import purchaseOrderList from '../purchaseOrder/purchaseOrder-list-Raised.vue';
     import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
@@ -100,14 +100,12 @@
             return { 
                 value1: '1',
                 modal1: false,
-
                 orderid: '',
                 orderidFilter:[],
                 itemno: '',
                 itemnoFilter:[],
                 cname:'',
                 email:'',
-
                 websiteList: {},
                 website: '',
                 orderList: {},
