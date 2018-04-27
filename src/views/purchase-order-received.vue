@@ -4,7 +4,7 @@
             <!-- <vue-particles color="#dedede"></vue-particles> -->
             <div class="po">
                 <Card class="container">
-                        <h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
+                    <h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
                     <div class="row">
                         <div class="container-fluid">
                             <img src="../images/flowz-logo1.png" class="img-rounded logo" style="height:70px">
@@ -33,7 +33,7 @@
                             
                         </div>
                     </div>
-                    <Card v-for="(item) in this.poBillAddress" style="margin-bottom:20px">
+                    <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
                         <div class="dweep" style="padding:10px">
                             <div class="row well">
                                 <table class="invoice-head col-md-8">
@@ -103,7 +103,7 @@
                             </div>
                             <div class="row">
                                 <div class="span8 well invoice-body" style="padding: 0px;border: none;">
-                                    <Table stripe border :columns="columns1" :data="item.product"></Table>
+                                    <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
                                     <!-- <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -184,17 +184,32 @@ export default {
   name: 'purchase-order',
   data () {
   return {
-      columns1: [
+        columns1: [
                     {
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                            console.log('rowwwwwwwwwwwwww-------Expand', params)
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
+							// console.log('rowwwwwwwwwwwwww-------Expand', $(this).attr("class"))
+							//console.log("++++",$('.dweep').parent('div').parent(".mainClass"))
+							// console.log("&&&&&&&&&&&",$(this).parent("div").parent('table').attr("style"))
+							// let card =  $(this).closest('.mainClass').attr('id'); 
+							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
+								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
+								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+								return h(expandRow, {
+									props: {
+										row: params.row,
+										total: cardIndex
+									}
+								})
+							}
+							//console.log('...........')
+							// if (this.poBillAddress[params.index].product) {
+								// total = this.poBillAddress[params.index].product.length
+								// for (let i = 0; i < total; i++ ) {
+								// 	$('#description'+i).css('display', 'none');
+								// }
+							// }
                         }
                     },
                     {
@@ -258,18 +273,29 @@ export default {
 			// console.log("config.default.orderapi", config.default.orderapi)
 			axios({
 				method: 'get',
-				url: 'http://172.16.230.61:3037/purchase-order/' + this.$route.params.id,
+				url: 'http://172.16.230.61:3037/purchase-order',
+				params: {
+					"PO_id[$eq]" : self.$route.query.PO_id
+					// user : Cookies.get('user')
+				},
 				headers: {
 				'Authorization': Cookies.get('auth_token'),
 				'subscriptionId': Cookies.get('subscriptionId')
 				} 
 			}).then(function (response){
 				console.log("------------------------response",response.data);
-				self.date = moment(response.data.PO_generate_date).format('DD-MMM-YYYY')  
-				self.poBillAddress  =self.splitProductAddress(response.data);
-				self.data1 = response.data                   
-				self.data2 = response.data.products
-				console.log("data2", self.data2)
+
+				let poData=response.data.data;
+					if(poData && poData.length>0){
+						let poDetail=poData[0]
+						self.date = moment(poDetail.PO_generate_date).format('DD-MMM-YYYY')  
+						self.poBillAddress  =self.splitProductAddress(poDetail);
+						self.data1 = poDetail                   
+						self.data2 = poDetail.products
+						console.log("data2", self.data2)
+					}else{
+							
+					}
 			}).catch(error => {
 				console.log("-------",error);
 				if(error.message == 'Network Error') {
@@ -351,7 +377,7 @@ export default {
         },
   },
   mounted(){
-      console.log("this.$route.params.id", this.$route.params.id)
+      console.log("this.$route.params.id", this.$route.query.PO_id)
       this.init()
       
   }

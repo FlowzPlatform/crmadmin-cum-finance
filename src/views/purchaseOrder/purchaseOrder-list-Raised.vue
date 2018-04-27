@@ -230,23 +230,24 @@
             listData (val) {
                 console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",val)
                 var self = this
+                let params1;
                 if(this.row != undefined){
-                    let params1 = {
+                    params1 = {
                         website_id :val,
                         order_id : this.row.id 
                     }
                 }else{
-                    let params1 = {
+                    params1 = {
                         website_id :val
                     }
                 }
                 axios({
                     method: 'get',
-                    url: 'http://172.16.230.61:3037/purchase-order',
+                    url: 'http://localhost:3037/purchase-order',
                     params: params1,
                     headers: {
-                    'Authorization': Cookies.get('auth_token'),
-                    'subscriptionId': Cookies.get('subscriptionId')
+                        'Authorization': Cookies.get('auth_token'),
+                        'subscriptionId': Cookies.get('subscriptionId')
                     } 
                 }).then(function (response){
                     console.log("------------------------response",response.data.data);

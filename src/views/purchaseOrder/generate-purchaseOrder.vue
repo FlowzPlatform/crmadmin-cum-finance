@@ -1,175 +1,92 @@
-<style scoped>
-    .demo-spin-container{
-    	display: inline-block;
-        width: 100%;
-        height: 100px;
-        position: relative;
-    }
-    .expand-row{
-        margin-bottom: 16px;
-    }
-    .order-title {
-        background: #f5f5f5;
-        margin: 0 0 10px;
-        margin-top: 10px;
-        padding: 10px 0;
-        text-align: center;
-        color: #404040;
-        font-size: 15px;
-        overflow: hidden;
-        text-transform: uppercase;
-    }
-    .ivu-table-expanded-cell {
-        background-color: white !important;
-    }
-    .header {
-        text-align: center;
-        background-color: #3f4145;
-        padding: 2px;
-        border-top: 3px solid #C11E19
-    }
-    .data {
-        font-weight: 500;
-    }
-    .address {
-        color: #C11E19;
-        font-size: 14px;
-        font-family: Comic Sans MS
-    }
-    h4 {
-        font-size: 15px;
-        font-weight: 700
-    }
-    .table {
-        border: 1px solid #e3e3e3;
-        margin-bottom: 0px;
-        table-layout: auto;
-    }
-    .table thead tr th,
-     .table1 thead tr th {
-        text-align: -webkit-center;
-    }
-    .table1 {
-        width: -webkit-fill-available;
-        table-layout: auto;
-    }
-    .table1 tbody tr td {
-        text-align: center;
-    }
-    .table1 tbody tr th {
-        text-align: center;
-    }
-    .ivu-table-border td,
-    .ivu-table-border th {
-        border: 1px solid #e9eaec;
-    }
-    .item_total {
-        text-transform: uppercase;
-    }
-    a {
-        color: #4b5262;
-        text-decoration: none;
-    }
-    a:hover {
-        color:#C11E19;
-    }
-    .quantity-table-title {
-        float: left;
-        width: 23%;
-    }
-    .quantity-table-disc {
-        float: left;
-        max-width: 400px;
-        overflow: auto;
-        width: 100%;
-    }
-    .quantity-table .table-heading {
-        background: #999 none repeat scroll 0 0;
-        border-right: 1px solid #fff;
-        border-top: 0 none;
-        color: #fff;
-        font-family: "roboto_condensedlight";
-        font-size: 16px;
-        padding: 6px;
-        text-align: center;
-        text-transform: uppercase;
-    }
-    .quantity-table .table-content {
-        background: #e6e6e6 none repeat scroll 0 0;
-        border: 1px solid #fff;
-        color: #444;
-        font-size: 16px;
-        padding: 6px;
-        text-align: center;
-        font-family: "roboto_condensedregular";
-        text-transform: uppercase;
-        margin-left: -1px;
-    }
-    .description .quantity-table-disc > ul {
-        display: inline-block;
-        width: 500px;
-        margin-bottom: -5px;
-    }
-
-    .description .quantity-table-disc > ul > li {
-        display: inline-block;
-        float: left;;
-    }
-    .product-quantity-list {
-        width: 100%;
-        table-layout: auto;
-    }
-    .product-quantity-list .item-list-number {
-        padding-bottom: 0;
-        padding-left: 0;
-        padding-top: 0;
-        vertical-align: middle;
-    }
-    .quantity-item {
-        background: #898989;
-        color: #fff;
-        display: inline-block;
-        font-size: 14px;
-        height: 41px;
-        line-height: 41px;
-        margin: 0 10px 0 0;
-        padding: 0;
-        text-align: center;
-        vertical-align: middle;
-        width: 36px;
-    }
-    .product-quantity-list thead tr th {
-        background: #fafafa!important;
-        border-bottom: 1px dashed #e3e3e3;
-        border-top: 1px solid #e3e3e3;
-        text-align: left;
-    }
-    .size-quantity-table {
-	    width: 83%;
-	    margin-top: 15px;
-    	margin-left: 30px;
-    	table-layout: auto;
-    	margin-bottom: 15px;
-    }
-    
-    
-</style>
-<style>
-    .ivu-collapse-content {
-        overflow: hidden !important;
-    }
-    .ulList {
-        list-style-type: none ;
-    }
-</style>
 
 <template>
     <div>
-        <div v-for="(item1, inx) in supplierProduct">
-            <Card>
-                <p slot="title">{{item1.supplier_info.email}}</p>
-                
-            </Card>
+        <div class="mainBody">
+            <div class="po">
+                <Card class="container">
+                    <h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
+                    <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
+                        <ButtonGroup slot="extra">
+                            <Tooltip placement="top" content="Delete" style="padding-left:3px;">
+                                <Button class="ButtonGroup" @click="deleteSupplierProduct(item)"   type="ghost" icon="trash-b"></Button>
+                            </Tooltip>
+                        </ButtonGroup>
+                        <div class="dweep" style="padding: 40px 10px 10px 10px;">
+                            <div class="row well">
+                                <table class="invoice-head col-md-8">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>VENDOR</strong></td>                                            
+                                            <td>{{item.product[0].product_description.supplier_info.supplier_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><Icon type="ios-email" size="15"></Icon>   {{item.product[0].product_description.supplier_info.email}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="invoice-head col-md-4">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>SHIP TO</strong></td>
+                                            <td>{{item.shipping_address.name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <span>{{item.shipping_address.street1}}</span>
+                                                <span v-if="item.shipping_address.street2">,{{item.shipping_address.street2}}</span>
+                                                <span v-else></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{{item.shipping_address.city}},{{item.shipping_address.state}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td></td>
+                                            <td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table class="col-md-12 table table-bordered" style="text-align:center">
+                                    <thead>
+                                        <tr>
+                                            <td> <strong> METHOD </strong></td>
+                                            <td> <strong>SHIPPING CARRIER </strong></td>
+                                            <td> <strong>DELIVERY DATE </strong></td>
+                                            <td> <strong>SHIPPING CHARGE </strong></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{item.shipping_detail.shipping_method}}</td>
+                                            <td>{{item.shipping_detail.shipping_carrier}}</td>
+                                            <td>{{item.shipping_detail.on_hand_date}}</td>
+                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="span8 well invoice-body" style="padding: 0px;border: none;">
+                                    <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                </Card>
+            </div>
         </div>
     </div>
 </template>
@@ -185,105 +102,227 @@
         data() {
             return {
                 orderDetail: {},
-                supplierProduct: []
+                date: '',
+                poBillAddress: {},
+                columns1: [
+                    {
+                        type: 'expand',
+                        width: 50,
+                        render: (h, params) => {
+							// console.log('rowwwwwwwwwwwwww-------Expand', $(this).attr("class"))
+							//console.log("++++",$('.dweep').parent('div').parent(".mainClass"))
+							// console.log("&&&&&&&&&&&",$(this).parent("div").parent('table').attr("style"))
+							// let card =  $(this).closest('.mainClass').attr('id'); 
+							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
+								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
+								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+								return h(expandRow, {
+									props: {
+										row: params.row,
+										total: cardIndex
+									}
+								})
+							}
+							//console.log('...........')
+							// if (this.poBillAddress[params.index].product) {
+								// total = this.poBillAddress[params.index].product.length
+								// for (let i = 0; i < total; i++ ) {
+								// 	$('#description'+i).css('display', 'none');
+								// }
+							// }
+                        }
+                    },
+                    {
+                        title: 'Item#',
+                        align:  'center',
+                        render : (h , {row}) => {
+                            return h('div', [
+                                h('span', row.product_description.sku)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Product Name',
+                        align:  'center',
+                        render : (h , {row}) => {
+                            return h('div', [
+                                h('span', row.product_description.product_name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Quantity',
+                        align:  'center',
+                        render : (h , {row}) => {
+                            return h('div', [
+                                h('span', row.total_qty)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Unit Price',
+                        align:  'center',
+                        render : (h , {row}) => {
+                            return h('div', [
+                                h('span', accounting.formatMoney(row.unit_price))
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Total Amount',
+                        align:  'center',
+                        render : (h , {row}) => {
+                            let total = accounting.formatMoney(row.total_qty * row.unit_price);
+                            return h('div', [
+                                
+                                h('span',  total)
+                            ]);
+                        }
+                    },
+                    {
+                        title: 'Action',
+                        align: 'center',
+                        render: (h, {row}) => {
+                            return h('div', [
+                                h('Tooltip', {
+                                    props: {
+                                    placement: 'top',
+                                        content: 'Delete'
+                                    },
+                                    style:{
+                                        float:'center',
+                                        cursor:'pointer'
+                                    }
+                                }, [
+                                    h('Button', {
+                                        on: {
+                                            click: () => {
+                                                // alert('delete',row)
+                                                console.log("row",row);
+                                                this.removeSingleProduct(row)
+                                            }
+                                        }
+                                    },[
+                                        h('icon', {
+                                            props: {
+                                                type: "trash-b"
+                                            }
+                                        }, '')
+                                    ])
+                                ])
+                            ])
+                        }
+                    }
+                ],
                 // spinShow : true, 
             }
         },
         methods: {
-            getImgUrl (url) {
-                return this.imgurl + url
+            splitProductAddress(orderData){
+                let tempPOAddressBill=[];
+                let products = orderData.products;
+                let shippingIds = [];
+                for (let index = 0; index < products.length; index++) {
+                    const product = products[index];
+                    let shipping_detail = product.shipping_method.shipping_detail
+                    for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
+                        const shipingDetail = shipping_detail[sDIndex];
+                        let shipAddId = shipingDetail.selected_address_id
+                        let productColor = shipingDetail.color_quantity
+                        let tempProdut = product;
+                        tempProdut.color_quantity = productColor
+                        if(shippingIds.indexOf(shipAddId)<0){
+                            let tempObj= {
+                                product:[tempProdut],
+                                selected_address_id:shipAddId,
+                                shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
+                            };
+                            tempPOAddressBill.push(tempObj)
+                        }else{
+                            let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
+                            tempPOAddressBill[billIndex].product.push(tempProdut)
+                        }
+                        shippingIds.push(shipAddId);
+                    }
+                }
+                console.log("Temp",tempPOAddressBill)
+                return tempPOAddressBill;
             },
             accounting(item){
-              return accounting.formatMoney(item)
+                return accounting.formatMoney(item)
             },
-            getMulti(a, b) {
-                return accounting.formatMoney(a * b);
+            removeSingleProduct(product) {
+                console.log("before delete data2",this.data2)                
+                this.data2 = this.data2.filter( (item) => item.id !== product.id)
+                console.log("after delete data2",this.data2)
+                // this.poBillAddress.product = this.data2;
+                this.orderDetail.products = this.data2
+                console.log("this.poBillAddress",this.orderDetail)
             },
-            getShippingCharge(item){
-                var sum = 0;
-                sum = sum + item;
-                return accounting.formatMoney(sum)
-            },
-            getSubTotal (a, b, c, d) {
-                var sum = 0;
-                sum = sum + d;
-                var res = c.hasOwnProperty('charges')
-                if ( res == false) {
-                    return accounting.formatMoney((a*b) + parseFloat(sum))
-                }
-                else {
-                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
-                }
-            },
-            clicked (inx) {
-                console.log("Clickeddddd...............", inx);
-                $('#description'+inx).slideToggle(700);
-                $(document).ready(function(){
-                    $('.owl-carousel').owlCarousel({
-                        stopOnHover : true,
-                        navigation:true,
-                        items : 4,
-                        itemsDesktop: [1199, 4],
-                        itemsDesktopSmall: [979, 4],
-                        itemsTablet: [767, 2],
-                        itemsMobile: [479, 2]
-                    });
-                });
-                // $(".description").css("display", "table-row");
-            },
-            splitProduct(orderDetail) {
-                let orderProductLIst=orderDetail.products;
-                orderProductLIst.forEach(items => {
-                    var supplier_id=items.product_description.supplier_id 
-                    let supplier_info = items.product_description.supplier_info
-                    if(supplier_id)
-                    {
-                        // var poNewId=generateCustomId("PO",[data.subscription_id,,supplier_id,data.order_id])
-                        // console.log("PO Ids:--",poNewId)
-                        //    let supplierIndexOf =tempSupllierIds.indexOf(supplier_id);
-                        // var posObj=poArray[supplier_id];
-                        // if(posObj)
-                        // {
-                        //         posObj.PO_id=poNewId
-                        //         posObj.EmailStatus="Initiated"
-                        //         posObj.products.push(items)
-                        // }else{
-                            var product= {
-                                // PO_id:poNewId,
-                                // created_at:date,
-                                supplier_info : items.product_description.supplier_info,
-                                subscription_id: orderDetail.subscription_id,
-                                website_id: orderDetail.website_id,
-                                websiteName: orderDetail.websiteName,
-                                order_id: orderDetail.order_id,
-                                setting_id: orderDetail.setting_id,
-                                quantity: orderDetail.quantity,
-                                total: orderDetail.total,
-                                owner_id: orderDetail.owner_id,
-                                products:[items],
-                                special_information: orderDetail.special_information,
-                                user_info: orderDetail.user_info,
-                                user_billing_info: orderDetail.user_billing_info,
-                                EmailStatus:"Initiated"
-                            }
-                            // this.supplierProduct[supplier_id]=product
-                            this.supplierProduct.push(product)
-                            console.log("===============>>>>>>>>>>>>>>>>>>>>>>>>",this.supplierProduct)
-                        // }
-                    }
-                
-                });
+            deleteSupplierProduct(supplier) {
+                console.log("supplier------------=============",supplier);
+                console.log("this.data2-------",this.data2);
+                supplier.product.forEach((product) => {
+                    this.data2 = this.data2.filter( (item) => item.id !== product.id)
+                })
+                this.orderDetail.products = this.data2
+                console.log("final order object",this.orderDetail)
             }
         },
         filters: {
-            upper(item) {
-                return item.toUpperCase()
-            }
+            
         },
         mounted() {
-            console.log("********************///////////////////////",this.$route.params);
+            let self = this;
             this.orderDetail = this.$route.params;
-            this.splitProduct(this.orderDetail);
+            console.log("********************///////////////////////",this.orderDetail);
+            if(this.orderDetail) {
+                // let poDetail=poData[0]
+                self.date = moment().format('DD-MMM-YYYY')  
+                self.poBillAddress = self.splitProductAddress(this.orderDetail);
+                self.data1 = this.orderDetail;
+                self.data2 = this.orderDetail.products;
+                // console.log("data2", self.data2)
+            }else{
+                
+            }
         }
     }
 </script>
+
+<style lang="less">
+    .container {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        margin-top: 30px;
+    }
+    .mainBody {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-color: #fff;
+        overflow: auto;
+    }
+    .po {
+        position: absolute;
+        top: 0%;
+        left: 12%;
+    }
+    .invoice-head td {
+        padding: 0 8px;
+    }
+    .invoice-body{
+        background-color:transparent;
+    }
+    .invoice-thank{
+        margin-top: 60px;
+        padding: 5px;
+    }
+    address{
+        float: right;
+        margin-top: -75px;
+    }
+    .invoice-head {
+        display: inline-block;
+    }
+</style>
