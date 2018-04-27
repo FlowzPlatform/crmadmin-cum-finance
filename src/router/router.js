@@ -4,7 +4,6 @@ import Main from '@/views/Main.vue';
 export const loginRouter = {
     path: '/login',
     name: 'login',
-
     meta: {
         title: 'Login'
     },
@@ -16,7 +15,6 @@ export const loginRouter = {
 export const resetPasswordRouter = {
     path: '/reset-password',
     name: 'resetpassword',
-
     meta: {
         title: 'ResetPassword'
     },
@@ -28,7 +26,6 @@ export const resetPasswordRouter = {
 export const purchaseOrderReceived = {
     path: '/purchase-order-received/:id',
     name: 'purchaseorderreceived',
-
     meta: {
         title: 'purchaseorderreceived'
     },
@@ -252,7 +249,6 @@ export const appRouter = [
     //         { path: 'index', title: '权限测试页', name: 'accesstest_index', access: 0, component: resolve => { require(['@/views/access/access-test.vue'], resolve); } }
     //     ]
     // },
-
     {
         path: '/customer',
         icon: 'person',
@@ -407,14 +403,14 @@ export const appRouter = [
     //             title: 'Order List',
     //             icon: 'ios-cart',
     //             name: 'Ordered List',
-    //             component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve);}
+    //             component: resolve => { require(['@/views/admin-account/order-list.vue'], resolve); }
     //         },
     //         {
     //             path: 'request-quote',
     //             title: 'Request Quote',
     //             icon: 'pull-request',
     //             name: 'Requested Quotes',
-    //             component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve);}
+    //             component: resolve => { require(['@/views/admin-account/request-quote.vue'], resolve); }
     //         },
     //         // {
     //         //     path: 'address-book',
@@ -430,7 +426,6 @@ export const appRouter = [
     //           //  name: 'Billing List',
     //            // component: resolve => { require(['@/views/my-account/list-billing.vue'], resolve);}
     //        // },
-
     //         {
     //             path: 'set-swatches',
     //             title: 'Set Swatches',

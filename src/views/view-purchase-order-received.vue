@@ -1,4 +1,4 @@
- <template>
+<template>
   <div>
         <!-- <div v-if="spinShow" class="demo-spin-container">
             <Spin fix></Spin>
@@ -57,7 +57,7 @@
                                                 <td> {{ accounting(row.unit_price)}} </td>
                                                 <td> {{ getMulti(row.total_qty, row.unit_price) }}</td>
                                             </tr>
-                                            <tr class="description" :id="'description'+row._index" style="display: none;">
+                                            <tr class="description" :id="'description'+row._index+this.total" style="display: none;">
                                                 <td colspan="6">
                                                     <table class="details" style="width:100%">
                                                         <tbody>
@@ -212,9 +212,11 @@
     import moment from 'moment';
     const accounting = require('accounting-js');  
     import owlCarousel from 'owl.carousel';
+      
     export default {
         props: {
-            row: Object
+            row: Object,
+            total: String
         },
         data () {
             return {
@@ -255,8 +257,13 @@
             },
             clicked (inx) {
                 console.log("Clickeddddd...............",inx);
-                $('#description'+ inx).slideToggle(700);
-                $(document).ready(function(){
+                $('#description'+inx+this.total).slideToggle(700);
+                // if($('#description'+inx).css('display') === 'none') {
+                //     $('#description'+inx).css('display', 'table-row');
+                // } else {
+                //     $('#description'+inx).css('display', 'none');
+                // }
+                // $(document).ready(function(){
                     $('.owl-carousel').owlCarousel({
                         stopOnHover : true,
                         navigation:true,
@@ -266,7 +273,8 @@
                         itemsTablet: [767, 2],
                         itemsMobile: [479, 2]
                     });
-                });
+                    
+                // });
                 // $(".description").css("display", "table-row");
             },
         },
@@ -276,12 +284,12 @@
             }
         },
         mounted() {
-                console.log("this 00000------------->", this.row)   
+                console.log("this 00000", this.total)   
                 this.spinShow = false;     
             },
         watch: {
             'row': async function(id) {
-                console.log("this.row 11111", this.row)
+                console.log("this.row 11111", this.total)
             }
         }
     }
