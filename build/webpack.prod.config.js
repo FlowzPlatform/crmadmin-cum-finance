@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const cleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJsParallelPlugin = require('webpack-uglify-parallel');
+//const UglifyJsParallelPlugin = require('webpack-uglify-parallel');
 const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
 const os = require('os');
@@ -46,15 +46,16 @@ module.exports = merge(webpackBaseConfig, {
         //         warnings: false
         //     }
         // }),
-        new UglifyJsParallelPlugin({
-            workers: os.cpus().length,
-            mangle: true,
-            compressor: {
-              warnings: false,
-              drop_console: true,
-              drop_debugger: true
-             }
-        }),
+        // new UglifyJsParallelPlugin({
+        //     workers: os.cpus().length,
+        //     mangle: true,
+        //     compressor: {
+        //       warnings: false,
+        //       drop_console: true,
+        //       drop_debugger: true
+        //      }
+        // }),
+        new webpack.EnvironmentPlugin(['domainkey']),
         new CopyWebpackPlugin([
             {
                 from: 'td_icon.ico'
@@ -75,7 +76,7 @@ module.exports = merge(webpackBaseConfig, {
             ]
         }),
         new HtmlWebpackPlugin({
-            title: 'iView admin v' + package.version,
+            title: 'Flowz CRM',
             favicon: './td_icon.ico',
             filename: '../index.html',
             template: './src/template/index.ejs',
