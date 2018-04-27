@@ -16,11 +16,13 @@
                                                             <tr>
                                                                 <th>Quantity &amp; Price</th>
                                                                 <th>Imprint Information</th>
+                                                                <th style="text-align:center">Additional Charges</th>
+                                                                <th style="text-align:center">Charges</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
-                                                                <td style="width:62%">
+                                                                <td style="width:50%">
                                                                     <div class="quantity-table" style="margin: 10px;">
                                                                         <div class="quantity-table-title" style="margin-top: 15px;">
                                                                             <div class="table-heading">Quantity </div>
@@ -57,27 +59,35 @@
                                                                         <div v-else></div>
                                                                     </div> 
                                                                 </td>   
+                                                                <td style="width:15%">
+                                                                    <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
+                                                                    <span v-else> N/A </span>
+                                                                </td>
+                                                                <td style="width:15%"> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
+                                                                    <span v-else> N/A </span>
+                                                                </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr v-for="(i, j) in row.shipping_method.shipping_detail">
                                                                 <td colspan="4">
                                                                     <table class="product-quantity-list">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th class="item-list-number">
-                                                                                    <div class="quantity-item">1</div>
+                                                                                    <div class="quantity-item">{{j+1}}</div>
                                                                                     Product Quantity 
                                                                                 </th>
-                                                                                <!-- <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                <th style="text-align: -webkit-center;">Shipping</th> -->
-                                                                                <!-- <th style="text-align: -webkit-center;">Shipping Charge</th> -->
-                                                                                <th style="text-align:center">Additional Charges</th>
-                                                                                <th style="text-align:center">Charges</th>
+                                                                                
+                                                                                
+                                                                                <th style="text-align: -webkit-center;">Shipping Address </th>
+                                                                                <th style="text-align: -webkit-center;">Shipping</th> 
+                                                                                <th style="text-align: -webkit-center;">Shipping Charge</th>
+                                                                                
                                                                                 <!--<th style="text-align: -webkit-center;">Tax</th>-->
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="width:60%">
+                                                                                <td style="width:50%">
                                                                                     <table class="size-quantity-table">
                                                                                         <thead>
                                                                                             <tr>
@@ -87,7 +97,7 @@
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
-                                                                                            <tr v-for="(item,inx) in row.color">
+                                                                                            <tr v-for="(item,inx) in i.color_quantity">
                                                                                                 <!-- <div > -->
                                                                                                     <td>{{inx}}
                                                                                                     </td>
@@ -100,12 +110,22 @@
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </td>
-                                                                                <td style="width:21%">
-                                                                                    <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
-                                                                                    <span v-else> N/A </span>
+                                                                                <td>
+                                                                                    <span style="float: left">{{i.shipping_address.name}}</span><br>
+                                                                                    <span style="float: left">{{i.shipping_address.street1}}</span><br>
+                                                                                    <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
+                                                                                    <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
+                                                                                    <span style="float: left"> {{i.shipping_address.state}} </span> <br>
+                                                                                    <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                 </td>
-                                                                                <td> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
-                                                                                    <span v-else> N/A </span>
+                                                                                <td style="width:20%">
+                                                                                    <span style="float: left">Shipping Type: </span> <span style="float: left">{{row.shipping_method.shipping_type}}</span> <br>
+                                                                                    <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
+                                                                                    <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
+                                                                                    <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
+                                                                                </td>
+                                                                                <td style="width:16%">
+                                                                                    Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                 </td>
                                                                                 <!--<td style="width:10%"></td>-->
                                                                             </tr>
@@ -121,33 +141,7 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <table class="details" style="width:100%">
-                                    <thead>
-                                        <th style="text-align: left;padding: 17px;font-size: 18px;">Supplier Information</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="text-align: -webkit-center;">
-                                            <table style="width:80%; margin: 20px;">
-                                                <thead>
-                                                    <th>Supplier Name</th>
-                                                    <th>Company</th>
-                                                    <th>Email</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>{{row.product_description.supplier_info.supplier_name}}</td>
-                                                        <td>{{row.product_description.supplier_info.company}}</td>
-                                                        <td>{{row.product_description.supplier_info.email}}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div> 

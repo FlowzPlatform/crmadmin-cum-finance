@@ -579,11 +579,7 @@
                 this.billinfo = true
             },
             async viewDetails(params,status){
-                // setTimeout(function(){
-                // $('.my-panel').css('display','none')
-                // },100)
-                if (!status) return
-                $('.ivu-table-cell-expand-expanded').click()
+                
             }
         },
         async mounted() {

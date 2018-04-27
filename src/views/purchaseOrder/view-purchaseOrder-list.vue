@@ -43,11 +43,15 @@
 </template>
 <script>
 const accounting = require('accounting-js');
+import purchaseOrder from '../purchase-order-received.vue';
 import expandRow from './view-purchaseOrder-list-Product.vue';
 export default {
     name: 'view-purchaseOrder-list',
     props: {
         row: Object
+    },
+    components:{
+        purchaseOrder
     },
     data() {
         return {
@@ -131,6 +135,35 @@ export default {
                     }
                 },
                 {
+                    title: 'Supplier Name',
+                    align:  'center',
+                    render : (h , {row}) => {
+                        return h('div', [
+                            
+                            h('span', row.product_description.supplier_info.supplier_name)
+                        ]);
+                    }
+                },
+                {
+                    title: 'Supplier Email',
+                    align:  'center',
+                    render : (h , {row}) => {
+                        return h('div', [
+                            h('span',  row.product_description.supplier_info.email)
+                        ]);
+                    }
+                },
+                {
+
+                    title: 'Supplier Company',
+                    align:  'center',
+                    render : (h , {row}) => {
+                        return h('div', [
+                            h('span',  row.product_description.supplier_info.company)
+                        ]);
+                    }
+                },
+                {
                     title: 'Action',
                     width: 100,
                     align: 'center',
@@ -185,3 +218,9 @@ export default {
     } 
 }
 </script>
+<style>
+.ivu-table-cell{
+    word-break: break-word;
+}
+</style>
+
