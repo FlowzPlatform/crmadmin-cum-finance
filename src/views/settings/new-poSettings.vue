@@ -287,6 +287,7 @@
                                 self.poReset();
                                 // window.location.reload();
                                 self.submit = true;
+                                self.rightarr = [];
                                 // self.$router.push({
                                 //     name: 'PurchaseOrder'
                                 // });
@@ -297,7 +298,7 @@
                                 console.log('error in generating po',error)
                             })
                         });
-
+                        
                         this.leftarr = this.leftarr.filter((e) => !this.supplierArr.includes(e))
                         console.log("on submit this.leftarr",this.leftarr)
                         this.leftarr.forEach(async (item) => {
@@ -313,7 +314,8 @@
                                     // console.log("po delete response",res);
                                     self.loading1 = false;
                                     self.poReset();
-                                    this.submit = true;
+                                    self.submit = true;
+                                    self.leftarr = [];
                                     // self.$router.push({
                                     //     name: 'PurchaseOrder'
                                     // });

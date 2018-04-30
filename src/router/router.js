@@ -24,7 +24,7 @@ export const resetPasswordRouter = {
 };
 
 export const purchaseOrderReceived = {
-    path: '/purchase-order-received/:id',
+    path: '/purchase-order-received',
     name: 'purchaseorderreceived',
     meta: {
         title: 'purchaseorderreceived'

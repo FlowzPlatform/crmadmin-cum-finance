@@ -3,8 +3,8 @@
     <div>
         <div class="mainBody">
             <div class="po">
-                <Card class="container">
-                    <h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
+                <Card>
+                    <h2 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h2>
                     <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
                         <ButtonGroup slot="extra">
                             <Tooltip placement="top" content="Delete" style="padding-left:3px;">
@@ -16,7 +16,7 @@
                                 <table class="invoice-head col-md-8">
                                     <tbody>
                                         <tr>
-                                            <td><strong>VENDOR</strong></td>                                            
+                                            <td><strong>VENDOR :</strong></td>                                            
                                             <td>{{item.product[0].product_description.supplier_info.supplier_name}}</td>
                                         </tr>
                                         <tr>
@@ -28,7 +28,7 @@
                                 <table class="invoice-head col-md-4">
                                     <tbody>
                                         <tr>
-                                            <td><strong>SHIP TO</strong></td>
+                                            <td><strong>SHIP TO :</strong></td>
                                             <td>{{item.shipping_address.name}}</td>
                                         </tr>
                                         <tr>
@@ -85,6 +85,11 @@
                             </div>
                         </div>
                     </Card>
+                    <div style="padding: 35px;padding-top:10px;">
+                    <Button type="primary" style="float:right;" :loading="loading" @click="generatePO">
+                        Generate Purchase Order
+                    </Button>
+                    </div>
                 </Card>
             </div>
         </div>
@@ -92,8 +97,12 @@
 </template>
 
 <script>
+    import config from '../../config/customConfig.js'
     import moment from 'moment';
     const accounting = require('accounting-js');
+    let axios = require('axios');
+    import Cookies from 'js-cookie';
+    import expandRow from '../view-purchase-order-received.vue';
     export default {
         props: {
             row: Object,
@@ -109,27 +118,11 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-							// console.log('rowwwwwwwwwwwwww-------Expand', $(this).attr("class"))
-							//console.log("++++",$('.dweep').parent('div').parent(".mainClass"))
-							// console.log("&&&&&&&&&&&",$(this).parent("div").parent('table').attr("style"))
-							// let card =  $(this).closest('.mainClass').attr('id'); 
-							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
-								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
-								return h(expandRow, {
-									props: {
-										row: params.row,
-										total: cardIndex
-									}
-								})
-							}
-							//console.log('...........')
-							// if (this.poBillAddress[params.index].product) {
-								// total = this.poBillAddress[params.index].product.length
-								// for (let i = 0; i < total; i++ ) {
-								// 	$('#description'+i).css('display', 'none');
-								// }
-							// }
+                            return h(expandRow, {
+                                props: {
+                                    row: params.row
+                                }
+                            })
                         }
                     },
                     {
@@ -214,6 +207,7 @@
                         }
                     }
                 ],
+                loading: false
                 // spinShow : true, 
             }
         },
@@ -269,6 +263,28 @@
                 }
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
+            },
+            generatePO() {
+                let self = this;
+                this.loading = true;
+                this.orderDetail.subscription_id = Cookies.get("subscriptionId");
+                this.orderDetail.isManual = true;
+                console.log("purchase order post object",this.orderDetail)
+                if (this.orderDetail.products.length > 0) {
+                    axios({
+                        method: 'post',
+                        url: config.default.serviceUrl + 'purchase-order',
+                        data: this.orderDetail
+                    })
+                    .then(function(response) {
+                        self.loading = false
+                        console.log("purchase order post response------------------",response)
+                        self.$Message.success("Purchase Order Generated Successfully");
+                    })
+                }
+                else {
+
+                }
             }
         },
         filters: {
@@ -293,23 +309,6 @@
 </script>
 
 <style lang="less">
-    .container {
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-        margin-top: 30px;
-    }
-    .mainBody {
-        margin: 0;
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        background-color: #fff;
-        overflow: auto;
-    }
-    .po {
-        position: absolute;
-        top: 0%;
-        left: 12%;
-    }
     .invoice-head td {
         padding: 0 8px;
     }

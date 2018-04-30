@@ -157,7 +157,7 @@
                         align:  'left',
                         render : (h , {row}) => {
                             return h('div', [
-                                h('span', row.order_id)
+                                h('span', row.orderId)
                             ]);
                         }
                     },
@@ -389,18 +389,18 @@
                 let params1;
                 if(this.row != undefined){
                     params1 = {
-                        website_id :val,
-                        order_id : this.row.id 
+                        websiteId :val,
+                        orderId : this.row.id 
                     }
                 }else{
                     params1 = {
-                        website_id :val
+                        websiteId :val
                     }
                 }
                 console.log("############################################",params1)
                 axios({
                     method: 'get',
-                    url: 'http://localhost:3037/purchase-order',
+                    url: config.default.serviceUrl + 'purchase-order',
                     params: params1,
                     headers: {
                         'Authorization': Cookies.get('auth_token'),

@@ -6,7 +6,7 @@
         <div>
             <Card>
                     
-                <div style="text-align:center">
+                <!--<div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="order-title">
@@ -16,19 +16,19 @@
                                 <div class="col-md-6 col-sm-6">
                                     Created Date : {{moment(row.createdAt).format('DD-MMM-YYYY')}} 
                                 </div>
-                                <!-- <div class="col-md-4 col-sm-4">
+                                 <div class="col-md-4 col-sm-4">
                                     Total Items : {{row.products.length}}
-                                </div> -->
+                                </div> 
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
-                                <div class="row" style="padding: 20px 40px 20px;border-top: 1px solid #cdd8e3;">
+                                <div class="row" style="padding: 20px 40px 20px;">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th> ORDER ID : {{row.order_id}} </th>
+                                                <!--<th> ORDER ID : {{row.order_id}} </th>-->
                                                 <th> ORDER TYPE : {{row.order_type | upper}} </th>
                                                 <th> SHIPPING : {{row.shipping_method.shipping_type | upper}} </th>
                                                 <th> <a @click="clicked(row._index)">

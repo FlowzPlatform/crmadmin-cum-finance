@@ -273,7 +273,7 @@ export default {
 			// console.log("config.default.orderapi", config.default.orderapi)
 			axios({
 				method: 'get',
-				url: 'http://172.16.230.61:3037/purchase-order',
+				url: config.default.serviceUrl +'purchase-order',
 				params: {
 					"PO_id[$eq]" : self.$route.query.PO_id
 					// user : Cookies.get('user')
