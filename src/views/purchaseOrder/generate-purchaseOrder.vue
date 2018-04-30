@@ -262,9 +262,11 @@
             deleteSupplierProduct(supplier) {
                 console.log("supplier------------=============",supplier);
                 console.log("this.data2-------",this.data2);
-                supplier.product.forEach((product) => {
-                    this.data2 = this.data2.filter( (item) => item.id !== product.id)
-                })
+                if (supplier.product) {
+                    supplier.product.forEach((product) => {
+                        this.data2 = this.data2.filter( (item) => item.id !== product.id)
+                    })
+                }
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
             }

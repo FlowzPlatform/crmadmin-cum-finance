@@ -209,7 +209,7 @@
                     this.accountTab = false;
                     this.$store.state.settingData = ""
                     this.$router.push({
-                        name: 'Purchase Order Settings'
+                        name: 'PurchaseOrder Settings'
                     });
                     $('.slide').addClass('opens');
                 }

@@ -172,14 +172,14 @@ export const otherRouter = {
             require(['@/views/settings/Online-Payment.vue'], resolve);
         }
     },
-    {
-        path: 'PurchaseOrder-settings',
-        title: 'PurchaseOrder',
-        name: 'PurchaseOrder',
-        component: resolve => {
-            require(['@/views/settings/poSettings.vue'], resolve);
-        }
-    },
+    // {
+    //     path: 'PurchaseOrder-settings',
+    //     title: 'PurchaseOrder',
+    //     name: 'PurchaseOrder',
+    //     component: resolve => {
+    //         require(['@/views/settings/poSettings.vue'], resolve);
+    //     }
+    // },
     {
         path: 'new-poSettings',
         title: 'PurchaseOrder Settings',

@@ -264,11 +264,11 @@
                             let poPostData = {
                                 po_generate_mode : 'Auto',
                                 thankyou_note : this.formValidate.note,
-                                distributor_id: this.distributorId,
+                                distributorId: this.distributorId,
                                 distributor_email: Cookies.get('user'),
                                 subscriptionId : Cookies.get('subscriptionId'),
                                 websiteId : this.website.websiteId,
-                                vid: this.website.vid,
+                                vId: this.website.vid,
                                 supplierId : item
                             };
                             console.log("PO PostData",poPostData)
@@ -286,14 +286,14 @@
                                 self.loading1 = false;
                                 self.poReset();
                                 // window.location.reload();
-                                this.submit = true;
+                                self.submit = true;
                                 // self.$router.push({
                                 //     name: 'PurchaseOrder'
                                 // });
                             })
                             .catch(function (error) {
                                 self.loading1 = false;
-                                this.submit = false;
+                                self.submit = false;
                                 console.log('error in generating po',error)
                             })
                         });
@@ -408,9 +408,9 @@
                     url: feathersUrl+'po-settings',
                     params: {
                         subscriptionId : Cookies.get('subscriptionId'),
-                        distributor_id: self.distributorId,
+                        distributorId: self.distributorId,
                         websiteId : self.website.websiteId,
-                        vid: self.website.vid
+                        vId: self.website.vid
                     },
                     headers: {
                         Authorization : Cookies.get('auth_token'),
