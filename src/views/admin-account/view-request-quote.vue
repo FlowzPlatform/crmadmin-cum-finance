@@ -274,7 +274,7 @@
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
-                              <span>{{item.created_by}}</span>
+                              <span style="font-style: italic;"><strong>{{item.created_by}}</strong></span>
                             </span>
                           </div>
                         </Col>
@@ -355,7 +355,7 @@ export default {
       },
     myFunction(){
       
-      console.log("$$$$$$$$$$$$$$$$$$$$$",event)
+      console.log("$$$$$$$$$$$$$$$$$$$$$------------->",event)
         if(event.key == "Enter" && event.ctrlKey == true){
           this.sendcomment();
         }
@@ -384,7 +384,7 @@ export default {
          }
          }).then(function (response) {
           // self.messageData.push(response.data.message)
-          self.messageData.push({message: self.resetData, created_at: date, created_by: self.userid})
+          // self.messageData.push({message: self.resetData, created_at: date, created_by: self.userid})
           let height
           setTimeout(function(){
             height = document.getElementsByClassName("chat")[0].scrollHeight;

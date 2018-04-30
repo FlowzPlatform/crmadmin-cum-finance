@@ -274,7 +274,7 @@ export default {
           "message": this.commentMessage
        }
        }).then(function (response) {
-        self.messageDataDisplay.push({message: self.commentMessage, created_at: date, created_by: self.userid})
+        // self.messageDataDisplay.push({message: self.commentMessage, created_at: date, created_by: self.userid})
         let height
         setTimeout(function(){
           height = document.getElementsByClassName("chat")[0].scrollHeight;

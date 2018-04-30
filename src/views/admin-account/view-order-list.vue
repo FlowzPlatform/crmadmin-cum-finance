@@ -169,7 +169,7 @@
         </div>
         <div v-else>
             <Card>
-                <div style="text-align:center">
+                <!--<div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12 header">
                             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
@@ -178,13 +178,13 @@
                             </p>
                         </div>
                     </div>
-                </div>    
+                </div>-->    
                 <div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="order-title">
                                 <div class="col-md-4 col-sm-4">
-                                Order ID : {{row.id}}
+                                Order ID : {{row.order_id}}
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     Created Date : {{moment(row.products[0].createdAt).format('DD-MMM-YYYY')}} 
@@ -236,7 +236,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th> ORDER ID : {{row.id}} </th>
+                                                <th> ORDER ID : {{row.order_id}} </th>
                                                 <th> ORDER TYPE : {{item.order_type | upper}} </th>
                                                 <th> SHIPPING : {{item.shipping_method.shipping_type | upper}} </th>
                                                 <th> <a @click="clicked(inx)">
@@ -327,24 +327,27 @@
                                                                                     <span v-else> N/A </span>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
+                                                                            <tr v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                 <td colspan="4">
                                                                                     <table class="product-quantity-list">
                                                                                         <thead>
                                                                                             <tr>
                                                                                                 <th class="item-list-number">
-                                                                                                    <div class="quantity-item">1</div>
+                                                                                                    <div class="quantity-item">{{j+1}}</div>
                                                                                                     Product Quantity 
                                                                                                 </th>
+                                                                                                
+                                                                                                
                                                                                                 <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping</th>
+                                                                                                <th style="text-align: -webkit-center;">Shipping</th> 
                                                                                                 <th style="text-align: -webkit-center;">Shipping Charge</th>
+                                                                                                
                                                                                                 <!--<th style="text-align: -webkit-center;">Tax</th>-->
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:38%">
+                                                                                                <td style="width:50%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
@@ -354,34 +357,34 @@
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
-                                                                                                            <tr v-for="(item,inx) in item.color">
-                                                                                                            <!--  <div v-for="(item,inx) in item.color"> -->
+                                                                                                            <tr v-for="(item,inx) in i.color_quantity">
+                                                                                                                <!-- <div > -->
                                                                                                                     <td>{{inx}}
                                                                                                                     </td>
                                                                                                                     <td>{{item}}
                                                                                                                     </td>
                                                                                                                     <td>{{item}}
                                                                                                                     </td>
-                                                                                                            <!--  </div> -->
+                                                                                                                <!-- </div> -->
                                                                                                             </tr>
                                                                                                         </tbody>
                                                                                                     </table>
                                                                                                 </td>
-                                                                                                <td v-for="(i, j) in item.shipping_method.shipping_detail">
-                                                                                                    <span style="float: left">{{row.user_billing_info.name}}</span><br>
+                                                                                                <td>
+                                                                                                    <span style="float: left">{{i.shipping_address.name}}</span><br>
                                                                                                     <span style="float: left">{{i.shipping_address.street1}}</span><br>
                                                                                                     <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
                                                                                                     <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                                 </td>
-                                                                                                <td style="width:20%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:20%">
                                                                                                     <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
                                                                                                     <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                                                     <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                     <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                                 </td>
-                                                                                                <td style="width:16%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:16%">
                                                                                                     Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                                 </td>
                                                                                                 <!--<td style="width:10%"></td>-->
@@ -398,14 +401,24 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr class="item_total" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                            <tr class="item_total" >
                                                 <th>Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
                                                 <th colspan="2">Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                     <span v-else> $00.00 </span> 
                                                 </th>
-                                                <th>Shipping Charge : <span v-if="i.shipping_detail.shipping_charge"> {{ getShippingCharge(i.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span> </th>
+                                                <th>Shipping Charge : 
+                                                    <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
+                                                        <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span> 
+                                                        <span v-else> $00.00 </span> 
+                                                    <!-- </span> -->
+                                                </th>
                                                 <th>Tax : $00.00 </th>
-                                                <th>Sub Total:<span style="color:#C11E19" v-if="i.shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, i.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> </th>
+                                                <th>Sub Total:
+                                                    <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
+                                                        <span style="color:#C11E19" v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> 
+                                                    <!-- </span> -->
+                                                </th>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -499,7 +512,7 @@
         },
         methods: {
             async invoiceData() {
-                var self = this
+                let self = this
                 // self.$Loading.start()
                 await axios({
                     method: 'get',
@@ -551,18 +564,30 @@
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
-            getShippingCharge(item){
-                var sum = 0;
-                sum = sum + item;
+            getShippingCharge(arr){
+                let sum = 0;
+                for (let i of arr) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
                 return accounting.formatMoney(sum)
             },
             getImgUrl (url) {
                 return this.imgurl + url
             },
             getSubTotal (a, b, c, d) {
-                var sum = 0;
-                sum = sum + d;
-                var res = c.hasOwnProperty('charges')
+                let sum = 0;
+                for (let i of d) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
+                let res = c.hasOwnProperty('charges')
                 if ( res == false) {
                     return accounting.formatMoney((a*b) + parseFloat(sum))
                 }
@@ -596,7 +621,7 @@
                 self.modal1 = false
             },
             async download() {
-                var self = this
+                let self = this
 		        self.$Loading.start()
                 console.log("billData-------------->>>",$('#InvoiceBill').html())
                 document.querySelector('#myfooter').style.position = 'fixed'
@@ -613,9 +638,9 @@
                         document.querySelector('#myfooter').style.position = 'initial'
                         console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                         console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
-                        var arrayBufferView = new Uint8Array( response.data.data );
-                        var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                        var link=document.createElement('a');
+                        let arrayBufferView = new Uint8Array( response.data.data );
+                        let blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                        let link=document.createElement('a');
                         link.href=window.URL.createObjectURL(blob);
                         link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
                         link.click();
