@@ -39,12 +39,22 @@
                 </Panel>
             </Collapse>
         </Card>
+        <div ref="email" style="display:none">
+            <h2>Purchase Order</h2>
+            <p style="font-size:16px">Purchase order received from {{row.PO_id}}</p>
+            <p style="font-size:16px">To view the order please click below Button.</p>
+            <a :href='"http://localhost:8080/#/purchase-order-received?PO_id="+row.PO_id' style="background-color:#EB7035;border:1px solid #EB7035;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">View PO</a>  
+        </div>
     </div>
 </template>
 <script>
 const accounting = require('accounting-js');
 import purchaseOrder from '../purchase-order-received.vue';
 import expandRow from './view-purchaseOrder-list-Product.vue';
+import Cookies from 'js-cookie';
+import config from '../../config/customConfig.js'
+import axios from 'axios';
+
 export default {
     name: 'view-purchaseOrder-list',
     props: {
@@ -206,8 +216,65 @@ export default {
     },
     methods:{
         resendEmail (data) {
-                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
-            },
+            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
+            console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row.orderId)
+            this.$Loading.start()
+            var self = this
+            let myData = {
+                    // "to":  data.product_description.supplier_info.email,
+                    "to":"hdheniya@officebrain.com",
+                    "from": Cookies.get('user'),
+                    "subject": "Purchase Order Generated for Order Id :- " + this.row.orderId,
+                    "body": self.$refs.email.innerHTML
+                };
+                myData = JSON.stringify(myData)
+                axios({
+                    method: 'post',
+                    url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                    data: myData,
+                    headers: {
+                        'authorization':  Cookies.get('auth_token'),
+                    }
+                }).then(function (response) {
+                    console.log(response);
+                    self.$message.success("Email Send Successfully");
+                    self.$Loading.finish()
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    self.$Loading.error()
+                    self.$Message.warning("Email Send Failed, Please try again later");
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                });
+        },
         getImgUrl (url) {
                 return this.imgurl + url
             }

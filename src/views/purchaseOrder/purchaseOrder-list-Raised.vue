@@ -263,7 +263,7 @@
                 console.log("this.order_id", this.order_id)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                     console.log("item",item)
-                    return item.order_id === self.order_id;
+                    return item.orderId === self.order_id;
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
@@ -408,12 +408,12 @@
                     } 
                 }).then(async function (response){
                     console.log("------------------------response",response.data.data);
-                    self.data1 = response.data.data
+                    self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
                     self.list = await self.mockTableData1(1,pageSize)
                     console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",self.list)
                     self.data1.forEach(item => {
                         self.ponumFilter.push(item.PO_id)
-                        self.orderFilter.push(item.order_id)
+                        self.orderFilter.push(item.orderId)
                     })
                     self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();
                     self.orderFilter = _.chain(self.orderFilter).sort().uniq().value();

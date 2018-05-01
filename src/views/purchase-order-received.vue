@@ -394,11 +394,6 @@ export default {
         background-color: #364150;
         overflow: auto;
     }
-    .po {
-        position: absolute;
-        top: 0%;
-        left: 12%;
-    }
     .invoice-head td {
         padding: 0 8px;
     }
