@@ -145,11 +145,8 @@
         text-align: left;
     }
     .size-quantity-table {
-	    width: 83%;
-	    margin-top: 15px;
+        width: 80%;
     	margin-left: 30px;
-    	table-layout: auto;
-    	margin-bottom: 15px;
     }
     
     
@@ -203,7 +200,7 @@
                             <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
                                 <h4>{{row.user_billing_info.name}}</h4> 
                                 <p>
-                                    <span class="address">Office Address</span> <br>
+                                    <!-- <span class="address">Office Address</span> <br> -->
                                     <span style="font-weight:500">
                                         {{row.user_billing_info.street1}} <br>
                                         <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}}<br></span>
@@ -275,14 +272,14 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>Quantity &amp; Price</th>
-                                                                                <th>Imprint Information</th>
+                                                                                <th style="text-align: left;">Imprint Information</th>
                                                                                 <th>Additional Charges</th>
                                                                                 <th>Charges</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="width:60%">
+                                                                                <td style="width:58%">
                                                                                     <div class="quantity-table" style="margin: 10px;">
                                                                                         <div class="quantity-table-title" style="margin-top: 15px;">
                                                                                             <div class="table-heading">Quantity </div>
@@ -338,8 +335,8 @@
                                                                                                 </th>
                                                                                                 
                                                                                                 
-                                                                                                <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping</th> 
+                                                                                                <th style="text-align: left;">Shipping Address </th>
+                                                                                                <th style="text-align: left;">Shipping</th> 
                                                                                                 <th style="text-align: -webkit-center;">Shipping Charge</th>
                                                                                                 
                                                                                                 <!--<th style="text-align: -webkit-center;">Tax</th>-->
@@ -347,13 +344,13 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:50%">
+                                                                                                <td style="width:40%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
                                                                                                                 <th style="text-align: -webkit-center;">COLOR</th>
                                                                                                                 <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                                <th style="text-align: -webkit-center;">TOTAL</th>
+                                                                                                                <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
@@ -363,8 +360,8 @@
                                                                                                                     </td>
                                                                                                                     <td>{{item}}
                                                                                                                     </td>
-                                                                                                                    <td>{{item}}
-                                                                                                                    </td>
+                                                                                                                    <!-- <td>{{item}}
+                                                                                                                    </td> -->
                                                                                                                 <!-- </div> -->
                                                                                                             </tr>
                                                                                                         </tbody>
@@ -403,7 +400,7 @@
                                             </tr>
                                             <tr class="item_total" >
                                                 <th>Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
-                                                <th colspan="2">Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
+                                                <th>Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                     <span v-else> $00.00 </span> 
                                                 </th>
                                                 <th>Shipping Charge : 
@@ -413,7 +410,7 @@
                                                     <!-- </span> -->
                                                 </th>
                                                 <th>Tax : $00.00 </th>
-                                                <th>Sub Total:
+                                                <th colspan="2">Sub Total:
                                                     <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
                                                         <span style="color:#C11E19" v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
                                                         <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> 
@@ -433,7 +430,7 @@
                                     Transaction ID  : <label class="data"> {{row.transaction_id}} </label>
                             </label> 
                             <label class="col-sm-3"> 
-                                    Payment Via  : <label class="data"> {{row.payment_via}} </label>
+                                    Payment Via  : <label class="data" style=" text-transform: capitalize;"> {{row.payment_via}} </label>
                             </label>
                             <label class="col-sm-3"> 
                                     Total  : <label class="data"> $ {{row.total}} </label>
@@ -447,7 +444,7 @@
                                     Invoice ID  : <label class="data"> {{this.invoice.InvoiceNumber}} </label>
                             </label> 
                             <label class="col-sm-6"> 
-                                    Customer Name  : <label class="data"> {{this.invoice.Contact.Name}} </label>
+                                    Customer Name  : <label class="data" style=" text-transform: capitalize;"> {{this.invoice.Contact.Name}} </label>
                             </label>
                             <!--<label class="col-sm-6"> 
                                     Due Date  : <label class="data"> {{moment(this.invoice.DueDate).format('DD-MMM-YYYY')}} </label>

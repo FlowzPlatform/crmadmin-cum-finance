@@ -118,11 +118,21 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
+                            if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
+								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
+								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+								return h(expandRow, {
+									props: {
+										row: params.row,
+										total: cardIndex
+									}
+								})
+							}
+                            // return h(expandRow, {
+                            //     props: {
+                            //         row: params.row
+                            //     }
+                            // })
                         }
                     },
                     {

@@ -1,8 +1,7 @@
  <template>
-  <div>
       <div>
-          <Card>     
-                <div class="row" style="padding: 20px 40px 20px;">
+          <!-- <Card>      -->
+                <div class="row">
                     <table class="table1">
                          <tbody>
                             <tr class="description" :id="'description'+row._index">
@@ -22,7 +21,7 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr>
-                                                                <td style="width:50%">
+                                                                <td style="width:60%">
                                                                     <div class="quantity-table" style="margin: 10px;">
                                                                         <div class="quantity-table-title" style="margin-top: 15px;">
                                                                             <div class="table-heading">Quantity </div>
@@ -40,7 +39,7 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="estimate-detail">
-                                                                    <div class="estimate-tag-block" v-for="(element, index) in row.imprint" style="text-align: -webkit-left;">
+                                                                    <div class="estimate-tag-block" v-for="(element, index) in row.imprint" style="text-align: left;">
                                                                         <div class="estimate-row heading">
                                                                             <span>Print Position: {{element.imprint_position_name}}</span>
                                                                             <div class="estimate-row">
@@ -63,7 +62,7 @@
                                                                     <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
                                                                     <span v-else> N/A </span>
                                                                 </td>
-                                                                <td style="width:15%"> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
+                                                                <td style="width:8%"> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
                                                                     <span v-else> N/A </span>
                                                                 </td>
                                                             </tr>
@@ -78,22 +77,22 @@
                                                                                 </th>
                                                                                 
                                                                                 
-                                                                                <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                <th style="text-align: -webkit-center;">Shipping</th> 
-                                                                                <th style="text-align: -webkit-center;">Shipping Charge</th>
+                                                                                <th style="text-align: center">Shipping Address </th>
+                                                                                <th style="text-align: center">Shipping</th> 
+                                                                                <th style="text-align: center;">Shipping Charge</th>
                                                                                 
-                                                                                <!--<th style="text-align: -webkit-center;">Tax</th>-->
+                                                                                <!--<th style="text-align: center;">Tax</th>-->
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="width:50%">
+                                                                                <td style="width:40%">
                                                                                     <table class="size-quantity-table">
                                                                                         <thead>
                                                                                             <tr>
-                                                                                                <th style="text-align: -webkit-center;">COLOR</th>
-                                                                                                <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                <th style="text-align: -webkit-center;">TOTAL</th>
+                                                                                                <th style="text-align: center;">COLOR</th>
+                                                                                                <th style="text-align: center;">QUANTITY</th>
+                                                                                                <!-- <th style="text-align: center;">TOTAL</th> -->
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
@@ -103,8 +102,8 @@
                                                                                                     </td>
                                                                                                     <td>{{item}}
                                                                                                     </td>
-                                                                                                    <td>{{item}}
-                                                                                                    </td>
+                                                                                                    <!-- <td>{{item}}
+                                                                                                    </td> -->
                                                                                                 <!-- </div> -->
                                                                                             </tr>
                                                                                         </tbody>
@@ -145,9 +144,8 @@
                         </tbody>
                     </table>
                 </div> 
-            </Card>
+            <!-- </Card> -->
         </div>
-  </div>
 </template>
 <script>
     import moment from 'moment';
@@ -194,23 +192,7 @@
             },
             accounting(item){
               return accounting.formatMoney(item)
-            },
-            clicked (inx) {
-                console.log("Clickeddddd...............",inx);
-                $('#description'+ inx).slideToggle(700);
-                // $(document).ready(function(){
-                    // $('.owl-carousel').owlCarousel({
-                    //     stopOnHover : true,
-                    //     navigation:true,
-                    //     items : 4,
-                    //     itemsDesktop: [1199, 4],
-                    //     itemsDesktopSmall: [979, 4],
-                    //     itemsTablet: [767, 2],
-                    //     itemsMobile: [479, 2]
-                    // });
-                // });
-                // $(".description").css("display", "table-row");
-            },
+            }
         },
         filters: {
             upper(item) {
@@ -384,11 +366,8 @@
         text-align: left;
     }
     .size-quantity-table {
-	    width: 83%;
-	    margin-top: 15px;
+	    width: 80%;
     	margin-left: 30px;
-    	table-layout: auto;
-    	margin-bottom: 15px;
     }
     
     

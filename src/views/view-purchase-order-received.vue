@@ -136,7 +136,7 @@
                                                                                                             <tr>
                                                                                                                 <th style="text-align: -webkit-center;">COLOR</th>
                                                                                                                 <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                                <th style="text-align: -webkit-center;">TOTAL</th>
+                                                                                                                <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
@@ -146,8 +146,8 @@
                                                                                                                     </td>
                                                                                                                     <td>{{item}}
                                                                                                                     </td>
-                                                                                                                    <td>{{item}}
-                                                                                                                    </td>
+                                                                                                                    <!-- <td>{{item}}
+                                                                                                                    </td> -->
                                                                                                              <!-- </div> -->
                                                                                                             </tr>
                                                                                                         </tbody>
