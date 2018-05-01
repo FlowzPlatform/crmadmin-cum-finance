@@ -3,8 +3,8 @@
         <!-- <div v-if="spinShow" class="demo-spin-container">
             <Spin fix></Spin>
         </div> -->
-        <div>
-            <Card>
+        <!-- <div> -->
+            <!-- <Card> -->
                     
                 <!--<div style="text-align:center">
                     <div class="row">
@@ -24,7 +24,7 @@
                     </div>
                 </div>-->
 
-                                <div class="row" style="padding: 20px 40px 20px;">
+                                <div class="row">
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -204,8 +204,8 @@
                                     </table>
                                 </div>
                     
-            </Card>
-        </div>
+            <!-- </Card> -->
+        <!-- </div> -->
   </div>
 </template>
 <script>

@@ -148,11 +148,17 @@
                         </div>
                     </Card>
                     <div class="row">
-                        <div class="span8 well invoice-thank">
+                        <div>
+                            <label> Payment Options : </label> <br>
+                        </div>        
+                    </div>
+
+                    <div class="row">
+                        <div class="span8 well invoice-thank" style="margin-bottom:0px">
                             <h5 style="text-align:center;">Thank You!</h5>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             <strong>Phone:</strong> <a href="tel:555-555-5555">310-294-9901</a>
                         </div>
@@ -162,7 +168,7 @@
                         <div class="col-md-4">
                             <strong>Website:</strong> <a href="http://5marks.co">https://www.flowz.com/</a>
                         </div>
-                    </div>
+                    </div> -->
                 </Card>
             </div>
         </div>
@@ -401,7 +407,6 @@ export default {
         background-color:transparent;
     }
     .invoice-thank{
-        margin-top: 60px;
         padding: 5px;
     }
     address{
@@ -410,5 +415,8 @@ export default {
     }
     .invoice-head {
         display: inline-block;
+    }
+    .ivu-table-cell {
+        word-break: break-word;
     }
 </style>
