@@ -84,7 +84,7 @@
                 formValidate: {
                     POMode: ''
                 },
-                submit: false,
+                // submit: false,
                 data3: [],
                 data4: [],
                 targetKeys3: [],
@@ -285,16 +285,18 @@
                                 // console.log('response------------------------>',response)
                                 self.loading1 = false;
                                 self.poReset();
-                                // window.location.reload();
-                                self.submit = true;
+                                // self.submit = true;
+                                // console.log("------------poArr before",self.poArr,"++++++++rightarr", self.rightarr)
+                                // console.log("======supplierarr before",self.supplierArr)
+                                self.poArr.push(item);
+                                self.supplierArr = self.supplierArr.filter((e) => !self.rightarr.includes(e))
+                                // console.log("------------poArr after",self.poArr)
+                                // console.log("------------supplierArr after",self.supplierArr)
                                 self.rightarr = [];
-                                // self.$router.push({
-                                //     name: 'PurchaseOrder'
-                                // });
                             })
                             .catch(function (error) {
                                 self.loading1 = false;
-                                self.submit = false;
+                                // self.submit = false;
                                 console.log('error in generating po',error)
                             })
                         });
@@ -314,19 +316,22 @@
                                     // console.log("po delete response",res);
                                     self.loading1 = false;
                                     self.poReset();
-                                    self.submit = true;
+                                    // self.submit = true;
+                                    // console.log("===============poarr before",self.poArr, "+++++++leftarr", self.leftarr);
+                                    // console.log("------------supplierArr before",self.supplierArr)
+                                    self.supplierArr.push(item);
+                                    self.poArr = self.poArr.filter((e) => !self.leftarr.includes(e))
+                                    // console.log("------------poarr after",self.poArr)
+                                    // console.log("------------supplierArr after",self.supplierArr)
                                     self.leftarr = [];
-                                    // self.$router.push({
-                                    //     name: 'PurchaseOrder'
-                                    // });
                                 })
 
                             }
                         })
-                        console.log("this.submit",this.submit);
-                        if (this.submit) {
-                            this.$Message.success('PO setting updated successfully')
-                        }
+                        // console.log("this.submit",this.submit);
+                        // if (this.submit) {
+                        //     this.$Message.success('PO setting updated successfully')
+                        // }
                         //-------------------------------------------------------------
 
                 //     }
