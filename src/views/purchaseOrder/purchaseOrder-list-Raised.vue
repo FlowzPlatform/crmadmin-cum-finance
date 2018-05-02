@@ -1,6 +1,6 @@
 <template>
     <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-         <div class="drpdwn" style="display: inline;">
+         <div class="drpdwn1" style="display: inline;">
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
             </Select>
@@ -390,7 +390,7 @@
                 if(this.row != undefined){
                     params1 = {
                         websiteId :val,
-                        orderId : this.row.id 
+                        orderId : this.row.order_id 
                     }
                 }else{
                     params1 = {
@@ -473,7 +473,7 @@
             var self = this
             if(this.row != undefined){
                 $('.generate-po-button').css("display","block")
-                $('.drpdwn').css("display","none")
+                $('.drpdwn1').css("display","none")
                 $('.filterData').css("display","none")
                 self.listData(this.row.website_id);
             }else{

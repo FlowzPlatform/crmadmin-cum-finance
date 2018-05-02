@@ -117,7 +117,6 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                            $(".drpdwn").css('display','block')
                             // console.log('rowwwwwwwwwwwwww-------Expand', params.row)
                             // return h(expandRow, {
                             //     props: {
