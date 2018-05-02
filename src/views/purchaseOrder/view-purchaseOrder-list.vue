@@ -54,6 +54,7 @@ import expandRow from './view-purchaseOrder-list-Product.vue';
 import Cookies from 'js-cookie';
 import config from '../../config/customConfig.js'
 import axios from 'axios';
+import psl from 'psl';
 
 export default {
     name: 'view-purchaseOrder-list',
@@ -216,7 +217,26 @@ export default {
     },
     methods:{
         resendEmail (data) {
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
+            this.$Modal.confirm({
+				title: 'Email would be sent to',
+				okText: 'OK',
+				cancelText: 'Cancel',
+				render: (h) => {
+					return h('Input', {
+						props: {
+							value: data.product_description.supplier_info.email,
+							autofocus: true,
+							placeholder: 'Please enter email Id...'
+						},
+						on: {
+							input: (val) => {
+								data.product_description.supplier_info.email = val;
+							}
+						}
+					})
+				},
+				onOk: ()=>{
+                    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
             console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row.orderId)
             this.$Loading.start()
             var self = this
@@ -274,6 +294,8 @@ export default {
                         })
                     }
                 });
+                }
+			})
         },
         getImgUrl (url) {
                 return this.imgurl + url

@@ -26,6 +26,18 @@
                                       </AutoComplete>
                                   </div>
                               </div>
+                               <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#send"></span>
+                                      <label>po_Sent</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="send">
+                                      <select class="form-control"  v-model="po_sent" id="selectPOSend">
+                                        <option value="">All</option>
+                                        <option value="true">true</option>
+                                        <option value="false">false</option>
+                                      </select>
+                                  </div>
+                              </div>
                               <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#sku"></span>
                                       <label>Item Number</label>
@@ -65,7 +77,12 @@
               </div>
           </div>
 
-        <Table stripe @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
+        <Table stripe @on-expand="viewDetails" :columns="columns1" :data="list1"></Table>
+        <div style="margin: 10px;overflow: hidden">
+            <div style="float: right;">
+                <Page :total="len" :current="1" @on-change="changePage"></Page>
+            </div>
+        </div>
 
         <Modal
             v-model="modal1"
@@ -93,6 +110,7 @@
 
     const accounting = require('accounting-js');
     var res;
+    var pageSize = 10
     export default {
         name: 'orderlist',
         components: { orderList, purchaseOrderList , downloadOrderList},
@@ -101,6 +119,8 @@
                 value1: '1',
                 modal1: false,
                 orderid: '',
+                len:1,
+                po_sent:'',
                 orderidFilter:[],
                 itemno: '',
                 itemnoFilter:[],
@@ -112,7 +132,7 @@
                 orderDate: '',
                 userid: '',
                 columns1: [
-                     {
+                    {
                         // title: 'Order',
                         type: 'expand',
                         width: 50,
@@ -192,10 +212,6 @@
                         align:  'center',
                         key: 'user_type'
                     },
-                    // {
-                    //     title: 'Total Quantity',
-                    //     key: 'quantity'
-                    // },
                     {
                         title: 'Total Product',
                         width: 115,
@@ -216,6 +232,22 @@
                                 
                                 h('span', accounting.formatMoney(row.total))
                             ]);
+                        }
+                    },
+                    {
+                        title: 'po_Sent',
+                        width: 125,
+                        align:  'center',
+                        render : (h , {row}) => { 
+                            if(row.po_detail != undefined){
+                                return h('div', [
+                                    h('span','true')
+                                ]);
+                            }else{
+                                return h('div', [
+                                    h('span','false')
+                                ]);
+                            }
                         }
                     },
                     {
@@ -244,13 +276,36 @@
 						}
                     }
                 ],
-
+                filterArray: [],
                 data1: [],
                 list1: [],
                 finalresult: []
             }
         },
         methods: {
+            async changePage (p) {
+                // this.page = p
+                var self = this
+                console.log("not inside",self.filterArray.length)
+                if(self.filterArray.length == 0){
+                    console.log("inside",self.filterArray)
+                    self.list1 = await self.mockTableData1(p,pageSize);
+                }else{
+                    self.list1 = await self.mockTableData2(p,pageSize);
+                }
+            },
+            async mockTableData1 (p,size) {
+                console.log("mocktable call---------------")
+                this.len = this.data1.length
+                return this.data1.slice((p - 1) * size, p * size);
+            },
+            async mockTableData2 (p,size) {
+                console.log("p-------------->",p)
+                console.log("p-------------->",size)
+                console.log("console.log------------>",this.filterArray)
+                this.len = this.filterArray.length
+                return this.filterArray.slice((p - 1) * size, p * size);
+            },
             reset() {
               this.orderid = '';
               this.cname = '';
@@ -259,10 +314,11 @@
             },
             async changeData() {
               console.log("Before this.filterArray------->",this.filterArray)
-              this.filterArray = this.list1
+              this.filterArray = this.data1
                console.log("After this.filterArray------->",this.filterArray)
               var self = this
                 self.finalresult = [];
+
               if(this.orderid != ''){
                 console.log("this.orderid", this.orderid)
                 this.filterArray = _.filter(this.filterArray,  function(item){
@@ -272,9 +328,33 @@
                 });
                 console.log("myarr",this.filterArray)
                 console.log(" Filter this.filterArray------->",this.filterArray)
-                this.data1 = this.filterArray
+                this.list1 = await this.mockTableData2(1,pageSize)
                 console.log("After Filter this.filterArray------->",this.filterArray)
               }
+
+              if(this.po_sent != ''){
+                console.log("this.filterArray",this.filterArray)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                console.log("item",item)
+                  
+                    if(self.po_sent == 'true'){
+                        if(item.po_detail != undefined){
+                        return item
+                        }
+                    }else{
+                        if(item.po_detail == undefined){
+                            return item
+                        }
+                    }
+                  
+                });
+                console.log("myarr",this.filterArray)
+                console.log(" Filter this.filterArray------->",this.filterArray)
+                this.list1 = await this.mockTableData2(1,pageSize)
+                console.log("After Filter this.filterArray------->",this.filterArray)
+              }
+
+
 
               if(this.cname != ''){
                 console.log("this.cname", this.cname)
@@ -283,11 +363,11 @@
                   return item.user_billing_info.name === self.cname;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.data1 = this.filterArray
+                 this.list1 = await this.mockTableData2(1,pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.data1 = this.filterArray
+                this.list1 = await this.mockTableData2(1,pageSize)
               }
 
               if(this.email != ''){
@@ -297,11 +377,11 @@
                   return item.user_billing_info.email === self.email;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.data1 = this.filterArray
+                 this.list1 = await this.mockTableData2(1,pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.data1 = this.filterArray
+                this.list1 = await this.mockTableData2(1,pageSize)
               }
 
               if(this.itemno != ''){
@@ -319,11 +399,11 @@
                 });
                 console.log("myarr result",self.finalresult)
                 this.filterArray = self.finalresult
-                 this.data1 = this.filterArray
+                 this.list1 = await this.mockTableData2(1,pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.data1 = this.filterArray 
+                this.list1 = await this.mockTableData2(1,pageSize)
               }
 
 
@@ -411,11 +491,11 @@
                     //   'Authorization': Cookies.get('auth_token'),
                     //   // 'subscriptionId': Cookies.get('subscriptionId')
                     // }
-                }).then(function (response){
+                }).then(async function (response){
                     console.log("response val", response.data)
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
 
-                    self.list1 = self.data1
+                    self.list1 = await self.mockTableData1(1,pageSize)
                     self.data1.forEach(item => {
                       self.orderidFilter.push(item.id)
                       Namearr.push(item.user_billing_info.name)

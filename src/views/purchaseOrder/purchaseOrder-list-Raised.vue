@@ -97,6 +97,7 @@
     const accounting = require('accounting-js');
     let axios = require('axios'); 
     import Cookies from 'js-cookie';
+    import psl from 'psl';
     import _ from 'lodash'
     import expandRow from './view-purchaseOrder-list.vue';
     var pageSize = 10
@@ -458,7 +459,7 @@
 
             },
             async changePage (p) {
-                this.page = p
+                // this.page = p
                 console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
                     console.log("inside",this.filterArray)
