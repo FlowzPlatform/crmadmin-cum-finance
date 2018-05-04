@@ -77,7 +77,7 @@
               </div>
           </div>
 
-        <Table stripe @on-expand="viewDetails" :columns="columns1" :data="list1"></Table>
+        <Table stripe :height="tableHeight" @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -114,7 +114,8 @@
         name: 'orderlist',
         components: { orderList, purchaseOrderList , downloadOrderList},
         data() {
-            return { 
+            return {
+                tableHeight: 450,
                 value1: '1',
                 modal1: false,
                 orderid: '',
@@ -123,6 +124,7 @@
                 orderidFilter:[],
                 pageSize:10,
                 itemno: '',
+                optionsPage:[10,20,50,100,200],
                 itemnoFilter:[],
                 cname:'',
                 email:'',
@@ -286,6 +288,11 @@
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize
+                if(this.pageSize > 10){
+                    this.tableHeight = 530
+                }else{
+                    this.tableHeight = 450
+                }
                 this.changePage(1)
             },
             async changePage (p) {
@@ -302,6 +309,15 @@
             async mockTableData1 (p,size) {
                 console.log("mocktable call---------------")
                 this.len = this.data1.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                    this.tableHeight = 300
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
@@ -309,6 +325,15 @@
                 console.log("p-------------->",size)
                 console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                    this.tableHeight = 200
+                }else{
+                    this.tableHeight = 450
+                    }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             reset() {

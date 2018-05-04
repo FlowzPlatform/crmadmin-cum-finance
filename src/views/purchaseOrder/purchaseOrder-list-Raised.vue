@@ -80,10 +80,10 @@
                 </h4>
             </div>
 
-            <Table stripe :columns="columns1" :data="list"></Table>
+            <Table stripe :height="tableHeight" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
-                    <Page :total="len" :current="1" @on-change="changePage"></Page>
+                    <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
     import psl from 'psl';
     import _ from 'lodash'
     import expandRow from './view-purchaseOrder-list.vue';
-    var pageSize = 10
+    // var pageSize = 10
     export default {
         props: {
             row: Object
@@ -114,6 +114,8 @@
                 ponum: '',
                 dategt: '',
                 datelt: '',
+                pageSize: 10,
+                optionsPage:[10,50,100,200],
                 mode: '',
                 len: 1,
                 order_id: '',
@@ -232,9 +234,29 @@
             }
         },
         methods: {
+            changepagesize(pageSize){
+                console.log("####################################",pageSize)
+                this.pageSize = pageSize
+                if(this.pageSize > 10){
+                this.tableHeight = 530
+                }else{
+                this.tableHeight = 450
+                }
+                this.changePage(1)
+            },
             async mockTableData1 (p,size) {
                 console.log("mocktable call---------------")
                 this.len = this.data1.length
+                console.log("data length--------------->",this.len)
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                    this.tableHeight = 300
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
@@ -242,6 +264,16 @@
                 console.log("p-------------->",size)
                 console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
+                console.log("data length--------------->",this.len)
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                    this.tableHeight = 200
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             async changeData() {
@@ -257,7 +289,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.order_id != ''){
@@ -268,7 +300,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.mode != ''){
@@ -289,7 +321,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -302,7 +334,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                
@@ -410,7 +442,7 @@
                 }).then(async function (response){
                     console.log("------------------------response",response.data.data);
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
-                    self.list = await self.mockTableData1(1,pageSize)
+                    self.list = await self.mockTableData1(1,self.pageSize)
                     console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",self.list)
                     self.data1.forEach(item => {
                         self.ponumFilter.push(item.PO_id)
@@ -463,9 +495,9 @@
                 console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
                     console.log("inside",this.filterArray)
-                    this.list = await this.mockTableData1(p,pageSize);
+                    this.list = await this.mockTableData1(p,this.pageSize);
                 }else{
-                    this.list = await this.mockTableData2(p,pageSize);
+                    this.list = await this.mockTableData2(p,this.pageSize);
                 }
             }
         },

@@ -15,6 +15,15 @@
                   <div class="panel-body">
                       <form>
                           <div class="collapse-maindiv maindiv" >
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
+                                      <label>Order Id</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="order">
+                                      <AutoComplete v-model="orderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      </AutoComplete>
+                                  </div>
+                              </div>
                                <div class="panel panel-default">
                                     <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
                                             data-target="#date"></span>
@@ -31,6 +40,16 @@
                                             </div>
                                     </div>
                                </div>
+                                <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                                      <label>Name</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="Customer">
+                                      <select class="form-control"  v-model="cname" id="selectCustomer">
+                                        <option value="">All</option>
+                                      </select>
+                                  </div>
+                              </div>
                                 <div style="margin-top: 5px;">
                                     <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
                                     <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
@@ -82,7 +101,10 @@
                 pageSize: 10,
                 optionsPage:[10,20,50,100,200],
                 orderList: {},
+                cname: '',
                 orderDate: '',
+                orderidFilter: [],
+                orderid: '',
                 userid: '',
                 columns1: [
                     {
@@ -178,6 +200,9 @@
             }
         },
         methods: {
+            filterMethod (value, option) {
+              return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+            },
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize
@@ -271,7 +296,6 @@
                 var len
                 console.log("val", val)
                 let Namearr = [];
-                let Emailarr = [];
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
@@ -280,6 +304,19 @@
                     console.log("response val", response.data)
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
                     self.data1 = _.filter(self.data1, function(o) { return !o.po_detail; });
+                    self.data1.forEach(item => {
+                      self.orderidFilter.push(item.order_id)
+                      Namearr.push(item.user_billing_info.name)
+                    })
+                    Namearr = _.chain(Namearr).sort().uniq().value();
+                    Namearr.forEach(item => {
+                        var x = document.getElementById("selectCustomer");
+                        var option = document.createElement("option");
+                        option.text = item;
+                        console.log()
+                        x.add(option);
+                    })
+                    console.log("self.orderidFilter------->",self.orderidFilter)
                     self.list1 = await self.mockTableData1(1,self.pageSize)
                 }).catch(function (error) {
                       console.log("-------",error);

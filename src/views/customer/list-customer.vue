@@ -57,9 +57,9 @@
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-        <i-table v-if ="tabPane.domain=='Xero'" height="530" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='QB'" height="530" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='custom'" height="530" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='Xero'" :height="tableHeight" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :height="tableHeight" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -85,6 +85,7 @@ export default {
   name: 'list-customer',
   data () {
   return {
+    tableHeight: 450,
     tabIndex: 0,
     tabPanes : [],
     spinShow: true,
@@ -421,6 +422,11 @@ export default {
     changepagesize(pageSize){
         console.log("####################################",pageSize)
         this.pageSize = pageSize
+        if(this.pageSize > 10){
+          this.tableHeight = 530
+        }else{
+          this.tableHeight = 450
+        }
         this.changePage(1)
     },
     reset() {
@@ -505,10 +511,28 @@ export default {
       // console.log("p-------------->",size)
       // console.log("console.log------------>",this.filterArray)
       this.len = this.filterArray.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else if(this.len < 10){
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = 200
+        }else{
+          this.tableHeight = 450
+        }
       return this.filterArray.slice((p - 1) * size, p * size);
     },
     async mockTableData1 (p,size) {
       this.len = this.data6.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else if(this.len < 10){
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = 300
+        }else{
+          this.tableHeight = 450
+        }
       return this.data6.slice((p - 1) * size, p * size).reverse();
     },
     async changePage (p) {
