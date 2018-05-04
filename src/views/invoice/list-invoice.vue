@@ -1365,19 +1365,15 @@
         console.log("mock table call")
         this.len = this.data6.length
         console.log("data length--------------->",this.len)
-        // if(this.len == 0){
-        //   console.log("data length 0--------------->",this.tableHeight)
-        //   this.tableHeight = 100
-        // }else if(this.len == 10){
-        //   console.log("data length 10--------------->",this.tableHeight)
-        //   this.tableHeight == 450
-        // }else if(this.len > 10){
-        //   console.log("data length >10--------------->",this.tableHeight)
-        //   this.tableHeight == 530
-        // }else{
-        //   console.log("data length else--------------->",this.tableHeight)
-        //   this.tableHeight == 300
-        // }
+        if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else if(this.len < 10){
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = 200
+        }else{
+          this.tableHeight = 450
+        }
         return this.data6.slice((p - 1) * size, p * size);
       },
       async mockTableData2 (p,size) {
@@ -1385,6 +1381,15 @@
           console.log("p-------------->",size)
           console.log("console.log------------>",this.filterArray)
           this.len = this.filterArray.length
+          if(this.len == 0){
+            console.log("data length 0--------------->",this.tableHeight)
+            this.tableHeight = 100
+          }else if(this.len < 10){
+            console.log("data length 10--------------->",this.tableHeight)
+            this.tableHeight = 300
+          }else{
+            this.tableHeight = 450
+          }
           return this.filterArray.slice((p - 1) * size, p * size);
       },
       async changePage (p) {

@@ -97,15 +97,43 @@
     <div v-else>
         <Card>
             <Form :model="editFormItem" :label-width="110" ref="editFormItem" :rules="ruleValidate">
-                <FormItem label="Secret_Key" prop="Secret_Key">
-                    <Input v-model="editFormItem.Secret_Key" placeholder="Secret key"></Input>
-                </FormItem>
-                <FormItem label="isDefault">
-                    <Checkbox v-model="editFormItem.isDefault" @on-change="paymentIsDefaultChange"></Checkbox>
-                </FormItem>
-                <FormItem label="isDeleted">
-                    <Checkbox v-model="editFormItem.isDeleted" @on-change="paymentIsDeletedChange"></Checkbox>
-                </FormItem>
+                <div v-for="(i,j) in this.data">
+                    <div v-if="i == 'Secret_Key'">
+                        <FormItem label="Secret_Key" prop="Secret_Key">
+                            <Input v-model="editFormItem.Secret_Key" placeholder="Secret_Key"></Input>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'Signature_Key'">
+                        <FormItem label="Signature_Key" prop="Signature_Key">
+                            <Input v-model="editFormItem.Signature_Key" placeholder="Signature_Key"></Input>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'Transaction_Key'">
+                        <FormItem label="Transaction_Key" prop="Transaction_Key">
+                            <Input v-model="editFormItem.Transaction_Key" placeholder="Transaction_Key"></Input>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'client_id'">
+                        <FormItem label="client_id" prop="Client Id" >
+                            <Input v-model="editFormItem.client_id" placeholder="client_id"></Input>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'secret'">
+                        <FormItem label="secret" prop="Secret">
+                            <Input v-model="editFormItem.secret" placeholder="secret"></Input>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'isDefault'">
+                        <FormItem label="isDefault">
+                            <Checkbox v-model="editFormItem.isDefault" @on-change="paymentIsDefaultChange"></Checkbox>
+                        </FormItem>
+                    </div>
+                    <div v-else-if="i == 'isDeleted'">
+                        <FormItem label="isDeleted">
+                            <Checkbox v-model="editFormItem.isDeleted" @on-change="paymentIsDefaultChange"></Checkbox>
+                        </FormItem>
+                    </div>
+                </div>
                 <div style="text-align:center;">
                     <Button type="primary" @click="formData('editFormItem')" :loading="loading3">Submit</Button>
                     <Button type="ghost" style="margin-left: 8px" @click="Cancel('editFormItem')">Back</Button>
@@ -131,13 +159,22 @@ export default {
     data () {
         return{
             editData : {},
+            data: [],
             editGeneralData: {},
             editFormItemXero: '',
             editFormItemQB: '',
             loading2: false,
             loading3: false,
             loading1: false,
-            editFormItem: {},
+            editFormItem: {
+                'Signature_Key': '',
+                'Transaction_Key': '',
+                'isDefault': true,
+                'isDeleted': false,
+                'Secret_Key': '',
+                'client_id' : '',
+                'secret': ''
+            },
             ruleValidate: {
                 AddressLine1:[
                 { required: true, message: 'The AddressLine1 cannot be empty', trigger: 'blur' }
@@ -160,6 +197,18 @@ export default {
                 ],
                 Secret_Key: [
                     {required: true, message: 'The Secret_Key can not be empty', trigger: 'blur' }
+                ],
+                Signature_Key: [
+                    {required: true, message: 'The Signature_Key can not be empty', trigger: 'blur' }
+                ],
+                Transaction_Key: [
+                    {required: true, message: 'The Transaction_Key can not be empty', trigger: 'blur' }
+                ],
+                client_id: [
+                    {required: true, message: 'The client_id can not be empty', trigger: 'blur' }
+                ],
+                Secret: [
+                    {required: true, message: 'The secret can not be empty', trigger: 'blur' }
                 ],
                 configName:[
                     {required: true, message: 'The configName can not be empty', trigger: 'blur' }
@@ -261,7 +310,7 @@ export default {
                             this.$router.push({
                                 name:'Settings'
                             })
-                        }
+                        }Object.keys(this.editFormItem)
                         
                     })
                     .catch(error => {
@@ -481,7 +530,7 @@ export default {
                     console.log(EditModifiedData)
                     let patchData = _.cloneDeep(EditModifiedData)
                     delete patchData.online_payment;
-                    console.log("--------------",patchData);
+                    console.settingEditDatalog("--------------",patchData);
                     axios({
                         method:'patch',
                         url:feathersUrl +'settings/'+this.editData.id,
@@ -548,6 +597,8 @@ export default {
         console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",this.settingEditData)
         if(this.dataEditIn == 'Online Payment'){
             this.editFormItem = this.settingEditData.online_payment[this.tabName][this.rowIndex]
+            this.data = Object.keys(this.editFormItem)
+            console.log("this.editFormItem-------->", this.data)
         }
         if(this.dataEditIn == 'Configuration'){
             this.editData = this.settingEditData
