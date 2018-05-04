@@ -152,6 +152,8 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     const accounting = require('accounting-js');  
     import owlCarousel from 'owl.carousel';
+    import psl from 'psl';
+    
     export default {
         props: {
             row: Object

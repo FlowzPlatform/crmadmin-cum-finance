@@ -58,6 +58,8 @@
           </div>
         </div>
 
+        <div class="table-box">
+
         <div v-if="spinShow">
                 <Spin size="large"></Spin>
         </div>
@@ -91,12 +93,13 @@
                     </div>
                     <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
-                            <Page :total="len" :current="1" @on-change="changePage"></Page>
+                            <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                         </div>
                     </div>
 
             </TabPane>
             </Tabs>
+        </div>
         </div>
 
   </div>
@@ -110,7 +113,6 @@
     import _ from 'lodash'
     const accounting = require('accounting-js');
 
-    var pageSize = 10
     export default {
         name: '',
         props: {
@@ -123,6 +125,8 @@
         },
         data() {
             return {
+                pageSize: 10,
+                optionsPage:[10,20,50,100,200],
                 flag: true,
                 invnoFilter : [],
                 nodataMsg: 'No Data',
@@ -370,6 +374,11 @@
             }
         },
         methods: {
+            changepagesize(pageSize){
+                console.log("####################################",pageSize)
+                this.pageSize = pageSize
+                this.changePage(1)
+            },
             filterMethod (value, option) {
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
@@ -404,10 +413,10 @@
 
                 });
                 console.log("myarr",this.filterArray)
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }else{
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.invoiceId != ''){
@@ -422,7 +431,7 @@
                         }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 //  if(this.dategt != ''){
@@ -463,7 +472,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
 
                 }
 
@@ -475,7 +484,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
             },
@@ -580,13 +589,14 @@
                 return this.data.slice((p - 1) * size, p * size);
             },
             async changePage (p) {
-                this.page = p
+                // this.page = p
+                var self =this
                 console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
                     console.log("inside",this.filterArray)
-                    this.list = await this.mockTableData1(p,pageSize);
+                    this.list = await this.mockTableData1(p,self.pageSize);
                 }else{
-                    this.list = await this.mockTableData2(p,pageSize);
+                    this.list = await this.mockTableData2(p,self.pageSize);
                 }
             },
             async getTransaction(settingId) {
@@ -616,7 +626,7 @@
                     self.flag = false
                     $('.preload').css("display","none")
                     if(self.list.length == 0){
-                        self.list = await self.mockTableData1(1,pageSize)
+                        self.list = await self.mockTableData1(1,self.pageSize)
                     } else {
                     // if(self.list[0].key){
                     //   self.list = []
@@ -704,4 +714,5 @@
     .ivu-auto-complete.ivu-select-dropdown {
         max-height: 200px !important;
     }
+    .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

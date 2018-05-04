@@ -87,6 +87,7 @@ export default {
           "title": "Name",
           "key": "username",
           render: (h,params) => {
+            console.log("req info-------------------->",params)
             // return params.row.productInfo[0].username
              return h('div', [
                 h('span', params.row.productInfo[0].username)
