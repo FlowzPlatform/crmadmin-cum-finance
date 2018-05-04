@@ -87,7 +87,7 @@
       </div>
   </div>
 
-  <div>
+  <div class="table-box">
 
     <div v-if="spinShow">
                   <Spin size="large"></Spin>
@@ -96,13 +96,13 @@
             
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-            <Table   stripe @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list"  size="small" ref="table" ></Table>
-            <Table  stripe @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list"  size="small" ref="table" ></Table>
-            <Table  stripe @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list"  size="small" ref="table" ></Table>
+            <Table   :height="tableHeight" stripe @on-expand="viewDetails" v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list"  size="small" ref="table" ></Table>
+            <Table  :height="tableHeight" stripe @on-expand="viewDetails" v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list"  size="small" ref="table" ></Table>
+            <Table   :height="tableHeight" stripe @on-expand="viewDetailsCustom" v-if ="tabPane.domain=='custom'" :columns="columns3" :data="list"  size="small" ref="table" ></Table>
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
-                    <Page :total="len" :current="1" @on-change="changePage"></Page>
+                    <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
              <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -371,12 +371,13 @@
   import moment from 'moment'
   import Cookies from 'js-cookie'
   const accounting = require('accounting-js');  
-  var pageSize = 10
+  // var pageSize = 10
   var settingID
   export default {
     name: 'hello',
     data () {
       return {
+        tableHeight: '450',
         customaddress: '',
         customTotaltax: '',
         invnoFilter: [],
@@ -999,7 +1000,9 @@
         testArray: [],
         emailIdTobeSent : '',
         page: 1,
-        pageSize: pageSize,
+        pageSize: 10,
+        optionsPage:[10,50,100,200],
+        // pageSize: pageSize,
         list: [],
         resdata: '',
         resp: '',
@@ -1019,6 +1022,16 @@
     },
     components: { listtransaction },
     methods: {
+      changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        if(this.pageSize > 10){
+          this.tableHeight = 530
+        }else{
+          this.tableHeight = 450
+        }
+        this.changePage(1)
+      },
       filterMethod (value, option) {
           return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       },
@@ -1083,7 +1096,7 @@
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.cname != ''){
@@ -1099,11 +1112,11 @@
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.status != ''){
@@ -1126,11 +1139,11 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+           this.list = await this.mockTableData2(1,self.pageSize)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.dategt != ''){
@@ -1154,7 +1167,7 @@
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.datelt != ''){
@@ -1176,7 +1189,7 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+           this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.totalgt != ''){
@@ -1190,7 +1203,7 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+           this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.totallt != ''){
@@ -1204,7 +1217,7 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+           this.list = await this.mockTableData2(1,self.pageSize)
         }
 
       },
@@ -1314,10 +1327,8 @@
           }
         }
 
-
-        console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
-
-              res.forEach (obj => {
+        if(Array.isArray(res)){
+          res.forEach (obj => {
                   // console.log("/////////////////////////////////////////////////////////////////",obj)
                   if(obj.Name == undefined){
                       NameArr.push(obj.DisplayName)
@@ -1334,6 +1345,7 @@
                   console.log()
                   x.add(option);
               })
+        }
 
       },
       exportData (type) {
@@ -1350,8 +1362,22 @@
           }
       },
       async mockTableData1 (p,size) {
-
+        console.log("mock table call")
         this.len = this.data6.length
+        console.log("data length--------------->",this.len)
+        // if(this.len == 0){
+        //   console.log("data length 0--------------->",this.tableHeight)
+        //   this.tableHeight = 100
+        // }else if(this.len == 10){
+        //   console.log("data length 10--------------->",this.tableHeight)
+        //   this.tableHeight == 450
+        // }else if(this.len > 10){
+        //   console.log("data length >10--------------->",this.tableHeight)
+        //   this.tableHeight == 530
+        // }else{
+        //   console.log("data length else--------------->",this.tableHeight)
+        //   this.tableHeight == 300
+        // }
         return this.data6.slice((p - 1) * size, p * size);
       },
       async mockTableData2 (p,size) {
@@ -1362,13 +1388,14 @@
           return this.filterArray.slice((p - 1) * size, p * size);
       },
       async changePage (p) {
-          this.page = p
+        var self = this
+          // this.page = p
           console.log("not inside",this.filterArray.length)
           if(this.filterArray.length == 0){
             console.log("inside",this.filterArray)
-            this.list = await this.mockTableData1(p,pageSize);
+            this.list = await this.mockTableData1(p,self.pageSize);
           }else{
-            this.list = await this.mockTableData2(p,pageSize);
+            this.list = await this.mockTableData2(p,self.pageSize);
           }
       },
       async createPDFXero (params) {
@@ -2544,7 +2571,7 @@
               }
               })
             }
-            self.list = await self.mockTableData1(1,pageSize)
+            self.list = await self.mockTableData1(1,self.pageSize)
             self.columns3 = arr;
 			    })
           .catch(function (error) {
@@ -2592,16 +2619,10 @@
           })
           .then(async function (response) {
               console.log("response------>iuy",response);
-              if (response.data[0].data.data.oauth_problem === 'token_rejected') {
-                  self.$Loading.error();
-                  self.$Notice.error({
-                    duration:0, 
-                    title: "Xero : Credential Expired",
-                    desc: "The organisation for <u>" +settingName + "</u> is not active "
-                  });
-              }
-              else {
-                self.data6 = response.data[0].data.reverse();
+              // 
+              if (response.data[0].data.length >= 0) 
+              {
+                 self.data6 = response.data[0].data.reverse();
                 self.invnoFilter = []
                 if(response.data[0].data[0].InvoiceNumber != undefined){
                   response.data[0].data.forEach(item => {
@@ -2612,11 +2633,21 @@
                     self.invnoFilter.push(item.Id)
                   })
                 }
+                  
+              }
+              else if(response.data[0].data.data.oauth_problem != '')
+              {
+               self.$Loading.error();
+                  self.$Notice.error({
+                    duration:0, 
+                    title: "Xero : "+ response.data[0].data.data.oauth_problem,
+                    desc: "The organisation for <u>" +settingName + "</u> is not active. "+response.data[0].data.data.oauth_problem_advice
+                  });
               }
               self.$Loading.finish();
               $('.preload').css("display","none")
               self.filterArray = []
-              self.list = await self.mockTableData1(1,pageSize)
+              self.list = await self.mockTableData1(1,self.pageSize)
           })
           .catch(function (error) {
             console.log("error",error);
@@ -3289,13 +3320,8 @@
     mounted() {
       let self = this;
       this.$store.state.invoiceData = "";
-      //  $('.maindiv').change(async function() {
-      //   await self.changeData();
-      // });
-      // this.searchdata();
-      // this.getAllInvoice()
       this.getAllSettings()
-
+      var len1 = this.data6.length
     }
   }
 </script>
@@ -3338,4 +3364,5 @@
   .ivu-auto-complete.ivu-select-dropdown {
     max-height: 200px !important;
   }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

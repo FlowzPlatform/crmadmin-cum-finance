@@ -80,7 +80,7 @@
         <Table stripe @on-expand="viewDetails" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage"></Page>
+                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
         </div>
 
@@ -110,7 +110,6 @@
 
     const accounting = require('accounting-js');
     var res;
-    var pageSize = 10
     export default {
         name: 'orderlist',
         components: { orderList, purchaseOrderList , downloadOrderList},
@@ -122,6 +121,7 @@
                 len:1,
                 po_sent:'',
                 orderidFilter:[],
+                pageSize:10,
                 itemno: '',
                 itemnoFilter:[],
                 cname:'',
@@ -283,15 +283,20 @@
             }
         },
         methods: {
+            changepagesize(pageSize){
+                console.log("####################################",pageSize)
+                this.pageSize = pageSize
+                this.changePage(1)
+            },
             async changePage (p) {
                 // this.page = p
                 var self = this
                 console.log("not inside",self.filterArray.length)
                 if(self.filterArray.length == 0){
                     console.log("inside",self.filterArray)
-                    self.list1 = await self.mockTableData1(p,pageSize);
+                    self.list1 = await self.mockTableData1(p,self.pageSize);
                 }else{
-                    self.list1 = await self.mockTableData2(p,pageSize);
+                    self.list1 = await self.mockTableData2(p,self.pageSize);
                 }
             },
             async mockTableData1 (p,size) {
@@ -328,7 +333,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 console.log(" Filter this.filterArray------->",this.filterArray)
-                this.list1 = await this.mockTableData2(1,pageSize)
+                this.list1 = await this.mockTableData2(1,self.pageSize)
                 console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
@@ -350,7 +355,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 console.log(" Filter this.filterArray------->",this.filterArray)
-                this.list1 = await this.mockTableData2(1,pageSize)
+                this.list1 = await this.mockTableData2(1,self.pageSize)
                 console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
@@ -363,11 +368,11 @@
                   return item.user_billing_info.name === self.cname;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.list1 = await this.mockTableData2(1,pageSize)
+                 this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,pageSize)
+                this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.email != ''){
@@ -377,11 +382,11 @@
                   return item.user_billing_info.email === self.email;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.list1 = await this.mockTableData2(1,pageSize)
+                 this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,pageSize)
+                this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.itemno != ''){
@@ -399,11 +404,11 @@
                 });
                 console.log("myarr result",self.finalresult)
                 this.filterArray = self.finalresult
-                 this.list1 = await this.mockTableData2(1,pageSize)
+                 this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,pageSize)
+                this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
 
@@ -495,7 +500,7 @@
                     console.log("response val", response.data)
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
 
-                    self.list1 = await self.mockTableData1(1,pageSize)
+                    self.list1 = await self.mockTableData1(1,self.pageSize)
                     self.data1.forEach(item => {
                       self.orderidFilter.push(item.id)
                       Namearr.push(item.user_billing_info.name)

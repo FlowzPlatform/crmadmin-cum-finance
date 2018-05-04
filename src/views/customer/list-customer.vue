@@ -50,18 +50,19 @@
         </div>
       </div>
     </div>
+  <div class="table-box">
     <div v-if="spinShow">
       <Spin size="large"></Spin>
     </div>
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-        <i-table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='Xero'" height="530" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" height="530" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" height="530" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage"></Page>
+                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
         </div>
         <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -69,6 +70,7 @@
       </TabPane>
       </Tabs>
     </div>
+  </div>
   </div>
 </template>
 
@@ -78,7 +80,6 @@ import Cookies from 'js-cookie';
 // console.log(config)
 let feathersUrl =  config.default.serviceUrl;
 var _ = require('lodash');
-var pageSize = 10
 import axios from 'axios'
 export default {
   name: 'list-customer',
@@ -87,10 +88,11 @@ export default {
     tabIndex: 0,
     tabPanes : [],
     spinShow: true,
+    pageSize: 10,
     page: 1,
     len: 1,
     list: [],
-    pageSize: pageSize,
+    // pageSize: pageSize,
     columns1: [
       {
         "title": "Customer Name",
@@ -408,6 +410,7 @@ export default {
     data6: [],
     data7: [],
     filterArray: [],
+    optionsPage:[10,20,50,100,200],
     listData: [],
     cname: '',
     status:'',
@@ -415,6 +418,11 @@ export default {
     }
   },
   methods: {
+    changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        this.changePage(1)
+    },
     reset() {
       this.cname = '';
       this.status = '';
@@ -437,11 +445,11 @@ export default {
           }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+       this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
 
@@ -464,11 +472,11 @@ export default {
           }
         });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+       this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
       
       if(this.email != ''){
@@ -485,11 +493,11 @@ export default {
         }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+       this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
     },
     async mockTableData2 (p,size) {
@@ -504,13 +512,14 @@ export default {
       return this.data6.slice((p - 1) * size, p * size).reverse();
     },
     async changePage (p) {
+      var self = this
       this.page = p
       // console.log("not inside",this.filterArray.length)
       if(this.filterArray.length == 0){
         // console.log("inside",this.filterArray)
-        this.list = await this.mockTableData1(p,pageSize);
+        this.list = await this.mockTableData1(p,self.pageSize);
       }else{
-        this.list = await this.mockTableData2(p,pageSize);
+        this.list = await this.mockTableData2(p,self.pageSize);
       }
     },
     async tabClicked(data){
@@ -557,7 +566,7 @@ export default {
 
               });
           }
-          self.list = await self.mockTableData1(1,pageSize)
+          self.list = await self.mockTableData1(1,self.pageSize)
           // self.column3 = arr;
         })
         .catch(function (error) {
@@ -608,7 +617,7 @@ export default {
           self.data6 = response.data[0].data.reverse();
           self.$Loading.finish();
           $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
+          self.list = await self.mockTableData1(1,self.pageSize)
         })
         .catch(function (error) {
             console.log("error",error);
@@ -823,4 +832,5 @@ export default {
   .ivu-table-cell {
       word-break: break-word;
   }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

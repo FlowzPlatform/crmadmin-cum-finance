@@ -114,6 +114,15 @@ export const otherRouter = {
             require(['@/views/own-space/own-space.vue'], resolve);
         }
     },
+    {
+        path: 'newpo',
+        title: 'New PO',
+        icon: 'ios-compose',
+        name: 'New PO',
+        component: resolve => {
+            require(['@/views/purchaseOrder/new_po.vue'], resolve);
+        }
+    },
     // { path: 'order/:order_id', title: 'order', name: 'order-info', component: resolve => { require(['@/views/advanced-router/component/order-info.vue'], resolve); } }, // 用于展示动态路由
     {
         path: 'shopping',
@@ -389,15 +398,6 @@ export const appRouter = [
             component: resolve => {
                 require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);
             },
-        },
-        {
-            path: '/new',
-            title: 'New PO',
-            icon: 'ios-compose',
-            name: 'New PO',
-            component: resolve => {
-                require(['@/views/purchaseOrder/new_po.vue'], resolve);
-            }
         }]
     },
     // {
