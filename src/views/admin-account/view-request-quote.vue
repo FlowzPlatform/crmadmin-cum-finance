@@ -41,43 +41,20 @@
                       </div>
                     </div>
                 </div>
-                <div v-for="item in row.product_description.pricing">
-                  <div v-if="item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global'">
-                    <h3 class="quantity-price">Quantity Price</h3>
-                    <div class="quantity-table">
-                      <div class="quantity-table-title" style="float: left;width: 23%;">
-                        <div class="table-heading js-product-price-unit" data-product-price-unit="each">Quantity </div>
+                <div class="quantity-table" style="margin: 10px;">
+                    <div class="quantity-table-title" style="margin-top: 15px;">
+                        <div class="table-heading">Quantity </div>
                         <div class="table-content">Price</div>
-                      </div>
-                      <div class="quantity-table-disc">
-                        <div class="quantity-table-col owl-carousel owl-theme" style="opacity: 1; display: block;">
-                          <div class="owl-wrapper-outer">
-                            <ul class="owl-wrapper ulList" style="width: 808px; left: 0px; display: block; transition: all 0ms ease; margin-top: -10px; transform: translate3d(0px, 0px, 0px);">
-                              <li class="owl-item"  v-for="element in item.price_range" style="width: 101px;">
-                                <div>
-                                  <div class="table-heading" v-if="element.qty.lte">{{element.qty.gte}} - {{element.qty.lte}}</div>
-                                  <div class="table-heading" v-else>{{element.qty.gte}} + </div>
-                                  <div class="table-content">{{accounting(element.price)}}</div>
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-                          <div class="owl-controls clickable" style="display: none;">
-                            <div class="owl-pagination">
-                              <div class="owl-page active">
-                                <span class=""></span>
-                              </div>
-                            </div>
-                            <div class="owl-buttons">
-                              <div class="owl-prev"></div>
-                              <div class="owl-next"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="clearfix"></div>
                     </div>
-                  </div>
+                    <div  v-for="(element, inx) in row.product_description.pricing">
+                        <div class="quantity-table-disc owl-carousel owl-theme" v-if="element.price_type == 'regular' && element.type == 'decorative' && element.global_price_type == 'global'" style="margin-top: 15px;margin-bottom: 20px;">
+                            <div v-for="(itm,inx) in element.price_range" >
+                                <div class="table-heading" v-if="itm.qty.lte">{{itm.qty.gte}} - {{itm.qty.lte}}</div>
+                                <div class="table-heading" v-else>{{itm.qty.gte}} + </div>
+                                <div class="table-content"> {{accounting(itm.price)}}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <h3 class="product-summary">Product Summary</h3>
                   <div class="estimate-detail product-section-box">
@@ -319,7 +296,8 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
-
+import 'owl.carousel/dist/assets/owl.carousel.css';
+import owlCarousel from 'owl.carousel';
 import feathers from 'feathers/client';
 import socketio from 'feathers-socketio/client';
 import config from '@/config/customConfig'
@@ -439,6 +417,16 @@ export default {
 
         }
       })
+
+      $('.owl-carousel').owlCarousel({
+          stopOnHover : true,
+          navigation:true,
+          items : 4,
+          itemsDesktop: [1199, 4],
+          itemsDesktopSmall: [979, 4],
+          itemsTablet: [767, 2],
+          itemsMobile: [479, 2]
+      });
   }
 }
 </script>
@@ -977,6 +965,44 @@ html input[type=button] {
             overflow: auto;
             height: 250px;
         }
+  .quantity-table-disc {
+        float: left;
+        max-width: 400px;
+        overflow: auto;
+        width: 100%;
+    }
+    .quantity-table .table-heading {
+        background: #999 none repeat scroll 0 0;
+        border-right: 1px solid #fff;
+        border-top: 0 none;
+        color: #fff;
+        font-family: "roboto_condensedlight";
+        font-size: 16px;
+        padding: 6px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .quantity-table .table-content {
+        background: #e6e6e6 none repeat scroll 0 0;
+        border: 1px solid #fff;
+        color: #444;
+        font-size: 16px;
+        padding: 6px;
+        text-align: center;
+        font-family: "roboto_condensedregular";
+        text-transform: uppercase;
+        margin-left: -1px;
+    }
+    .description .quantity-table-disc > ul {
+        display: inline-block;
+        width: 500px;
+        margin-bottom: -5px;
+    }
+
+    .description .quantity-table-disc > ul > li {
+        display: inline-block;
+        float: left;;
+    }
 
 </style>
 
