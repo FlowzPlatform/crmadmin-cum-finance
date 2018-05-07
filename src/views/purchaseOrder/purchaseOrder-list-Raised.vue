@@ -253,7 +253,7 @@
                     this.tableHeight = 100
                 }else if(this.len < 10){
                     console.log("data length 10--------------->",this.tableHeight)
-                    this.tableHeight = 300
+                     this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
                 }
@@ -270,7 +270,7 @@
                     this.tableHeight = 100
                 }else if(this.len < 10){
                     console.log("data length 10--------------->",this.tableHeight)
-                    this.tableHeight = 200
+                     this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
                 }

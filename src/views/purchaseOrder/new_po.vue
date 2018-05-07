@@ -60,19 +60,12 @@
               </div>
           </div>
     </div>
-    <!-- <Select v-model="pageSize" @on-change="changePageSize">
-        <Option value="10">10</Option>
-        <Option value="20">20</Option>
-        <Option value="50">50</Option>
-        <Option value="100">100</Option>
-    </Select> -->
-
-        <Table stripe @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
-        <div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
-            </div>
+    <Table size="small" stripe :height="tableHeight" @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
+    <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+            <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
         </div>
+    </div>
 
 </div>
 </template>
@@ -92,6 +85,7 @@
             return { 
                 modal1: false,
                 orderid: '',
+                tableHeight: 450,
                 len:1,
                 email:'',
                 dategt: '',
@@ -196,7 +190,8 @@
                 ],
                 data1: [],
                 list1: [],
-                finalresult: []
+                finalresult: [],
+                filterArray: []
             }
         },
         methods: {
@@ -206,24 +201,51 @@
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize
+                this.pageSize = pageSize
+                if(this.pageSize > 10){
+                    this.tableHeight = 530
+                }else{
+                    this.tableHeight = 450
+                }
                 this.changePage(1)
             },
             async changePage (p) {
+                console.log("page------------------------->",p)
                 var self = this
                 if(self.filterArray.length == 0){
                     console.log("inside",this.filterArray)
-                    self.list = await self.mockTableData1(p,self.pageSize);
+                    self.list1 = await self.mockTableData1(p,self.pageSize);
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",self.list1)
                 }else{
-                    thiselfs.list = await self.mockTableData2(p,self.pageSize);
+                    self.list1 = await self.mockTableData2(p,self.pageSize);
                 }
             },
             async mockTableData1 (p,size) {
                 console.log("mocktable call---------------",size)
                 this.len = this.data1.length
+                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.data1)
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
                 this.len = this.filterArray.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             init () {
