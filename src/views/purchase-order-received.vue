@@ -483,7 +483,7 @@
                         console.log("rowIndex",rowIndex);
                         let patchData = {
 							id : configId,
-                            // rowIndex : rowIndex,
+                            rowIndex : rowIndex,
                             online_payment : {
                                 [tabname] : self.exData
                             }
