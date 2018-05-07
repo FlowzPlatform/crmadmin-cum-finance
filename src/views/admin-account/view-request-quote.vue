@@ -1,8 +1,8 @@
 <template>
   <div>
     <Card>
-      <div class="row col-mn-pt">
-        <div class="col-md-6 right-border" id="product_list">         
+      <div class="row">
+        <div class="col-md-6" id="product_list">         
           <div style="text-align:center">
             <div class="row">
               <div class="col-sm-12">
@@ -35,8 +35,7 @@
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
                       <h2 class="heading-2" style="font-size:20px !important;">{{row.product_description.product_name}}</h2>
                       <div class="skuprice">
-                        <div style="text-align: -webkit-center;background: #f5f5f5;
-                padding: 7px 0;">Item Number :
+                        <div style="text-align: -webkit-center;background: #f5f5f5;padding: 7px 0;">Item Number :
                           <span>{{row.product_description.sku}}</span>
                         </div>
                       </div>
