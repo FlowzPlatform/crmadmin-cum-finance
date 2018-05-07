@@ -104,91 +104,121 @@
 							<div class="row">
 								<div class="span8 well invoice-body" style="padding: 0px;border: none;">
 									<Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
-									<!-- <table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>Item#</th>
-												<th>Description</th>
-												<th>Unit Price</th>
-												<th>Quantity</th>
-												<th>Lime Total</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>1</td>
-												<td>Service request</td>
-												<td>$2.05</td>
-												<td>12</td>
-												<td>$24.60</td>
-											</tr>
-											<tr>
-												<td>2</td>
-												<td>Service</td>
-												<td>$5.00</td>
-												<td>10</td>
-												<td>$50.00</td>
-											</tr>
-											<tr>
-												<td colspan=3 rowspan=3 class="table12">&nbsp;</td>
-												<td><strong>SUBTOTAL</strong></td>
-												<td><strong>$74.60</strong></td>
-											</tr>
-											<tr>
-												<td><strong>SALETAX</strong></td>
-												<td><strong>$25.40</strong></td>
-											</tr><tr>
-												<td><strong>TOTAL</strong></td>
-												<td><strong>$100.00</strong></td>
-											</tr>
-										</tbody>
-									</table> -->
 								</div>
 							</div>
 						</div>
 					</Card>
 					<div class="row">
-						<div>
-							<label> Payment Options : </label> <br>
-							<div class="online_payment">
-								<div class="col-md-12" style="margin-top: 20px;">
-									<!-- <Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-										<FormItem label="Configuration Name" class="config">
-											<Select v-model="formValidate.configuration" style="width:100%;text-align:left">
-												<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
-											</Select>
-										</FormItem>
-										<FormItem label="Gateway" prop="gateway">
-											<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
-											<Option  value='stripe'>Stripe</Option>
-											<Option  value='auth'>Authrize.Net</Option>
-											<Option value='paypal'>PayPal</Option>
-											</Select>
-										</FormItem>
-										<FormItem label="Secret key" v-if="formValidate.gateway == 'stripe'" prop="Secret_Key">
-											<Input v-model="formValidate.Secret_Key" placeholder="Enter Secret key"></Input>
-										</FormItem>
-										
-										<FormItem label="Transaction Key" v-if="formValidate.gateway == 'auth'" prop="Transaction_Key">
-											<Input v-model="formValidate.Transaction_Key" placeholder="Enter Transaction Key"></Input>
-										</FormItem>
-										<FormItem label="Signature Key" v-if="formValidate.gateway == 'auth'" prop="Signature_Key">
-											<Input v-model="formValidate.Signature_Key" placeholder="Enter Signature Key"></Input>
-										</FormItem>
-										<FormItem label="Client Id" v-if="formValidate.gateway == 'paypal'" prop="Client_Id">
-											<Input v-model="formValidate.Client_Id" placeholder="Enter Client Id"></Input>
-										</FormItem>
-										<FormItem label="Secret" v-if="formValidate.gateway == 'paypal'" prop="Secret">
-											<Input v-model="formValidate.Secret" placeholder="Enter Secret"></Input>
-										</FormItem>
-										
-										<div style="text-align:center;">
-											<Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
-											<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+						<div class=" col-md-12">
+							<div class="well">
+								<label> Payment Options : </label>
+								<Button type="primary" @click="clicked()" style="float:right">Add New Payment Configuration</Button>
+								<div style="float:left; width:100%;">
+									<div class="online_payment" style="display:none">
+										<div class="" style="margin-top: 20px;">
+											<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
+												<FormItem label="Account Name" prop="Account_Name">
+													<Input v-model="formValidate.Account_Name" placeholder="Enter Account Name"></Input>
+												</FormItem>
+												<FormItem label="Gateway" prop="gateway">
+													<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
+													<Option  value='auth'>Authrize.Net</Option>
+													<Option  value='paypal'>PayPal</Option>
+													<Option value='stripe'>Stripe</Option>
+													</Select>
+												</FormItem>
+												<FormItem label="Secret key" v-if="formValidate.gateway == 'stripe'" prop="Secret_Key">
+													<Input v-model="formValidate.Secret_Key" placeholder="Enter Secret key"></Input>
+												</FormItem>
+												
+												<FormItem label="Transaction Key" v-if="formValidate.gateway == 'auth'" prop="Transaction_Key">
+													<Input v-model="formValidate.Transaction_Key" placeholder="Enter Transaction Key"></Input>
+												</FormItem>
+												<FormItem label="Signature Key" v-if="formValidate.gateway == 'auth'" prop="Signature_Key">
+													<Input v-model="formValidate.Signature_Key" placeholder="Enter Signature Key"></Input>
+												</FormItem>
+												<FormItem label="Client Id" v-if="formValidate.gateway == 'paypal'" prop="Client_Id">
+													<Input v-model="formValidate.Client_Id" placeholder="Enter Client Id"></Input>
+												</FormItem>
+												<FormItem label="Secret" v-if="formValidate.gateway == 'paypal'" prop="Secret">
+													<Input v-model="formValidate.Secret" placeholder="Enter Secret"></Input>
+												</FormItem>
+												
+												<div style="text-align:center;">
+													<Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
+													<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+												</div>
+											</Form>
 										</div>
-									</Form> -->
+									</div>
 								</div>
+								<div v-if="this.data2.length>0" class="payment_table" style="margin-top: 20px; float:left;">
+									<Tabs :value="tabIndex"  @on-click="setTabValue">
+										<TabPane v-for="(v, k) in this.data2[0].online_payment" v-if="v.length > 0" :label="keyName(k)" >
+											<div class="schema-form ivu-table-wrapper">
+												<div class="ivu-table ivu-table-border">
+													<div v-if="v.length > 0" class="ivu-table-body">
+														<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+															<thead>
+																<tr>
+																	<th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
+																		<div class="ivu-table-cell">
+																			<span>{{key}}</span>
+																		</div>
+																	</th>
+																	<th class="ivu-table-column-center">
+																		<div class="ivu-table-cell"><span>Action</span>
+																		</div>
+																	</th>
+																</tr>
+															</thead>
+															<tbody class="ivu-table-tbody">
+																<tr class="ivu-table-row" v-for="(row, i) in v" v-if="row.isDeleted == false">
+																	<td class="" v-for="(val, key) in row" v-if="key !== 'isDeleted'">
+																			<div class="ivu-table-cell" v-if="key === 'isDefault' && val === true" style="text-align:left">
+																				<Checkbox label="" v-model="checked" disabled></Checkbox>
+																			</div>
+																			<div class="ivu-table-cell" v-else-if="key === 'isDefault' && val === false"  style="text-align:left">
+																				<Checkbox label="" v-model="unchecked" disabled></Checkbox>
+																			</div>
+																			<div class="ivu-table-cell" v-else>
+																				{{row[key]}}
+																			</div>
+																	</td>
+																	<td class="ivu-table-column-center" style="padding:3px;">
+																		<div class="ivu-table-cell">
+																		<Tooltip content="Edit" placement="top">
+																			<Button class="ButtonGroup" @click="handleEdit(k, i)" type="ghost" icon="edit"></Button>
+																			
+																		</Tooltip>
+																		<Tooltip content="Remove" placement="top">
+																			<Button class="ButtonGroup" @click="handleDelete(k, i)" type="ghost" icon="android-delete"></Button>
+																			
+																		</Tooltip>
+																		</div>
+																	</td>
+																</tr>
+																
+															</tbody>
+														</table>
+													</div>
+													<div v-else class="ivu-table-tip" style="display: none;">
+														<table cellspacing="0" cellpadding="0" border="0">
+															<tbody>
+																<tr>
+																	<td><span>No Data</span></td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</TabPane>
+									</Tabs>
+								</div>
+								<div class="clearfix"></div>
 							</div>
+							
 						</div>        
 					</div>
 
@@ -216,6 +246,7 @@
 
 <script>
 	import axios from 'axios'
+	import psl from 'psl';
 	import config from '../config/customConfig'
 	import Cookies from 'js-cookie';
 	import moment from 'moment';
@@ -299,11 +330,271 @@
 				data1: {},
 				moment: moment,
 				date: '',
-				poBillAddress:[]
+				poBillAddress:[],
+				loading: false,
+				checked: true,
+				tabIndex : 0,
+                unchecked: false,
+				formValidate:{
+					Account_Name: '',
+					gateway:'',
+					Secret_Key: '',
+					Transaction_Key: '',
+					Signature_Key: '',
+					Client_Id: '',
+					Secret: ''
+				},
+				ruleValidate: {
+					Account_Name: [
+						{ required: true, message: 'Please Enter Account Name', trigger: 'blur'}
+					],
+					gateway: [
+						{ required: true, message: 'Please select gateway', trigger: 'blur' }
+					],
+					Secret_Key: [
+						{ required: true, message: 'The Secret_Key cannot be empty', trigger: 'blur' }
+					],
+					Transaction_Key: [
+						{ required: true, message: 'The Transaction_Key cannot be empty', trigger: 'blur' }
+					],
+					Signature_Key: [
+						{ required: true, message: 'The Signature_Key cannot be empty', trigger: 'blur' }
+					],
+					Client_Id: [
+						{ required: true, message: 'The Client_Id cannot be empty', trigger: 'blur' }
+					],
+					Secret: [
+						{ required: true, message: 'The Secret cannot be empty', trigger: 'blur' }
+					]
+				}
 			}
 		},
-		methods: {		
-			init (){
+		methods: {
+			handleEdit (tabname, rowinx) {
+				console.log('handleEdit............', tabname, rowinx)
+				let self = this;
+                this.exData = this.data2[0].online_payment[tabname][rowinx];
+				let oldData = _.cloneDeep(this.data2[0].online_payment[tabname][rowinx])
+                oldData = _.omit(oldData, ['_index', '_rowKey'])
+                console.log('...',  this.exData )
+				this.$Modal.confirm({
+                    title: 'Edit',
+                    closable: true,
+                    render: (h, params) => {
+                        let myFormItem = []
+                        for(let k in oldData) {
+                            if ((k === 'isDefault')) {
+                                myFormItem.push(
+                                h('FormItem', {
+                                    props: {
+                                        label: k
+                                    }
+                                }, [
+                                    h('Checkbox', {
+                                        props: {
+                                            value: self.exData[k]
+                                        },
+                                        on: {
+                                            'on-change': (value) => {
+                                                console.log(value)
+                                                self.exData[k] = value
+                                            }
+                                        }
+                                    })
+                                ])
+                            )    
+                            } else if ((k === 'isDeleted')) {
+                                myFormItem.push(
+                                h('FormItem', {
+                                    props: {
+                                        label: k
+                                    }
+                                }, [
+                                    h('Checkbox', {
+                                        props: {
+                                            value: self.exData[k]
+                                        },
+                                        on: {
+                                            'on-change': (value) => {
+                                                console.log(value)
+                                                self.exData[k] = value
+                                            }
+                                        }
+                                    })
+                                ])
+                            )    
+                            } else if ((k === 'Account_Name')) {
+                                myFormItem.push(
+                                h('FormItem', {
+                                    props: {
+                                        label: k
+                                    }
+                                }, [
+                                    h('Input', {
+                                        props: {
+                                            value: self.exData[k]
+										},
+										attrs: {
+											disabled: true
+										},
+                                        on: {
+                                            'on-change': (value) => {
+                                                console.log(value)
+                                                self.exData[k] = value
+                                            }
+                                        }
+                                    })
+                                ])
+                            )    
+                            } else {
+                                myFormItem.push(
+                                    h('FormItem', {
+                                        props: {
+                                            label: k
+                                        }
+									}, 
+									[
+                                        h('Input', {
+                                            props: {
+                                                value: self.exData[k]
+                                            },
+                                            on: {
+                                                'input': (value) => {
+                                                    console.log('Input:: ', value)
+                                                    self.exData[k] = value
+                                                }
+                                            }
+                                        })
+                                    ])
+                                )
+                            }
+                        } 
+                        // console.log('myFormItem', myFormItem)
+                        return h('div', {},  
+                        [
+                            h('Form', {}, myFormItem)
+                        ])
+					},
+                    onOk() {
+                        console.log("edited data", self.exData);
+                        let rowIndex = rowinx;
+						// self.exData = _.omit(self.exData, ['_index', '_rowKey'])
+						let configId = self.data2[0].id;
+                        console.log("rowIndex",rowIndex);
+                        let patchData = {
+							id : configId,
+                            // rowIndex : rowIndex,
+                            online_payment : {
+                                [tabname] : self.exData
+                            }
+                        };
+                        console.log("patchData",patchData)
+                        axios({
+                            method:'patch',
+                            url:'http://localhost:3037/supplier-payment-config/'+configId,
+                            data: patchData,
+                        }).then(response => {
+                            console.log("++++++++++++------------response",response);
+                            if(response.status == 200){
+                                this.$Message.success("Configuaration updated successfully")
+                            }
+                            
+                        })
+                        .catch(error => {
+                                console.log(error)
+                                
+                                if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location}) 
+                                    Cookies.remove('subscriptionId' ,{domain: location}) 
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }
+                        });
+                    },
+                    onCancel() {
+                        console.log('CANCEL!!')
+                    }
+                })
+			},
+			handleDelete (tabname, rowinx) {
+                console.log("in handleDelete-------------->",tabname, rowinx)
+				console.log("delet data", this.data2[0].online_payment[tabname][rowinx])
+				let self = this;
+				let configId = self.data2[0].id;
+                this.$Modal.confirm({ 
+                    title: 'Confirm Delete',
+                    okText : "Delete",
+                    cancelText: 'Cancel',
+                    content: '',
+                    onOk: () => {
+                        self.exData = self.data2[0].online_payment[tabname][rowinx];
+                        console.log("self.exData",self.exData);
+                        self.exData.isDeleted = true;
+                        let patchData = {
+                            id : configId,							
+                            rowIndex : rowinx,
+                            online_payment : {
+                                [tabname] : self.exData
+                            }
+                        };
+                        console.log("patchData",patchData)
+                        axios({
+                            method:'patch',
+                            url: 'http://localhost:3037/supplier-payment-config/'+configId,
+                            data: patchData,
+                        }).then(response => {
+                            if(response.status == 200){
+                                this.$Message.success("Configuaration deleated successfully")
+                            }
+                            console.log("YYYYYYYYYYYYy",self.exData);
+                            console.log("EEEEEEEEEEEEe",self.data2[0].online_payment[tabname][rowinx])
+                        })
+                        .catch(error => {
+                                console.log(error)
+                                
+                                if(error.response.status == 401){
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+                                    
+                                    Cookies.remove('auth_token' ,{domain: location})
+                                    Cookies.remove('subscriptionId' ,{domain: location})  
+                                    this.$store.commit('logout', this);
+                                    
+                                    this.$router.push({
+                                        name: 'login'
+                                    });
+                                }
+                        });
+                    },
+                    render: (h) => {
+                        return h('div', {
+                        }, [
+                            h('span', {
+                                style:{
+                                    fontSize:'25px'
+                                },
+                                props: {
+                                },
+                                on: {
+                                    input: (val) => {
+                                    }
+                                }
+                            },'This Payment Configuration Will Be Deleted.'),
+                        ])
+                    }
+                })
+
+            },
+			setTabValue (value) {
+				this.tabIndex = value;
+			},		
+			async init (){
 				var self = this
 				// console.log("config.default.orderapi", config.default.orderapi)
 				axios({
@@ -319,16 +610,18 @@
 					} 
 				}).then(function (response){
 					console.log("------------------------response",response.data);
-
+					
 					let poData=response.data.data;
 						if(poData && poData.length>0){
 							let poDetail=poData[0]
 							self.date = moment(poDetail.PO_generate_date).format('DD-MMM-YYYY')  
-							self.poBillAddress  =self.splitProductAddress(poDetail);
-							self.data1 = poDetail                   
-							self.data2 = poDetail.products
-							console.log("data2", self.data2)
+							self.poBillAddress  =  self.splitProductAddress(poDetail);
+							self.supplierPayment()
+							self.data1 = poDetail
 						}else{
+								self.$router.push({
+									name: 'error-404'
+								})
 								
 						}
 				}).catch(error => {
@@ -409,11 +702,118 @@
 			// },
 			accounting(item){
 				return accounting.formatMoney(item)
-			}
+			},
+			handleReset (name) {
+				this.loading = false;
+				this.formValidate.gateway = '',
+				this.formValidate.Secret_Key = '',
+				this.formValidate.Transaction_Key = '',
+				this.formValidate.Signature_Key = '',
+				this.formValidate.Client_Id = '',
+				this.formValidate.Secret = ''
+				// this.formValidate.x_api_login = '',
+				// this.formValidate.x_api_token = ''
+				// this.$refs[name].resetFields();
+			},
+			handleSubmit (name) {
+				var self = this
+				this.$refs[name].validate((valid) => {
+					if (valid) {
+						console.log('formValidate----------------------------->',this.formValidate, this.poBillAddress)
+						let patchData = _.cloneDeep(this.formValidate)
+						if (this.formValidate.gateway == 'stripe') {
+							delete patchData.Transaction_Key
+							delete patchData.Signature_Key
+							delete patchData.Client_Id
+							delete patchData.Secret
+						}
+						if (this.formValidate.gateway == 'auth') {
+							delete patchData.Secret_Key
+							delete patchData.Client_Id
+							delete patchData.Secret
+						}
+						if (this.formValidate.gateway == 'paypal') {
+							delete patchData.Secret_Key
+							delete patchData.Transaction_Key
+							delete patchData.Signature_Key
+						}
+						var params = {'supplier_id': self.poBillAddress[0].product[0].product_description.supplier_id , 'supplier_email': self.poBillAddress[0].product[0].product_description.supplier_info.email, 'online_payment': {}}
+						delete patchData.gateway;
+						patchData['isDefault'] = true;
+						patchData['isDeleted'] = false;
+						console.log('patchData----------------------------->',patchData)						
+						params.online_payment[this.formValidate.gateway] = [patchData];
+						console.log("---------------------params online payment",params);
+
+						axios({
+							method: 'post',
+							// url: config.default.serviceUrl + 'supplier-payment-config',
+							url: 'http://localhost:3037/supplier-payment-config',
+							
+							data: params
+						}).then(function(response){
+							console.log('??????????????', response)
+						}).catch(function (error){
+							console.log("error", error.response)
+							self.$Notice.error({
+								title: error.response.data.name,
+								desc: error.response.data.message,
+								duration: 10
+							})
+						})
+						// self.loading = true;
+					} 
+					else {
+						this.$Message.error('Please fill up all the fields correctly');
+					}
+				})
+			},
+			clicked () {
+                console.log("Clickeddddd...............");
+                $('.online_payment').slideToggle(700);
+			},
+			supplierPayment () {
+				var self = this
+				axios({
+					method: 'get',
+					// url: config.default.serviceUrl + 'supplier-payment-config',
+					url: 'http://localhost:3037/supplier-payment-config',
+					params: {
+						supplier_id : self.poBillAddress[0].product[0].product_description.supplier_id
+					},
+					
+				}).then(function(response){
+					console.log('supplierPayment...........', response.data.data)
+					self.data2 = response.data.data
+					console.log('data2 data2 data2', self.data2)
+					
+				}).catch(function (error){
+					console.log("error", error)
+					self.$Notice.error({
+						title: error.response.data.name,
+						desc: error.response.data.message,
+						duration: 10
+					})
+				})
+
+			},
+			keyName(k) {
+				console.log("kkkkkkkkkkkkkkkkkkkk", k)
+                if (k === 'auth') {
+                    return 'Authorize.Net'
+                }
+                else if (k === 'paypal') {
+                    return 'PayPal'
+                }
+                else if (k === 'stripe'){
+                    return 'Stripe'
+                }
+            },
 		},
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
-			this.init()				
+			this.init()	
+						
 		}
 	}
 </script>

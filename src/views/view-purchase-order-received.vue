@@ -210,6 +210,7 @@
 </template>
 <script>
     import moment from 'moment';
+    import psl from 'psl';
     const accounting = require('accounting-js');  
     import owlCarousel from 'owl.carousel';
       
