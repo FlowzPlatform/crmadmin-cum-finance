@@ -514,11 +514,9 @@ export default {
       if(this.len == 0){
           console.log("data length 0--------------->",this.tableHeight)
           this.tableHeight = 100
-        }else if(this.len < 10){
+        }else {
           console.log("data length 10--------------->",this.tableHeight)
-          this.tableHeight = 200
-        }else{
-          this.tableHeight = 450
+          this.tableHeight = (this.len * 40) + 35
         }
       return this.filterArray.slice((p - 1) * size, p * size);
     },
@@ -527,11 +525,9 @@ export default {
       if(this.len == 0){
           console.log("data length 0--------------->",this.tableHeight)
           this.tableHeight = 100
-        }else if(this.len < 10){
+        }else {
           console.log("data length 10--------------->",this.tableHeight)
-          this.tableHeight = 300
-        }else{
-          this.tableHeight = 450
+          this.tableHeight = (this.len * 40) + 35
         }
       return this.data6.slice((p - 1) * size, p * size).reverse();
     },
