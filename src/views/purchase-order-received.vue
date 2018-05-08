@@ -110,8 +110,14 @@
 					</Card>
 					<div class="row">
 						<div class=" col-md-12">
-							<div class="well">
+							<div class="well" style="background-color:#fff">
 								<label> Payment Options : </label>
+								<Tooltip style="float:right;margin-left: 15px;" placement="top">
+									<Icon  type="ios-help-outline" size=28></Icon>
+									<div slot="content">
+										<p>You can configure payment gateway <br/>here which will be used  while pay <br/> the invoices from the distributor. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
+									</div>
+								</Tooltip>
 								<Button type="primary" @click="clicked()" style="float:right">Add New Payment Configuration</Button>
 								<div style="float:left; width:100%;">
 									<div class="online_payment" style="display:none">
@@ -221,7 +227,16 @@
 							
 						</div>        
 					</div>
-
+					<div class="row">
+						<div class="col-md-12">
+							<div class="well" style="background-color:#fff">
+								<label> Due Date of Invoice : </label>
+								<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-left:20px"></DatePicker>
+								<Button type="success" @click="generatePo()" style="float:right">Generate Invoice</Button>
+								<div class="clearfix"></div>								
+							</div>
+						</div>
+					</div>
 					<div class="row">
 						<div class="span8 well invoice-thank" style="margin-bottom:0px;margin-top:15px">
 							<h5 style="text-align:center;">Thank You!</h5>
@@ -253,6 +268,8 @@
 	import expandRow from './view-purchase-order-received.vue';
 	const accounting = require('accounting-js');
 	let _ = require('lodash');
+	import feathers from 'feathers/client'
+    import socketio from 'feathers-socketio/client'
 
 
 
@@ -334,6 +351,7 @@
 				loading: false,
 				checked: true,
 				tabIndex : 0,
+				dueDate: '',
                 unchecked: false,
 				formValidate:{
 					Account_Name: '',
@@ -491,7 +509,7 @@
                         console.log("patchData",patchData)
                         axios({
                             method:'patch',
-                            url:'http://localhost:3037/supplier-payment-config/'+configId,
+							url: config.default.serviceUrl + 'supplier-payment-config/' + configId,
                             data: patchData,
                         }).then(response => {
                             console.log("++++++++++++------------response",response);
@@ -545,8 +563,8 @@
                         };
                         console.log("patchData",patchData)
                         axios({
-                            method:'patch',
-                            url: 'http://localhost:3037/supplier-payment-config/'+configId,
+							method:'patch',
+							url: config.default.serviceUrl + 'supplier-payment-config/' + configId,
                             data: patchData,
                         }).then(response => {
                             if(response.status == 200){
@@ -611,7 +629,7 @@
 				}).then(function (response){
 					console.log("------------------------response",response.data);
 					
-					let poData=response.data.data;
+					 	let poData=response.data.data;
 						if(poData && poData.length>0){
 							let poDetail=poData[0]
 							self.date = moment(poDetail.PO_generate_date).format('DD-MMM-YYYY')  
@@ -710,7 +728,8 @@
 				this.formValidate.Transaction_Key = '',
 				this.formValidate.Signature_Key = '',
 				this.formValidate.Client_Id = '',
-				this.formValidate.Secret = ''
+				this.formValidate.Secret = '',
+				this.formValidate.Account_Name = ''
 				// this.formValidate.x_api_login = '',
 				// this.formValidate.x_api_token = ''
 				// this.$refs[name].resetFields();
@@ -747,14 +766,20 @@
 
 						axios({
 							method: 'post',
-							// url: config.default.serviceUrl + 'supplier-payment-config',
-							url: 'http://localhost:3037/supplier-payment-config',
-							
+							url: config.default.serviceUrl + 'supplier-payment-config',							
 							data: params
 						}).then(function(response){
+							self.$Notice.success({
+								title: 'Sucess',
+								desc: 'Payment Configuration Added Sucessfully',
+								duration: 4.5
+							})
+							self.init()
+							self.handleReset();
+							$('.online_payment').slideToggle(700);
 							console.log('??????????????', response)
 						}).catch(function (error){
-							console.log("error", error.response)
+							console.log("error", error)
 							self.$Notice.error({
 								title: error.response.data.name,
 								desc: error.response.data.message,
@@ -776,8 +801,7 @@
 				var self = this
 				axios({
 					method: 'get',
-					// url: config.default.serviceUrl + 'supplier-payment-config',
-					url: 'http://localhost:3037/supplier-payment-config',
+					url: config.default.serviceUrl + 'supplier-payment-config',
 					params: {
 						supplier_id : self.poBillAddress[0].product[0].product_description.supplier_id
 					},
@@ -808,13 +832,62 @@
                 else if (k === 'stripe'){
                     return 'Stripe'
                 }
-            },
+			},
+			generatePo () {
+				let paymentInfo = {}
+				if(this.data2.length > 0 ) {
+					console.log("poData data1", this.data2[0].online_payment)
+					let payment =  this.data2[0].online_payment
+					for(let item in payment) {
+						for(let val in payment[item]) {
+							if((payment[item][val].isDefault == true) && (payment[item][val].isDeleted == false) ) {
+								paymentInfo[item] = payment[item][val].Account_Name
+							}
+						}
+					}
+				} else {
+					if (this.dueDate != "") {
+						let invoiceData = {
+							'PO_id': this.data1.PO_id,
+							'orderId': this.data1.orderId,
+							'distributorId': this.data1.distributorId,
+							'distributor_email': this.data1.distributor_email,
+							'products': this.data1.products,
+							'websiteName': this.data1.websiteName,
+							'websiteId': this.data1.websiteId,
+							'total_amount': this.data1.total,
+							'supplierId': this.data1.products[0].product_description.supplier_id,
+							'supplier_email': this.data1.products[0].product_description.supplier_info.email,
+							'dueDate': this.dueDate,
+							'paymentInfo': paymentInfo
+						}
+						console.log("invoiceData", invoiceData)
+					} else {
+						this.$Notice.error({
+							title: 'Error',
+							desc: 'Please Select Due Date of Invoice',
+							duration: 4.5
+						})
+					}
+				}
+			}
 		},
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()	
 						
+		},
+		feathers: {
+			'supplierPaymentConfig': {
+				created (data) {
+					console.log("supplier-payment-config" , data)
+				},
+				updated (message) {
+					console.log("supplier-payment-config" , message)					
+				}
+			}
 		}
+
 	}
 </script>
 
