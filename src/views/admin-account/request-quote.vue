@@ -168,7 +168,11 @@ export default {
     }
   },
   methods: {
-
+    reset(){
+        this.pname = '';
+        this.cname = '';
+        this.listData(this.website);
+    },
      click (index) {
       console.log("Tab clicked", index)
       if(index == 1){
@@ -258,6 +262,7 @@ export default {
     reset() {
       this.cname = '';
       this.pname = '';
+      this.listData(this.website);
     },
      async changeData() {
         console.log("Before this.filterArray------->",this.filterArray)
@@ -430,6 +435,8 @@ export default {
       console.log("val", val)
       let Namearr = [];
       let Productarr = [];
+        $('#selectCustom').children('option:not(:first)').remove();
+        $('#selectPro').children('option:not(:first)').remove();
       axios.get(api, {
           params: {
               website_id: val,

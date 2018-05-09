@@ -80,7 +80,7 @@
                 </h4>
             </div>
 
-            <Table stripe :height="tableHeight" :columns="columns1" :data="list"></Table>
+            <Table stripe @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -108,6 +108,7 @@
         data() {
             return {
                 spinShow : false,
+                tableHeight: 450,
                 data1: [],
                 filterArray: [],
                 websiteList: {},
@@ -234,6 +235,14 @@
             }
         },
         methods: {
+            viewDetails (row,status) {
+                console.log("on-expand call",status)
+                if(status){
+                    this.tableHeight = 450
+                }else{
+                    this.tableHeight = (this.len * 40) + 35
+                }
+            },
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize

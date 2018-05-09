@@ -341,6 +341,8 @@
               this.cname = '';
               this.email = '';
               this.itemno = '';
+              this.listData(this.website)
+
             },
             async changeData() {
               console.log("Before this.filterArray------->",this.filterArray)
@@ -353,7 +355,7 @@
                 console.log("this.orderid", this.orderid)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                   console.log("item",item)                  
-                    return item.id === self.orderid;
+                    return item.order_id === self.orderid;
                   
                 });
                 console.log("myarr",this.filterArray)
@@ -513,6 +515,8 @@
                 console.log("val", val)
                 let Namearr = [];
                 let Emailarr = [];
+                $('#selectCustomer').children('option:not(:first)').remove();
+                $('#selectEmail').children('option:not(:first)').remove();
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
@@ -527,7 +531,7 @@
 
                     self.list1 = await self.mockTableData1(1,self.pageSize)
                     self.data1.forEach(item => {
-                      self.orderidFilter.push(item.id)
+                      self.orderidFilter.push(item.order_id)
                       Namearr.push(item.user_billing_info.name)
                       Emailarr.push(item.user_billing_info.email)
                       item.products.forEach(obj => {
@@ -689,7 +693,7 @@
                 this.billinfo = true
             },
             async viewDetails(params,status){
-                
+                this.tableHeight = 450
             }
         },
         async mounted() {

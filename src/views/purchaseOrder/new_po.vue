@@ -20,7 +20,7 @@
                                       <label>Order Id</label>
                                   </div>
                                   <div class="panel-collapse collapse" id="order">
-                                      <AutoComplete v-model="orderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      <AutoComplete v-model="filterorderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
                                       </AutoComplete>
                                   </div>
                               </div>
@@ -98,7 +98,7 @@
                 cname: '',
                 orderDate: '',
                 orderidFilter: [],
-                orderid: '',
+                filterorderid:'',
                 userid: '',
                 columns1: [
                     {
@@ -195,6 +195,13 @@
             }
         },
         methods: {
+            reset(){
+                this.dategt = '';
+                this.datelt = '';
+                this.filterorderid = '';
+                this.cname = '';
+                this.listData(this.website);
+            },
             filterMethod (value, option) {
               return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
@@ -318,6 +325,7 @@
                 var len
                 console.log("val", val)
                 let Namearr = [];
+                $('#selectCustomer').children('option:not(:first)').remove();
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
@@ -409,6 +417,24 @@
                 });
                 console.log("myarr",this.filterArray)
                 this.list1 = await this.mockTableData2(1,self.pageSize)
+                }
+
+                if(this.filterorderid != ''){
+                    console.log("this.filterorderid", this.filterorderid)
+                    this.filterArray = _.filter(this.filterArray,  function(item){    
+                        return item.order_id === self.filterorderid;
+                    });
+                    console.log("myarr",this.filterArray)
+                    this.list1 = await this.mockTableData2(1,self.pageSize)
+                }
+
+                if(this.cname != ''){
+                    console.log("this.cname", this.cname)
+                    this.filterArray = _.filter(this.filterArray,  function(item){    
+                        return item.user_billing_info.name === self.cname;
+                    });
+                    console.log("myarr",this.filterArray)
+                    this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
             },

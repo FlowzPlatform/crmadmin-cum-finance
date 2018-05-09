@@ -14,7 +14,6 @@
               <li class="liList">
                   <span style="color:  rgb(40, 125, 201);text-decoration: none;">Invoice ID :</span>
                   <span>
-                      
                       {{ invoiceid }} 
                   </span>
               </li>
