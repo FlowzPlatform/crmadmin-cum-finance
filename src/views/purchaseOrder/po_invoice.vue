@@ -100,8 +100,9 @@ import Cookies from 'js-cookie';
 import money from '../../images/Payment.png'
 import _ from 'lodash';
 import psl from 'psl';
-// var crmpostapiurl = config.default.serviceUrl;
-var crmpostapiurl = 'http://localhost:3037/po-invoice';
+var crmpostapiurl = config.default.serviceUrl;
+import expandRow from './view-po_invoice.vue';
+
 export default {
   data(){
     return {
@@ -118,6 +119,17 @@ export default {
 	  duedategt: '',
 	  duedatelt: '',
       columns1:[
+		{
+			type: 'expand',
+			width: 50,
+			render: (h, params) => {
+				return h(expandRow, {
+					props: {
+						row: params.row
+					}
+				})
+			}
+		},
         {
           title: 'Invoice Number',
           align:  'center',
@@ -373,7 +385,7 @@ export default {
       var self = this
       axios({
         method:'get',
-        url: crmpostapiurl,
+        url: crmpostapiurl + 'po-invoice',
         headers:{
         }
       })
