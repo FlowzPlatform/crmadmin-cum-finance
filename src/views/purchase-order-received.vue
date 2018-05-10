@@ -268,10 +268,6 @@
 	import expandRow from './view-purchase-order-received.vue';
 	const accounting = require('accounting-js');
 	let _ = require('lodash');
-	import feathers from 'feathers/client'
-    import socketio from 'feathers-socketio/client'
-
-
 
 	export default {
 		name: 'purchase-order',
@@ -835,19 +831,22 @@
 			},
 			generatePo () {
 				let paymentInfo = {}
-				if(this.data2.length > 0 ) {
-					console.log("poData data1", this.data2[0].online_payment)
-					let payment =  this.data2[0].online_payment
-					for(let item in payment) {
-						for(let val in payment[item]) {
-							if((payment[item][val].isDefault == true) && (payment[item][val].isDeleted == false) ) {
-								paymentInfo[item] = payment[item][val].Account_Name
+
+				if(this.dueDate != "" ) {
+
+					if (this.data2.length > 0) {
+						console.log("poData data1", this.data2[0].online_payment)
+						let payment =  this.data2[0].online_payment
+						for(let item in payment) {
+							for(let val in payment[item]) {
+								if((payment[item][val].isDefault == true) && (payment[item][val].isDeleted == false) ) {
+									paymentInfo[item] = payment[item][val].Account_Name
+								}
 							}
 						}
+
 					}
-				} else {
-					if (this.dueDate != "") {
-						let invoiceData = {
+					let invoiceData = {
 							'PO_id': this.data1.PO_id,
 							'orderId': this.data1.orderId,
 							'distributorId': this.data1.distributorId,
@@ -862,30 +861,39 @@
 							'paymentInfo': paymentInfo
 						}
 						console.log("invoiceData", invoiceData)
-					} else {
-						this.$Notice.error({
-							title: 'Error',
-							desc: 'Please Select Due Date of Invoice',
-							duration: 4.5
+					
+					axios({
+							method: 'post',
+							url: config.default.serviceUrl +  'po-invoice',
+							data: invoiceData
+							
+						}).then(function(response){
+							console.log('Generate PO...........', response)
+							// self.data2 = response.data.data
+							// console.log('data2 data2 data2', self.data2)
+							
+						}).catch(function (error){
+							console.log("error", error)
+							self.$Notice.error({
+								title: error.response.data.name,
+								desc: error.response.data.message,
+								duration: 10
+							})
 						})
-					}
+				} else { 
+					this.$Notice.error({
+						title: 'Error',
+						desc: 'Please Select Due Date of Invoice',
+						duration: 4.5
+					})
 				}
+
 			}
 		},
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()	
 						
-		},
-		feathers: {
-			'supplierPaymentConfig': {
-				created (data) {
-					console.log("supplier-payment-config" , data)
-				},
-				updated (message) {
-					console.log("supplier-payment-config" , message)					
-				}
-			}
 		}
 
 	}
