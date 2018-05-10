@@ -387,7 +387,6 @@
               }
 
 
-
               if(this.cname != ''){
                 console.log("this.cname", this.cname)
                 this.filterArray = _.filter(this.filterArray,  function(item){
