@@ -63,11 +63,11 @@
                             <template slot="title">
                                 <Icon type="grid" size="large" style="font-size: 23px;padding-top: 21px;"></Icon>
                             </template>
-                            <MenuGroup title="Flowz-Products">
-                                <MenuItem name="3-1"><span @click="goToFlowzDashboard">Flowz Dashboard</span></MenuItem>
-                                <MenuItem name="3-2"><span @click="goToFlowzBuilder">Website Builder</span></MenuItem>
+                            <MenuGroup title="Flowz-Products" style="text-align:center">
+                                <MenuItem name="3-1" style="text-align:left"><span @click="goToFlowzDashboard">Flowz Dashboard</span></MenuItem>
+                                <MenuItem name="3-2" style="text-align:left"><span @click="goToFlowzBuilder">Website Builder</span></MenuItem>
                                 <!-- <MenuItem name="3-3"><span @click="goToFlowzVmail">Vmail</span></MenuItem> -->
-                                <MenuItem name="3-4"><span @click="goToFlowzUploader">Uploader</span></MenuItem>
+                                <MenuItem name="3-4" style="text-align:left"><span @click="goToFlowzUploader">Uploader</span></MenuItem>
                                 <!-- <MenuItem name="3-5"><span @click="goToFlowzDbetl">DBETL</span></MenuItem> -->
                             </MenuGroup>
                         </Submenu>
@@ -331,8 +331,14 @@
                     return userId
                 })
                 .catch(error => {
-                    console.log("errr...",error)                    
-                     if(error.response.status == 401){
+                    console.log("errr...",error)
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title : 'Error',
+                            desc: "API service unavailable",
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         

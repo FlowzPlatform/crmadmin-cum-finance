@@ -329,6 +329,7 @@
                     })
             },
             async getDataOfSubscriptionUser() {
+                var self = this
                 this.$Loading.start();
                 let sub_id = [];
                 let Role_id = [];
@@ -357,7 +358,13 @@
                         
                         this.options = Role_id
                     }).catch(function (error) {
-                        if(error.response.status == 401){
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title : 'Error',
+                            desc: "API service unavailable",
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
                            
                            let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain

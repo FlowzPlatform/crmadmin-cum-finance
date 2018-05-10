@@ -550,6 +550,7 @@
               var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
               console.log("data000----------------------------->",data000)
               var checkConfig;
+
               this.$Modal.confirm({
                     title: '',
                     content: '',
@@ -586,6 +587,7 @@
 
                               }
                             }
+
                           },'Do you want to use this address for all Accounts?')
                         ])
                     },
@@ -720,6 +722,7 @@
             Authorization : Cookies.get('auth_token'),
             subscriptionId : Cookies.get('subscriptionId')
           }
+
         })
         .then(function (response) {
           console.log("response >>>>>>>>>>>>>>>>",response)
@@ -732,6 +735,7 @@
             })
             self.configs = _.sortBy(newConf, ['configName']);
             console.log("self.configs---------------->after",self.configs)
+
 
           }
           else

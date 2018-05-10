@@ -111,6 +111,13 @@
             settingMenu
         },
         data () {
+            const validateBlank = (rule, value, callback) => {
+                if (value.trim() === '') {
+                    callback(new Error('Space is not allowed'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 uploadlist: false,
                tabs: 1 ,
@@ -129,16 +136,16 @@
                 },
                 XeroruleValidate: {
                     useragent: [
-                        { required: true, message: 'User agent cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'User agent cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     consumerKey: [
-                        { required: true, message: 'Consumer Key cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Consumer Key cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     consumerSecret: [
-                        { required: true, message: "Consumer Secret cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Consumer Secret cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     configName: [
-                        { required: true, message: "Cconfiguration name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Cconfiguration name Key cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ]
                 },
                 QBformValidate: {
@@ -150,19 +157,19 @@
                 },
                 QBruleValidate: {
                     configName: [
-                        { required: true, message: "Configuration name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Configuration name Key cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     refresh_token: [
-                        { required: true, message: 'Refresh token cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Refresh token cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     client_id: [
-                        { required: true, message: 'Client_id cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Client_id cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     client_secret: [
-                        { required: true, message: "Client_Secret cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Client_Secret cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     realmId: [
-                        { required: true, message: "RealmId cannot be empty", trigger: 'blur' }
+                        { required: true, message: "RealmId cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ]
                 },
                 customformValidate : {
@@ -228,9 +235,9 @@
                                 let  data = {
                                     "configName": self.XeroformValidate.configName.trim(),
                                     "certificate" : reader.result.substring( reader.result.indexOf(",")+1)  ,
-                                    "useragent" :  self.XeroformValidate.useragent,
-                                    "consumerKey" : self.XeroformValidate.consumerKey,
-                                    "consumerSecret" : self.XeroformValidate.consumerSecret,
+                                    "useragent" :  self.XeroformValidate.useragent.trim(),
+                                    "consumerKey" : self.XeroformValidate.consumerKey.trim(),
+                                    "consumerSecret" : self.XeroformValidate.consumerSecret.trim(),
                                     "domain" :  'Xero' ,
                                     "pem" : lastModified,
                                     "isActive" : self.isActive,
@@ -316,11 +323,11 @@
 
                         let  data = {
                             "configName": self.QBformValidate.configName.trim(),
-                            "refresh_token" :  self.QBformValidate.refresh_token,
-                            "client_id" : self.QBformValidate.client_id,
-                            "client_secret" : self.QBformValidate.client_secret,
+                            "refresh_token" :  self.QBformValidate.refresh_token.trim(),
+                            "client_id" : self.QBformValidate.client_id.trim(),
+                            "client_secret" : self.QBformValidate.client_secret.trim(),
                             "domain" : 'QB',
-                            "realmId" : self.QBformValidate.realmId,
+                            "realmId" : self.QBformValidate.realmId.trim(),
                             "isActive" : self.isActiveQb,
                             "isDeleated" : false,
                             "subscriptionId" : Cookies.get('subscriptionId')
