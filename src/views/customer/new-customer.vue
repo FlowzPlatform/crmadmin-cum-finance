@@ -43,7 +43,7 @@
             <FormItem label="E-mail" prop="mail">
                 <Input v-model="formValidate.mail" placeholder="Enter your e-mail"></Input>
             </FormItem>
-            <FormItem label="Address">
+            <FormItem label="Address" prop="AddressLine1">
               <Row>
                 <Col span="12">
                   <FormItem prop="AddressLine1">
@@ -51,7 +51,7 @@
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem  prop="AddressLine2">
+                  <FormItem>
                     <Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
                   </FormItem>
                 </Col>
@@ -159,11 +159,10 @@ Vue.use(VueWidgets);
                     { required: true, message: 'Please choose configuration name', trigger: 'chahnge' }
                   ],
                   AddressLine1:[
-                     { required: true, message: 'The addressline1 cannot be empty', validator: validateBlank, trigger: 'blur' }
+
+                     { required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
                   ],
-                  // AddressLine2:[
-                  //   { required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
-                  // ],
+
                   city:[
                     { required: true, message: 'The city cannot be empty', validator: validateBlank, trigger: 'blur' }
                   ],

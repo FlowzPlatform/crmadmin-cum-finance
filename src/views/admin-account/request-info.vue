@@ -87,6 +87,7 @@ export default {
           "title": "Name",
           "key": "username",
           render: (h,params) => {
+            console.log("req info-------------------->",params)
             // return params.row.productInfo[0].username
              return h('div', [
                 h('span', params.row.productInfo[0].username)
@@ -199,6 +200,8 @@ export default {
           console.log("response val", response.data)
           let Namearr = [];
           let Productarr = [];
+          $('#selectCustomer').children('option:not(:first)').remove();
+          $('#selectProduct').children('option:not(:first)').remove();
           self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.data = self.list
           self.data.forEach(obj => {

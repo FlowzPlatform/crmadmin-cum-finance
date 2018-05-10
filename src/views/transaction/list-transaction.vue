@@ -58,6 +58,8 @@
           </div>
         </div>
 
+        <div class="table-box">
+
         <div v-if="spinShow">
                 <Spin size="large"></Spin>
         </div>
@@ -66,7 +68,7 @@
             <Tabs  @on-click="tabClicked" :value="tabIndex" class="my-tab">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
                     <div v-if ="tabPane.domain=='Xero'">
-                        <div v-if=" list.length > 0"><Table :columns="columns1" :data="list" :no-data-text="nodataMsg" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns1" :data="list" :no-data-text="nodataMsg" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>                      
@@ -74,7 +76,7 @@
                         </div>
                     </div>
                     <div v-if ="tabPane.domain=='QB'">
-                        <div v-if=" list.length > 0"><Table :columns="columns2" :data="list" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
@@ -82,7 +84,7 @@
                         </div>
                     </div>
                     <div v-if ="tabPane.domain=='custom'">
-                        <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns3" :data="list" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
@@ -91,12 +93,13 @@
                     </div>
                     <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
-                            <Page :total="len" :current="1" @on-change="changePage"></Page>
+                            <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                         </div>
                     </div>
 
             </TabPane>
             </Tabs>
+        </div>
         </div>
 
   </div>
@@ -110,7 +113,6 @@
     import _ from 'lodash'
     const accounting = require('accounting-js');
 
-    var pageSize = 10
     export default {
         name: '',
         props: {
@@ -123,6 +125,9 @@
         },
         data() {
             return {
+                tableHeight: 450,
+                pageSize: 10,
+                optionsPage:[10,20,50,100,200],
                 flag: true,
                 invnoFilter : [],
                 nodataMsg: 'No Data',
@@ -370,6 +375,17 @@
             }
         },
         methods: {
+            changepagesize(pageSize){
+                console.log("####################################",pageSize)
+                this.pageSize = pageSize
+                this.pageSize = pageSize
+                if(this.pageSize > 10){
+                    this.tableHeight = 530
+                }else{
+                    this.tableHeight = 450
+                }
+                this.changePage(1)
+            },
             filterMethod (value, option) {
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
@@ -404,10 +420,10 @@
 
                 });
                 console.log("myarr",this.filterArray)
-                this.list = await this.mockTableData2(1,pageSize)
+                this.list = await this.mockTableData2(1,self.pageSize)
                 }else{
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.invoiceId != ''){
@@ -422,7 +438,7 @@
                         }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 //  if(this.dategt != ''){
@@ -463,7 +479,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
 
                 }
 
@@ -475,7 +491,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
             },
@@ -484,6 +500,15 @@
                 console.log("p-------------->",size)
                 console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             async getAllSettings(){
@@ -577,16 +602,26 @@
 
             async mockTableData1 (p,size) {
                 this.len = this.data.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.data.slice((p - 1) * size, p * size);
             },
             async changePage (p) {
-                this.page = p
+                // this.page = p
+                var self =this
                 console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
                     console.log("inside",this.filterArray)
-                    this.list = await this.mockTableData1(p,pageSize);
+                    this.list = await this.mockTableData1(p,self.pageSize);
                 }else{
-                    this.list = await this.mockTableData2(p,pageSize);
+                    this.list = await this.mockTableData2(p,self.pageSize);
                 }
             },
             async getTransaction(settingId) {
@@ -616,7 +651,7 @@
                     self.flag = false
                     $('.preload').css("display","none")
                     if(self.list.length == 0){
-                        self.list = await self.mockTableData1(1,pageSize)
+                        self.list = await self.mockTableData1(1,self.pageSize)
                     } else {
                     // if(self.list[0].key){
                     //   self.list = []
@@ -704,4 +739,5 @@
     .ivu-auto-complete.ivu-select-dropdown {
         max-height: 200px !important;
     }
+    .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

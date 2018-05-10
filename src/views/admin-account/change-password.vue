@@ -78,6 +78,17 @@ export default {
                     callback();
                 }
             };
+    const validateNum =  async(rule, value, callback) => {
+            let blankPatt = /^\S*$/g
+            console.log("------------value", typeof value)
+            let blankTest = value.match(blankPatt)
+            console.log("======================_res",blankTest);
+            if (!blankTest) {
+              callback(new Error('Password Does not Allow Spaces'))
+            } else {
+              callback();
+            }
+          };
   return {
     formValidate: {
                     oldpasswd: '',
@@ -96,7 +107,8 @@ export default {
                         { required: true, message: 'Please enter valid current password!', trigger: 'blur' }
                     ],
                     newpasswd: [
-                        { required: true, message: 'Please enter valid new password!', trigger: 'blur' }
+                        { required: true, message: 'Please enter valid new password!', trigger: 'blur' },
+                        { validator: validateNum, trigger: 'blur' }
                     ],
                     confpasswd: [
                         { required: true, validator: validatePassCheck, trigger: 'blur' }

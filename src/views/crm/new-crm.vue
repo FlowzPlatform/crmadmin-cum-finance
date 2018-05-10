@@ -209,7 +209,7 @@
 			async handleUpload (file) {
 				var self = this
 				console.log('file',file)
-				if(file.size >= 51200){
+				if(file.size >= 1e+8){
 					this.$Notice.error({
 						title: 'File Limit',
 						desc: 'File size should be less than or equal to 50Kb. ',

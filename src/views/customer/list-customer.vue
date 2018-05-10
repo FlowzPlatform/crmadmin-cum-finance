@@ -50,18 +50,19 @@
         </div>
       </div>
     </div>
+  <div class="table-box">
     <div v-if="spinShow">
       <Spin size="large"></Spin>
     </div>
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-        <i-table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='Xero'" :height="tableHeight" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :height="tableHeight" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage"></Page>
+                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
         </div>
         <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -70,122 +71,140 @@
       </Tabs>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
-	let config = require("@/config/customConfig.js")
-	import Cookies from 'js-cookie';
-	// console.log(config)
-	let feathersUrl =  config.default.serviceUrl;
-	var _ = require('lodash');
-	var pageSize = 10
-	import axios from 'axios'
-	export default {
-		name: 'list-customer',
-		data () {
-			return {
-				tabIndex: 0,
-				tabPanes : [],
-				spinShow: true,
-				page: 1,
-				len: 1,
-				list: [],
-				pageSize: pageSize,
-				columns1: [
-					{
-						"title": "Customer Name",
-						"key": "Name"
-					},
-					{
-						"title": "Email",
-						"key": "EmailAddress",
-						"sortable": true,
-						render:(h,{row})=>{
-							if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
-							{
-								// return "Not available"
-								return h('div', [              
-									h('span', "Not available")
-								]);
-							}
-							else {
-								// return row.EmailAddress
-								return h('div', [                
-									h('span', row.EmailAddress)
-								]);
-							}
-						}
-					},
-					{
-						"title": "Mobile No.",
-						"key": "Phones",
-						"sortable": true,
-						"align":"center",
-						render:(h,{row})=>{
-							if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
-							{
-								// return "Not available"
-								return h('div', [            
-									h('span', "Not available")
-								]);
-							}
-							else {
-								// return row.Phones[3].PhoneNumber
-								return h('div', [              
-									h('span', row.Phones[3].PhoneNumber)
-								]);
-							}
-						}
-					},
-					{
-						"title": "Phone No.",
-						"key": "click",
-						"align":"center",
-						"sortable": true,
-						render:(h,{row})=>{
-							if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
-							{
-								// return "Not available"
-								return h('div', [              
-									h('span', "Not available")
-								]);
-							}
-							else{
-								// return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
-								return h('div', [              
-									h('span', row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber)
-								]);
-							}
-						}
-					},
-					{
-						"title": "Fax No.",
-						"key": "active",
-						"sortable": true,
-						"align":"center",
-						render:(h,{row})=>{
-							// console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
-							if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
-							{
-								// return "Not available"
-								return h('div', [            
-									h('span', "Not available")
-								]);
-							}
-							else
-							{
-								// return row.Phones[2].PhoneNumber
-								return h('div', [            
-									h('span', row.Phones[2].PhoneNumber)
-								]);
-							}
-						}
-					},
-					{
-						"title": "Address",
-						"key": "Addresses",
-						"sortable": false,
-						render:(h,{row})=>{
+
+let config = require("@/config/customConfig.js")
+import Cookies from 'js-cookie';
+// console.log(config)
+let feathersUrl =  config.default.serviceUrl;
+var _ = require('lodash');
+import axios from 'axios'
+export default {
+  name: 'list-customer',
+  data () {
+  return {
+    tableHeight: 450,
+    tabIndex: 0,
+    tabPanes : [],
+    spinShow: true,
+    pageSize: 10,
+    page: 1,
+    len: 1,
+    list: [],
+    // pageSize: pageSize,
+    columns1: [
+      {
+        "title": "Customer Name",
+        "key": "Name"
+      },
+      {
+        "title": "Email",
+        "key": "EmailAddress",
+        "sortable": true,
+        render:(h,{row})=>{
+          if((row.EmailAddress == undefined) || (row.EmailAddress == ''))
+            {
+              // return "Not available"
+              return h('div', [              
+                  h('span', "Not available")
+              ]);
+            }
+            else {
+              // return row.EmailAddress
+              return h('div', [                
+                  h('span', row.EmailAddress)
+              ]);
+            }
+          }
+      },
+      {
+        "title": "Mobile No.",
+        "key": "Phones",
+        "sortable": true,
+        "align":"center",
+        render:(h,{row})=>{
+          if((row.Phones[3].PhoneNumber == undefined) || (row.Phones[3].PhoneNumber == ''))
+            {
+              // return "Not available"
+               return h('div', [            
+                    h('span', "Not available")
+                ]);
+            }
+            else {
+              // return row.Phones[3].PhoneNumber
+               return h('div', [              
+                  h('span', row.Phones[3].PhoneNumber)
+              ]);
+            }
+          }
+      },
+      {
+        "title": "Phone No.",
+        "key": "click",
+        "align":"center",
+        "sortable": true,
+        render:(h,{row})=>{
+          if((row.Phones[1].PhoneCountryCode == undefined || row.Phones[1].PhoneNumber == undefined) || (row.Phones[1].PhoneCountryCode == '' || row.Phones[1].PhoneNumber == ''))
+            {
+              // return "Not available"
+               return h('div', [              
+                  h('span', "Not available")
+              ]);
+            }
+            else{
+              // return row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber
+               return h('div', [              
+                  h('span', row.Phones[1].PhoneCountryCode +" "+row.Phones[1].PhoneNumber)
+              ]);
+            }
+          }
+      },
+      {
+        "title": "Fax No.",
+        "key": "active",
+        "sortable": true,
+        "align":"center",
+        render:(h,{row})=>{
+          // console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
+          if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
+            {
+              // return "Not available"
+               return h('div', [            
+                    h('span', "Not available")
+                ]);
+            }
+          else
+            {
+              // return row.Phones[2].PhoneNumber
+               return h('div', [            
+                    h('span', row.Phones[2].PhoneNumber)
+                ]);
+            }
+          }
+      },
+      {
+        "title": "Address",
+        "key": "Addresses",
+        "sortable": false,
+        render:(h,{row})=>{
+
+          if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
+          {
+              // return "Not available"
+               return h('div', [            
+                    h('span',  "Not available")
+                ]);
+          }
+          else
+          {
+            // return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+             return h('div', [                
+                h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
+            ]);
+          }
 
 							if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
 							{
@@ -308,222 +327,249 @@
 							]);
 						}
 
-					}
-					},
-					{
-					"title": "Status",
-					"key": "Active",
-					"width":120,
-					"sortable": true,
-					render:(h,{row})=>{
-						if(row.Active == true)
-						{
-							// return "ACTIVE"
-							return h('div', [
-								h('span', "ACTIVE")
-							]);
-						}
-						else {
-							// return 'INACTIVE'
-							return h('div', [
-								h('span', "ACTIVE")
-							]);
-						}
-					},
-					filters: [
-						{
-						label: 'ACTIVE',
-						value: 1
-						},
-						{
-						label: 'INACTIVE',
-						value: 2
-						}
-					],
-					filterMultiple: false,
-					filterMethod (value, row) {
-						if (value === 1) {
-						return row.ContactStatus ==  'ACTIVE';
-						} else if (value === 2) {
-						return row.ContactStatus == 'INACTIVE';
-						}
-					}
-					}
-				],
-				column3:[
-					{
-					"title": "Customer Name",
-					"key": "Name",
-					render:(h,{row})=>{
-						// console.log("-------------row",row)
-						// return row.Name
-						return h('div', [
-								h('span', row.Name)
-							]);
-						}
-					},
-					{
-					"title": "Email",
-					"key": "EmailAddress",
-					render:(h,{row})=>{
-						// return row.EmailAddress
-						return h('div', [
-								h('span', row.EmailAddress)
-							]);
-						}
-					},
-					{
-					"title": "Phone No",
-					"key": "PhoneNumber",
-					render:(h,{row})=>{
-						// return row.PhoneNumber
-						return h('div', [
-								h('span', row.PhoneNumber)
-							]);
-						}
-					},
-					{
-					"title": "Address",
-					"key": "Address",
-					render:(h,{row})=>{
-						// return row.Address
-						return h('div', [
-								h('span', row.Address)
-							]);
-						}
-					},
-					{
-					"title": "Status",
-					"key": "ContactStatus",
-					render:(h,{row})=>{
-						// return row.ContactStatus
-						return h('div', [
-								h('span', row.ContactStatus)
-							]);
-						}
-					}
-				],
-				data6: [],
-				data7: [],
-				filterArray: [],
-				listData: [],
-				cname: '',
-				status:'',
-				email: ''
-			}
-		},
-		methods: {
-		reset() {
-			this.cname = '';
-			this.status = '';
-			this.email = '';
-			this.getAllSettings();
-		},
-		async changeData() {
-			// console.log("this.data6", this.data6)
-			this.filterArray = this.data6
-			var self = this
+        }
+      },
+      {
+        "title": "Status",
+        "key": "Active",
+        "width":120,
+        "sortable": true,
+        render:(h,{row})=>{
+          if(row.Active == true)
+            {
+              // return "ACTIVE"
+              return h('div', [
+                  h('span', "ACTIVE")
+              ]);
+            }
+            else {
+              // return 'INACTIVE'
+              return h('div', [
+                  h('span', "ACTIVE")
+              ]);
+          }
+        },
+        filters: [
+          {
+            label: 'ACTIVE',
+            value: 1
+          },
+          {
+            label: 'INACTIVE',
+            value: 2
+          }
+        ],
+        filterMultiple: false,
+        filterMethod (value, row) {
+          if (value === 1) {
+            return row.ContactStatus ==  'ACTIVE';
+          } else if (value === 2) {
+            return row.ContactStatus == 'INACTIVE';
+          }
+        }
+      }
+    ],
+    column3:[
+      {
+        "title": "Customer Name",
+        "key": "Name",
+        render:(h,{row})=>{
+          // console.log("-------------row",row)
+          // return row.Name
+            return h('div', [
+                  h('span', row.Name)
+              ]);
+          }
+      },
+      {
+        "title": "Email",
+        "key": "EmailAddress",
+        render:(h,{row})=>{
+          // return row.EmailAddress
+          return h('div', [
+                  h('span', row.EmailAddress)
+              ]);
+          }
+      },
+      {
+        "title": "Phone No",
+        "key": "PhoneNumber",
+        render:(h,{row})=>{
+          // return row.PhoneNumber
+          return h('div', [
+                  h('span', row.PhoneNumber)
+              ]);
+          }
+      },
+      {
+        "title": "Address",
+        "key": "Address",
+        render:(h,{row})=>{
+          // return row.Address
+          return h('div', [
+                  h('span', row.Address)
+              ]);
+          }
+      },
+      {
+        "title": "Status",
+        "key": "ContactStatus",
+        render:(h,{row})=>{
+          // return row.ContactStatus
+          return h('div', [
+                  h('span', row.ContactStatus)
+              ]);
+          }
+      }
+    ],
+    data6: [],
+    data7: [],
+    filterArray: [],
+    optionsPage:[10,20,50,100,200],
+    listData: [],
+    cname: '',
+    status:'',
+    email: ''
+    }
+  },
+  methods: {
+    changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        if(this.pageSize > 10){
+          this.tableHeight = 530
+        }else{
+          this.tableHeight = 450
+        }
+        this.changePage(1)
+    },
+    reset() {
+      this.cname = '';
+      this.status = '';
+      this.email = '';
+      this.getAllSettings();
+    },
+    async changeData() {
+      // console.log("this.data6", this.data6)
+      this.filterArray = this.data6
+      var self = this
 
-			if(this.cname != ''){
-			//  console.log("this.cname", this.cname)
-			this.filterArray = _.filter(this.filterArray,  function(item){
-			// console.log("item",item)
-				if(item.Name != undefined){
-				return item.Name === self.cname;
-				}else{
-				return item.DisplayName === self.cname;
-				}
-			});
-			//  console.log("myarr",this.filterArray)
-			this.list = await this.mockTableData2(1,pageSize)
-			}else{
-				// console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-				// console.log("myarr",this.filterArray)
-				this.list = await this.mockTableData2(1,pageSize)
-			}
+      if(this.cname != ''){
+      //  console.log("this.cname", this.cname)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        // console.log("item",item)
+          if(item.Name != undefined){
+            return item.Name === self.cname;
+          }else{
+            return item.DisplayName === self.cname;
+          }
+      });
+      //  console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,self.pageSize)
+      }else{
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+          // console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,self.pageSize)
+        }
 
 
-			if(this.status != ''){
-			// console.log("this.status", this.status)
-			this.filterArray = _.filter(this.filterArray,  function(item){
-			// console.log("item",item)
-				if(item.ContactStatus != undefined){
-				return item.ContactStatus === self.status;
-				}else{
-				if(self.status == 'ACTIVE'){
-					if(item.Active == true){
-					return item
-					}
-				}else{
-					if(item.Active == false){
-					return item
-					}
-				}
-				}
-			});
-			//  console.log("myarr",this.filterArray)
-			this.list = await this.mockTableData2(1,pageSize)
-			}else{
-				// console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-				// console.log("myarr",this.filterArray)
-				this.list = await this.mockTableData2(1,pageSize)
-			}
-			
-			if(this.email != ''){
-			//  console.log("this.email", this.email)
-			this.filterArray = _.filter(this.filterArray,  function(item){
-			// console.log("item",item)
-			if(item.EmailAddress != undefined){
-				return item.EmailAddress === self.email;
-			}
-			else{
-			if(item.PrimaryEmailAddr != undefined){
-				return item.PrimaryEmailAddr.Address === self.email;
-			}
-			}
-			});
-			//  console.log("myarr",this.filterArray)
-			this.list = await this.mockTableData2(1,pageSize)
-			}else{
-				// console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-				// console.log("myarr",this.filterArray)
-				this.list = await this.mockTableData2(1,pageSize)
-			}
-		},
-		async mockTableData2 (p,size) {
-			// console.log("p-------------->",p)
-			// console.log("p-------------->",size)
-			// console.log("console.log------------>",this.filterArray)
-			this.len = this.filterArray.length
-			return this.filterArray.slice((p - 1) * size, p * size);
-		},
-		async mockTableData1 (p,size) {
-			this.len = this.data6.length
-			return this.data6.slice((p - 1) * size, p * size).reverse();
-		},
-		async changePage (p) {
-			this.page = p
-			// console.log("not inside",this.filterArray.length)
-			if(this.filterArray.length == 0){
-			// console.log("inside",this.filterArray)
-			this.list = await this.mockTableData1(p,pageSize);
-			}else{
-			this.list = await this.mockTableData2(p,pageSize);
-			}
-		},
-		async tabClicked(data){
-			// console.log(data)
-			this.tabIndex = data;
-			let settingName = this.tabPanes[data].configName;
-			let settingId = this.tabPanes[data].id
-			let settingDomain = this.tabPanes[data].domain;
-			this.getContactBySettingId(settingId ,settingDomain , data, settingName)
-		},
-		async getContactBySettingId(settingId , settingDomain , data, settingName){
-			this.$Loading.start();
-			this.data6 = [];
-			let self = this;
-			self.list = [];
+      if(this.status != ''){
+        // console.log("this.status", this.status)
+        this.filterArray = _.filter(this.filterArray,  function(item){
+        // console.log("item",item)
+          if(item.ContactStatus != undefined){
+            return item.ContactStatus === self.status;
+          }else{
+            if(self.status == 'ACTIVE'){
+              if(item.Active == true){
+                return item
+              }
+            }else{
+              if(item.Active == false){
+                return item
+              }
+            }
+          }
+        });
+      //  console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,self.pageSize)
+      }else{
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          // console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,self.pageSize)
+        }
+      
+      if(this.email != ''){
+      //  console.log("this.email", this.email)
+       this.filterArray = _.filter(this.filterArray,  function(item){
+        // console.log("item",item)
+        if(item.EmailAddress != undefined){
+          return item.EmailAddress === self.email;
+        }
+        else{
+        if(item.PrimaryEmailAddr != undefined){
+          return item.PrimaryEmailAddr.Address === self.email;
+        }
+        }
+      });
+      //  console.log("myarr",this.filterArray)
+       this.list = await this.mockTableData2(1,self.pageSize)
+      }else{
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          // console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,self.pageSize)
+        }
+    },
+    async mockTableData2 (p,size) {
+      // console.log("p-------------->",p)
+      // console.log("p-------------->",size)
+      // console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else {
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = (this.len * 40) + 35
+        }
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
+    async mockTableData1 (p,size) {
+      this.len = this.data6.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else {
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = (this.len * 40) + 35
+        }
+      return this.data6.slice((p - 1) * size, p * size).reverse();
+    },
+    async changePage (p) {
+      var self = this
+      this.page = p
+      // console.log("not inside",this.filterArray.length)
+      if(this.filterArray.length == 0){
+        // console.log("inside",this.filterArray)
+        this.list = await this.mockTableData1(p,self.pageSize);
+      }else{
+        this.list = await this.mockTableData2(p,self.pageSize);
+      }
+    },
+    async tabClicked(data){
+      // console.log(data)
+      this.tabIndex = data;
+      let settingName = this.tabPanes[data].configName;
+      let settingId = this.tabPanes[data].id
+      let settingDomain = this.tabPanes[data].domain;
+      this.getContactBySettingId(settingId ,settingDomain , data, settingName)
+    },
+    async getContactBySettingId(settingId , settingDomain , data, settingName){
+      this.$Loading.start();
+      this.data6 = [];
+      let self = this;
+      self.list = [];
+
 
 			if(settingDomain == 'custom'){
 			// console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
@@ -553,101 +599,102 @@
 						key : columnArray[i],
 						sortable: true
 
-					});
-				}
-				self.list = await self.mockTableData1(1,pageSize)
-				// self.column3 = arr;
-			})
-			.catch(function (error) {
-				self.$Loading.error();
-				console.log("error in get customer",error);
-				if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-					let location = psl.parse(window.location.hostname)
-					location = location.domain === null ? location.input : location.domain
-					
-					Cookies.remove('auth_token' ,{domain: location}) 
-					Cookies.remove('subscriptionId' ,{domain: location}) 
-					self.$store.commit('logout', self);
-					
-					self.$router.push({
-						name: 'login'
-					});
-					self.$Notice.error({
-						title: error.response.data.name,
-						desc: error.response.data.message,
-						duration: 10
-					})
-					}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-					self.$Notice.error({
-						title: error.response.statusText,
-						desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-						duration: 4.5
-					})
-					}else {
-					self.$Notice.error({
-						title: error.response.data.name,
-						desc: error.response.data.message,
-						duration: 10
-					})
-					}
-			});
-			}
-			else{
-			await axios.get(feathersUrl +'contacts', {
-				headers:{
-				Authorization : Cookies.get('auth_token')
-				},
-				params : {
-				settingId : settingId
-				}
-			})
-			.then(async function (response) {
-				// console.log("$$$$$$$$$$$$$$$$$$$",response)
-				self.data6 = response.data[0].data.reverse();
-				self.$Loading.finish();
-				$('.preload').css("display","none")
-				self.list = await self.mockTableData1(1,pageSize)
-			})
-			.catch(function (error) {
-				console.log("error",error);
-				if (error.response.data.message === 'invalid_grant') {
-					self.$Notice.error({
-						duration:0, 
-						title: "QB : Credential Expired",
-						desc: "Token is expired for "+settingName
-					});
-				} else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-					let location = psl.parse(window.location.hostname)
-					location = location.domain === null ? location.input : location.domain
-					
-					Cookies.remove('auth_token' ,{domain: location}) 
-					Cookies.remove('subscriptionId' ,{domain: location}) 
-					self.$store.commit('logout', self);
-					
-					self.$router.push({
-						name: 'login'
-					});
-					self.$Notice.error({
-						title: error.response.data.name,
-						desc: error.response.data.message,
-						duration: 10
-					})
-					}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-					self.$Notice.error({
-						title: error.response.statusText,
-						desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-						duration: 4.5
-					})
-					}else {
-					self.$Notice.error({
-						title: error.response.data.name,
-						desc: error.response.data.message,
-						duration: 10
-					})
-					}
-				self.$Loading.error();
-			});
-			}
+              });
+          }
+          self.list = await self.mockTableData1(1,self.pageSize)
+          // self.column3 = arr;
+        })
+        .catch(function (error) {
+          self.$Loading.error();
+          console.log("error in get customer",error);
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+        });
+      }
+      else{
+        await axios.get(feathersUrl +'contacts', {
+          headers:{
+            Authorization : Cookies.get('auth_token')
+          },
+          params : {
+            settingId : settingId
+          }
+        })
+        .then(async function (response) {
+          // console.log("$$$$$$$$$$$$$$$$$$$",response)
+          self.data6 = response.data[0].data.reverse();
+          self.$Loading.finish();
+          $('.preload').css("display","none")
+          self.list = await self.mockTableData1(1,self.pageSize)
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            if (error.response.data.message === 'invalid_grant') {
+                self.$Notice.error({
+                    duration:0, 
+                    title: "QB : Credential Expired",
+                    desc: "Token is expired for "+settingName
+                });
+            } else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+            self.$Loading.error();
+        });
+      }
+
 
 			var NameArr = [];
 			$('#selectCustomer').children('option:not(:first)').remove();
@@ -811,14 +858,17 @@
 </script>
 
 <style>
-	.ivu-spin-main {
-		width: 100%;
-		text-align: -webkit-center;
-	}
-	.ivu-table-border th {
-		border-right: 1px solid #ddd;
-	}
-	.ivu-table-cell {
-		word-break: break-word;
-	}
+
+  .ivu-spin-main {
+      width: 100%;
+      text-align: -webkit-center;
+  }
+  .ivu-table-border th {
+      border-right: 1px solid #ddd;
+  }
+  .ivu-table-cell {
+      word-break: break-word;
+  }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
+
 </style>
