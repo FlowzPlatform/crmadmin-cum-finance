@@ -44,7 +44,7 @@
 						</Row>        
 					</FormItem>
 					<div style="text-align:center;">
-						<Button type="primary" @click="formData('formItem')" :loading="loading">Submit</Button>
+						<Button type="primary" @click="InvoiceSubmit('formItem')" :loading="loading">Submit</Button>
 						<Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Cancel</Button>
 					</div>
 				</Form>
@@ -72,10 +72,29 @@ export default {
       }
     };
     const validateAmount = async(rule, value, callback) => {
+
       let patt = new RegExp('^(-?0[.]\\d+)$|^(-?[1-9]+\\d*([.]\\d+)?)$|^0$')
       let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
+      } else {
+        callback();
+      }
+    };
+    // const validateBlank = async(rule, value, callback) => {
+          //   let blankPatt = /^\S*$/g
+          //   console.log("------------value", typeof value)
+          //   let blankTest = value.match(blankPatt)
+          //   console.log("======================_res",blankTest);
+          //   if (!blankTest) {
+          //     callback(new Error('Password Does not Allow Spaces'))
+          //   } else {
+          //     callback();
+          //   }
+          // };
+    const validateBlank = (rule, value, callback) => {
+      if (value.trim() === '') {
+        callback(new Error('Space is not allowed'));
       } else {
         callback();
       }
@@ -112,7 +131,7 @@ export default {
              { required: true, message: 'Please select the customer name', trigger: 'change' }
           ],
           description: [
-              { required: true, message: 'Description cannot be empty', trigger: 'blur' }
+              { required: true, message: 'Description cannot be empty', validator: validateBlank, trigger: 'blur' }
           ],
           duedate: [
               { required: true, type: 'date', message: 'Please select the date', trigger: 'change' }
@@ -344,11 +363,13 @@ export default {
               })
               .catch(function (error) {
                   console.log(error);
-                  self.$Notice.error({
-                    duration:0, 
-                    title: "QB : Credential Expired",
-                    desc: "Token is expired for "+response.data.configName
-                  });
+                  if (error.response.data.message === 'invalid_grant') {
+                    self.$Notice.error({
+                      duration:0, 
+                      title: "QB : Credential Expired",
+                      desc: "Token is expired for "+response.data.configName
+                    });
+                  }
               });
           }
       })
@@ -396,15 +417,14 @@ export default {
       //})
     },
 
-    async formData (name) {
+    async InvoiceSubmit (name) {
       console.log(name)
       this.$refs[name].validate((valid) => {
-        //if (valid) {
+        if (valid) {
           this.newInvoice();
-        // } else {
-         
-        //   this.$Message.error('Data not valid!!!');
-        // }
+        } else {
+          this.$Message.error('Please Enter valid Input');
+        }
       })
     },
     async newInvoice () {

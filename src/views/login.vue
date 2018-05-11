@@ -335,8 +335,8 @@ export default {
                                     name: 'login'
                                 });
                                 self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
+                                    title: 'Error',
+                                    desc: error.response.data,
                                     duration: 10
                                 })
                             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -370,8 +370,8 @@ export default {
                                 name: 'login'
                             });
                             self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
+                                title: 'Error',
+                                desc: error.response.data,
                                 duration: 10
                             })
                         }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -516,8 +516,8 @@ export default {
                                     name: 'login'
                                 });
                                 self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
+                                    title: 'Error',
+                                    desc: error.response.data,
                                     duration: 10
                                 })
                             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -556,8 +556,8 @@ export default {
                                 name: 'login'
                             });
                             self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
+                                title: 'Error',
+                                desc: error.response.data,
                                 duration: 10
                             })
                         }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -647,8 +647,8 @@ export default {
                         name: 'login'
                     });
                     self.$Notice.error({
-                        title: error.response.data.name,
-                        desc: error.response.data.message,
+                        title: 'Error',
+                        desc: error.response.data,
                         duration: 10
                     })
                 }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -708,8 +708,8 @@ export default {
                                 name: 'login'
                             });
                             self.$Notice.error({
-                                title: error.response.data.name,
-                                desc: error.response.data.message,
+                                title: 'Error',
+                                desc: error.response.data,
                                 duration: 10
                             })
                         }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
@@ -769,8 +769,8 @@ export default {
                                     name: 'login'
                                 });
                                 self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
+                                    title: 'Error',
+                                    desc: error.response.data,
                                     duration: 10
                                 })
                             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
