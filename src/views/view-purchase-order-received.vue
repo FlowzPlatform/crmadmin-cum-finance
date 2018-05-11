@@ -1,212 +1,205 @@
 <template>
-  <div>
-        <!-- <div v-if="spinShow" class="demo-spin-container">
-            <Spin fix></Spin>
-        </div> -->
-        <!-- <div> -->
-            <!-- <Card> -->
-                    
-                <!--<div style="text-align:center">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="order-title">
-                                <div class="col-md-6 col-sm-6">
-                                Order ID : {{row.order_id}}
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    Created Date : {{moment(row.createdAt).format('DD-MMM-YYYY')}} 
-                                </div>
-                                 <div class="col-md-4 col-sm-4">
-                                    Total Items : {{row.products.length}}
-                                </div> 
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
+    <div>
 
-                                <div class="row">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <!--<th> ORDER ID : {{row.order_id}} </th>-->
-                                                <th> ORDER TYPE : {{row.order_type | upper}} </th>
-                                                <th> SHIPPING : {{row.shipping_method.shipping_type | upper}} </th>
-                                                <th> <a @click="clicked(row._index)">
-                                                    <Icon type="eye" size="20"></Icon></a> </th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    <table class="table1">
-                                        <thead>
-                                            <tr>
-                                                <th> PRODUCT IMAGE </th>
-                                                <th> ITEM NUMBER </th>
-                                                <th> PRODUCT NAME </th>
-                                                <th> QUANTITY </th>
-                                                <th> UNIT PRICE </th>
-                                                <th> TOTAL </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                                                <td><img :src="getImgUrl(row.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
-                                                <td> {{row.product_description.sku}}</td>
-                                                <td> {{row.product_description.product_name}}</td>
-                                                <td> {{row.total_qty}}</td>
-                                                <td> {{ accounting(row.unit_price)}} </td>
-                                                <td> {{ getMulti(row.total_qty, row.unit_price) }}</td>
-                                            </tr>
-                                            <tr class="description" :id="'description'+row._index+this.total" style="display: none;">
-                                                <td colspan="6">
-                                                    <table class="details" style="width:100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <table class="info" style="width:100%;table-layout: auto;margin-top: -1px;">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Quantity &amp; Price</th>
-                                                                                <th>Imprint Information</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td style="width:62%">
-                                                                                    <div class="quantity-table" style="margin: 10px;">
-                                                                                        <div class="quantity-table-title" style="margin-top: 15px;">
-                                                                                            <div class="table-heading">Quantity </div>
-                                                                                            <div class="table-content">Price</div>
-                                                                                        </div>
-                                                                                        <div  v-for="(element, inx) in row.product_description.pricing">
-                                                                                            <div class="quantity-table-disc owl-carousel owl-theme" v-if="element.price_type == 'regular' && element.type == 'decorative' && element.global_price_type == 'global'" style="margin-top: 15px;margin-bottom: 20px;">
-                                                                                                <div v-for="(itm,inx) in element.price_range" >
-                                                                                                    <div class="table-heading" v-if="itm.qty.lte">{{itm.qty.gte}} - {{itm.qty.lte}}</div>
-                                                                                                    <div class="table-heading" v-else>{{itm.qty.gte}} + </div>
-                                                                                                    <div class="table-content"> {{accounting(itm.price)}}</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td class="estimate-detail">
-                                                                                    <div class="estimate-tag-block" v-for="(element, index) in row.imprint" style="text-align: -webkit-left;">
-                                                                                        <div class="estimate-row heading">
-                                                                                            <span>Print Position: {{element.imprint_position_name}}</span>
-                                                                                            <div class="estimate-row">
-                                                                                                <span>Imprint Method: {{element.imprint_method_name}}</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="estimate-row" v-if="element.no_of_color">
-                                                                                                How many colours : <span>{{element.no_of_color}} Colour </span>
-                                                                                        </div>
-                                                                                        <div v-else><br></div>
-                                                                                        <div class="estimate-row" v-if="element.selected_colors">
-                                                                                            <div v-for="(item) in element.selected_colors">
-                                                                                                Colour : <span>{{item}}</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                    </div> 
-                                                                                </td>
-                                                                                
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td colspan="4">
-                                                                                    <table class="product-quantity-list">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th class="item-list-number">
-                                                                                                    <div class="quantity-item">1</div>
-                                                                                                    Product Quantity 
-                                                                                                </th>
-                                                                                                <!-- <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping</th> -->
-                                                                                                <!-- <th style="text-align: -webkit-center;">Shipping Charge</th> -->
-                                                                                                <th style="text-align:center">Additional Charges</th>
-                                                                                                <th style="text-align:center">Charges</th>
-                                                                                                <!--<th style="text-align: -webkit-center;">Tax</th>-->
-                                                                                            </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <tr>
-                                                                                                <td style="width:60%">
-                                                                                                    <table class="size-quantity-table">
-                                                                                                        <thead>
-                                                                                                            <tr>
-                                                                                                                <th style="text-align: -webkit-center;">COLOR</th>
-                                                                                                                <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                                <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
-                                                                                                            </tr>
-                                                                                                        </thead>
-                                                                                                        <tbody>
-                                                                                                            <tr v-for="(item,inx) in row.color_quantity">
-                                                                                                             <!-- <div > -->
-                                                                                                                    <td>{{inx}}
-                                                                                                                    </td>
-                                                                                                                    <td>{{item}}
-                                                                                                                    </td>
-                                                                                                                    <!-- <td>{{item}}
-                                                                                                                    </td> -->
-                                                                                                             <!-- </div> -->
-                                                                                                            </tr>
-                                                                                                        </tbody>
-                                                                                                    </table>
-                                                                                                </td>
-                                                                                                <!-- <td v-for="(i, j) in row.shipping_method.shipping_detail">
-                                                                                                    <span style="float: left">{{i.shipping_address.name}}</span><br>
-                                                                                                    <span style="float: left">{{i.shipping_address.street1}}</span><br>
-                                                                                                    <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
-                                                                                                    <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
-                                                                                                    <span style="float: left"> {{i.shipping_address.state}} </span> <br>
-                                                                                                    <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
-                                                                                                </td> -->
-                                                                                                <!-- <td style="width:20%" v-for="(i, j) in row.shipping_method.shipping_detail">
-                                                                                                    <span style="float: left">Shipping Type: </span> <span style="float: left">{{row.shipping_method.shipping_type}}</span> <br>
-                                                                                                    <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
-                                                                                                    <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
-                                                                                                    <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
-                                                                                                </td> -->
-                                                                                                <!-- <td style="width:16%" v-for="(i, j) in row.shipping_method.shipping_detail">
-                                                                                                    Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
-                                                                                                </td> -->
-                                                                                                <td style="width:21%">
-                                                                                                    <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
-                                                                                                    <span v-else> N/A </span>
-                                                                                                </td>
-                                                                                                <td> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
-                                                                                                    <span v-else> N/A </span>
-                                                                                                </td>
-                                                                                                <!--<td style="width:10%"></td>-->
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <!-- <tr class="item_total">
-                                                <th>Total:  {{ getMulti(row.total_qty, row.unit_price) }}</th>
-                                                <th colspan="2">Additional Charges:  <span v-if="row.charges">{{accounting(row.charges.setup_charge)}}</span>
-                                                                                    <span v-else> $00.00 </span> 
-                                                </th>
-                                                <th>Shipping Charge : <span v-if="row.shipping_method.shipping_detail.shipping_detail.shipping_charge"> {{ getShippingCharge(row.shipping_method.shipping_detail.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span> </th>
-                                                <th>Tax : $00.00 </th>
-                                                <th>Sub Total:<span style="color:#C11E19" v-if="row.shipping_method.shipping_detail.shipping_detail.shipping_charge">  {{ getSubTotal(row.total_qty, row.unit_price, row, row.shipping_method.shipping_detail.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> </th>
-                                            </tr> -->
-                                        </tbody>
-                                    </table>
-                                </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <!--<th> ORDER ID : {{row.order_id}} </th>-->
+                        <th> ORDER TYPE : {{row.order_type | upper}} </th>
+                        <th> SHIPPING : {{row.shipping_method.shipping_type | upper}} </th>
+                        <th> <a @click="clicked(row._index)">
+                            <Icon type="eye" size="20"></Icon></a> </th>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table1">
+                <thead>
+                    <tr>
+                        <th> PRODUCT IMAGE </th>
+                        <th> ITEM NUMBER </th>
+                        <th> PRODUCT NAME </th>
+                        <th> QUANTITY </th>
+                        <th> UNIT PRICE </th>
+                        <th> TOTAL </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
+                        <td><img :src="getImgUrl(row.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                        <td> {{row.product_description.sku}}</td>
+                        <td> {{row.product_description.product_name}}</td>
+                        <td> {{row.total_qty}}</td>
+                        <td> {{ accounting(row.unit_price)}} </td>
+                        <td> {{ getMulti(row.total_qty, row.unit_price) }}</td>
+                    </tr>
+                    <tr class="description" :id="'description'+row._index+this.total" style="display: none;">
+                        <td colspan="6">
+                            <table class="details" style="width:100%">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table class="info" style="width:100%;table-layout: auto;margin-top: -1px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Quantity &amp; Price</th>
+                                                        <th>Imprint Information</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width:62%">
+                                                            <div class="quantity-table" style="margin: 10px;">
+                                                                <div class="quantity-table-title" style="margin-top: 15px;">
+                                                                    <div class="table-heading">Quantity </div>
+                                                                    <div class="table-content">Price</div>
+                                                                </div>
+                                                                <div  v-for="(element, inx) in row.product_description.pricing">
+                                                                    <div class="quantity-table-disc owl-carousel owl-theme" v-if="element.price_type == 'regular' && element.type == 'decorative' && element.global_price_type == 'global'" style="margin-top: 15px;margin-bottom: 20px;">
+                                                                        <div v-for="(itm,inx) in element.price_range" >
+                                                                            <div class="table-heading" v-if="itm.qty.lte">{{itm.qty.gte}} - {{itm.qty.lte}}</div>
+                                                                            <div class="table-heading" v-else>{{itm.qty.gte}} + </div>
+                                                                            <div class="table-content"> {{accounting(itm.price)}}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="estimate-detail">
+                                                            <div class="estimate-tag-block" v-for="(element, index) in row.imprint" style="text-align: -webkit-left;">
+                                                                <div class="estimate-row heading">
+                                                                    <span>Print Position: {{element.imprint_position_name}}</span>
+                                                                    <div class="estimate-row">
+                                                                        <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="estimate-row" v-if="element.no_of_color">
+                                                                        How many colours : <span>{{element.no_of_color}} Colour </span>
+                                                                </div>
+                                                                <div v-else><br></div>
+                                                                <div class="estimate-row" v-if="element.selected_colors">
+                                                                    <div v-for="(item) in element.selected_colors">
+                                                                        Colour : <span>{{item}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div v-else></div>
+                                                            </div> 
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4">
+                                                            <table class="product-quantity-list">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="item-list-number">
+                                                                            <div class="quantity-item">1</div>
+                                                                            Product Quantity 
+                                                                        </th>
+                                                                        <!-- <th style="text-align: -webkit-center;">Shipping Address </th>
+                                                                        <th style="text-align: -webkit-center;">Shipping</th> -->
+                                                                        <!-- <th style="text-align: -webkit-center;">Shipping Charge</th> -->
+                                                                        <th style="text-align:center">Additional Charges</th>
+                                                                        <th style="text-align:center">Charges</th>
+                                                                        <!--<th style="text-align: -webkit-center;">Tax</th>-->
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td style="width:60%">
+                                                                            <table class="size-quantity-table">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th style="text-align: -webkit-center;">COLOR</th>
+                                                                                        <th style="text-align: -webkit-center;">QUANTITY</th>
+                                                                                        <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr v-for="(item,inx) in row.color_quantity">
+                                                                                        <!-- <div > -->
+                                                                                            <td>{{inx}}
+                                                                                            </td>
+                                                                                            <td>{{item}}
+                                                                                                <div v-if="editIcon" style="display:inline-block;margin-left:20px"><Button class="editIcon" type="text" icon="edit"  @click="show(row,item)"></Button></div>
+                                                                                            </td>
+                                                                                            <!-- <td>{{item}}
+                                                                                            </td> -->
+                                                                                        <!-- </div> -->
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </td>
+                                                                        <!-- <td v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                            <span style="float: left">{{i.shipping_address.name}}</span><br>
+                                                                            <span style="float: left">{{i.shipping_address.street1}}</span><br>
+                                                                            <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
+                                                                            <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
+                                                                            <span style="float: left"> {{i.shipping_address.state}} </span> <br>
+                                                                            <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
+                                                                        </td> -->
+                                                                        <!-- <td style="width:20%" v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                            <span style="float: left">Shipping Type: </span> <span style="float: left">{{row.shipping_method.shipping_type}}</span> <br>
+                                                                            <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
+                                                                            <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
+                                                                            <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
+                                                                        </td> -->
+                                                                        <!-- <td style="width:16%" v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                            Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
+                                                                        </td> -->
+                                                                        <td style="width:21%">
+                                                                            <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
+                                                                            <span v-else> N/A </span>
+                                                                        </td>
+                                                                        <td> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
+                                                                            <span v-else> N/A </span>
+                                                                        </td>
+                                                                        <!--<td style="width:10%"></td>-->
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- <tr class="item_total">
+                        <th>Total:  {{ getMulti(row.total_qty, row.unit_price) }}</th>
+                        <th colspan="2">Additional Charges:  <span v-if="row.charges">{{accounting(row.charges.setup_charge)}}</span>
+                                                            <span v-else> $00.00 </span> 
+                        </th>
+                        <th>Shipping Charge : <span v-if="row.shipping_method.shipping_detail.shipping_detail.shipping_charge"> {{ getShippingCharge(row.shipping_method.shipping_detail.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span> </th>
+                        <th>Tax : $00.00 </th>
+                        <th>Sub Total:<span style="color:#C11E19" v-if="row.shipping_method.shipping_detail.shipping_detail.shipping_charge">  {{ getSubTotal(row.total_qty, row.unit_price, row, row.shipping_method.shipping_detail.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> </th>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
                     
-            <!-- </Card> -->
-        <!-- </div> -->
-  </div>
+        <modal v-model="modal2" width="40%">
+            <p slot="header">
+                    <!-- <icon type="information-circled"></icon> -->
+                    <span>Change Quantity</span>
+                </p>
+            <div style="text-align:center">
+                <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
+                <form-item label="Quantity" prop="value">
+                    <i-input v-model="formValidate.value" placeholder="Enter Quantity"></i-input>
+                </form-item>
+                </i-form>
+            </div>
+            <div slot="footer">
+                <i-button @click="cancel">Cancel</i-button>
+                <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
+            </div>
+        </modal>
+    </div>
 </template>
 <script>
     import moment from 'moment';
@@ -217,13 +210,23 @@
     export default {
         props: {
             row: Object,
-            total: String
+            total: String,
+            editIcon: Boolean
         },
         data () {
             return {
                 spinShow : true,
                 moment: moment,
                 imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                modal2: false,
+                formValidate: {
+                	value: ''
+                },
+                ruleInline: {
+                    value: [
+                        { required: true, message:  "Please Enter Quantity", trigger: 'blur' }
+                    ]
+                },                
                 
             }
         },
@@ -277,6 +280,40 @@
                     
                 // });
                 // $(".description").css("display", "table-row");
+            },
+            show (data,val) {
+                let self = this
+                this.modal2 = true
+                console.log("show show ", data)
+                this.productData = data
+                this.formValidate.value = val
+                
+            },
+            onOk (productData,value){
+                console.log('ok',productData,value)
+                this.modal2 = false;
+                let price;
+                productData.product_description.pricing.forEach((item) => {
+                    if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
+                        item.price_range.forEach((element) => {
+                            if(element.qty.lte) {
+                                    console.log("if first",element.qty)                                
+                                if(value >= element.qty.gte && value <= element.qty.lte){
+                                    price = element.price                                    
+                                    console.log("if",price,value)
+                                }
+                            }else {
+                                if(value >= element.qty.gte){
+                                     price = element.price                                    
+                                    console.log("else",price,value)
+                                }
+                            }
+                        })
+                    }
+                })
+            },
+            cancel () {
+                this.modal2 = false
             },
         },
         filters: {
@@ -448,8 +485,9 @@
     	table-layout: auto;
     	margin-bottom: 15px;
     }
-    
-    
+    .editIcon:focus {
+        box-shadow: none;
+    }    
 </style>
 <style>
     .ivu-collapse-content {

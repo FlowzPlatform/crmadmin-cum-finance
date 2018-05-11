@@ -530,7 +530,7 @@ export default {
                     console.log(EditModifiedData)
                     let patchData = _.cloneDeep(EditModifiedData)
                     delete patchData.online_payment;
-                    console.settingEditDatalog("--------------",patchData);
+                    console.log("settingEditData--------------",patchData);
                     axios({
                         method:'patch',
                         url:feathersUrl +'settings/'+this.editData.id,

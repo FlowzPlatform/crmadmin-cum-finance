@@ -285,7 +285,8 @@
 								return h(expandRow, {
 									props: {
 										row: params.row,
-										total: cardIndex
+										total: cardIndex,
+										editIcon: false
 									}
 								})
 							}

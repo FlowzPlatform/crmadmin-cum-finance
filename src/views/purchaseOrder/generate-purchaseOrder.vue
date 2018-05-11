@@ -81,6 +81,22 @@
                             <div class="row">
                                 <div class="span8 well invoice-body" style="padding: 0px;border: none;">
                                     <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
+                                    <!-- <modal v-model="modal2" width="40%">
+                                        <p slot="header">
+                                                <span>Change Quantity</span>
+                                            </p>
+                                        <div style="text-align:center">
+                                            <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
+                                            <form-item label="Quantity" prop="value">
+                                                <i-input v-model="formValidate.value" placeholder="Enter Quantity"></i-input>
+                                            </form-item>
+                                            </i-form>
+                                        </div>
+                                        <div slot="footer">
+                                            <i-button @click="cancel">Cancel</i-button>
+                                            <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
+                                        </div>
+                                    </modal> -->
                                 </div>
                             </div>
                         </div>
@@ -114,6 +130,8 @@
                 orderDetail: {},
                 date: '',
                 poBillAddress: {},
+                modal2: false,
+                productData: {},
                 columns1: [
                     {
                         type: 'expand',
@@ -125,7 +143,8 @@
 								return h(expandRow, {
 									props: {
 										row: params.row,
-										total: cardIndex
+                                        total: cardIndex,
+                                        editIcon: true
 									}
 								})
 							}
@@ -159,7 +178,35 @@
                         align:  'center',
                         render : (h , {row}) => {
                             return h('div', [
-                                h('span', row.total_qty)
+                                h('span', row.total_qty),
+                                // h('Tooltip', {
+                                //     props: {
+                                //     placement: 'top',
+                                //         content: 'Change the Quantity'
+                                //     },
+                                //     style:{
+                                //         float:'center',
+                                //         cursor:'pointer'
+                                //     }
+                                // }, [
+                                //     h('Button', {
+                                //         props: {
+								// 		type: 'text',
+								// 		size: 'large',
+								// 		icon: 'edit'
+                                //         },
+                                //         style: {
+                                //             marginLeft: '20px',
+                                //             padding: '0px',
+                                //             color: 'rgb(106, 114, 140)'
+                                //         },
+                                //         on: {
+                                //             click: () => {
+                                //                 self.show(row)
+                                //             }
+                                //         }
+                                //     }, '')
+                                // ])
                             ]);
                         }
                     },
@@ -219,6 +266,14 @@
                     }
                 ],
                 loading: false
+                // formValidate: {
+                // 	value: ''
+                // },
+                // ruleInline: {
+                //     value: [
+                //         { required: true, message:  "Please Enter Quantity", trigger: 'blur' }
+                //     ]
+                // },
                 // spinShow : true, 
             }
         },
@@ -297,6 +352,40 @@
 
                 }
             }
+            // show (data) {
+            //     let self = this
+            //     this.modal2 = true
+            //     console.log("show show ", data)
+            //     this.productData = data
+            //     this.formValidate.value = data.total_qty
+                
+            // },
+            // onOk (productData,value){
+            //     console.log('ok',productData,value)
+            //     this.modal2 = false;
+            //     let price;
+            //     productData.product_description.pricing.forEach((item) => {
+            //         if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
+            //             item.price_range.forEach((element) => {
+            //                 if(element.qty.lte) {
+            //                         console.log("if first",element.qty)                                
+            //                     if(value >= element.qty.gte && value <= element.qty.lte){
+            //                         price = element.price                                    
+            //                         console.log("if",price,value)
+            //                     }
+            //                 }else {
+            //                     if(value >= element.qty.gte){
+            //                          price = element.price                                    
+            //                         console.log("else",price,value)
+            //                     }
+            //                 }
+            //             })
+            //         }
+            //     })
+            // },
+            // cancel () {
+            //     this.modal2 = false
+            // }
         },
         filters: {
             
