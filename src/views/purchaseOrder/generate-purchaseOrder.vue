@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <div class="mainBody">
@@ -138,7 +137,6 @@
                         width: 50,
                         render: (h, params) => {
                             if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
 								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
 								return h(expandRow, {
 									props: {

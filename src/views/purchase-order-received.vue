@@ -232,7 +232,7 @@
 							<div class="well" style="background-color:#fff">
 								<label> Due Date of Invoice : </label>
 								<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-left:20px"></DatePicker>
-								<Button type="success" @click="generatePo()" style="float:right">Generate Invoice</Button>
+								<Button type="success" @click="generateInvoice()" style="float:right">Generate Invoice</Button>
 								<div class="clearfix"></div>								
 							</div>
 						</div>
@@ -830,7 +830,7 @@
                     return 'Stripe'
                 }
 			},
-			generatePo () {
+			generateInvoice () {
 				let paymentInfo = {}
 
 				if(this.dueDate != "" ) {

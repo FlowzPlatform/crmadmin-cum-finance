@@ -122,7 +122,7 @@
                                                                                             <td>{{inx}}
                                                                                             </td>
                                                                                             <td>{{item}}
-                                                                                                <div v-if="editIcon" style="display:inline-block;margin-left:20px"><Button class="editIcon" type="text" icon="edit"  @click="show(row,item)"></Button></div>
+                                                                                                <div v-if="editIcon" style="display:inline-block;margin-left:20px"><Button class="editIcon" type="text" icon="edit"  @click="show(row,item,inx)"></Button></div>
                                                                                             </td>
                                                                                             <!-- <td>{{item}}
                                                                                             </td> -->
@@ -196,7 +196,7 @@
             </div>
             <div slot="footer">
                 <i-button @click="cancel">Cancel</i-button>
-                <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
+                <i-button type="primary" @click="onOk(productData,formValidate.value,index)">OK</i-button>
             </div>
         </modal>
     </div>
@@ -206,7 +206,8 @@
     import psl from 'psl';
     const accounting = require('accounting-js');  
     import owlCarousel from 'owl.carousel';
-      
+    import config from '../config/customConfig.js';
+    let axios = require('axios');
     export default {
         props: {
             row: Object,
@@ -215,8 +216,11 @@
         },
         data () {
             return {
+                price: '',
                 spinShow : true,
                 moment: moment,
+                productData: {},
+                index: '',
                 imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
                 modal2: false,
                 formValidate: {
@@ -281,36 +285,63 @@
                 // });
                 // $(".description").css("display", "table-row");
             },
-            show (data,val) {
+            show (data,val,inx) {
                 let self = this
                 this.modal2 = true
                 console.log("show show ", data)
                 this.productData = data
                 this.formValidate.value = val
-                
+                this.index = inx
             },
-            onOk (productData,value){
-                console.log('ok',productData,value)
-                this.modal2 = false;
-                let price;
+            onOk (productData,value,name){
+                console.log('ok',productData,value,name)
+                
+                let totalValue = parseInt(value)
+                for(let key in productData.color_quantity){
+                    console.log('&&&&&&', key)
+                    if(key !== name){
+                        totalValue = totalValue + parseInt(productData.color_quantity[key])
+                    }
+                }
+               
+                console.log('&&&&&&&& totalvalue', totalValue )
+                // this.modal2 = false;
+                this.price = ''
+
                 productData.product_description.pricing.forEach((item) => {
                     if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
                         item.price_range.forEach((element) => {
                             if(element.qty.lte) {
-                                    console.log("if first",element.qty)                                
-                                if(value >= element.qty.gte && value <= element.qty.lte){
-                                    price = element.price                                    
-                                    console.log("if",price,value)
-                                }
+                                    console.log("if first",element.qty, this.price)                                
+                                if(totalValue >= element.qty.gte && totalValue <= element.qty.lte){
+                                    this.price = element.price                                    
+                                    console.log("if",this.price,totalValue)
+                                } 
                             }else {
-                                if(value >= element.qty.gte){
-                                     price = element.price                                    
-                                    console.log("else",price,value)
+                                if(totalValue >= element.qty.gte){
+                                     this.price = element.price                                    
+                                    console.log("else",this.price,totalValue)
                                 }
                             }
                         })
                     }
                 })
+
+                productData.total_qty = totalValue
+                productData.unit_price = this.price
+
+                if(this.price == ''){
+                    this.$Notice.error({
+                        title: 'Error',
+                        desc: 'Please Enter Minimum Quantity of product.',
+                        duration: 4.5
+                    })
+                }
+                else{
+                    this.modal2 = false;
+                    productData['color_quantity'][name] = value
+                    
+                }                    
             },
             cancel () {
                 this.modal2 = false
