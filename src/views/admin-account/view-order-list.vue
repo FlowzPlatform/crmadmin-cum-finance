@@ -152,33 +152,15 @@
     	margin-bottom: 15px;
     }
     
+    
 </style>
 <style>
-    .quantity-table .owl-carousel .owl-nav.disabled{
-            position: absolute;
-            right: 5px;
-            top: -17px;
-            display:inline-block;
-        }
-        .quantity-table .owl-carousel .owl-nav.disabled .owl-prev {
-            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll 0 0;
-            border-radius: 0;
-            height: 15px;
-            width: 15px;
-            font-size: 0;
-            float: left;
-        }
-        .quantity-table .owl-carousel .owl-nav.disabled .owl-next {
-            background: rgba(0,0,0,0) url(https://keyinnovations.ca/bundles/officebraincustombundletheme/KeyInnovationAdminTheme/images/pink_arrows.png) no-repeat scroll -16px center;
-            border-radius: 0!important;
-            height: 15px;
-            width: 15px;
-            font-size: 0px;
-            float: left;
-        }
-        .quantity-table .quantity-table-disc {
-            overflow: inherit !important;
-        }
+    .ivu-collapse-content {
+        overflow: hidden !important;
+    }
+    .ulList {
+        list-style-type: none ;
+    }
 </style>
 <template>
     <div>
@@ -202,7 +184,7 @@
                         <div class="col-sm-12">
                             <div class="order-title">
                                 <div class="col-md-4 col-sm-4">
-                                Order ID : {{row.id}}
+                                Order ID : {{row.order_id}}
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     Created Date : {{moment(row.products[0].createdAt).format('DD-MMM-YYYY')}} 
@@ -232,7 +214,7 @@
                                 </p>
                             </label>
                             <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
-                                <ul>
+                                <ul class="ulList">
                                     <li>
                                         <Icon type="ios-telephone" size="15"></Icon> 
                                         <label style="font-weight:500">{{row.user_billing_info.phone}}</label>
@@ -254,7 +236,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th> ORDER ID : {{row.id}} </th>
+                                                <th> ORDER ID : {{row.order_id}} </th>
                                                 <th> ORDER TYPE : {{item.order_type | upper}} </th>
                                                 <th> SHIPPING : {{item.shipping_method.shipping_type | upper}} </th>
                                                 <th> <a @click="clicked(inx)">
@@ -275,8 +257,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                                                <td><img :src="getImgUrl(item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                                                <td><img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
                                                 <td> {{item.product_description.sku}}</td>
                                                 <td> {{item.product_description.product_name}}</td>
                                                 <td> {{item.total_qty}}</td>
@@ -318,24 +299,27 @@
                                                                                     </div>
                                                                                 </td>
                                                                                 <td class="estimate-detail" style="width:20%">
-                                                                                    <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
-                                                                                        <div class="estimate-row heading">
-                                                                                            <span>Print Position: {{element.imprint_position_name}}</span>
-                                                                                            <div class="estimate-row">
-                                                                                                <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                                    <span v-if="item.imprint">
+                                                                                        <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
+                                                                                            <div class="estimate-row heading">
+                                                                                                <span>Print Position: {{element.imprint_position_name}}</span>
+                                                                                                <div class="estimate-row">
+                                                                                                    <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div class="estimate-row" v-if="element.no_of_color">
-                                                                                                How many colours : <span>{{element.no_of_color}} Colour </span>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                        <div class="estimate-row" v-if="element.selected_colors">
-                                                                                            <div v-for="(item) in element.selected_colors">
-                                                                                                Colour : <span>{{item}}</span>
+                                                                                            <div class="estimate-row" v-if="element.no_of_color">
+                                                                                                    How many colours : <span>{{element.no_of_color}} Colour </span>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                    </div> 
+                                                                                            <div v-else></div>
+                                                                                            <div class="estimate-row" v-if="element.selected_colors">
+                                                                                                <div v-for="(item) in element.selected_colors">
+                                                                                                    Colour : <span>{{item}}</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                        </div> 
+                                                                                    </span>
+                                                                                    <span v-else> N/A </span>
                                                                                 </td>
                                                                                 <td>
                                                                                     <span v-if="item.charges">{{Object.keys(item.charges)[0]}}-{{item.charges.setup_charge | upper}}</span>
@@ -362,7 +346,7 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:38%">
+                                                                                                <td style="width:42%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
@@ -393,13 +377,13 @@
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                                 </td>
-                                                                                                <td style="width:20%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:22%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
                                                                                                     <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                                                     <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                     <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                                 </td>
-                                                                                                <td style="width:16%" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                                                                <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                                     Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                                 </td>
                                                                                                 <!--<td style="width:10%"></td>-->
@@ -511,7 +495,7 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                imgurl: this.row.product_image_url,
                 invoice: {}
             }
         },
@@ -544,8 +528,12 @@
                 sum = sum + item;
                 return accounting.formatMoney(sum)
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (url , img) {
+                // if(this.imgurl == undefined) {
+                //     return config.default.productImageUrl + url        
+                // }
+                console.log(url+img)
+                return url + img
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;
@@ -616,8 +604,14 @@
             }
         },
         mounted() {
-            this.billData = this.row
+            
             this.invoiceData()
+        },
+         watch: {
+            'row': async function(id) {
+                  this.billData = this.row
+                  this.invoiceData()
+            }
         }
     };
 </script>

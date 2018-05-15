@@ -272,63 +272,83 @@
   }
 </style>
 <template>
-	<div class="chat">
-		<div id="block" style="text-align:right;width:100%;display:inline-block">
-			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
-			<button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
-			<button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
-		</div>
+  <div>
+    <div class="chat">
+      <div id="block" style="text-align:right;width:100%;display:inline-block">
+        <button v-if="isActive" class="form-control"  id="c2611" style="float: right;background-color:rgb(235, 23, 23) !important" @click="close()">Close</button>
+        <button v-if="isActive" class="form-control"  id="c2611" style="float: right;" @click="openEditor()">Save</button>
+        <button v-else class="form-control"  id="c2611" style="float: right;" @click="openEditor()">New Comment</button>
+      </div>
 
-		<textarea style="display:none" id="editor2" name="editor2" ></textarea>
-		<div v-for="(item, index) in commentData" style="margin-bottom: 10px;margin-right: 10px;">
-			<div class="message"  v-if="item.user_id != userId">
-				<Row>
-					<Col span="24" >
-						<!-- <div v-for="(item, index) in commentData"> -->
-						<div >
-							<img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
-							<!-- <p class="emailText">{{item.Text}}</p> -->
-							<!-- <p class="emailText">I am here </p> -->
-              <p class="emailText">{{item.comment}}</p>
-							<span class="receivedDate">
-								<!-- <span>{{getDate(item.date)}}</span> -->
-								<!-- <span>1 day ago</span> -->
-                <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
-                <!-- <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> || -->
-                    
-                <!-- <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
-                <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
-                <span v-else>{{getDate(item.created_at)}}</span>
-                <span v-if="item.isEdited">{{item.edited_by}}</span>
-                <span v-else>{{item.created_by}}</span>
-							</span>
-						</div>
-					</Col>
-				</Row>
-			</div>
-			<div v-else class="message me" >
-				<Row>
-					<Col span="24" >
-						<div  >
-							<img :src="src" />
-							<p class="emailText">{{item.comment}}</p>
-							<span class="sentDate">
-								<span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span>
-								<span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
-                    
-								<span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
-								<span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
-								<span v-else>{{getDate(item.created_at)}}</span>
-								<span v-if="item.isEdited">{{item.edited_by}}</span>
-								<span v-else>{{item.created_by}}</span>
-							</span>
-						</div>
-					</Col>
-				</Row>
-			</div>
-		</div>
-	</div>
+      <textarea style="display:none" id="editor2" name="editor2" ></textarea>
+      <div v-for="(item, index) in commentData" style="margin-bottom: 10px;margin-right: 10px;">
+        <div class="message"  v-if="item.user_id != userId">
+          <Row>
+            <Col span="24" >
+              <!-- <div v-for="(item, index) in commentData"> -->
+              <div >
+                <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
+                <!-- <p class="emailText">{{item.Text}}</p> -->
+                <!-- <p class="emailText">I am here </p> -->
+                <p class="emailText" v-html="item.comment"></p>
+                <span class="receivedDate">
+                  <!-- <span>{{getDate(item.date)}}</span> -->
+                  <!-- <span>1 day ago</span> -->
+                  <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
+                  <!-- <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> || -->
+                      
+                  <!-- <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
+                  <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
+                  <span v-else>{{getDate(item.created_at)}}</span>
+                  <span v-if="item.isEdited">{{item.edited_by}}</span>
+                  <span v-else>{{item.created_by}}</span>
+                </span>
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <div v-else class="message me" >
+          <Row>
+            <Col span="24" >
+              <div  >
+                <img :src="src" />
+                <p class="emailText" v-html="item.comment"></p>
+                <span class="sentDate">
+                  <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
+                  <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
+                      
+                  <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
+                  <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span>
+                  <span v-else>{{getDate(item.created_at)}}</span>
+                  <span v-if="item.isEdited">{{item.edited_by}}</span>
+                  <span v-else>{{item.created_by}}</span>
+                </span>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    </div>
+    <modal v-model="modal2" width="40%">
+      <p slot="header">
+            <!-- <icon type="information-circled"></icon> -->
+            <span>Edit Comment</span>
+        </p>
+      <div style="text-align:center">
+        <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
+          <form-item prop="value">
+            <i-input v-model.trim="formValidate.value" placeholder="Enter Your Comment"></i-input>
+          </form-item>
+        </i-form>
+      </div>
+      <div slot="footer">
+          <i-button :loading="modal_loading" @click="cancel">Cancel</i-button>
+          <i-button type="primary" :loading="modal_loading" @click="onOk">OK</i-button>
+      </div>
+    </modal>
+  </div>
 </template>
+
 <script>
   import Cookies from 'js-cookie';
   import gravatar from 'gravatar'
@@ -345,9 +365,21 @@
       return { 
         isActive:false,
         userId: '',
+        modal2: false,
+        modal_loading: false,
         // isEdit:false,
+        index: '',
+        itemId: '',
         src : '',
-        commentData: []
+        commentData: [],
+        formValidate: {
+                	value: ''
+                },
+                ruleInline: {
+                    value: [
+                        { required: true, message:  "Please Enter Comment", trigger: 'blur' }
+                    ]
+                },
       }
     },
     methods: {
@@ -390,42 +422,44 @@
             });
           },
           onCancel: () => {
-            this.$Message.info('Clicked cancel');
+            // this.$Message.info('Clicked cancel');
           }
         })
       },
       clicked (item, index) {
-        var itemId = item.id
         var data1
-        var comment = this.commentData[index].comment
-        let comment1
-        console.log("************",itemId)
-        this.$Modal.confirm({
-          okText: 'OK',
-          cancelText: 'Cancel',
-          render: (h) => {
-            return h('Input', {
-              props: {
-                value: comment,
-                autofocus: true
-              },
-              on: {
-                input: (val) => {
-                  console.log('val', val)
-                  comment1 = val;
-                }
-              }
-            })
-          },
-          onOk: () => {
-            var self = this
+        var msg = this.commentData[index].comment
+        console.log("msg[0]",msg[0])
+        if(msg[0] == '<'){
+          var msg1 = $(msg).text()
+          var comment = msg1
+          console.log("inside if", comment)
+        }else{
+          var comment = msg
+          console.log("inside else", comment)          
+        }
+        let comment1 = ''
+        console.log("************", comment)
+        this.modal2 = true
+        this.formValidate.value = comment
+        this.index = index
+        this.itemId = item.id
+      },
+      onOk (){
+        var self = this
+        self.modal_loading = true;
+        self.$refs['formValidate'].validate((valid) => {
+          if (valid) {
+            var index = self.index
+            var itemId = self.itemId
             var userid = Cookies.get('user')
-            console.log("comment....",comment)
-            this.$Message.info('Clicked ok');
-            this.commentData[index].comment = comment1
-            this.commentData[index].created_at = new Date() 
-            data1 = {
-              "comment": comment1,
+            var comment = self.formValidate.value
+            self.commentData[index].comment = comment
+            self.commentData[index].created_at = new Date()
+            self.modal2 = false;
+            self.modal_loading = false;
+            let data1 = {
+              "comment": self.commentData[index].comment,
               "edited_by": userid,
               "edited_at": new Date(),
               "isEdited": true
@@ -444,17 +478,95 @@
             })
             .then(function(response) {
               console.log("update response.....",response)
+              self.$Notice.success({
+                title: 'Success',
+                desc: 'Comment edited successfully',
+              });
               self.commentData[index].edited_at = new Date() 
               self.commentData[index].isEdited = true
               self.commentData[index].edited_by = userid
             });
-            
-          },
-          onCancel: () => {
-            this.$Message.info('Clicked cancel');
-          }
+          }else {
+              self.modal_loading = false;
+            }
         })
       },
+      cancel () {
+        this.modal2 = false
+      },
+        // this.$Modal.confirm({
+        //   okText: 'OK',
+        //   cancelText: 'Cancel',
+        //   render: (h) => {
+        //     return h('Input', {
+        //       props: {
+        //         value: comment,
+        //         autofocus: true
+        //       },
+        //       on: {
+        //         input: (val) => {
+        //           console.log('val', val)
+        //           comment1 = val;
+        //           if(comment1 == ""){
+        //             this.$Notice.error({
+        //               title: 'Error',
+        //               desc: 'Please Enter Comment'
+        //             });
+        //           }
+        //         }
+        //       }
+        //     })
+        //   },
+        //   onOk: () => {
+        //     var self = this
+        //     var userid = Cookies.get('user')
+        //     console.log("comment....",comment)
+        //     if(comment1 != ""){
+        //       console.log("inside if",comment1)
+        //       self.commentData[index].comment = comment1
+        //       self.commentData[index].created_at = new Date() 
+        //       data1 = {
+        //         "comment": self.commentData[index].comment,
+        //         "edited_by": userid,
+        //         "edited_at": new Date(),
+        //         "isEdited": true
+        //         // "created_at": created_date,
+        //         // "created_by": userid,
+        //         // "crm_id": crm_id,
+        //         // "user_id": userid,
+        //         // "isDeleted": false,
+        //         // "deleted_by": "",
+        //         // "deleted_at": ""
+        //       }
+        //       axios({
+        //         method:'patch',
+        //         url: relationshipcomments + 'relationshipcomments/' + itemId,
+        //         data: data1
+        //       })
+        //       .then(function(response) {
+        //         console.log("update response.....",response)
+        //         self.$Notice.success({
+        //           title: 'Success',
+        //           desc: 'Comment edited successfully',
+        //         });
+        //         self.commentData[index].edited_at = new Date() 
+        //         self.commentData[index].isEdited = true
+        //         self.commentData[index].edited_by = userid
+        //       });
+        //     }else {
+        //       self.$Notice.error({
+        //         title: 'Error',
+        //         desc: 'Please Enter Comment'
+        //       });
+        //       // console.log("inside else",comment)              
+        //       // this.commentData[index].comment = comment              
+        //     }
+        //   },
+        //   onCancel: () => {
+        //     // this.$Message.error('Clicked cancel');
+        //   }
+        // })
+      // },
       getDate (date) {
         return moment(date).fromNow()
       },
@@ -468,7 +580,8 @@
         } 
         else {
           this.$Notice.success({
-            title: 'Comment Saved',
+            title: 'Success',
+            desc: 'Comment Saved',
             duration: 4.5
           });
           // this.$Message.success('Comment Saved')
@@ -476,7 +589,7 @@
           var self = this
           console.log('else')
           var content = CKEDITOR.instances['editor2'].getData();
-          new_comment = $(content).text();
+          new_comment = content
           created_date = new Date();
           crm_id = self.$route.params.id
           userid = Cookies.get('user')
@@ -506,7 +619,8 @@
           })
           .then(function(response) {
             console.log("save response.....",response)
-            self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
+            // self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
+            self.commentData.splice(0, 0, {comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
             console.log("this.commentData", self.commentData)
           });
           
@@ -534,7 +648,8 @@
           })          
           
           console.log("++++++++++++++self.commentData",self.commentData)
-          self.commentData = _.sortBy(self.commentData, 'created_at')
+          self.commentData = _.orderBy(self.commentData, ['created_at'],['desc']);
+          
         });
       }
     },
@@ -543,5 +658,5 @@
       this.getData()
     }
   }
+</script>
 
-			</script>

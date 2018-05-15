@@ -214,6 +214,7 @@
   import config from '../../config/customConfig.js'
   import Cookies from 'js-cookie';
   import moment from 'moment';
+  import psl from 'psl';
   let axios = require('axios'); 
   let _ = require('lodash');
   var nextdate;
@@ -392,13 +393,19 @@
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
-            self.finaldata = res.data
-            self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
-            self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
-            if(self.finaldata.fileupload != undefined){
-              self.data1 = self.finaldata.fileupload;
+            console.log("==========-----------subscriptionId",res.data.subscriptionId,Cookies.get('subscriptionId'))
+            if (res.data.subscriptionId !== Cookies.get('subscriptionId')) {
+                self.$router.push("/relationship/list-relationship")
             }
-            CKEDITOR.instances.editor1.setData(self.finaldata.description)
+            else {
+              self.finaldata = res.data
+              self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
+              self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
+              if(self.finaldata.fileupload != undefined){
+                self.data1 = self.finaldata.fileupload;
+              }
+              CKEDITOR.instances.editor1.setData(self.finaldata.description)
+            }
            // return res.data
           }).catch(err => {
             console.log('Error >>>>>>>>>>>>>>', err)
@@ -536,8 +543,32 @@
               })
               self.assigneedata = _.sortBy(myarr,['value']);
               self.$Loading.finish();
-          },error: function(err){
-             console.log("error",err);
+          },error: function(error){
+            console.log("error",error);
+            if(error.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+            }else if(error.status == 403){
+              self.$Notice.error({
+                  title: error.statusText,
+                  desc: error.data.message,
+                  duration: 4.5
+              })
+            }else {
+              self.$Notice.error({
+                  title: error.statusText,
+                  desc: error.responseText,
+                  duration: 4.5
+              })
+            }
           }
         });
       },  
@@ -653,18 +684,32 @@
           console.log("config data list................self.mData",self.mData)
           // self.config1 = self.mData[0].id;
           // self.calldata()    
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.disabled = false;
-          if(error.response.status == 403){
-           self.$Notice.error(
-               {duration:0, 
-               title: error.response.statusText,
-               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-               );
-          }   
-                          
+        }).catch(error => {
+            console.log("-------",error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: 'Error',
+                    desc: error,
+                    duration: 4.5
+                })
+            }
         });
       },
       async DeleteFile(params,id){
@@ -705,7 +750,7 @@
             });
           },
           onCancel: () => {
-            this.$Message.info('Clicked cancel');
+            // this.$Message.info('Clicked cancel');
           }
         })
       }
