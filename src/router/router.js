@@ -221,7 +221,15 @@ export const otherRouter = {
         component: resolve => {
             require(['@/views/admin-account/change-password.vue'], resolve);
         }
-    }
+    },
+    {
+        path: 'po-checkout',
+        title: 'POCheckout',
+        name: 'POCheckout',
+        component: resolve => {
+            require(['@/views/purchaseOrder/checkout.vue'], resolve);
+        }
+    },
         // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}
     ]
 };
@@ -393,6 +401,7 @@ export const appRouter = [
         {
             path: '/po_invoice',
             title: 'PO Invoice',
+            name: 'PO Invoice',
             icon: 'document-text',
             name: 'PO Invoice',
             component: resolve => {
