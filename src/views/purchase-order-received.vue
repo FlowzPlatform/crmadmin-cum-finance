@@ -841,7 +841,7 @@
 						for(let item in payment) {
 							for(let val in payment[item]) {
 								if((payment[item][val].isDefault == true) && (payment[item][val].isDeleted == false) ) {
-									paymentInfo[item] = payment[item][val].Account_Name
+									paymentInfo[item] = payment[item][val]
 								}
 							}
 						}
