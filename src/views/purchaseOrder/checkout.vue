@@ -178,7 +178,9 @@ export default {
             self.loading = true
             let body
             let header
+            let status
             console.log("self.payDetail ", self.payDetail);
+            let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             if(self.payDetail.gateway === 'stripe'){
                 body = {
                     "gateway":"stripe",
@@ -186,7 +188,7 @@ export default {
                     "currency":"usd",
                     "cardNumber": self.payDetail.cardNumber,
                     "expMonth":self.payDetail.expiryMM,
-                    "expYear":self.payDetail.expiryYY,
+                    "expYear":exYear,
                     "cvc": self.payDetail.cvCode,
                     "description":"this is desc",
                     "isCustomer":false
@@ -202,7 +204,7 @@ export default {
                     "amount": parseInt(self.payDetail.amount),
                     "cardNumber": self.payDetail.cardNumber,
                     "expMonth":self.payDetail.expiryMM,
-                    "expYear":self.payDetail.expiryYY,
+                    "expYear":exYear,
                     "cvc": self.payDetail.cvCode,
                     "isCustomer":false
                 }
@@ -223,7 +225,7 @@ export default {
                             "type": self.payDetail.cardtype,
                             "number": self.payDetail.cardNumber,
                             "expire_month":self.payDetail.expiryMM,
-                            "expire_year": self.payDetail.expiryYY,
+                            "expire_year": exYear,
                             "cvv2": "",
                             "billing_country": "US"
                         }
@@ -251,6 +253,9 @@ export default {
                 }
             }
 
+
+            console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",header)
+
             axios({
                 method: 'POST',
                 url: config.default.baseUrl + '/payment/payment',
@@ -258,24 +263,50 @@ export default {
                 headers:header,
             }).then(async function (response) {
                 console.log(">>>>>>>>>>>>>> response ",response)
-                self.$Message.success('Payment Done Successfully');
-                self.loading = false
-                await axios({
-                    method: 'patch',
-                    url: config.default.serviceUrl +  'po-invoice/'+self.data.id,
-                    data:{
-                        "status":"paid"
+                if (response.status == 201) {
+                    if(response.data.messages != undefined){
+                        self.$Message.error({
+                            duration: 5,
+                            content: response.data.messages.message[0].text
+                        });
+                    }else{
+                        self.$Message.error({
+                            duration: 5,
+                            content: response.data.message
+                        });
                     }
-                })
-                .then(async function(res){
-                    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
-                })
-                .catch(function(error){
-                    console.log("$$$$$$$$$$$$$$$$$",error)
-                })
-                self.$router.push({
-                    name:'PO Invoice'
-                })
+                    self.loading = false
+                }
+                else {
+                    status = response.data.status || response.data.state || response.data.messages.resultCode
+                    self.loading = false
+                }
+                if (status == "Error") {
+                    self.$Message.error({
+                        duration: 5,
+                        content:response.data.messages.message[0].text
+                    });
+                    self.loading = false
+                }else if(status == 'succeeded' || status == 'Ok' || status == 'created') {
+                    self.$Message.success('Payment Done Successfully');
+                    self.loading = false
+                    await axios({
+                        method: 'patch',
+                        url: config.default.serviceUrl +  'po-invoice/'+self.data.id,
+                        data:{
+                            "status":"paid"
+                        }
+                    })
+                    .then(async function(res){
+                        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
+                    })
+                    .catch(function(error){
+                        console.log("$$$$$$$$$$$$$$$$$",error)
+                    })
+                    self.$router.push({
+                        name:'PO Invoice'
+                    })
+                }
             })
             .catch(function (error) {
                 self.loading = false
