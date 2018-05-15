@@ -293,14 +293,14 @@
                 this.formValidate.value = val
                 this.index = inx
             },
-            onOk (productData,value,name){
-                console.log('ok',productData,value,name)
+            onOk (data,value,name){
+                console.log('ok',data,value,name)
                 
                 let totalValue = parseInt(value)
-                for(let key in productData.color_quantity){
+                for(let key in data.color_quantity){
                     console.log('&&&&&&', key)
                     if(key !== name){
-                        totalValue = totalValue + parseInt(productData.color_quantity[key])
+                        totalValue = totalValue + parseInt(data.color_quantity[key])
                     }
                 }
                
@@ -308,7 +308,7 @@
                 // this.modal2 = false;
                 this.price = ''
 
-                productData.product_description.pricing.forEach((item) => {
+                data.product_description.pricing.forEach((item) => {
                     if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
                         item.price_range.forEach((element) => {
                             if(element.qty.lte) {
@@ -327,8 +327,8 @@
                     }
                 })
 
-                productData.total_qty = totalValue
-                productData.unit_price = this.price
+                data.total_qty = totalValue
+                data.unit_price = this.price
 
                 if(this.price == ''){
                     this.$Notice.error({
@@ -339,7 +339,10 @@
                 }
                 else{
                     this.modal2 = false;
-                    productData['color_quantity'][name] = value
+                    data['color_quantity'][name] = value
+                    // this.productData = data
+                    // console.log(this.row)
+                    this.$emit('myemitter',this.productData)
                     
                 }                    
             },
@@ -353,12 +356,12 @@
             }
         },
         mounted() {
-                console.log("this 00000", this.total)   
+                console.log("this 00000", this.row)   
                 this.spinShow = false;     
             },
         watch: {
             'row': async function(id) {
-                console.log("this.row 11111", this.total)
+                console.log("this.row 11111", this.row)
             }
         }
     }

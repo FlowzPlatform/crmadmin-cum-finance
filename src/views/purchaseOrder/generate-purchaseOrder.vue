@@ -143,7 +143,19 @@
 										row: params.row,
                                         total: cardIndex,
                                         editIcon: true
-									}
+									},
+                                    on: {
+                                        myemitter: (item) => {
+                                            // alert(item);
+                                            console.log("item************",item, params.index, params.row.color_quantity)
+                                            // this.EditBanner(item)
+                                            this.poBillAddress[cardIndex].product[params.index].color_quantity = item.color_quantity
+                                            this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
+                                            this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
+                                            // params.row.color_quantity = item.color_quantity
+
+                                        }    
+                                    }
 								})
 							}
                             // return h(expandRow, {
@@ -175,7 +187,7 @@
                         title: 'Quantity',
                         align:  'center',
                         render : (h , {row}) => {
-                            return h('div', [
+                            return h('div', [   
                                 h('span', row.total_qty),
                                 // h('Tooltip', {
                                 //     props: {
@@ -276,6 +288,9 @@
             }
         },
         methods: {
+            EditBanner (item) {
+                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', item)
+            },
             splitProductAddress(orderData){
                 let tempPOAddressBill=[];
                 let products = orderData.products;
@@ -328,12 +343,13 @@
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
             },
-            generatePO() {
+            generatePO(value) {
                 let self = this;
                 this.loading = true;
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
-                console.log("purchase order post object",this.orderDetail)
+                this.orderDetail.products = this.poBillAddress[0].product
+                console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({
                         method: 'post',
@@ -350,40 +366,7 @@
 
                 }
             }
-            // show (data) {
-            //     let self = this
-            //     this.modal2 = true
-            //     console.log("show show ", data)
-            //     this.productData = data
-            //     this.formValidate.value = data.total_qty
-                
-            // },
-            // onOk (productData,value){
-            //     console.log('ok',productData,value)
-            //     this.modal2 = false;
-            //     let price;
-            //     productData.product_description.pricing.forEach((item) => {
-            //         if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
-            //             item.price_range.forEach((element) => {
-            //                 if(element.qty.lte) {
-            //                         console.log("if first",element.qty)                                
-            //                     if(value >= element.qty.gte && value <= element.qty.lte){
-            //                         price = element.price                                    
-            //                         console.log("if",price,value)
-            //                     }
-            //                 }else {
-            //                     if(value >= element.qty.gte){
-            //                          price = element.price                                    
-            //                         console.log("else",price,value)
-            //                     }
-            //                 }
-            //             })
-            //         }
-            //     })
-            // },
-            // cancel () {
-            //     this.modal2 = false
-            // }
+           
         },
         filters: {
             
