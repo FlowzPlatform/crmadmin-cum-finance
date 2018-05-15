@@ -108,28 +108,28 @@ export default {
     return {
       money,
       ponum: '',
-	  ponumFilter: [],
-	  invoicenum: '',
-	  invoicenumFilter: [],
-	  optionsPage:[10,20,50,100,200],
-	  dategt: '',
-	  datelt: '',
-	  email: '',
-	  pageSize: 10,
-	  duedategt: '',
-	  duedatelt: '',
+      ponumFilter: [],
+      invoicenum: '',
+      invoicenumFilter: [],
+      optionsPage:[10,20,50,100,200],
+      dategt: '',
+      datelt: '',
+      email: '',
+      pageSize: 10,
+      duedategt: '',
+      duedatelt: '',
       columns1:[
-		{
-			type: 'expand',
-			width: 50,
-			render: (h, params) => {
-				return h(expandRow, {
-					props: {
-						row: params.row
-					}
-				})
-			}
-		},
+        {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(expandRow, {
+              props: {
+                row: params.row
+              }
+            })
+          }
+        },
         {
           title: 'Invoice Number',
           align:  'center',
@@ -217,105 +217,128 @@ export default {
                       style: {
                         height:'20px',
                         width:'20px',
-                        margin: '2px'
+                        margin: '5px'
                       },
                       on: {
                         click: () => {
-                          this.makepayment(row )
+                          this.makepayment(params)
                         }
                       }
                     },'')
-                  ]),          
+                  ]),
+                  h('Tooltip', {
+                    props: {
+                      placement: 'top',
+                      content: 'Mark as paid'
+                    },
+                    style:{
+                      cursor:'pointer'
+                    }
+                  },[
+                      h('Checkbox', {
+                        props: {
+                          value: false
+                        },
+                        style: {
+                          margin: '5px'
+                        },
+                        on: {
+                          input: (val) => {
+                            console.log("val",val)
+                            this.markAsPaid(val,params);
+                          }
+                        }
+                      },'')
+                    ])          
               ]);
             }else{
-               return h('div', [
-                h('Tooltip', {
-                  props: {
-                    placement: 'top',
-                    content: 'Pay Now'
-                  },
-                  style:{
-                    cursor:'pointer'
-                  }
-                },[
-                    h('Checkbox', {
-                      props: {
-                        value: true
-                      },
-                      on: {
-                        input: (val) => {
-                          console.log("val",val)
-                        }
-                      }
-                    },'mark as a paid')
-                  ]),          
-              ]);
+              //  return h('div', [
+              //   h('Tooltip', {
+              //     props: {
+              //       placement: 'top',
+              //       content: 'Mark as paid'
+              //     },
+              //     style:{
+              //       cursor:'pointer'
+              //     }
+              //   },[
+              //       h('Checkbox', {
+              //         props: {
+              //           value: true
+              //         },
+              //         on: {
+              //           input: (val) => {
+              //             console.log("val",val)
+              //             this.markAsPaid(val,params);
+              //           }
+              //         }
+              //       },'')
+              //     ]),          
+              // ]);
             }
 					}
 				}
       ],
-	  list:[],
-	  data: [],
-	  len: 1
+      list:[],
+      data: [],
+      len: 1
     }
   },
   methods:{
-	async reset(){
-		this.ponum = '';
-		this.dategt = '';
-		this.datelt = '';
-		this.duedatelt = '';
-		this.duedategt = '';
-		this.email = '';
-		this.invoicenum = '';
-		this.init();
-	},
-	async changepagesize(pageSize){
-		console.log("####################################",pageSize)
-		this.pageSize = pageSize
-		this.changePage(1)
-	},
-	async mockTableData1 (p,size) {
-		this.len = this.data.length
-		return this.data.slice((p - 1) * size, p * size);
-	},
-	async mockTableData2 (p,size) {
-		console.log("p-------------->",p)
-		console.log("p-------------->",size)
-		console.log("console.log------------>",this.filterArray)
-		this.len = this.filterArray.length
-		return this.filterArray.slice((p - 1) * size, p * size);
-	},
-	async changePage (p) {
-		var self = this
-		console.log("not inside",self.filterArray.length)
-		if(self.filterArray.length == 0){
-			console.log("inside",self.filterArray)
-			self.list = await self.mockTableData1(p,self.pageSize);
-		}else{
-			self.list = await self.mockTableData2(p,self.pageSize);
-		}
-	},
-	async changeData() {
-		this.filterArray = this.data
-        var self = this
+    async reset(){
+      this.ponum = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.duedatelt = '';
+      this.duedategt = '';
+      this.email = '';
+      this.invoicenum = '';
+      this.init();
+    },
+    async changepagesize(pageSize){
+      console.log("####################################",pageSize)
+      this.pageSize = pageSize
+      this.changePage(1)
+    },
+    async mockTableData1 (p,size) {
+      this.len = this.data.length
+      return this.data.slice((p - 1) * size, p * size);
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
+    async changePage (p) {
+      var self = this
+      console.log("not inside",self.filterArray.length)
+      if(self.filterArray.length == 0){
+        console.log("inside",self.filterArray)
+        self.list = await self.mockTableData1(p,self.pageSize);
+      }else{
+        self.list = await self.mockTableData2(p,self.pageSize);
+      }
+    },
+    async changeData() {
+		  this.filterArray = this.data
+      var self = this
 
         if(this.ponum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item)
             return item.PO_id === self.ponum;
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
+		      console.log("myarr",this.filterArray)
           this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.invoicenum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
             return item.invoiceId === self.invoicenum;
-		  });
-		//    this.list = this.filterArray
-           this.list = await this.mockTableData2(1,self.pageSize)
+		      });
+          this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.dategt != ''){
@@ -326,8 +349,7 @@ export default {
                 return item;
             }
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
+		      console.log("myarr",this.filterArray)
           this.list = await this.mockTableData2(1,self.pageSize)
         }
 
@@ -339,12 +361,11 @@ export default {
               return item;
               }
           });
-		   console.log("myarr",this.filterArray)
-		//    this.list = this.filterArray
+		      console.log("myarr",this.filterArray)
         	this.list = await this.mockTableData2(1,self.pageSize)
-		}
+		    }
 		
-		if(this.duedategt != ''){
+		    if(this.duedategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(moment(item.dueDate).diff(moment(self.duedategt).format(), 'days') >= 0){
@@ -352,8 +373,7 @@ export default {
                 return item;
             }
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
+		      console.log("myarr",this.filterArray)
         	this.list = await this.mockTableData2(1,self.pageSize)
         }
 
@@ -365,18 +385,15 @@ export default {
               return item;
               }
           });
-		   console.log("myarr",this.filterArray)
-		//    this.list = this.filterArray
-         this.list = await this.mockTableData2(1,self.pageSize)
-		}
-		
-		if(this.email != ''){
-			this.filterArray = _.filter(this.filterArray, function (item) {
-				return item.supplier_email === self.email
-			})
-		}
-
-
+          console.log("myarr",this.filterArray)
+          this.list = await this.mockTableData2(1,self.pageSize)
+        }
+        
+        if(this.email != ''){
+          this.filterArray = _.filter(this.filterArray, function (item) {
+            return item.supplier_email === self.email
+          })
+        }
     },
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
@@ -390,29 +407,59 @@ export default {
         }
       })
       .then(async function(response) {
-		console.log('response-------------->',response)
-		self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
-		self.list = await self.mockTableData1(1,self.pageSize)
-		var Emailarr = [];
-        $('#selectEmail').children('option:not(:first)').remove();
-        self.data.forEach(item => {
-		  self.ponumFilter.push(item.PO_id)
-		  self.invoicenumFilter.push(item.invoiceId)
-		   Emailarr.push(item.supplier_email);
-		})
-		
-		Emailarr.forEach(item => {
-			var x = document.getElementById("selectEmail");
-			var option = document.createElement("option");
-			option.text = item;
-			console.log()
-			x.add(option);
-		})
-        console.log('response-------------->list',self.list)
-        
-      }).catch(function (error){
-        console.log("error------------------->",error)
+      console.log('response-------------->',response)
+      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
+      self.list = await self.mockTableData1(1,self.pageSize)
+      var Emailarr = [];
+      $('#selectEmail').children('option:not(:first)').remove();
+      self.data.forEach(item => {
+        self.ponumFilter.push(item.PO_id)
+        self.invoicenumFilter.push(item.invoiceId)
+        Emailarr.push(item.supplier_email);
       })
+      
+      Emailarr.forEach(item => {
+        var x = document.getElementById("selectEmail");
+        var option = document.createElement("option");
+        option.text = item;
+        console.log()
+        x.add(option);
+      })
+          console.log('response-------------->list',self.list)
+          
+        }).catch(function (error){
+          console.log("error------------------->",error)
+        })
+    },
+    makepayment(data){
+      console.log("data---------------------------->",data)
+      this.$router.push({
+        name :"POCheckout",
+        params: {
+          data:data.row
+        }
+      })
+    },
+    markAsPaid(value,params){
+      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRR",value,params)
+      let self = this
+      if(value){
+        axios({
+          method: 'patch',
+          url: config.default.serviceUrl +  'po-invoice/'+params.row.id,
+          data:{
+              "status":"paid"
+          }
+        })
+        .then(async function(res){
+          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
+          self.data[params.index] = res.data
+          self.list = await self.mockTableData1(1,self.pageSize)
+        })
+        .catch(function(error){
+          console.log("$$$$$$$$$$$$$$$$$",error)
+        })
+      }
     }
   },
   mounted(){
