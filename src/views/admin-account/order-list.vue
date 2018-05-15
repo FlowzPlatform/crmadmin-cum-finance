@@ -4,8 +4,67 @@
             <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
                 <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
             </Select>
+
+            <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+       
         </div>
-        <Table stripe  border @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
+
+           <div class="panel panel-default panel-group" id="accordion13" style="border: none;margin-top:1%;text-align: -webkit-left;">
+              <!-- <div class="panel-heading">
+              </div> -->
+              <div class="panel-collapse collapse" id="collapseTwo">
+                  <div class="panel-body">
+                      <form>
+                          <div class="collapse-maindiv maindiv" >
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
+                                      <label>Order Id</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="order">
+                                      <AutoComplete v-model="orderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      </AutoComplete>
+                                  </div>
+                              </div>
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#sku"></span>
+                                      <label>Item Number</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="sku">
+                                      <AutoComplete v-model="itemno" :data="itemnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                      </AutoComplete>
+                                  </div>
+                              </div>
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                                      <label>Name</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="Customer">
+                                      <select class="form-control"  v-model="cname" id="selectCustomer">
+                                        <option value="">All</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="panel panel-default">
+                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#email"></span>
+                                      <label>Email</label>
+                                  </div>
+                                  <div class="panel-collapse collapse" id="email">
+                                      <select class="form-control"  v-model="email" id="selectEmail">
+                                        <option value="">All</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div style="margin-top: 5px;">
+                                <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                                <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+        <Table stripe @on-expand="viewDetails" :columns="columns1" :data="data1"></Table>
 
         <Modal
             v-model="modal1"
@@ -24,7 +83,7 @@
     import moment from 'moment';
     import config from '../../config/customConfig.js'
     import expandRow from './view-order-list.vue';
-
+    import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
     let axios = require('axios'); 
@@ -40,6 +99,13 @@
                 value1: '1',
 
                 modal1: false,
+
+                orderid: '',
+                orderidFilter:[],
+                itemno: '',
+                itemnoFilter:[],
+                cname:'',
+                email:'',
 
                 websiteList: {},
                 website: '',
@@ -62,21 +128,27 @@
                     },
                     {
                         title: 'Order Id',
-                        key: 'id',
+                        key: 'order_id',
                         align:  'center'
                     },
                     {
                         title: 'Name',
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.user_billing_info.name
+                            return h('div', [
+                                
+                                h('span', row.user_billing_info.name)
+                            ]);
                         }
                     },
                     {
                         title: 'Email',
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.user_billing_info.email
+                            return h('div', [
+                                
+                                h('span', row.user_billing_info.email)
+                            ]);
                         }
                     },
                     {
@@ -85,7 +157,10 @@
                         align:  'center',
                         render : (h , {row}) => {
                             var date = moment(row.products[0].createdAt).format('DD-MMM-YYYY')
-                            return date
+                            return h('div', [
+                                
+                                h('span', date)
+                            ]);
                         }
                     },
                     {
@@ -103,17 +178,25 @@
                         width: 115,
                         align:  'center',
                         render : (h , {row}) => {
-                            return row.products.length
+                            return h('div', [
+                                
+                                h('span', row.products.length)
+                            ]);
                         }
                     },
                     {
                         title: 'Total Amount',
                         width: 115,
-                        align:  'center',
-                        render : (h , {row}) => { return accounting.formatMoney(row.total) }
+                        align:  'right',
+                        render : (h , {row}) => { 
+                            return h('div', [
+                                
+                                h('span', accounting.formatMoney(row.total))
+                            ]);
+                        }
                     },
                     {
-                        title: 'Download Order',
+                        title: 'Download',
                         width: 100, 
                         align:  'center',
                         render: (h, params) => {
@@ -138,10 +221,97 @@
 						}
                     }
                 ],
-                data1: []
+
+                data1: [],
+                list1: [],
+                finalresult: []
             }
         },
         methods: {
+            reset() {
+              this.orderid = '';
+              this.cname = '';
+              this.email = '';
+              this.itemno = '';
+              this.orderidFilter = [];
+                this.itemnoFilter = [];
+              this.listData(this.website);
+            },
+            async changeData() {
+              console.log("Before this.filterArray------->",this.filterArray)
+              this.filterArray = this.list1
+               console.log("After this.filterArray------->",this.filterArray)
+              var self = this
+                self.finalresult = [];
+              if(this.orderid != ''){
+                console.log("this.orderid", this.orderid)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                  console.log("item",item)                  
+                    return item.order_id === self.orderid;
+                  
+                });
+                console.log("myarr",this.filterArray)
+                console.log(" Filter this.filterArray------->",this.filterArray)
+                this.data1 = this.filterArray
+                console.log("After Filter this.filterArray------->",this.filterArray)
+              }
+
+              if(this.cname != ''){
+                console.log("this.cname", this.cname)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                  console.log("item",item)
+                  return item.user_billing_info.name === self.cname;                 
+                });
+                console.log("myarr",this.filterArray)
+                 this.data1 = this.filterArray
+              }else{
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+                console.log("myarr",this.filterArray)
+                this.data1 = this.filterArray
+              }
+
+              if(this.email != ''){
+                console.log("this.cname", this.email)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                  console.log("item",item)
+                  return item.user_billing_info.email === self.email;                 
+                });
+                console.log("myarr",this.filterArray)
+                 this.data1 = this.filterArray
+              }else{
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+                console.log("myarr",this.filterArray)
+                this.data1 = this.filterArray
+              }
+
+              if(this.itemno != ''){
+                console.log("this.itemno", this.itemno)
+                this.filterArray = _.filter(this.filterArray,  function(item){
+                  console.log("item",item)
+                    item.products.forEach(obj => {
+                        console.log("*****************",obj)
+                        if(obj.product_description.sku == self.itemno){
+                            self.finalresult.push(item)
+                            console.log("matched",obj)
+                        }
+                      })
+                    //   return finalresult                
+                });
+                console.log("myarr result",self.finalresult)
+                this.filterArray = self.finalresult
+                 this.data1 = this.filterArray
+              }else{
+                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+                console.log("myarr",this.filterArray)
+                this.data1 = this.filterArray 
+              }
+
+
+            },
+            filterMethod (value, option) {
+              return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+            },
+
             init () {
                 var self = this
                 console.log("config.default.orderapi", config.default.orderapi)
@@ -157,34 +327,60 @@
                     } 
                 })
                 .then(function (response){
-                    console.log("response", response.data)
-                    var result = _.uniqBy(response.data.data,'websiteId')
-                    console.log("result", result)
-                    self.websiteList = result
-                    console.log("self.websiteList", self.websiteList[0].websiteId)                    
-                    self.website = self.websiteList[0].websiteId                  
-                })
-                // axios.get( config.default.orderapi , {
-                //     params: {
-                //       owner_id: self.userid
-                //     },
-                //     // headers: {
-                //     //   'Authorization': Cookies.get('auth_token'),
-                //     //   // 'subscriptionId': Cookies.get('subscriptionId')
-                //     // } 
-                // })
-                // .then(function (response){
-                //     console.log("response", response.data)
-                //     var result = _.uniqBy(response.data.data,'website_id')
-                //     console.log("result", result)
-                //     self.websiteList = result
-                //     self.website = self.websiteList[0].website_id                  
-                // })
+                    console.log("------------------------response",response);
+                    if(response.data.data.length == 0){
+                      console.log("in if condition")
+                      self.$Notice.error({
+                        desc: 'Websites not available for this subscription',
+                        title: 'Error',
+                        duration: 4.5
+                      })
+                    }else{    
+                      var result = _.uniqBy(response.data.data,'websiteId')
+                      console.log("result", result)
+                      self.websiteList = result
+                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                      self.website = self.websiteList[0].websiteId
+                    }                       
+
+                }).catch(error => {
+                    console.log("-------",error.response);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: 'Error',
+                            desc: error,
+                            duration: 4.5
+                        })
+                    }
+                });
+
             },
             listData (val) {
                 var self = this
                 var len
                 console.log("val", val)
+                let Namearr = [];
+                let Emailarr = [];
+                
+                 $('#selectCustomer').children('option:not(:first)').remove();
+                    $('#selectEmail').children('option:not(:first)').remove();
                 axios.get( config.default.orderapi , {
                     params: {
                         website_id: val
@@ -193,11 +389,44 @@
                     //   'Authorization': Cookies.get('auth_token'),
                     //   // 'subscriptionId': Cookies.get('subscriptionId')
                     // }
-                })
-                .then(function (response){
+                }).then(function (response){
                     console.log("response val", response.data)
-                    self.data1 = _.orderBy(response.data.data, ['created_at'],['desc']);
-                })
+                    self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
+
+                    self.list1 = self.data1
+                    self.data1.forEach(item => {
+                      self.orderidFilter.push(item.order_id)
+                      Namearr.push(item.user_billing_info.name)
+                      Emailarr.push(item.user_billing_info.email)
+                      item.products.forEach(obj => {
+                          self.itemnoFilter.push(obj.product_description.sku)
+                      })
+                    })
+
+                    Namearr = _.chain(Namearr).sort().uniq().value();
+                    Emailarr = _.chain(Emailarr).sort().uniq().value();
+                    Namearr.forEach(item => {
+                        var x = document.getElementById("selectCustomer");
+                        var option = document.createElement("option");
+                        option.text = item;
+                        console.log()
+                        x.add(option);
+                    })
+                     Emailarr.forEach(item => {
+                        var x = document.getElementById("selectEmail");
+                        var option = document.createElement("option");
+                        option.text = item;
+                        console.log()
+                        x.add(option);
+                    })
+                }).catch(function (error) {
+                      console.log("-------",error);
+                        self.$Notice.error({
+                          desc: error,
+                          duration: 4.5
+                        })
+                    });
+
             },
             show (params) {
                 var self = this
@@ -223,11 +452,10 @@
                     data: {
                         "html" : $('#orderList').html()
                     },  
-                })
-                .then(function (response) {
-                    self.$Loading.finish()
+                }).then(function (response) {
                     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
+                    self.$Loading.finish()
                     var arrayBufferView = new Uint8Array( response.data.data );
                     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                     var link=document.createElement('a');
@@ -238,9 +466,6 @@
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c) {
                 var res = c.hasOwnProperty('charges')

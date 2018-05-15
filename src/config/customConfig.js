@@ -24,7 +24,7 @@
 
 console.log("???????????????????????? ", process.env.domainkey)
 
-//let frontEndUrl = 'https://localhost:8081/#/login';
+//let frontEndUrl = 'http://localhost:8081/#/login';
 let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
 
 module.exports = {
@@ -67,10 +67,15 @@ module.exports = {
         flowzDbetlUrl: 'https://www.dbetl.' + process.env.domainkey,
 
         loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/Gplus',
+        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/google',
         loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
         loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
         loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
+        // loginWithFacebookUrl : 'http://social.'+process.env.domainkey+'/auth/facebook',
+        // loginWithGoogleUrl : 'http://social.'+process.env.domainkey+'/auth/google',
+        // loginWithTwitterUrl : 'http://social.'+process.env.domainkey+'/auth/twitter',
+        // loginWithGithubUrl : 'http://social.'+process.env.domainkey+'/auth/github',
+        // loginWithLinkedInUrl : 'http://social.'+process.env.domainkey+'/auth/linkedin',
 
         // loginWithFacebookUrl: 'https://auth.flowzcluster.tk/auth/facebook',
         // loginWithGoogleUrl: 'https://auth.flowzcluster.tk/auth/Gplus',
@@ -82,13 +87,15 @@ module.exports = {
         // serviceUrl :            'http://localhost:3037/',
         baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
+        usersubscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/user-subscription',
         projecturl: 'https://api.' + process.env.domainkey + '/mom/',
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
         orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',
-
+        
         requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
-        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites'
+        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',        
+        productImageUrl : 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
     }
 
 }

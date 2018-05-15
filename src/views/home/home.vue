@@ -215,7 +215,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 31);
+                                var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
                                 this.daterange1 = s
                                 return [start, end];
                             }
@@ -225,7 +225,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 92);
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                                 return [start, end];
                             }
                         },
@@ -234,7 +234,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 184);
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
                                 return [start, end];
                             }
                         }
@@ -601,19 +601,24 @@
                         precision : 2,
                         thousand  : ''
                     });
+                    let dataarr1 = accounting.formatMoney(data_arr[i], {
+                        symbol : '',
+                        precision : 2,
+                        thousand  : ''
+                    });
 
                     if (i == 0) {
                         data1.push(0.00);
-                        data2.push(data_arr[i]);
+                        data2.push(dataarr1);
                         data3.push('-');
                     }
                     else if (diff > 0) {
-                        data1.push(data_arr[i-1]);
+                        data1.push(accounting.formatMoney(data_arr[i-1]));
                         data2.push(diff);
                         data3.push('-');
                     }
                     else if (diff < 0) {
-                        data1.push(data_arr[i]);
+                        data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push('-');
                         data3.push(accounting.formatMoney((data_arr[i-1] - data_arr[i]), {
                         symbol : '',
@@ -622,7 +627,7 @@
                     }));
                     }
                     else {
-                        data1.push(data_arr[i]);
+                        data1.push(accounting.formatMoney(data_arr[i]));
                         data2.push(diff);
                         data3.push('-');
                     }
@@ -771,7 +776,7 @@
                 }
                 
                 let self = this;
-                this.name = Cookies.get('user');
+                this.name = await Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 var resp;
                 await axios.get(serviceUrl+"settings", {
@@ -886,14 +891,14 @@
         async mounted() {
             
             let self = this
-            this.daterange1 = await this.getDate(92);
+            this.daterange1 = await this.getDate(90);
             console.log("daterange1",this.daterange1)
             console.log("daterange1",this.daterange1[0])
             // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
             // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
             setTimeout(function() {
                 self.init()
-            }, 1000);    
+            }, 2000);    
         }
 
     };

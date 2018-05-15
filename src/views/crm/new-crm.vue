@@ -147,6 +147,7 @@
 	import config from '../../config/customConfig.js'
 	import Cookies from 'js-cookie';
 	import axios from 'axios';
+	import psl from 'psl';	
 	let _ = require('lodash')
 	var serviceUrl = config.default.serviceUrl;
 	var nextdate;
@@ -192,6 +193,7 @@
 					email: '',
 					phone: '',
 					config: '', 
+					subscriptionId: ''
 				},
 						momdata: [],
 						mData: [],
@@ -272,7 +274,8 @@
 								}).then(function (response) {
 								
 									resp = response.data
-									self.customerData = resp[0].data
+									self.customerData = _.sortBy(resp[0].data,['Name']);
+									 
 								})
 								.catch(function (error) {
 									console.log(error);
@@ -338,17 +341,33 @@
 					console.log("self.configs---------------->after",self.mData)
 					// self.config1 = self.mData[0].id;
 					// self.calldata()    
-				})
-				.catch(function (error) {
-					console.log(error)
-					self.disabled = false;
-					//Cookies.remove('auth_token') 
-					self.$Message.error('Auth Error!');
-					//self.$store.commit('logout', self); 
-					// self.$router.push({
-					//     name: 'login'
-					// })
-				});
+				}).catch(error => {
+                    console.log("-------",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: 'Error',
+                            desc: error,
+                            duration: 4.5
+                        })
+                    }
+                });
 			},
 			configChange(data){
 				console.log(data)
@@ -372,25 +391,25 @@
 					});
 			},
 			async postdata() {
-					let desc = CKEDITOR.instances.editor1.getData()
-					this.finaldata.description = $(desc).text();
-					
-					let self = this
-					var re = /\S+@\S+\.\S+/;
-					var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
-					var phone = phone_re.test(self.finaldata.phone);
-					var mail = re.test(self.finaldata.email);
-
+				let desc = CKEDITOR.instances.editor1.getData()
+				this.finaldata.description = desc
+				
+				let self = this
+				var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
+				var phone = phone_re.test(self.finaldata.phone);
+				var mail = re.test(self.finaldata.email);
+				self.finaldata.subscriptionId = Cookies.get('subscriptionId')
+				self.finaldata.isDeleted = "false"
+				if(self.finaldata.assignee != "" && self.finaldata.cname != ""){
 					if (mail != false && phone != false) {
 						this.loading = true
 						var file = this.file
 						console.log('file------->',file)
 						if(file != ''){
-
 							var reader = new FileReader();
 							console.log('uuuuuu',file)
 							reader.readAsDataURL(file);
-							// console.log('reader',reader);
 						  	reader.addEventListener("load", async function () {
 								console.log('uuuuuu',file.name)
 								var fileupObj = {
@@ -398,10 +417,14 @@
 									"url":reader.result
 								}
 								self.finaldata.fileupload.push(fileupObj);
+								
+								console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
+								console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
 								await $.ajax({
 									type: 'POST',
 									headers: {
-										'Authorization': Cookies.get('auth_token')
+										'Authorization': Cookies.get('auth_token'),
+										'subscriptionId': Cookies.get('subscriptionId')
 									},
 									url: serviceUrl  + "crm-case/",
 									data: self.finaldata,
@@ -423,30 +446,28 @@
 							});
 
 						}else{
-
 							await $.ajax({
-									type: 'POST',
-									headers: {
-										'Authorization': Cookies.get('auth_token')
-									},
-									url: serviceUrl  + "crm-case/",
-									data: self.finaldata,
-									success: function (data1) {
-										result = data1;
-										console.log("json data******123",result);
-										self.loading = false,
-										self.$Notice.success({
-											title: 'Sucess',
-											desc: 'New CRM case is Saved. ',
-											duration: 4.5
-										});
-										self.$router.push( "list-relationship")
-									},error: function(err){
-										self.loading = false,
-									console.log("error",err);
-									}
-								});
-
+								type: 'POST',
+								headers: {
+									'Authorization': Cookies.get('auth_token')
+								},
+								url: serviceUrl  + "crm-case/",
+								data: self.finaldata,
+								success: function (data1) {
+									result = data1;
+									console.log("json data******123",result);
+									self.loading = false,
+									self.$Notice.success({
+										title: 'Sucess',
+										desc: 'New CRM case is Saved. ',
+										duration: 4.5
+									});
+									self.$router.push( "list-relationship")
+								},error: function(err){
+									self.loading = false,
+								console.log("error",err);
+								}
+							});
 						}
 						
 							// var params = self.finaldata
@@ -455,11 +476,18 @@
 						
 					} else {
 						// alert("Enter Valid Email Address OR Phone Number")
-							this.$Notice.error({
-					title: 'Error',
-					desc: 'Enter Valid Email Address OR Phone Number. ',
-								duration: 4.5
-				});
+						this.$Notice.error({
+							title: 'Error',
+							desc: 'Enter Valid Email Address OR Phone Number. ',
+							duration: 4.5
+						});
+					}
+				}else{
+					this.$Notice.error({
+							title: 'Error',
+							desc: 'Please Select Customer OR Assignee. ',
+							duration: 4.5
+						});
 				}			
 			},
 			filterMethod (value, option) {

@@ -4,7 +4,7 @@
             <div id="logo" style="float: left;margin-top: 8px;">
                 <img :src="emailDataCompany.logo" style="height: 70px;">
             </div>
-            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px;font-family: Verdana;">
+            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
                 <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
                 <div>{{emailDataCompany.address.country}}</div>
@@ -15,7 +15,7 @@
 
         </header>
         <main>
-            <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px;font-family: Verdana;">
+            <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
                     <div  style="color: #777777;">INVOICE TO:</div>
                     <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.user_billing_info.name}}</h2>
@@ -31,7 +31,7 @@
                     <!--<div  style="font-size: 12px;color: #777777;">Due Date: {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}}</div>-->
                 </div>
             </div>
-            <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
+            <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;margin-bottom:20px;">
                 <thead>
                     <tr>
                         <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
@@ -45,7 +45,7 @@
                 <tbody>
                     <tr v-for="(item, inx) in row.products">
                         <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                        <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                        <td  style="text-align: left;font-weight: normal;padding: 5px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
                             <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_description.product_name}}</h3>
                             {{text(item.product_description.description)}}</td>
                         <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.unit_price)}}</td>
@@ -66,24 +66,24 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
-                        <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
+                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
+                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
                     </tr>
                 </tfoot>
             </table>
-            <div id="thanks" style="font-size: 16px;margin-bottom: 10px;font-family: Verdana;color: #555555;">Thank you!</div>
+            <div id="thanks" style="font-size: 16px;margin-bottom: 10px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;color: #555555;">Thank you!</div>
         </main>
-        <footer style="font-size:12px;font-family: Verdana;">
+        <footer style="font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
             Invoice was created on a computer and is valid without the signature and seal.
             <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
                 Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
@@ -109,7 +109,6 @@
         },
         data() {
             return {
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
                 moment: moment,
                 emailDataCompany: ''
             }
@@ -117,9 +116,6 @@
         methods: {
             getMulti(a, b) {
                 return accounting.formatMoney(a * b) ;
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;
@@ -157,6 +153,22 @@
                 }
                 let res = charge - sum
                 return accounting.formatMoney(res)                
+            },
+            invoiceData(){
+                let self = this;
+                axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
+                    headers:{
+                        Authorization : Cookies.get('auth_token'),
+                        subscriptionId : Cookies.get('subscriptionId')
+                    },
+                })
+                .then(function (response) {
+                    console.log("response------>iuy",response.data);
+                    self.emailDataCompany = response.data
+                })
+                .catch(function (error) {
+                    console.log("error",error);
+                });
             }
             
         },
@@ -166,20 +178,12 @@
             }
         },
         mounted() {
-            let self = this;
-            axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
-            headers:{
-                Authorization : Cookies.get('auth_token'),
-                subscriptionId : Cookies.get('subscriptionId')
-            },
-            })
-            .then(function (response) {
-            console.log("response------>iuy",response.data);
-            self.emailDataCompany = response.data
-            })
-            .catch(function (error) {
-                console.log("error",error);
-            });
+            
+        },
+        watch: {
+            'row': async function(id) {
+                  this.invoiceData()
+            }
         }
     };
 </script>

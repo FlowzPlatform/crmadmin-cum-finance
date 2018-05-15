@@ -40,6 +40,9 @@
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
                     <div style="float:right;margin-top:-26px;">
+                        <div class="dweep" style="float: left;margin: 1px 5px;">
+                            <span style="color: #606266;border: 1px solid #dcdfe6;;padding: 9px;display: inline-block;border-radius: 5px;">{{user}}</span>
+                        </div>
                          <el-select style="width: 240px;" @change="changeSubscription()" no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
                             <el-option
                             v-for="item in options2"
@@ -81,7 +84,7 @@
                     
                     
                     <full-screen v-model="isFullScreen" @on-change="fullscreenChange"></full-screen>
-                    <lock-screen></lock-screen>
+                    <!-- <lock-screen></lock-screen> -->
                     <!-- <message-tip v-model="mesCount"></message-tip> -->
                     <theme-switch></theme-switch>
 
@@ -102,6 +105,7 @@
                                 
                                 <DropdownMenu slot="list">
                                     <!-- <DropdownItem name="ownSpace">Personel Center</DropdownItem> -->
+                                    <DropdownItem name="changePassword" divided>Change Password</DropdownItem>
                                     <DropdownItem name="loginout" divided>Sign Out</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
@@ -129,7 +133,7 @@
     import tagsPageOpened from './main-components/tags-page-opened.vue';
     import breadcrumbNav from './main-components/breadcrumb-nav.vue';
     import fullScreen from './main-components/fullscreen.vue';
-    import lockScreen from './main-components/lockscreen/lockscreen.vue';
+    // import lockScreen from './main-components/lockscreen/lockscreen.vue';
     import messageTip from './main-components/message-tip.vue';
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
@@ -140,6 +144,8 @@
     import ElementUI from 'element-ui';
     import Vue from 'vue';
     let subscriptionUrl = config.default.subscriptionUrl
+    let usersubscriptionUrl = config.default.usersubscriptionUrl
+    let userDetail = config.default.userDetail
     Vue.use(ElementUI);
 
     export default {
@@ -149,7 +155,7 @@
             tagsPageOpened,
             breadcrumbNav,
             fullScreen,
-            lockScreen,
+            // lockScreen,
             messageTip,
             themeSwitch
         },
@@ -165,7 +171,8 @@
                 flowzUploaderUrl : config.default.flowzUploaderUrl ,
                 flowzDbetlUrl : config.default.flowzDbetlUrl,
                 options2: '',
-                value2: '' 
+                value2: '',
+                user: '' 
             };
         },
         computed: {
@@ -275,6 +282,46 @@
                 setTimeout(function(){ self.userName = Cookies.get('user'); }, 1000);
                 
             },
+            async usersubscriptionUrl () {
+                let response = await axios({
+                    method: 'get',
+                    url: usersubscriptionUrl + '?id=' + Cookies.get('subscriptionId'),
+                    headers: {
+                    'authorization': Cookies.get('auth_token')
+                    }
+                })
+                .then(response => {
+                    console.log("response response", response.data.data[0].userId)
+                    let userId = response.data.data[0].userId
+
+                    return userId
+                })
+                .catch(err => {
+                    console.log("errr...",err)
+                })
+                this.userDetail()
+                // if(response.data.data.length != 0){
+                //     list1.push({"value":state.subscription_list[key].value,"label":response.data.data[0].userId})
+                // }
+            },
+            async userDetail () {
+                await axios({
+                    method: 'get',
+                    url: userDetail,
+                    headers: {
+                    'authorization': Cookies.get('auth_token')
+                    }
+                }).then(response => {
+                    console.log("response userDetail", response.data.data.username)
+                    if(response.data.data.fullname) {
+                        this.user = response.data.data.fullname
+                    }else if(response.data.data.firstname && response.data.data.lastname ) {
+                        this.user = response.data.data.firstname + " " + response.data.data.lastname                       
+                    }else{
+                        this.user = response.data.data.email
+                    }
+                })
+            },
             toggleClick () {
                 this.shrink = !this.shrink;
             },
@@ -299,6 +346,11 @@
                         name: 'login'
                     });
                     this.$Message.success({content:'You have Succesfully Logged Out',duration:3})
+                }
+                else if (name === 'changePassword') {
+                    this.$router.push({
+                        name: 'Change Password'
+                    });
                 }
             },
             checkTag (name) {
@@ -365,6 +417,7 @@
         mounted () {
             this.getDataOfSubscriptionUser();
             this.init();
+            this.usersubscriptionUrl();
             if(Cookies.get("subscriptionId") && Cookies.get("subscriptionId") != undefined){
                 this.value2 = Cookies.get("subscriptionId")
             }
