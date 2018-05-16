@@ -130,7 +130,7 @@
                 date: '',
                 poBillAddress: {},
                 modal2: false,
-                productData: {},
+                productData: [],
                 columns1: [
                     {
                         type: 'expand',
@@ -349,6 +349,15 @@
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
                 this.orderDetail.products = this.poBillAddress[0].product
+                let quantity = 0
+                let total = 0
+                this.orderDetail.products.forEach((item) => {
+                    quantity = quantity + item.total_qty
+                    total = total + (item.total_qty * item.unit_price)
+                })
+
+                this.orderDetail.quantity = quantity
+                this.orderDetail.total = total
                 console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({
