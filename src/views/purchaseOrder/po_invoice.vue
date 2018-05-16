@@ -235,46 +235,71 @@ export default {
                       cursor:'pointer'
                     }
                   },[
-                      h('Checkbox', {
-                        props: {
-                          value: false
-                        },
-                        style: {
-                          margin: '5px'
-                        },
-                        on: {
-                          input: (val) => {
-                            console.log("val",val)
-                            this.markAsPaid(val,params);
+                      h('Button', {
+                          props: {
+                            type: 'text',
+                            size: 'large',
+                            icon: 'ios-circle-outline'
+                          },
+                          style: {
+                            marginRight: '3px',
+                            padding: '0px',
+                            fontSize: '20px',
+                            color: 'green'
+                          },
+                          on: {
+                            click: () => {
+                              this.markAsPaid(true,params);
+                            }
                           }
-                        }
-                      },'')
+                      }, '')
+                      // h('Checkbox', {
+                      //   props: {
+                      //     value: false
+                      //   },
+                      //   style: {
+                      //     margin: '5px'
+                      //   },
+                      //   on: {
+                      //     input: (val) => {
+                      //       console.log("val",val)
+                      //       this.markAsPaid(val,params);
+                      //     }
+                      //   }
+                      // },'')
                     ])          
               ]);
             }else{
-              //  return h('div', [
-              //   h('Tooltip', {
-              //     props: {
-              //       placement: 'top',
-              //       content: 'Mark as paid'
-              //     },
-              //     style:{
-              //       cursor:'pointer'
-              //     }
-              //   },[
-              //       h('Checkbox', {
-              //         props: {
-              //           value: true
-              //         },
-              //         on: {
-              //           input: (val) => {
-              //             console.log("val",val)
-              //             this.markAsPaid(val,params);
-              //           }
-              //         }
-              //       },'')
-              //     ]),          
-              // ]);
+               return h('div', [
+                h('Tooltip', {
+                  props: {
+                    placement: 'top',
+                    content: 'Paid'
+                  },
+                  style:{
+                    cursor:'pointer'
+                  }
+                },[
+                    h('Button', {
+				                props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'checkmark-circled'
+                        },
+                        style: {
+                          marginRight: '3px',
+                          padding: '0px',
+                          fontSize: '20px',
+                          color: 'green'
+                        },
+                        on: {
+                          click: () => {
+                            // this.show(params)
+                          }
+				                }
+				            }, '')
+                  ]),          
+              ]);
             }
 					}
 				}
