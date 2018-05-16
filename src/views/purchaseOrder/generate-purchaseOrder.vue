@@ -128,7 +128,7 @@
             return {
                 orderDetail: {},
                 date: '',
-                poBillAddress: {},
+                poBillAddress: [],
                 modal2: false,
                 productData: {},
                 columns1: [
@@ -147,7 +147,7 @@
                                     on: {
                                         myemitter: (item) => {
                                             // alert(item);
-                                            console.log("item************",item, params.index, params.row.color_quantity)
+                                            console.log("item************",item, this.poBillAddress)
                                             // this.EditBanner(item)
                                             this.poBillAddress[cardIndex].product[params.index].color_quantity = item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
@@ -349,7 +349,16 @@
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
                 this.orderDetail.products = this.poBillAddress[0].product
-                console.log("purchase order post object",this.orderDetail, this.poBillAddress)
+                let quantity = 0
+                let total = 0
+                this.orderDetail.products.forEach((item) => {
+                    quantity = quantity + item.total_qty
+                    total = total + (item.total_qty * item.unit_price)
+                })
+
+                this.orderDetail.quantity = quantity
+                this.orderDetail.total = total
+                console.log("purchase order post object",this.orderDetail)
                 if (this.orderDetail.products.length > 0) {
                     axios({
                         method: 'post',
