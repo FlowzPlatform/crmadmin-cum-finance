@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="mainBody">
+		<div v-if="!showError" class="mainBody">
 			<!-- <vue-particles color="#dedede"></vue-particles> -->
 			<div class="po">
 				<Card class="container">
@@ -256,6 +256,7 @@
 				</Card>
 			</div>
 		</div>
+		<errorpage v-else></errorpage>
 	</div>
 </template>
 
@@ -266,12 +267,13 @@
 	import Cookies from 'js-cookie';
 	import moment from 'moment';
 	import expandRow from './view-purchase-order-received.vue';
+	import errorpage from './error-page/404.vue'
 	const accounting = require('accounting-js');
 	let _ = require('lodash');
 
 	export default {
 		name: 'purchase-order',
-		
+		components: {errorpage},
 		data () {
 			return {
 				columns1: [
@@ -340,7 +342,8 @@
 						}
 					}
 				],
-				data2: [],                
+				data2: [], 
+				showError: false,               
 				data1: {},
 				moment: moment,
 				date: '',
@@ -624,7 +627,7 @@
 					'subscriptionId': Cookies.get('subscriptionId')
 					} 
 				}).then(function (response){
-					console.log("------------------------response",response.data);
+					console.log("------------------------response",response.data.data[0]);
 					
 					 	let poData=response.data.data;
 						if(poData && poData.length>0){
@@ -634,10 +637,7 @@
 							self.supplierPayment()
 							self.data1 = poDetail
 						}else{
-								self.$router.push({
-									name: 'error-404'
-								})
-								
+								self.showError = true
 						}
 				}).catch(error => {
 					console.log("-------",error);
