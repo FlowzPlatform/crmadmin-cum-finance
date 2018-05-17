@@ -425,7 +425,7 @@ export default {
     data6: [],
     data7: [],
     filterArray: [],
-    optionsPage:[10,20,50,100,200],
+    optionsPage:[10,20,30,50],
     listData: [],
     cname: '',
     status:'',

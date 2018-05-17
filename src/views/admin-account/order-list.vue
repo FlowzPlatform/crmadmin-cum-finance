@@ -124,7 +124,7 @@
                 orderidFilter:[],
                 pageSize:10,
                 itemno: '',
-                optionsPage:[10,20,50,100,200],
+                optionsPage:[10,20,30,50],
                 itemnoFilter:[],
                 cname:'',
                 email:'',

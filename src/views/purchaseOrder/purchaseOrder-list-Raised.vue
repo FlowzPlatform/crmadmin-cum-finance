@@ -80,7 +80,7 @@
                 </h4>
             </div>
 
-            <Table stripe @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table>
+            <Table stripe size="small" @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -116,7 +116,7 @@
                 dategt: '',
                 datelt: '',
                 pageSize: 10,
-                optionsPage:[10,50,100,200],
+                optionsPage:[10,20,30,50],
                 mode: '',
                 len: 1,
                 order_id: '',
@@ -235,6 +235,14 @@
             }
         },
         methods: {
+            reset() {
+                this.ponum = ''
+                this.dategt = ''
+                this.datelt = ''
+                this.order_id = ''
+                this.mode = ''
+                this.listData(this.website)
+            },
             viewDetails (row,status) {
                 console.log("on-expand call",status)
                 if(status){
