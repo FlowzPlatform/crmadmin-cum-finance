@@ -68,7 +68,7 @@
             <Tabs  @on-click="tabClicked" :value="tabIndex" class="my-tab">
                 <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
                     <div v-if ="tabPane.domain=='Xero'">
-                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns1" :data="list" :no-data-text="nodataMsg" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :columns="columns1" :data="list" :no-data-text="nodataMsg" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>                      
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div v-if ="tabPane.domain=='QB'">
-                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :columns="columns2" :data="list" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div v-if ="tabPane.domain=='custom'">
-                        <div v-if=" list.length > 0"><Table :height="tableHeight" :columns="columns3" :data="list" size="small" ref="table" stripe></Table></div>
+                        <div v-if=" list.length > 0"><Table :columns="columns3" :data="list" size="small" ref="table" stripe></Table></div>
                         <div v-else>
                             <div v-if="flag == false">
                                 <div style="margin-left: 30%;color: red;">No transaction has been made for this Invoice</div>  
@@ -127,7 +127,7 @@
             return {
                 tableHeight: 450,
                 pageSize: 10,
-                optionsPage:[10,20,50,100,200],
+                optionsPage:[10,20,30,50],
                 flag: true,
                 invnoFilter : [],
                 nodataMsg: 'No Data',
