@@ -137,22 +137,24 @@
                         width: 50,
                         render: (h, params) => {
                             if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
 									props: {
 										row: params.row,
                                         total: cardIndex,
-                                        editIcon: true
+                                        editIcon: true,
+                                        selected_address_id:addressId
 									},
                                     on: {
                                         myemitter: (item) => {
                                             // alert(item);
-                                            console.log("item************",item, params.index, params.row.color_quantity)
                                             // this.EditBanner(item)
-                                            this.poBillAddress[cardIndex].product[params.index].color_quantity = item.color_quantity
+                                            this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
                                             this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
                                             // params.row.color_quantity = item.color_quantity
+                                            console.log("item************",this.poBillAddress)
 
                                         }    
                                     }
@@ -186,9 +188,45 @@
                     {
                         title: 'Quantity',
                         align:  'center',
-                        render : (h , {row}) => {
+                        render : (h , params) => {
+                            // let total = 0
+                            // console.log("Quantity ------------", this.poBillAddress)
+                            // this.poBillAddress.forEach(element => {
+                            //     element.product.forEach((item,inx) => {
+                            //         total = 0
+                            //         item.totalColorQuantity.forEach((key,val) => {
+                            //             if(inx == val) {
+                            //                 console.log("val",key, val)
+                            //                 for (let k in key ){
+                            //                     total = total + parseInt(key[k])
+                            //                 } 
+                            //                 console.log("total",total)
+                            //             }
+                            //         })
+                                    
+
+                            //     })
+                            //     // if (inx == params.index) {
+                            //     //     console.log("inside if", Object.values(element.totalColorQuantity))
+                            //     //     Object.values(element.totalColorQuantity).forEach(item => {
+                            //     //         total = total + parseInt(item)
+                            //     //         console.log("total", item)
+                            //     //     })
+                            //     // }
+                            // })
+                            let t = 0;
+                            console.log('parmas', params.row)
+                            for (let [inx, item] of params.row.totalColorQuantity.entries()) {
+                                console.log('', inx)
+                                if (params.index === inx) {
+                                    console.log('MATCH')
+                                    for (let k in item) {
+                                        t += parseInt(item[k]);
+                                    }
+                                }
+                            } 
                             return h('div', [   
-                                h('span', row.total_qty),
+                                h('span', t),
                                 // h('Tooltip', {
                                 //     props: {
                                 //     placement: 'top',
@@ -295,20 +333,22 @@
                 let tempPOAddressBill=[];
                 let products = orderData.products;
                 let shippingIds = [];
+                let productColor = [];
                 for (let index = 0; index < products.length; index++) {
                     const product = products[index];
                     let shipping_detail = product.shipping_method.shipping_detail
                     for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
                         const shipingDetail = shipping_detail[sDIndex];
                         let shipAddId = shipingDetail.selected_address_id
-                        let productColor = shipingDetail.color_quantity
+                        productColor.push(shipingDetail.color_quantity)
                         let tempProdut = product;
-                        tempProdut.color_quantity = productColor
+                        tempProdut.totalColorQuantity = productColor
                         if(shippingIds.indexOf(shipAddId)<0){
                             let tempObj= {
                                 product:[tempProdut],
                                 selected_address_id:shipAddId,
-                                shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
+                                shipping_address:shipingDetail.shipping_address,
+                                shipping_detail:shipingDetail.shipping_detail
                             };
                             tempPOAddressBill.push(tempObj)
                         }else{
@@ -320,7 +360,7 @@
                 }
                 console.log("Temp",tempPOAddressBill)
                 return tempPOAddressBill;
-            },
+            },                            
             accounting(item){
                 return accounting.formatMoney(item)
             },
@@ -390,7 +430,7 @@
                 self.poBillAddress = self.splitProductAddress(this.orderDetail);
                 self.data1 = this.orderDetail;
                 self.data2 = this.orderDetail.products;
-                // console.log("data2", self.data2)
+                console.log("poBillAddress poBillAddress", self.poBillAddress)
             }else{
                 
             }

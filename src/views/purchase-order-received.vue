@@ -284,11 +284,13 @@
 							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
 								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
 								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+								let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
 									props: {
 										row: params.row,
 										total: cardIndex,
-										editIcon: false
+										editIcon: false,
+										selected_address_id: addressId
 									}
 								})
 							}
@@ -621,11 +623,7 @@
 					params: {
 						"PO_id[$eq]" : self.$route.query.PO_id
 						// user : Cookies.get('user')
-					},
-					headers: {
-					'Authorization': Cookies.get('auth_token'),
-					'subscriptionId': Cookies.get('subscriptionId')
-					} 
+					}
 				}).then(function (response){
 					console.log("------------------------response",response.data.data[0]);
 					
@@ -692,7 +690,7 @@
 						let shipAddId=shipingDetail.selected_address_id
 						let productColor = shipingDetail.color_quantity
 						let tempProdut=product;
-						tempProdut.color_quantity=productColor
+						// tempProdut.color_quantity=productColor
 						if(shippingIds.indexOf(shipAddId)<0){
 							let tempObj={
 								product:[tempProdut],

@@ -117,7 +117,7 @@
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                    <tr v-for="(item,inx) in row.color_quantity">
+                                                                                    <tr v-for="(item,inx) in productitem">
                                                                                         <!-- <div > -->
                                                                                             <td>{{inx}}
                                                                                             </td>
@@ -212,7 +212,8 @@
         props: {
             row: Object,
             total: String,
-            editIcon: Boolean
+            editIcon: Boolean,
+            selected_address_id: String
         },
         data () {
             return {
@@ -223,6 +224,7 @@
                 index: '',
                 imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
                 modal2: false,
+                productitem:{},
                 formValidate: {
                 	value: ''
                 },
@@ -235,6 +237,22 @@
             }
         },
         methods: {
+
+            quntityFun(row){    
+                let self=this
+                var shipDetail=row.shipping_method.shipping_detail
+                shipDetail.forEach((element) => {
+                    if(self.selected_address_id == element.selected_address_id){
+                     if(element.edited_color_quantity)
+                        self.productitem= element.edited_color_quantity
+                     else
+                        self.productitem= element.color_quantity
+                    }
+                })
+            console.log("---Quntiity----end",this.productitem)
+
+                // return {} 
+            },
             getImgUrl (url) {
                 return this.imgurl + url
             },
@@ -297,10 +315,10 @@
                 console.log('ok',data,value,name)
                 
                 let totalValue = parseInt(value)
-                for(let key in data.color_quantity){
+                for(let key in this.productitem){
                     console.log('&&&&&&', key)
                     if(key !== name){
-                        totalValue = totalValue + parseInt(data.color_quantity[key])
+                        totalValue = totalValue + parseInt(this.productitem[key])
                     }
                 }
                
@@ -329,6 +347,10 @@
 
                 data.total_qty = totalValue
                 data.unit_price = this.price
+                data.color_quantity = this.productitem               
+                data.color_quantity[name] = value
+                console.log("this.productitem",data)
+                // this.productitem = data.color_quantity
 
                 if(this.price == ''){
                     this.$Notice.error({
@@ -339,10 +361,8 @@
                 }
                 else{
                     this.modal2 = false;
-                    data['color_quantity'][name] = value
-                    // this.productData = data
-                    // console.log(this.row)
-                    this.$emit('myemitter',this.productData)
+                    // console.log(this.productData)
+                    this.$emit('myemitter',data)
                     
                 }                    
             },
@@ -358,6 +378,7 @@
         mounted() {
                 console.log("this 00000", this.row)   
                 this.spinShow = false;     
+                this.quntityFun(this.row)
             },
         watch: {
             'row': async function(id) {
