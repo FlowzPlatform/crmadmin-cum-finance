@@ -88,8 +88,8 @@
 					</div>
 				</div>
 			</div>
-		
-		<Table size="small" stripe :columns="columns1" :data="list"></Table>
+		<!-- <Table size="small" @on-expand="viewDetails" :height="tableHeight" stripe :columns="columns1" :data="list"></Table> -->
+		<Table size="small" @on-expand="viewDetails" stripe :columns="columns1" :data="list"></Table>
 		<div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -114,6 +114,7 @@ export default {
     return {
       money,
       ponum: '',
+      tableHeight: 450,
       websiteList: '',
       ponumFilter: [],
       invoicenum: '',
@@ -333,10 +334,24 @@ export default {
     async changepagesize(pageSize){
       console.log("####################################",pageSize)
       this.pageSize = pageSize
+      if(this.pageSize > 10){
+        this.tableHeight = 530
+      }else{
+        this.tableHeight = 450
+      }
       this.changePage(1)
     },
     async mockTableData1 (p,size) {
       this.len = this.data.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
       return this.data.slice((p - 1) * size, p * size);
     },
     async mockTableData2 (p,size) {
@@ -344,6 +359,15 @@ export default {
       console.log("p-------------->",size)
       console.log("console.log------------>",this.filterArray)
       this.len = this.filterArray.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
       return this.filterArray.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
@@ -566,6 +590,21 @@ export default {
           console.log("error------------------->",error)
         })
       params: params1
+    },
+    async viewDetails(params,status){
+      // this.tableHeight = 250
+      console.log("this.tableHeight------->",this.len)
+      this.tableHeight = (this.len * 40) + 35
+      if(this.tableHeight >= 450){
+          this.tableHeight = 450
+      }
+      if (!status) return 
+      $('.ivu-table-cell-expand-expanded').click()
+
+      if(status){
+          this.tableHeight = 530
+          console.log("###############################",this.tableHeight)
+      }
     }
   },
   mounted(){

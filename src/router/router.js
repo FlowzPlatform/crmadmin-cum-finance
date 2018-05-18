@@ -402,7 +402,7 @@ export const appRouter = [
             path: '/po_invoice',
             title: 'PO Invoice',
             name: 'PO Invoice',
-            icon: 'document-text',
+            icon: 'ios-paper-outline',
             name: 'PO Invoice',
             component: resolve => {
                 require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
@@ -411,7 +411,7 @@ export const appRouter = [
         {
             path: 'newpo',
             title: 'New PO',
-            icon: 'ios-compose',
+            icon: 'compose',
             name: 'New PO',
             component: resolve => {
                 require(['@/views/purchaseOrder/new_po.vue'], resolve);
