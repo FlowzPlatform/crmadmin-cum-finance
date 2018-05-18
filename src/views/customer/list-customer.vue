@@ -57,9 +57,12 @@
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
-        <i-table v-if ="tabPane.domain=='Xero'" :height="tableHeight" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <!-- <i-table v-if ="tabPane.domain=='Xero'" :height="tableHeight" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
         <i-table v-if ="tabPane.domain=='QB'" :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
-        <i-table v-if ="tabPane.domain=='custom'" :height="tableHeight" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :height="tableHeight" :columns="column3" :data="list" size="small" ref="table" stripe></i-table> -->
+        <i-table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -425,7 +428,7 @@ export default {
     data6: [],
     data7: [],
     filterArray: [],
-    optionsPage:[10,20,50,100,200],
+    optionsPage:[10,20,30,50],
     listData: [],
     cname: '',
     status:'',

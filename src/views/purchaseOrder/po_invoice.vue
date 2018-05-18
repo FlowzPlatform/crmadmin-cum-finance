@@ -1,6 +1,11 @@
 <template>
-	<div>
-		<div style="width: 100%;text-align: right;">
+	<div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
+    <div class="drpdwn1" style="display: inline;">
+      <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+          <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+      </Select>
+    </div>
+		<div style="text-align:-webkit-right;display: -webkit-inline-box; margin-left: 2%;">
 			<h4 class="panel-title" style="text-align:right;display: inline-block;">
 				<a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo">
 					<button class="btn btn-default btn-sm" type="button">
@@ -83,8 +88,8 @@
 					</div>
 				</div>
 			</div>
-		
-		<Table stripe :columns="columns1" :data="list"></Table>
+		<!-- <Table size="small" @on-expand="viewDetails" :height="tableHeight" stripe :columns="columns1" :data="list"></Table> -->
+		<Table size="small" @on-expand="viewDetails" stripe :columns="columns1" :data="list"></Table>
 		<div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -97,6 +102,7 @@
 import config from '../../config/customConfig.js'
 import axios from 'axios'
 import Cookies from 'js-cookie';
+const accounting = require('accounting-js');
 import money from '../../images/Payment.png'
 import _ from 'lodash';
 import psl from 'psl';
@@ -108,10 +114,12 @@ export default {
     return {
       money,
       ponum: '',
+      tableHeight: 450,
+      websiteList: '',
       ponumFilter: [],
       invoicenum: '',
       invoicenumFilter: [],
-      optionsPage:[10,20,50,100,200],
+      optionsPage:[10,20,30,50],
       dategt: '',
       datelt: '',
       email: '',
@@ -153,7 +161,7 @@ export default {
           align:  'center',
           render : (h , {row}) => {
               return h('div', [
-                  h('span', row.total_amount)
+                  h('span', accounting.formatMoney(row.total_amount))
               ]);
           }
         },
@@ -170,8 +178,9 @@ export default {
           title: 'Date',
           align:  'center',
           render : (h , {row}) => {
+            var date1 = moment(row.createdAt).format('DD-MMM-YYYY')
               return h('div', [
-                  h('span', row.createdAt)
+                  h('span', date1)
               ]);
           }
         },
@@ -179,8 +188,9 @@ export default {
           title: 'Due Date',
           align:  'center',
           render : (h , {row}) => {
+            var date1 = moment(row.dueDate).format('DD-MMM-YYYY')
               return h('div', [
-                  h('span', row.dueDate)
+                  h('span', date1)
               ]);
           }
         },
@@ -306,6 +316,7 @@ export default {
       ],
       list:[],
       data: [],
+      website: '',
       len: 1
     }
   },
@@ -318,15 +329,29 @@ export default {
       this.duedategt = '';
       this.email = '';
       this.invoicenum = '';
-      this.init();
+      this.listData(this.website);
     },
     async changepagesize(pageSize){
       console.log("####################################",pageSize)
       this.pageSize = pageSize
+      if(this.pageSize > 10){
+        this.tableHeight = 530
+      }else{
+        this.tableHeight = 450
+      }
       this.changePage(1)
     },
     async mockTableData1 (p,size) {
       this.len = this.data.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
       return this.data.slice((p - 1) * size, p * size);
     },
     async mockTableData2 (p,size) {
@@ -334,6 +359,15 @@ export default {
       console.log("p-------------->",size)
       console.log("console.log------------>",this.filterArray)
       this.len = this.filterArray.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
       return this.filterArray.slice((p - 1) * size, p * size);
     },
     async changePage (p) {
@@ -426,35 +460,68 @@ export default {
     async init(){
       var self = this
       axios({
-        method:'get',
-        url: crmpostapiurl + 'po-invoice',
-        headers:{
-        }
+          method: 'get',
+          url: config.default.subscriptionWebsitesapi,
+          headers: {
+            'Authorization': Cookies.get('auth_token'),
+            'subscriptionId': Cookies.get('subscriptionId')
+          } 
       })
-      .then(async function(response) {
-      console.log('response-------------->',response)
-      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
-      self.list = await self.mockTableData1(1,self.pageSize)
-      var Emailarr = [];
-      $('#selectEmail').children('option:not(:first)').remove();
-      self.data.forEach(item => {
-        self.ponumFilter.push(item.PO_id)
-        self.invoicenumFilter.push(item.invoiceId)
-        Emailarr.push(item.supplier_email);
-      })
-      
-      Emailarr.forEach(item => {
-        var x = document.getElementById("selectEmail");
-        var option = document.createElement("option");
-        option.text = item;
-        console.log()
-        x.add(option);
-      })
-          console.log('response-------------->list',self.list)
-          
-        }).catch(function (error){
-          console.log("error------------------->",error)
-        })
+      .then(function (response){
+          console.log("------------------------response",response);
+          if(response.data.data.length == 0){
+            console.log("in if condition")
+            self.$Notice.error({
+              desc: 'Websites not available for this subscription',
+              title: 'Error',
+              duration: 4.5
+            })
+          }else{    
+            var result = _.uniqBy(response.data.data,'websiteId')
+            console.log("result", result)
+            self.websiteList = result
+            console.log("self.websiteList", self.websiteList[0].websiteId)                    
+            self.website = self.websiteList[0].websiteId
+          }                       
+
+      }).catch(error => {
+          console.log("-------",error);
+          if(error.message == 'Network Error'){
+              self.$Notice.error({
+                  title: 'Error',
+                  desc: 'API Service unavailable',
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 0
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
+      });
     },
     makepayment(data){
       console.log("data---------------------------->",data)
@@ -484,6 +551,59 @@ export default {
         .catch(function(error){
           console.log("$$$$$$$$$$$$$$$$$",error)
         })
+      }
+    },
+    listData (val) {
+      let self = this
+      let params1 = {
+        websiteId :val
+      }
+      axios({
+        method:'get',
+        url: crmpostapiurl + 'po-invoice',
+        params: params1,
+        headers:{
+        }
+      })
+      .then(async function(response) {
+      console.log('response-------------->',response)
+      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
+      self.list = await self.mockTableData1(1,self.pageSize)
+      var Emailarr = [];
+      $('#selectEmail').children('option:not(:first)').remove();
+      self.data.forEach(item => {
+        self.ponumFilter.push(item.PO_id)
+        self.invoicenumFilter.push(item.invoiceId)
+        Emailarr.push(item.supplier_email);
+      })
+      Emailarr = _.chain(Emailarr).sort().uniq().value();
+      Emailarr.forEach(item => {
+        var x = document.getElementById("selectEmail");
+        var option = document.createElement("option");
+        option.text = item;
+        console.log()
+        x.add(option);
+      })
+          console.log('response-------------->list',self.list)
+          
+        }).catch(function (error){
+          console.log("error------------------->",error)
+        })
+      params: params1
+    },
+    async viewDetails(params,status){
+      // this.tableHeight = 250
+      console.log("this.tableHeight------->",this.len)
+      this.tableHeight = (this.len * 40) + 35
+      if(this.tableHeight >= 450){
+          this.tableHeight = 450
+      }
+      if (!status) return 
+      $('.ivu-table-cell-expand-expanded').click()
+
+      if(status){
+          this.tableHeight = 530
+          console.log("###############################",this.tableHeight)
       }
     }
   },

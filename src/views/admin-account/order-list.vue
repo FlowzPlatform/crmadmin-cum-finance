@@ -76,8 +76,8 @@
                   </div>
               </div>
           </div>
-
-        <Table stripe :height="tableHeight" @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table>
+        <!-- <Table stripe :height="tableHeight" @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table> -->
+        <Table stripe @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -124,7 +124,7 @@
                 orderidFilter:[],
                 pageSize:10,
                 itemno: '',
-                optionsPage:[10,20,50,100,200],
+                optionsPage:[10,20,30,50],
                 itemnoFilter:[],
                 cname:'',
                 email:'',
@@ -452,6 +452,7 @@
                     // params: {
                     //   owner_id: self.userid
                     // },
+                    // config.default.subscriptionWebsitesapi
                     headers: {
                       'Authorization': Cookies.get('auth_token'),
                       'subscriptionId': Cookies.get('subscriptionId')
@@ -692,7 +693,19 @@
                 this.billinfo = true
             },
             async viewDetails(params,status){
-                this.tableHeight = 450
+                // this.tableHeight = 250
+                console.log("this.tableHeight------->",this.len)
+                this.tableHeight = (this.len * 40) + 35
+                if(this.tableHeight >= 450){
+                    this.tableHeight = 450
+                }
+                if (!status) return 
+                $('.ivu-table-cell-expand-expanded').click()
+
+                if(status){
+                    this.tableHeight = 530
+                    console.log("###############################",this.tableHeight)
+                }
             }
         },
         async mounted() {
