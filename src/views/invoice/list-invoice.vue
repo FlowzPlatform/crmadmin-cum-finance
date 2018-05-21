@@ -94,7 +94,7 @@
     <div v-if="spinShow">
                   <Spin size="large"></Spin>
     </div>
-    <div v-else>
+    <div v-else class="table-box">
             
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
@@ -104,7 +104,7 @@
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
-                    <Page :total="len" :current="1" @on-change="changePage"></Page>
+                    <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
              <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -385,6 +385,7 @@
         invoiceno:'',
         newList:[],
         previous: 'false',
+        optionsPage:[10,20,30,50],
         //message:"hello",
         newTabIndex : '',
         viewDetailModal : false,
@@ -1021,6 +1022,11 @@
     },
     components: { listtransaction },
     methods: {
+      changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        this.changePage(1)
+      },
       filterMethod (value, option) {
           return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       },
@@ -3331,4 +3337,5 @@
   .ivu-auto-complete.ivu-select-dropdown {
     max-height: 200px !important;
   }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>
