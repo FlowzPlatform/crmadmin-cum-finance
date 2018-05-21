@@ -390,14 +390,14 @@ export default {
             return item.PO_id === self.ponum;
           });
 		      console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.invoicenum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
             return item.invoiceId === self.invoicenum;
 		      });
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.dategt != ''){
@@ -409,7 +409,7 @@ export default {
             }
           });
 		      console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.datelt != ''){
@@ -421,7 +421,7 @@ export default {
               }
           });
 		      console.log("myarr",this.filterArray)
-        	this.list = await this.mockTableData2(1,self.pageSize)
+        	// this.list = await this.mockTableData2(1,self.pageSize)
 		    }
 		
 		    if(this.duedategt != ''){
@@ -433,7 +433,7 @@ export default {
             }
           });
 		      console.log("myarr",this.filterArray)
-        	this.list = await this.mockTableData2(1,self.pageSize)
+        	// this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.duedatelt != ''){
@@ -445,7 +445,7 @@ export default {
               }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
         
         if(this.email != ''){
@@ -453,6 +453,8 @@ export default {
             return item.supplier_email === self.email
           })
         }
+
+        this.list = await this.mockTableData2(1,self.pageSize)
     },
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;

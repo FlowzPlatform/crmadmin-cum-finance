@@ -404,7 +404,7 @@
                     }
                 });
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -416,7 +416,7 @@
                     }
                 });
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.filterorderid != ''){
@@ -425,7 +425,7 @@
                         return item.order_id === self.filterorderid;
                     });
                     console.log("myarr",this.filterArray)
-                    this.list1 = await this.mockTableData2(1,self.pageSize)
+                    // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.cname != ''){
@@ -434,8 +434,10 @@
                         return item.user_billing_info.name === self.cname;
                     });
                     console.log("myarr",this.filterArray)
-                    this.list1 = await this.mockTableData2(1,self.pageSize)
+                    // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
+                this.list1 = await this.mockTableData2(1,self.pageSize)
+                
 
             },
         },

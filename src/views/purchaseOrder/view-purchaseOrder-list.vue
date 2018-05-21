@@ -241,8 +241,8 @@ export default {
             this.$Loading.start()
             var self = this
             let myData = {
-                    // "to":  data.product_description.supplier_info.email,
-                    "to":"hdheniya@officebrain.com",
+                    "to":  data.product_description.supplier_info.email,
+                    // "to":"hdheniya@officebrain.com",
                     "from": Cookies.get('user'),
                     "subject": "Purchase Order Generated for Order Id :- " + this.row.orderId,
                     "body": self.$refs.email.innerHTML

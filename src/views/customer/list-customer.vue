@@ -468,11 +468,11 @@ export default {
           }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,self.pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
 
@@ -495,11 +495,11 @@ export default {
           }
         });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,self.pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
       
       if(this.email != ''){
@@ -516,12 +516,15 @@ export default {
         }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,self.pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,self.pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
+
+          this.list = await this.mockTableData2(1,self.pageSize)
+        
     },
     async mockTableData2 (p,size) {
       // console.log("p-------------->",p)

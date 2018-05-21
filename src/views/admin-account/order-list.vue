@@ -695,18 +695,18 @@
             },
             async viewDetails(params,status){
                 // this.tableHeight = 250
-                console.log("this.tableHeight------->",this.len)
-                this.tableHeight = (this.len * 40) + 35
-                if(this.tableHeight >= 450){
-                    this.tableHeight = 450
-                }
-                if (!status) return 
-                $('.ivu-table-cell-expand-expanded').click()
+                // console.log("this.tableHeight------->",this.len)
+                // this.tableHeight = (this.len * 40) + 35
+                // if(this.tableHeight >= 450){
+                //     this.tableHeight = 450
+                // }
+                // if (!status) return 
+                // $('.ivu-table-cell-expand-expanded').click()
 
-                if(status){
-                    this.tableHeight = 530
-                    console.log("###############################",this.tableHeight)
-                }
+                // if(status){
+                //     this.tableHeight = 530
+                //     console.log("###############################",this.tableHeight)
+                // }
             }
         },
         async mounted() {
