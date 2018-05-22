@@ -255,9 +255,22 @@ export default {
                     headers: {
                         'authorization':  Cookies.get('auth_token'),
                     }
-                }).then(function (response) {
+                }).then(async function (response) {
                     console.log(response);
                     self.$message.success("Email Send Successfully");
+                    await axios({
+                        method: 'patch',
+                        url: config.default.serviceUrl + 'purchase-order',
+                        data: {
+                            "EmailStatus":"Sent"
+                        },
+                        headers: {
+                            'Authorization': Cookies.get('auth_token'),
+                            'subscriptionId': Cookies.get('subscriptionId')
+                        } 
+                    }).then(async function (response){
+                        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
+                    })
                     self.$Loading.finish()
                 })
                 .catch(function (error) {

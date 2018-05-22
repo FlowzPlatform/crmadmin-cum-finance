@@ -244,10 +244,12 @@
                 this.listData(this.website)
             },
             viewDetails (row,status) {
-                // console.log("on-expand call",status)
-                // this.tableHeight = (this.len * 40) + 35
-                // if (!status) return 
-                // $('.ivu-table-cell-expand-expanded').click()
+                if(this.row === undefined){
+                    console.log("on-expand call",status)
+                    this.tableHeight = (this.len * 40) + 35
+                    if (!status) return 
+                    $('.ivu-table-cell-expand-expanded').click()
+                }
 
                 // if(status){
                 //     this.tableHeight = 530
