@@ -420,10 +420,10 @@
 
                 });
                 console.log("myarr",this.filterArray)
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }else{
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,self.pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.invoiceId != ''){
@@ -438,7 +438,7 @@
                         }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,self.pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 //  if(this.dategt != ''){
@@ -479,7 +479,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,self.pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
 
                 }
 
@@ -491,8 +491,10 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,self.pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
+
+                this.list = await this.mockTableData2(1,self.pageSize)
 
             },
             async mockTableData2 (p,size) {

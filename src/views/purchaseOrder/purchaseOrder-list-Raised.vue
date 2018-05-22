@@ -82,7 +82,7 @@
             <!-- <Table stripe size="small" @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table> -->
             <Table stripe size="small" @on-expand="viewDetails" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
-                    <div style="float: right;">
+                    <div class="pagination" style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
@@ -244,15 +244,17 @@
                 this.listData(this.website)
             },
             viewDetails (row,status) {
-                console.log("on-expand call",status)
-                this.tableHeight = (this.len * 40) + 35
-                if (!status) return 
-                $('.ivu-table-cell-expand-expanded').click()
-
-                if(status){
-                    this.tableHeight = 530
-                    console.log("###############################",this.tableHeight)
+                if(this.row === undefined){
+                    console.log("on-expand call",status)
+                    this.tableHeight = (this.len * 40) + 35
+                    if (!status) return 
+                    $('.ivu-table-cell-expand-expanded').click()
                 }
+
+                // if(status){
+                //     this.tableHeight = 530
+                //     console.log("###############################",this.tableHeight)
+                // }
                 // if(status){
                 //     this.tableHeight = 450
                 // }else{
@@ -314,7 +316,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.order_id != ''){
@@ -325,7 +327,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.mode != ''){
@@ -346,7 +348,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -359,9 +361,10 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
+                this.list = await this.mockTableData2(1,self.pageSize)
                
             },
             filterMethod (value, option) {
@@ -531,6 +534,7 @@
             var self = this
             if(this.row != undefined){
                 $('.generate-po-button').css("display","block")
+                $('.pagination .ivu-page-options').css("display","none")
                 $('.drpdwn1').css("display","none")
                 $('.filterData').css("display","none")
                 self.listData(this.row.website_id);

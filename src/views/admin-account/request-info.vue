@@ -221,13 +221,13 @@ export default {
         });
         console.log("myarr",this.filterArray)
         console.log(" Filter this.filterArray------->",this.filterArray)
-        this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = await this.mockTableData2(1,self.pageSize)
         // this.list = this.filterArray
         console.log("After Filter this.filterArray------->",this.filterArray)
       }else{
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
         console.log("myarr",this.filterArray)
-        this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = await this.mockTableData2(1,self.pageSize)
         // this.list = this.filterArray
       }
 
@@ -240,15 +240,16 @@ export default {
         });
         console.log("myarr",this.filterArray)
         console.log(" Filter this.filterArray------->",this.filterArray)
-        this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = await this.mockTableData2(1,self.pageSize)
         // this.list = this.filterArray
         console.log("After Filter this.filterArray------->",this.filterArray)
       }else{
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.pname)
         console.log("myarr",this.filterArray)
-        this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = await this.mockTableData2(1,self.pageSize)
         // this.list = this.filterArray
       }
+      this.list = await this.mockTableData2(1,self.pageSize)
 
     },
     listData (val) {

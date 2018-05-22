@@ -62,6 +62,7 @@
     </div>
     <Table size="small" stripe :height="tableHeight" @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
     <div style="margin: 10px;overflow: hidden">
+        <Button type="primary" @click= "changeData()" style="float:left;">Generate PO</Button>
         <div style="float: right;">
             <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
         </div>
@@ -191,7 +192,8 @@
                 data1: [],
                 list1: [],
                 finalresult: [],
-                filterArray: []
+                filterArray: [],
+                selectedRows: []
             }
         },
         methods: {
@@ -386,7 +388,8 @@
               return accounting.formatMoney(item)
             },
             Onselectdata(selection){
-                console.log("selection-------->",selection)
+                this.selectedRows = selection
+                console.log("selection-------->",this.selectedRows)
                 // console.log("row----------------->",row)
             },
             async changeData() {
@@ -404,7 +407,7 @@
                     }
                 });
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -416,7 +419,7 @@
                     }
                 });
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.filterorderid != ''){
@@ -425,7 +428,7 @@
                         return item.order_id === self.filterorderid;
                     });
                     console.log("myarr",this.filterArray)
-                    this.list1 = await this.mockTableData2(1,self.pageSize)
+                    // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.cname != ''){
@@ -434,8 +437,10 @@
                         return item.user_billing_info.name === self.cname;
                     });
                     console.log("myarr",this.filterArray)
-                    this.list1 = await this.mockTableData2(1,self.pageSize)
+                    // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
+                this.list1 = await this.mockTableData2(1,self.pageSize)
+                
 
             },
         },
