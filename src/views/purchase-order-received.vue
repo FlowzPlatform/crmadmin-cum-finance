@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
-						<div class="dweep" style="padding:10px">
+						<div style="padding:10px">
 							<div class="row well">
 								<table class="invoice-head col-md-8">
 									<tbody>
@@ -81,7 +81,7 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="row">
+							<!-- <div class="row">
 								<table class="col-md-12 table table-bordered" style="text-align:center">
 									<thead>
 										<tr>
@@ -100,7 +100,7 @@
 										</tr>
 									</tbody>
 								</table>
-							</div>
+							</div> -->
 							<div class="row">
 								<div class="span8 well invoice-body" style="padding: 0px;border: none;">
 									<Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
@@ -108,6 +108,7 @@
 							</div>
 						</div>
 					</Card>
+					<!-- Payment config -->
 					<div class="row">
 						<div class=" col-md-12">
 							<div class="well" style="background-color:#fff">
@@ -227,14 +228,59 @@
 							
 						</div>        
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="well" style="background-color:#fff">
-								<label> Due Date of Invoice : </label>
-								<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-left:20px"></DatePicker>
-								<Button type="success" @click="generateInvoice()" style="float:right">Generate Invoice</Button>
-								<div class="clearfix"></div>								
+					<!-- Generate Invoice -->
+					<div style="padding-left:15px;padding-right:15px;">
+						<div class="row well" style="background-color:#fff">
+							<table class="col-md-6">
+								<tbody>
+									<tr>
+										<td><strong>Shipping Charges : </strong></td>                                            
+										<td><Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-left: 25px;" @on-change="calculateAmount"></Input></td>
+									</tr>
+									<tr>
+										<td><strong>Due Date of Invoice :</strong></td>
+										<td><DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
+									</tr>
+									<tr>
+										<td><strong>Total Amount :</strong></td>
+										<td><Input v-model="total" placeholder="Total Amount" style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input></td>
+									</tr>
+								</tbody>
+							</table>
+							<table class="col-md-6">
+								<tbody style="float:right;">
+									<tr>
+										<td><strong>Shipping Method : </strong></td>
+										<td><Input v-model="shippingMethod" placeholder="Enter Shipping Method..." style="width: 215px;margin-left: 25px;"></Input></td>
+									</tr>
+									<tr>
+										<td><strong>Special Instruction :</strong></td>
+										<td><Input v-model="note" type="textarea" placeholder="Enter Special Instructions..." style="width: 215px;margin-left: 25px;margin-top:10px;"></Input></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><Button type="success" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Invoice</Button></td>
+									</tr>
+								</tbody>
+							</table>
+							<!--<label>Shipping Charges : </label>
+							<Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input>
+							<div style="float:right;">
+								<label>Shipping Method : </label>
+								<Input v-model="shippingMethod" placeholder="Enter Shipping Method..." style="width: 215px;"></Input>
 							</div>
+							<br/>
+							<label> Due Date of Invoice : </label>
+							<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker>
+							<div style="float:right;">
+								<label>Special Instruction : </label>
+								<Input v-model="note" type="textarea" placeholder="Enter Special Instructions..." style="width: 215px;"></Input>
+							</div>
+							<br/>
+							<label>Total Amount : </label>
+							<Input v-model="total" placeholder="Total Amount" style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input>
+							<Button type="success" @click="generateInvoice()" style="float:right;margin-right: 0px;">Generate Invoice</Button>
+							<div class="clearfix"></div>-->							
 						</div>
 					</div>
 					<div class="row">
@@ -354,8 +400,12 @@
 				checked: true,
 				tabIndex : 0,
 				dueDate: '',
+				shippingCharge: 0,
+				shippingMethod: '',
+				note: '',
+				total: 0,
                 unchecked: false,
-				formValidate:{
+				formValidate: {
 					Account_Name: '',
 					gateway:'',
 					Secret_Key: '',
@@ -366,7 +416,7 @@
 				},
 				ruleValidate: {
 					Account_Name: [
-						{ required: true, message: 'Please Enter Account Name', trigger: 'blur'}
+						{ required: true, message: 'Please Enter Account Name', trigger: 'blur' }
 					],
 					gateway: [
 						{ required: true, message: 'Please select gateway', trigger: 'blur' }
@@ -390,6 +440,16 @@
 			}
 		},
 		methods: {
+			calculateAmount () {
+				console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
+				if (this.shippingCharge > 0) {
+					this.total = parseInt(this.data1.total) + parseInt(this.shippingCharge);
+					// this.total = parseInt(this.total);
+				}
+				else {
+					this.total = parseInt(this.data1.total);
+				}
+			},
 			handleEdit (tabname, rowinx) {
 				console.log('handleEdit............', tabname, rowinx)
 				let self = this;
@@ -634,6 +694,7 @@
 							self.poBillAddress  =  self.splitProductAddress(poDetail);
 							self.supplierPayment()
 							self.data1 = poDetail
+							self.total = parseInt(poDetail.total);
 						}else{
 								self.showError = true
 						}
@@ -684,8 +745,6 @@
 					const product = products[index];
 					let shipping_detail=product.shipping_method.shipping_detail
 					for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
-
-
 						const shipingDetail = shipping_detail[sDIndex];
 						let shipAddId=shipingDetail.selected_address_id
 						let productColor = shipingDetail.color_quantity
@@ -730,7 +789,7 @@
 				// this.$refs[name].resetFields();
 			},
 			handleSubmit (name) {
-				var self = this
+				var self = this;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
 						console.log('formValidate----------------------------->',this.formValidate, this.poBillAddress)
@@ -829,6 +888,7 @@
                 }
 			},
 			generateInvoice () {
+				let self = this;
 				let paymentInfo = {}
 
 				if(this.dueDate != "" ) {
@@ -843,7 +903,6 @@
 								}
 							}
 						}
-
 					}
 					let invoiceData = {
 							'PO_id': this.data1.PO_id,
@@ -853,7 +912,10 @@
 							'products': this.data1.products,
 							'websiteName': this.data1.websiteName,
 							'websiteId': this.data1.websiteId,
-							'total_amount': this.data1.total,
+							'shippingCharges': this.shippingCharge,
+							'shippingMethod' : this.shippingMethod,
+							'specialInstruction' : this.note, 
+							'total_amount': this.total,
 							'supplierId': this.data1.products[0].product_description.supplier_id,
 							'supplier_email': this.data1.products[0].product_description.supplier_info.email,
 							'dueDate': this.dueDate,
@@ -868,6 +930,7 @@
 							
 						}).then(function(response){
 							console.log('Generate PO...........', response)
+							self.$Message.success("Purchase Order Invoice Generated Successfully");
 							// self.data2 = response.data.data
 							// console.log('data2 data2 data2', self.data2)
 							
