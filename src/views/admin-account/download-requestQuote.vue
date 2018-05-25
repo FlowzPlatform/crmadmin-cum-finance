@@ -205,7 +205,7 @@
                   </tbody>
                 </table>
               </div>
-              <div style="margin:0 auto;">
+              <div style="margin:0 auto;" v-for="(item,index) in row.shipping_method.shipping_detail">
                 <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%" align="center" border="0">
                   <tbody>
                     <tr>
@@ -236,146 +236,146 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
-              <div style="margin:0 auto;">
-                <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%" align="center" border="0">
-                  <tbody>
-                    <tr>
-                      <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
-                        <div class="mj-column-per-15 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                        </div>
-                        <div class="mj-column-per-65 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                          <div class="row"  v-for="(item,index) in row.shipping_method.shipping_detail">
-                          <div class="col-sm-12">
-                          <!-- <div class="estimate-row heading" style="backgroundColor:white;">
-                            <span>Quantity {{index+1}}</span>
-                          </div> -->
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-left: solid 1px #e5e5e5;" width="100%" border="0">
-                          <tbody>
-                            <tr v-for="(element,inx) in item.color_quantity">
-                              <td style="word-wrap:break-word;font-size:0;padding-top:5px;padding-bottom:5px" align="center">
-                                <div :style="{ backgroundColor: inx }" style="height:25px;width:25px;border: solid 1px #e8e8e8;">
-                                  </div>
-                              </td>
-                              <td align="center">{{inx}}</td>
-                              <td align="left">
-                                <strong>Total : {{element}}</strong>
-                              </td>
-                            </tr>
-
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-        
-                        </div>
-                        <!-- <div class="mj-column-per-20 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd" width="100%" border="0">
+                <div style="margin:0 auto;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%" align="center" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
+                          <div class="mj-column-per-15 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
+                          </div>
+                          <div class="mj-column-per-65 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
+                            <div class="row">
+                            <div class="col-sm-12">
+                            <!-- <div class="estimate-row heading" style="backgroundColor:white;">
+                              <span>Quantity {{index+1}}</span>
+                            </div> -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-left: solid 1px #e5e5e5;" width="100%" border="0">
                             <tbody>
-                              <tr>
-                                <td style="word-wrap:break-word;font-size:0;padding:10px 25px" align="left">
-                                  <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">{{this}}</div>
+                              <tr v-for="(element,inx) in item.color_quantity">
+                                <td style="word-wrap:break-word;font-size:0;padding-top:5px;padding-bottom:5px" align="center">
+                                  <div :style="{ backgroundColor: inx }" style="height:25px;width:25px;border: solid 1px #e8e8e8;">
+                                    </div>
+                                </td>
+                                <td align="center">{{inx}}</td>
+                                <td align="left">
+                                  <strong>Total : {{element}}</strong>
                                 </td>
                               </tr>
+
                             </tbody>
                           </table>
-                        </div> -->
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div style="margin:0 auto;">
-                <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%" align="center" border="0">
-                  <tbody>
-                    <tr>
-                      <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
-                        <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;background:#fff;display:inline-block;font-size:0;line-height:0;text-align:left;width:100%;border-left: solid 1px #e5e5e5;border-right: solid 1px #e5e5e5;">
-                          <!-- <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width: 2%;">
-                          </div> -->
-                          <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                              <tbody v-for="(item,index) in row.shipping_method.shipping_detail">
+                        </div>
+                      </div>
+          
+                          </div>
+                          <!-- <div class="mj-column-per-20 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd" width="100%" border="0">
+                              <tbody>
                                 <tr>
                                   <td style="word-wrap:break-word;font-size:0;padding:10px 25px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping Address</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.street1}},</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.city}} - {{item.shipping_address.postalcode}},</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.state}}, {{item.shipping_address.country}}.</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">T: {{item.shipping_address.phone}}</div>
+                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">{{this}}</div>
                                   </td>
                                 </tr>
                               </tbody>
                             </table>
+                          </div> -->
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="margin:0 auto;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%" align="center" border="0">
+                    <tbody>
+                      <tr>
+                        <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
+                          <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;background:#fff;display:inline-block;font-size:0;line-height:0;text-align:left;width:100%;border-left: solid 1px #e5e5e5;border-right: solid 1px #e5e5e5;">
+                            <!-- <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width: 2%;">
+                            </div> -->
+                            <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:35%;margin-bottom:10px">
+                              <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                <tbody>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:10px 25px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping Address</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.street1}},</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.city}} - {{item.shipping_address.postalcode}},</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{item.shipping_address.state}}, {{item.shipping_address.country}}.</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:0px 25px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">T: {{item.shipping_address.phone}}</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:35%;margin-bottom:10px">
+                              <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                <tbody>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:10px 10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Shipping Type : {{row.shipping_method.shipping_type}}</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Shipping Carrier : {{item.shipping_detail.shipping_carrier}}</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">In Hand Date : {{item.shipping_detail.on_hand_date}}</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Method : {{item.shipping_detail.shipping_method}}</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:30%;margin-bottom:10px">
+                              <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                <tbody>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding:10px 10px" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping Charge</div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-right:10px;padding-top:0" align="left">
+                                      <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Charge : {{item.shipping_detail.shipping_charge}}</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
-                          <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                              <tbody v-for="(item,index) in row.shipping_method.shipping_detail">
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:10px 10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Shipping Type : {{row.shipping_method.shipping_type}}</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Shipping Carrier : {{item.shipping_detail.shipping_carrier}}</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">In Hand Date : {{item.shipping_detail.on_hand_date}}</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-top:0;padding-right:10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Method : {{item.shipping_detail.shipping_method}}</div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <div style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                              <tbody v-for="(item,index) in row.shipping_method.shipping_detail">
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding:10px 10px" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:22px;text-align:left">Shipping Charge</div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="word-wrap:break-word;font-size:0;padding-left:10px;padding-right:10px;padding-top:0" align="left">
-                                    <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">Charge:{{item.shipping_detail.shipping_carrier}}</div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </td>
           </tr>

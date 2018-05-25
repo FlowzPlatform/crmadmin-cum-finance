@@ -49,7 +49,7 @@
         </Form>  
     </Card>
     <Card v-else-if="dataEditIn == 'Configuration'">
-         <Form :model="editData" :label-width="60" v-if='editData.domain == "Xero"' ref="editData" :rules="ruleValidate">
+         <Form :model="editData" :label-width="90" v-if='editData.domain == "Xero"' ref="editData" :rules="ruleValidate">
             <FormItem label="Config Name" prop="configName">
                 <Input v-model="editData.configName" placeholder="Enter something for Xero..."></Input>
             </FormItem>
@@ -76,7 +76,7 @@
                 <Button type="ghost" style="margin-left: 8px" @click="Cancel('editData')">Back</Button>
             </div>
         </Form>
-        <Form :model="editData" :label-width="60" v-if='editData.domain == "QB"'>
+        <Form :model="editData" :label-width="90" v-if='editData.domain == "QB"'>
             <FormItem label="Config Name" prop="configName">
                 <Input v-model="editData.configName" placeholder="Configuaration Name"></Input>
             </FormItem>
@@ -96,7 +96,7 @@
     </Card>
     <div v-else>
         <Card>
-            <Form :model="editFormItem" :label-width="110" ref="editFormItem" :rules="ruleValidate">
+            <Form :model="editFormItem" :label-width="120" ref="editFormItem" :rules="ruleValidate">
                 <div v-for="(i,j) in this.data">
                     <div v-if="i == 'Secret_Key'">
                         <FormItem label="Secret_Key" prop="Secret_Key">
@@ -530,7 +530,7 @@ export default {
                     console.log(EditModifiedData)
                     let patchData = _.cloneDeep(EditModifiedData)
                     delete patchData.online_payment;
-                    console.settingEditDatalog("--------------",patchData);
+                    console.log("settingEditData--------------",patchData);
                     axios({
                         method:'patch',
                         url:feathersUrl +'settings/'+this.editData.id,

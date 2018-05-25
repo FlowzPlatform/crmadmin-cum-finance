@@ -500,9 +500,19 @@ export default {
                             } else {
                                 Cookies.set('access', 1);
                             }
-                            self.$router.push({
-                                name: 'Dashboard'
-                            });
+                            let route = Cookies.get('route');
+                            console.log('route',route, typeof route);
+                            if (route === undefined) {
+                                self.$router.push({
+                                    name: 'Dashboard'
+                                });
+                            }
+                            else {
+                                self.$router.push({
+                                    name: route
+                                });
+                                Cookies.remove('route');
+                            }
                         }).catch(function(error){
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)

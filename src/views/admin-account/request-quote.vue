@@ -1,13 +1,15 @@
 <template>
-  <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-    <Tabs type="card" @on-click="click">
+  <div class="table-box" style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
+    <div class="drpdwn" style="display: inline;">
+    <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+        <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+    </Select>
+    </div>
+    <Tabs type="card" @on-click="click" style="margin-top: 10px;">
         <TabPane label="Request Quote">
-          <div class="drpdwn" style="display: inline;">
-            <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
-                <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
-            </Select>
-          </div>
-          <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion12" href="#collapseT"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+         <div style=" text-align: -webkit-right;">
+            <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion12" href="#collapseT"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+         </div>
         <div class="panel panel-default panel-group" id="accordion12" style="border: none;margin-top:1%;text-align: -webkit-left;">
               <!-- <div class="panel-heading">
               </div> -->
@@ -45,20 +47,25 @@
               </div>
           </div>
           <Table :columns="columns1" :data="list" size="small"  ref="table" stripe></Table>
+            <div style="margin: 10px;overflow: hidden">
+                <div style="float: right;">
+                    <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+                </div>
+            </div>
         </TabPane>
         <TabPane label="Request Info">
           <requestInfo :row="websiteList"></requestInfo>
         </TabPane>
     </Tabs>
     <Modal
-            v-model="modal1"
-            title="Preview RequestQuote Details"
-            width="45%"
-            ok-text= "Download PDF"
-            @on-ok="download"
-            @on-cancel="cancel">
-            <downloadRequestQuote id="requestQuote" :row="requestQuote"></downloadRequestQuote>
-        </Modal>
+        v-model="modal1"
+        title="Preview RequestQuote Details"
+        width="45%"
+        ok-text= "Download PDF"
+        @on-ok="download"
+        @on-cancel="cancel">
+        <downloadRequestQuote id="requestQuote" :row="requestQuote"></downloadRequestQuote>
+    </Modal>
   </div>
 </template>
 
@@ -79,9 +86,13 @@ export default {
   return {
     requestQuote: {},
     modal1: false,
+    filterArray:'',
+    len: 1,
+    pageSize: 10,
     websiteList: [],
     website: '',
     userid:'',
+    optionsPage:[10,20,30,50],
     columns1:[
       {
         type: 'expand',
@@ -163,11 +174,64 @@ export default {
       }
     ],
     list: [],
+    tableHeight: 450,
     cname: '',
     pname: ''
     }
   },
   methods: {
+    changepagesize(pageSize){
+      console.log("####################################",pageSize)
+      this.pageSize = pageSize
+      if(this.pageSize > 10){
+          this.tableHeight = 530
+      }else{
+          this.tableHeight = 450
+      }
+      this.changePage(1)
+    },
+    async changePage (p) {
+        // this.page = p
+        var self = this
+        console.log("not inside",self.filterArray.length)
+        if(self.filterArray.length == 0){
+            console.log("inside",self.filterArray)
+            self.list = await self.mockTableData(p,self.pageSize);
+        }else{
+            self.list = await self.mockTableDataFilter(p,self.pageSize);
+        }
+    },
+    async mockTableData (p,size) {
+        console.log("mocktable call---------------",this.data)
+        this.len = this.data.length
+        if(this.len == 0){
+            console.log("data length 0--------------->",this.tableHeight)
+            this.tableHeight = 100
+        }else if(this.len < 10){
+            console.log("data length 10--------------->",this.tableHeight)
+              this.tableHeight = (this.len * 40) + 35
+        }else{
+            this.tableHeight = 450
+        }
+
+        return this.data.slice((p - 1) * size, p * size);
+    },
+    async mockTableDataFilter (p,size) {
+        console.log("p-------------->",p)
+        console.log("p-------------->",size)
+        console.log("console.log------------>",this.filterArray)
+        this.len = this.filterArray.length
+        if(this.len == 0){
+            console.log("data length 0--------------->",this.tableHeight)
+            this.tableHeight = 100
+        }else if(this.len < 10){
+            console.log("data length 10--------------->",this.tableHeight)
+              this.tableHeight = (this.len * 40) + 35
+        }else{
+            this.tableHeight = 450
+            }
+        return this.filterArray.slice((p - 1) * size, p * size);
+    },
     reset(){
         this.pname = '';
         this.cname = '';
@@ -265,7 +329,7 @@ export default {
       this.listData(this.website);
     },
      async changeData() {
-        console.log("Before this.filterArray------->",this.filterArray)
+        console.log("Before this.filterArray------->",this.data)
         this.filterArray = this.data
          console.log("After this.filterArray------->",this.filterArray)
         var self = this
@@ -278,12 +342,14 @@ export default {
           });
           console.log("myarr",this.filterArray)
           console.log(" Filter this.filterArray------->",this.filterArray)
-          this.list = this.filterArray
+        //   this.list = await this.mockTableDataFilter(1,self.pageSize)
+        //   this.list = this.filterArray
           console.log("After Filter this.filterArray------->",this.filterArray)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           console.log("myarr",this.filterArray)
-          this.list = this.filterArray
+        //   this.list = await this.mockTableDataFilter(1,self.pageSize)
+        //   this.list = this.filterArray
         }
 
         if(this.pname != ''){
@@ -294,14 +360,16 @@ export default {
           });
           console.log("myarr",this.filterArray)
           console.log(" Filter this.filterArray------->",this.filterArray)
-          this.list = this.filterArray
+        //   this.list = await this.mockTableDataFilter(1,self.pageSize)
+        //   this.list = this.filterArray
           console.log("After Filter this.filterArray------->",this.filterArray)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.pname)
           console.log("myarr",this.filterArray)
-          this.list = this.filterArray
+        //   this.list = await this.mockTableDataFilter(1,self.pageSize)
+        //   this.list = this.filterArray
         }
-
+        this.list = await this.mockTableDataFilter(1,self.pageSize)
     },
 
     show (params) {
@@ -446,11 +514,12 @@ export default {
             // 'subscriptionId': Cookies.get('subscriptionId')
           } 
       })
-      .then(function (response){
+      .then(async function (response){
           console.log("response val", response.data)
 
-          self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
-          self.data = self.list
+          self.data = _.orderBy(response.data.data, ['created_at'],['desc'])
+          self.list = await self.mockTableData(1,self.pageSize)
+        //   self.data = self.list
           self.data.forEach(obj => {
             Namearr.push(obj.user_info.fullname)
             Productarr.push(obj.product_description.product_name)
@@ -520,6 +589,7 @@ export default {
     //     console.log("-------",error);
     //       self.$Message.error(error)
     //   });
+    console.log("mounted of request quote")
   this.getReuestQuoteData();
   }
 }
@@ -532,4 +602,5 @@ export default {
   .ivu-table-cell {
         word-break: break-word;
     }
+    .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

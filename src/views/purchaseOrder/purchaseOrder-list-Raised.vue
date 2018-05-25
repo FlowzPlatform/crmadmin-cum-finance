@@ -16,7 +16,7 @@
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#poid"></span>
-                                      <label>P.O.Number</label>
+                                      <label>P.O.#</label>
                                   </div>
                                   <div class="panel-collapse collapse" id="poid">
                                      <AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -79,10 +79,10 @@
                     </button>
                 </h4>
             </div>
-
-            <Table stripe @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table>
+            <!-- <Table stripe size="small" @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table> -->
+            <Table stripe size="small" @on-expand="viewDetails" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
-                    <div style="float: right;">
+                    <div class="pagination" style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                 dategt: '',
                 datelt: '',
                 pageSize: 10,
-                optionsPage:[10,50,100,200],
+                optionsPage:[10,20,30,50],
                 mode: '',
                 len: 1,
                 order_id: '',
@@ -138,8 +138,9 @@
                         }
                     },
                     {
-                        title: 'P.O. Number',
+                        title: 'P.O. #',
                         align:  'center',
+                        width: 250,
                         render : (h , {row}) => {
                             return h('div', [
                                 h('span', row.PO_id)
@@ -149,6 +150,7 @@
                     {
                         title: 'P.O Generate Date',
                         align:  'center',
+                        width: 250,
                         render : (h , {row}) => {
                             var date1 = moment(row.PO_generate_date).format('DD-MMM-YYYY')
                             return h('div', [
@@ -235,13 +237,31 @@
             }
         },
         methods: {
+            reset() {
+                this.ponum = ''
+                this.dategt = ''
+                this.datelt = ''
+                this.order_id = ''
+                this.mode = ''
+                this.listData(this.website)
+            },
             viewDetails (row,status) {
-                console.log("on-expand call",status)
-                if(status){
-                    this.tableHeight = 450
-                }else{
+                if(this.row === undefined){
+                    console.log("on-expand call",status)
                     this.tableHeight = (this.len * 40) + 35
+                    if (!status) return 
+                    $('.ivu-table-cell-expand-expanded').click()
                 }
+
+                // if(status){
+                //     this.tableHeight = 530
+                //     console.log("###############################",this.tableHeight)
+                // }
+                // if(status){
+                //     this.tableHeight = 450
+                // }else{
+                //     this.tableHeight = (this.len * 40) + 35
+                // }
             },
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
@@ -298,7 +318,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.order_id != ''){
@@ -309,7 +329,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.mode != ''){
@@ -330,7 +350,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -343,9 +363,10 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
+                this.list = await this.mockTableData2(1,self.pageSize)
                
             },
             filterMethod (value, option) {
@@ -515,6 +536,7 @@
             var self = this
             if(this.row != undefined){
                 $('.generate-po-button').css("display","block")
+                $('.pagination .ivu-page-options').css("display","none")
                 $('.drpdwn1').css("display","none")
                 $('.filterData').css("display","none")
                 self.listData(this.row.website_id);
@@ -531,5 +553,8 @@
         width: 100%;
         height: 100px;
         position: relative;
+    }
+    .ivu-table-body {
+        overflow-x: hidden;
     }
 </style>

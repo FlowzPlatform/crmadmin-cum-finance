@@ -241,8 +241,8 @@ export default {
             this.$Loading.start()
             var self = this
             let myData = {
-                    // "to":  data.product_description.supplier_info.email,
-                    "to":"hdheniya@officebrain.com",
+                    "to":  data.product_description.supplier_info.email,
+                    // "to":"hdheniya@officebrain.com",
                     "from": Cookies.get('user'),
                     "subject": "Purchase Order Generated for Order Id :- " + this.row.orderId,
                     "body": self.$refs.email.innerHTML
@@ -255,9 +255,22 @@ export default {
                     headers: {
                         'authorization':  Cookies.get('auth_token'),
                     }
-                }).then(function (response) {
+                }).then(async function (response) {
                     console.log(response);
                     self.$message.success("Email Send Successfully");
+                    await axios({
+                        method: 'patch',
+                        url: config.default.serviceUrl + 'purchase-order',
+                        data: {
+                            "EmailStatus":"Sent"
+                        },
+                        headers: {
+                            'Authorization': Cookies.get('auth_token'),
+                            'subscriptionId': Cookies.get('subscriptionId')
+                        } 
+                    }).then(async function (response){
+                        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
+                    })
                     self.$Loading.finish()
                 })
                 .catch(function (error) {

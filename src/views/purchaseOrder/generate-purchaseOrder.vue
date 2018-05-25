@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <div class="mainBody">
@@ -81,6 +80,22 @@
                             <div class="row">
                                 <div class="span8 well invoice-body" style="padding: 0px;border: none;">
                                     <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
+                                    <!-- <modal v-model="modal2" width="40%">
+                                        <p slot="header">
+                                                <span>Change Quantity</span>
+                                            </p>
+                                        <div style="text-align:center">
+                                            <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
+                                            <form-item label="Quantity" prop="value">
+                                                <i-input v-model="formValidate.value" placeholder="Enter Quantity"></i-input>
+                                            </form-item>
+                                            </i-form>
+                                        </div>
+                                        <div slot="footer">
+                                            <i-button @click="cancel">Cancel</i-button>
+                                            <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
+                                        </div>
+                                    </modal> -->
                                 </div>
                             </div>
                         </div>
@@ -114,19 +129,35 @@
                 orderDetail: {},
                 date: '',
                 poBillAddress: {},
+                modal2: false,
+                productData: [],
                 columns1: [
                     {
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
                             if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
-								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
 									props: {
 										row: params.row,
-										total: cardIndex
-									}
+                                        total: cardIndex,
+                                        editIcon: true,
+                                        selected_address_id:addressId
+									},
+                                    on: {
+                                        myemitter: (item) => {
+                                            // alert(item);
+                                            // this.EditBanner(item)
+                                            this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
+                                            this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
+                                            this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
+                                            // params.row.color_quantity = item.color_quantity
+                                            console.log("item************",this.poBillAddress)
+
+                                        }    
+                                    }
 								})
 							}
                             // return h(expandRow, {
@@ -157,9 +188,73 @@
                     {
                         title: 'Quantity',
                         align:  'center',
-                        render : (h , {row}) => {
-                            return h('div', [
-                                h('span', row.total_qty)
+                        render : (h , params) => {
+                            // let total = 0
+                            // console.log("Quantity ------------", this.poBillAddress)
+                            // this.poBillAddress.forEach(element => {
+                            //     element.product.forEach((item,inx) => {
+                            //         total = 0
+                            //         item.totalColorQuantity.forEach((key,val) => {
+                            //             if(inx == val) {
+                            //                 console.log("val",key, val)
+                            //                 for (let k in key ){
+                            //                     total = total + parseInt(key[k])
+                            //                 } 
+                            //                 console.log("total",total)
+                            //             }
+                            //         })
+                                    
+
+                            //     })
+                            //     // if (inx == params.index) {
+                            //     //     console.log("inside if", Object.values(element.totalColorQuantity))
+                            //     //     Object.values(element.totalColorQuantity).forEach(item => {
+                            //     //         total = total + parseInt(item)
+                            //     //         console.log("total", item)
+                            //     //     })
+                            //     // }
+                            // })
+                            let t = 0;
+                            console.log('parmas', params.row)
+                            for (let [inx, item] of params.row.totalColorQuantity.entries()) {
+                                console.log('', inx)
+                                if (params.index === inx) {
+                                    console.log('MATCH')
+                                    for (let k in item) {
+                                        t += parseInt(item[k]);
+                                    }
+                                }
+                            } 
+                            return h('div', [   
+                                h('span', t),
+                                // h('Tooltip', {
+                                //     props: {
+                                //     placement: 'top',
+                                //         content: 'Change the Quantity'
+                                //     },
+                                //     style:{
+                                //         float:'center',
+                                //         cursor:'pointer'
+                                //     }
+                                // }, [
+                                //     h('Button', {
+                                //         props: {
+								// 		type: 'text',
+								// 		size: 'large',
+								// 		icon: 'edit'
+                                //         },
+                                //         style: {
+                                //             marginLeft: '20px',
+                                //             padding: '0px',
+                                //             color: 'rgb(106, 114, 140)'
+                                //         },
+                                //         on: {
+                                //             click: () => {
+                                //                 self.show(row)
+                                //             }
+                                //         }
+                                //     }, '')
+                                // ])
                             ]);
                         }
                     },
@@ -219,28 +314,41 @@
                     }
                 ],
                 loading: false
+                // formValidate: {
+                // 	value: ''
+                // },
+                // ruleInline: {
+                //     value: [
+                //         { required: true, message:  "Please Enter Quantity", trigger: 'blur' }
+                //     ]
+                // },
                 // spinShow : true, 
             }
         },
         methods: {
+            EditBanner (item) {
+                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', item)
+            },
             splitProductAddress(orderData){
                 let tempPOAddressBill=[];
                 let products = orderData.products;
                 let shippingIds = [];
+                let productColor = [];
                 for (let index = 0; index < products.length; index++) {
                     const product = products[index];
                     let shipping_detail = product.shipping_method.shipping_detail
                     for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
                         const shipingDetail = shipping_detail[sDIndex];
                         let shipAddId = shipingDetail.selected_address_id
-                        let productColor = shipingDetail.color_quantity
+                        productColor.push(shipingDetail.color_quantity)
                         let tempProdut = product;
-                        tempProdut.color_quantity = productColor
+                        tempProdut.totalColorQuantity = productColor
                         if(shippingIds.indexOf(shipAddId)<0){
                             let tempObj= {
                                 product:[tempProdut],
                                 selected_address_id:shipAddId,
-                                shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
+                                shipping_address:shipingDetail.shipping_address,
+                                shipping_detail:shipingDetail.shipping_detail
                             };
                             tempPOAddressBill.push(tempObj)
                         }else{
@@ -252,7 +360,7 @@
                 }
                 console.log("Temp",tempPOAddressBill)
                 return tempPOAddressBill;
-            },
+            },                            
             accounting(item){
                 return accounting.formatMoney(item)
             },
@@ -275,12 +383,22 @@
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
             },
-            generatePO() {
+            generatePO(value) {
                 let self = this;
                 this.loading = true;
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
-                console.log("purchase order post object",this.orderDetail)
+                this.orderDetail.products = this.poBillAddress[0].product
+                let quantity = 0
+                let total = 0
+                this.orderDetail.products.forEach((item) => {
+                    quantity = quantity + item.total_qty
+                    total = total + (item.total_qty * item.unit_price)
+                })
+
+                this.orderDetail.quantity = quantity
+                this.orderDetail.total = total
+                console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({
                         method: 'post',
@@ -291,12 +409,16 @@
                         self.loading = false
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
+                        self.$router.push({
+                            name :"Raised PO"
+                        })
                     })
                 }
                 else {
 
                 }
             }
+           
         },
         filters: {
             
@@ -311,7 +433,7 @@
                 self.poBillAddress = self.splitProductAddress(this.orderDetail);
                 self.data1 = this.orderDetail;
                 self.data2 = this.orderDetail.products;
-                // console.log("data2", self.data2)
+                console.log("poBillAddress poBillAddress", self.poBillAddress)
             }else{
                 
             }

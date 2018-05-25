@@ -1,6 +1,11 @@
 <template>
-	<div>
-		<div style="width: 100%;text-align: right;">
+	<div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
+    <div class="drpdwn1" style="display: inline;">
+      <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
+          <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+      </Select>
+    </div>
+		<div style="text-align:-webkit-right;display: -webkit-inline-box; margin-left: 2%;">
 			<h4 class="panel-title" style="text-align:right;display: inline-block;">
 				<a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo">
 					<button class="btn btn-default btn-sm" type="button">
@@ -16,7 +21,7 @@
 							<div class="collapse-maindiv maindiv" >
 								<div class="panel panel-default">
 									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#po"></span>
-										<label>PO Number</label>
+										<label>PO #</label>
 									</div>
 									<div class="panel-collapse collapse" id="po">
 										<AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -25,10 +30,19 @@
 								</div>
 								<div class="panel panel-default">
 									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#invoice"></span>
-										<label>Invoice Number</label>
+										<label>Invoice #</label>
 									</div>
 									<div class="panel-collapse collapse" id="invoice">
 										<AutoComplete v-model="invoicenum" :data="invoicenumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+										</AutoComplete>
+									</div>
+								</div>
+                <div class="panel panel-default">
+									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
+										<label>Order Id</label>
+									</div>
+									<div class="panel-collapse collapse" id="order">
+										<AutoComplete v-model="orderid" :data="orderidfilter" :filter-method="filterMethod" placeholder="input here" clearable>
 										</AutoComplete>
 									</div>
 								</div>
@@ -83,13 +97,13 @@
 					</div>
 				</div>
 			</div>
-		
-		<Table stripe :columns="columns1" :data="list"></Table>
+		<!-- <Table size="small" @on-expand="viewDetails" :height="tableHeight" stripe :columns="columns1" :data="list"></Table> -->
+		<Table size="small" @on-expand="viewDetails" stripe :columns="columns1" :data="list"></Table>
 		<div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
-            </div>
-        </div>
+      <div style="float: right;">
+          <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+      </div>
+    </div>
 
 	</div>
 </template>
@@ -97,42 +111,50 @@
 import config from '../../config/customConfig.js'
 import axios from 'axios'
 import Cookies from 'js-cookie';
+const accounting = require('accounting-js');
 import money from '../../images/Payment.png'
 import _ from 'lodash';
 import psl from 'psl';
 var crmpostapiurl = config.default.serviceUrl;
-import expandRow from './view-po_invoice.vue';
+import expandRow from './viewpo_invoice.vue';
 
 export default {
   data(){
     return {
       money,
       ponum: '',
-	  ponumFilter: [],
-	  invoicenum: '',
-	  invoicenumFilter: [],
-	  optionsPage:[10,20,50,100,200],
-	  dategt: '',
-	  datelt: '',
-	  email: '',
-	  pageSize: 10,
-	  duedategt: '',
-	  duedatelt: '',
+      tableHeight: 450,
+      orderid: '',
+      orderidfilter: [],
+      websiteList: '',
+      ponumFilter: [],
+      invoicenum: '',
+      invoicenumFilter: [],
+      optionsPage:[10,20,30,50],
+      dategt: '',
+      datelt: '',
+      email: '',
+      pageSize: 10,
+      duedategt: '',
+      duedatelt: '',
       columns1:[
-		{
-			type: 'expand',
-			width: 50,
-			render: (h, params) => {
-				return h(expandRow, {
-					props: {
-						row: params.row
-					}
-				})
-			}
-		},
         {
-          title: 'Invoice Number',
+          type: 'expand',
+          align: 'center',
+          width: 30,
+          render: (h, params) => {
+            console.log("params.row  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",params.row)
+            return h(expandRow, {
+              props: {
+                row: params.row
+              }
+            })
+          }
+        },
+        {
+          title: 'Invoice #',
           align:  'center',
+          width: 200,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.invoiceId)
@@ -140,8 +162,19 @@ export default {
           }
         },
         {
-          title: 'P.O. Number',
+          title: 'Order Id',
           align:  'center',
+          width: 110,
+          render : (h , {row}) => {
+              return h('div', [
+                  h('span', row.orderId)
+              ]);
+          }
+        },
+        {
+          title: 'P.O. #',
+          align:  'center',
+          width: 190,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.PO_id)
@@ -153,13 +186,14 @@ export default {
           align:  'center',
           render : (h , {row}) => {
               return h('div', [
-                  h('span', row.total_amount)
+                  h('span', accounting.formatMoney(row.total_amount))
               ]);
           }
         },
         {
           title: 'Supplier',
           align:  'center',
+          width: 180,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.supplier_email)
@@ -169,18 +203,22 @@ export default {
         {
           title: 'Date',
           align:  'center',
+          width: 110,
           render : (h , {row}) => {
+            var date1 = moment(row.createdAt).format('DD-MMM-YYYY')
               return h('div', [
-                  h('span', row.createdAt)
+                  h('span', date1)
               ]);
           }
         },
         {
           title: 'Due Date',
           align:  'center',
+          width: 110,
           render : (h , {row}) => {
+            var date1 = moment(row.dueDate).format('DD-MMM-YYYY')
               return h('div', [
-                  h('span', row.dueDate)
+                  h('span', date1)
               ]);
           }
         },
@@ -217,105 +255,177 @@ export default {
                       style: {
                         height:'20px',
                         width:'20px',
-                        margin: '2px'
+                        margin: '5px'
                       },
                       on: {
                         click: () => {
-                          this.makepayment(row )
+                          this.makepayment(params)
                         }
                       }
                     },'')
-                  ]),          
+                  ]),
+                  h('Tooltip', {
+                    props: {
+                      placement: 'top',
+                      content: 'Mark as paid'
+                    },
+                    style:{
+                      cursor:'pointer'
+                    }
+                  },[
+                      h('Button', {
+                          props: {
+                            type: 'text',
+                            size: 'large',
+                            icon: 'ios-circle-outline'
+                          },
+                          style: {
+                            marginRight: '3px',
+                            padding: '0px',
+                            fontSize: '20px',
+                            color: 'green'
+                          },
+                          on: {
+                            click: () => {
+                              this.markAsPaid(true,params);
+                            }
+                          }
+                      }, '')
+                      // h('Checkbox', {
+                      //   props: {
+                      //     value: false
+                      //   },
+                      //   style: {
+                      //     margin: '5px'
+                      //   },
+                      //   on: {
+                      //     input: (val) => {
+                      //       console.log("val",val)
+                      //       this.markAsPaid(val,params);
+                      //     }
+                      //   }
+                      // },'')
+                    ])          
               ]);
             }else{
                return h('div', [
                 h('Tooltip', {
                   props: {
                     placement: 'top',
-                    content: 'Pay Now'
+                    content: 'Paid'
                   },
                   style:{
                     cursor:'pointer'
                   }
                 },[
-                    h('Checkbox', {
-                      props: {
-                        value: true
-                      },
-                      on: {
-                        input: (val) => {
-                          console.log("val",val)
-                        }
-                      }
-                    },'mark as a paid')
+                    h('Button', {
+				                props: {
+                          type: 'text',
+                          size: 'large',
+                          icon: 'checkmark-circled'
+                        },
+                        style: {
+                          marginRight: '3px',
+                          padding: '0px',
+                          fontSize: '20px',
+                          color: 'green'
+                        },
+                        on: {
+                          click: () => {
+                            // this.show(params)
+                          }
+				                }
+				            }, '')
                   ]),          
               ]);
             }
 					}
 				}
       ],
-	  list:[],
-	  data: [],
-	  len: 1
+      list:[],
+      data: [],
+      website: '',
+      len: 1
     }
   },
   methods:{
-	async reset(){
-		this.ponum = '';
-		this.dategt = '';
-		this.datelt = '';
-		this.duedatelt = '';
-		this.duedategt = '';
-		this.email = '';
-		this.invoicenum = '';
-		this.init();
-	},
-	async changepagesize(pageSize){
-		console.log("####################################",pageSize)
-		this.pageSize = pageSize
-		this.changePage(1)
-	},
-	async mockTableData1 (p,size) {
-		this.len = this.data.length
-		return this.data.slice((p - 1) * size, p * size);
-	},
-	async mockTableData2 (p,size) {
-		console.log("p-------------->",p)
-		console.log("p-------------->",size)
-		console.log("console.log------------>",this.filterArray)
-		this.len = this.filterArray.length
-		return this.filterArray.slice((p - 1) * size, p * size);
-	},
-	async changePage (p) {
-		var self = this
-		console.log("not inside",self.filterArray.length)
-		if(self.filterArray.length == 0){
-			console.log("inside",self.filterArray)
-			self.list = await self.mockTableData1(p,self.pageSize);
-		}else{
-			self.list = await self.mockTableData2(p,self.pageSize);
-		}
-	},
-	async changeData() {
-		this.filterArray = this.data
-        var self = this
+    async reset(){
+      this.ponum = '';
+      this.dategt = '';
+      this.datelt = '';
+      this.duedatelt = '';
+      this.duedategt = '';
+      this.email = '';
+      this.invoicenum = '';
+      this.listData(this.website);
+    },
+    async changepagesize(pageSize){
+      console.log("####################################",pageSize)
+      this.pageSize = pageSize
+      if(this.pageSize > 10){
+        this.tableHeight = 530
+      }else{
+        this.tableHeight = 450
+      }
+      this.changePage(1)
+    },
+    async mockTableData1 (p,size) {
+      this.len = this.data.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
+      return this.data.slice((p - 1) * size, p * size);
+    },
+    async mockTableData2 (p,size) {
+      console.log("p-------------->",p)
+      console.log("p-------------->",size)
+      console.log("console.log------------>",this.filterArray)
+      this.len = this.filterArray.length
+      if(this.len == 0){
+        console.log("data length 0--------------->",this.tableHeight)
+        this.tableHeight = 100
+      }else if(this.len < 10){
+        console.log("data length 10--------------->",this.tableHeight)
+        this.tableHeight = (this.len * 40) + 35
+      }else{
+        this.tableHeight = 450
+      }
+      return this.filterArray.slice((p - 1) * size, p * size);
+    },
+    async changePage (p) {
+      var self = this
+      console.log("not inside",self.filterArray.length)
+      if(self.filterArray.length == 0){
+        console.log("inside",self.filterArray)
+        self.list = await self.mockTableData1(p,self.pageSize);
+      }else{
+        self.list = await self.mockTableData2(p,self.pageSize);
+      }
+    },
+    async changeData() {
+		  this.filterArray = this.data
+      var self = this
 
         if(this.ponum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
             console.log("item",item)
             return item.PO_id === self.ponum;
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
-          this.list = await this.mockTableData2(1,self.pageSize)
+		      console.log("myarr",this.filterArray)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.invoicenum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
             return item.invoiceId === self.invoicenum;
-		  });
-		//    this.list = this.filterArray
-           this.list = await this.mockTableData2(1,self.pageSize)
+		      });
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.dategt != ''){
@@ -326,9 +436,8 @@ export default {
                 return item;
             }
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
-          this.list = await this.mockTableData2(1,self.pageSize)
+		      console.log("myarr",this.filterArray)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.datelt != ''){
@@ -339,12 +448,11 @@ export default {
               return item;
               }
           });
-		   console.log("myarr",this.filterArray)
-		//    this.list = this.filterArray
-        	this.list = await this.mockTableData2(1,self.pageSize)
-		}
+		      console.log("myarr",this.filterArray)
+        	// this.list = await this.mockTableData2(1,self.pageSize)
+		    }
 		
-		if(this.duedategt != ''){
+		    if(this.duedategt != ''){
           console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(moment(item.dueDate).diff(moment(self.duedategt).format(), 'days') >= 0){
@@ -352,9 +460,8 @@ export default {
                 return item;
             }
           });
-		  console.log("myarr",this.filterArray)
-		//   this.list = this.filterArray
-        	this.list = await this.mockTableData2(1,self.pageSize)
+		      console.log("myarr",this.filterArray)
+        	// this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.duedatelt != ''){
@@ -365,18 +472,17 @@ export default {
               return item;
               }
           });
-		   console.log("myarr",this.filterArray)
-		//    this.list = this.filterArray
-         this.list = await this.mockTableData2(1,self.pageSize)
-		}
-		
-		if(this.email != ''){
-			this.filterArray = _.filter(this.filterArray, function (item) {
-				return item.supplier_email === self.email
-			})
-		}
+          console.log("myarr",this.filterArray)
+          // this.list = await this.mockTableData2(1,self.pageSize)
+        }
+        
+        if(this.email != ''){
+          this.filterArray = _.filter(this.filterArray, function (item) {
+            return item.supplier_email === self.email
+          })
+        }
 
-
+        this.list = await this.mockTableData2(1,self.pageSize)
     },
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
@@ -384,35 +490,156 @@ export default {
     async init(){
       var self = this
       axios({
+          method: 'get',
+          url: config.default.subscriptionWebsitesapi,
+          headers: {
+            'Authorization': Cookies.get('auth_token'),
+            'subscriptionId': Cookies.get('subscriptionId')
+          } 
+      })
+      .then(function (response){
+          console.log("------------------------response",response);
+          if(response.data.data.length == 0){
+            console.log("in if condition")
+            self.$Notice.error({
+              desc: 'Websites not available for this subscription',
+              title: 'Error',
+              duration: 4.5
+            })
+          }else{    
+            var result = _.uniqBy(response.data.data,'websiteId')
+            console.log("result", result)
+            self.websiteList = result
+            console.log("self.websiteList", self.websiteList[0].websiteId)                    
+            self.website = self.websiteList[0].websiteId
+          }                       
+
+      }).catch(error => {
+          console.log("-------",error);
+          if(error.message == 'Network Error'){
+              self.$Notice.error({
+                  title: 'Error',
+                  desc: 'API Service unavailable',
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 0
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
+      });
+    },
+    makepayment(data){
+      console.log("data---------------------------->",data)
+      this.$router.push({
+        name :"POCheckout",
+        params: {
+          data:data.row
+        }
+      })
+    },
+    markAsPaid(value,params){
+      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRR",value,params)
+      let self = this
+      if(value){
+        axios({
+          method: 'patch',
+          url: config.default.serviceUrl +  'po-invoice/'+params.row.id,
+          data:{
+              "status":"paid"
+          }
+        })
+        .then(async function(res){
+          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
+          self.data[params.index] = res.data
+          self.list = await self.mockTableData1(1,self.pageSize)
+        })
+        .catch(function(error){
+          console.log("$$$$$$$$$$$$$$$$$",error)
+        })
+      }
+    },
+    listData (val) {
+      let self = this
+      let params1 = {
+        websiteId :val
+      }
+      axios({
         method:'get',
         url: crmpostapiurl + 'po-invoice',
+        params: params1,
         headers:{
         }
       })
       .then(async function(response) {
-		console.log('response-------------->',response)
-		self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
-		self.list = await self.mockTableData1(1,self.pageSize)
-		var Emailarr = [];
-        $('#selectEmail').children('option:not(:first)').remove();
-        self.data.forEach(item => {
-		  self.ponumFilter.push(item.PO_id)
-		  self.invoicenumFilter.push(item.invoiceId)
-		   Emailarr.push(item.supplier_email);
-		})
-		
-		Emailarr.forEach(item => {
-			var x = document.getElementById("selectEmail");
-			var option = document.createElement("option");
-			option.text = item;
-			console.log()
-			x.add(option);
-		})
-        console.log('response-------------->list',self.list)
-        
-      }).catch(function (error){
-        console.log("error------------------->",error)
+      console.log('response-------------->',response)
+      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
+      self.list = await self.mockTableData1(1,self.pageSize)
+      var Emailarr = [];
+      $('#selectEmail').children('option:not(:first)').remove();
+      self.data.forEach(item => {
+        self.ponumFilter.push(item.PO_id)
+        self.invoicenumFilter.push(item.invoiceId)
+        Emailarr.push(item.supplier_email);
+        self.orderidfilter.push(item.orderId)
       })
+      Emailarr = _.chain(Emailarr).sort().uniq().value();
+      self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
+      self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
+      self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
+      console.log("##########################",self.orderidfilter)
+      Emailarr.forEach(item => {
+        var x = document.getElementById("selectEmail");
+        var option = document.createElement("option");
+        option.text = item;
+        console.log()
+        x.add(option);
+      })
+          console.log('response-------------->list',self.list)
+          
+        }).catch(function (error){
+          console.log("error------------------->",error)
+        })
+      params: params1
+    },
+    async viewDetails(params,status){
+      // this.tableHeight = 250
+      // console.log("this.tableHeight------->",this.len)
+      // this.tableHeight = (this.len * 40) + 35
+      // if(this.tableHeight >= 450){
+      //     this.tableHeight = 450
+      // }
+      // if (!status) return 
+      // $('.ivu-table-cell-expand-expanded').click()
+
+      // if(status){
+      //     this.tableHeight = 530
+      //     console.log("###############################",this.tableHeight)
+      // }
     }
   },
   mounted(){
@@ -420,4 +647,10 @@ export default {
   }
 }
 </script>
+<style>
+.ivu-table-cell {
+      word-break: break-word;
+  }
+</style>
+
 

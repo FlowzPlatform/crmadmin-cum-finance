@@ -385,7 +385,7 @@
 					return true
 				}
         self.file = file
-        return false;       
+        return false;
       },
       async showdata() {
         var self = this;
