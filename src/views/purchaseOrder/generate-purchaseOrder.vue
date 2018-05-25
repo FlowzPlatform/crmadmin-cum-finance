@@ -409,6 +409,9 @@
                         self.loading = false
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
+                        self.$router.push({
+                            name :"Raised PO"
+                        })
                     })
                 }
                 else {

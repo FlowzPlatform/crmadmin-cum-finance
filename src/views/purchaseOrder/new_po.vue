@@ -1,74 +1,74 @@
 
 <template>
-<div>
-    <div style="text-align:center; font-size:10px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" >
-        <div  class="drpdwn" style="text-align:center">
-            <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: left;" @on-change="listData">
-                <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
-            </Select>
-             <h4 class="panel-title" style="text-align:right;display: inline-block;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
-        </div>
-        <div class="panel panel-default panel-group" id="accordion11" style="border: none;margin-top:1%;text-align: left;">
-              <!-- <div class="panel-heading">
-              </div> -->
-              <div class="panel-collapse collapse" id="collapseTwo">
-                  <div class="panel-body">
-                      <form>
-                          <div class="collapse-maindiv maindiv" >
-                              <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
-                                      <label>Order Id</label>
-                                  </div>
-                                  <div class="panel-collapse collapse" id="order">
-                                      <AutoComplete v-model="filterorderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
-                                      </AutoComplete>
-                                  </div>
-                              </div>
-                               <div class="panel panel-default">
-                                    <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                            data-target="#date"></span>
-                                            <label>Order Date</label>
-                                    </div>
-                                    <div class="form-group row panel-collapse collapse" id="date">
-                                            <div class="col-xs-3">
-                                                <label>From Date</label>
-                                                <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
-                                            </div>
-                                            <div class="col-xs-3">
-                                                <label>To Date</label>
-                                                <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 100%;"></DatePicker>
-                                            </div>
-                                    </div>
-                               </div>
+    <div>
+        <div style="text-align:center; font-size:10px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" >
+            <div  class="drpdwn" style="text-align:center">
+                <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: left;" @on-change="listData">
+                    <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+                </Select>
+                <h4 class="panel-title" style="text-align:right;display: inline-block;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+            </div>
+            <div class="panel panel-default panel-group" id="accordion11" style="border: none;margin-top:1%;text-align: left;">
+                <!-- <div class="panel-heading">
+                </div> -->
+                <div class="panel-collapse collapse" id="collapseTwo">
+                    <div class="panel-body">
+                        <form>
+                            <div class="collapse-maindiv maindiv" >
                                 <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
-                                      <label>Name</label>
-                                  </div>
-                                  <div class="panel-collapse collapse" id="Customer">
-                                      <select class="form-control"  v-model="cname" id="selectCustomer">
-                                        <option value="">All</option>
-                                      </select>
-                                  </div>
-                              </div>
-                                <div style="margin-top: 5px;">
-                                    <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
-                                    <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                                    <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
+                                        <label>Order Id</label>
+                                    </div>
+                                    <div class="panel-collapse collapse" id="order">
+                                        <AutoComplete v-model="filterorderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+                                        </AutoComplete>
+                                    </div>
                                 </div>
-                          </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
-    </div>
-    <Table size="small" stripe :height="tableHeight" @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
-    <div style="margin: 10px;overflow: hidden">
-        <Button type="primary" @click= "changeData()" style="float:left;">Generate PO</Button>
-        <div style="float: right;">
-            <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+                                <div class="panel panel-default">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
+                                                data-target="#date"></span>
+                                                <label>Order Date</label>
+                                        </div>
+                                        <div class="form-group row panel-collapse collapse" id="date">
+                                                <div class="col-xs-3">
+                                                    <label>From Date</label>
+                                                    <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <label>To Date</label>
+                                                    <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="datelt" style="width: 100%;"></DatePicker>
+                                                </div>
+                                        </div>
+                                </div>
+                                    <div class="panel panel-default">
+                                    <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
+                                        <label>Name</label>
+                                    </div>
+                                    <div class="panel-collapse collapse" id="Customer">
+                                        <select class="form-control"  v-model="cname" id="selectCustomer">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div style="margin-top: 5px;">
+                                        <Button type="warning" @click= "reset()" style= "float:right;margin-right: 5px;">Reset</Button>
+                                        <Button type="primary" @click= "changeData()" style= "float:right;    margin-right: 5px;">Apply</Button>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        <Table size="small" stripe @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
+        <div style="margin: 10px;overflow: hidden">
+            <Button type="primary" @click= "generatePO()" style="float:left;">Generate PO</Button>
+            <div style="float: right;">
+                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+            </div>
+        </div>
 
-</div>
+    </div>
 </template>
 
 <script>
@@ -390,7 +390,6 @@
             Onselectdata(selection){
                 this.selectedRows = selection
                 console.log("selection-------->",this.selectedRows)
-                // console.log("row----------------->",row)
             },
             async changeData() {
                 console.log("this.data1", this.data1)
@@ -443,6 +442,31 @@
                 
 
             },
+            async generatePO() {
+                let self = this;
+                this.loading = true;
+                for (let po in this.selectedRows) {
+                    console.log('-----------------------',this.selectedRows[po])
+                    this.selectedRows[po].isManual = true;
+                    this.selectedRows[po].subscription_id = Cookies.get("subscriptionId");
+                    if (this.selectedRows[po].products.length > 0) {
+                        await axios({
+                            method: 'post',
+                            url: config.default.serviceUrl + 'purchase-order',
+                            data: this.selectedRows[po]
+                        })
+                        .then(function(response) {
+                            console.log("purchase order post response------------------",response)
+                        })
+                    }
+                    else {
+
+                    }
+                }
+                self.loading = false;
+                self.$Message.success("Purchase Order Generated Successfully");
+                this.listData(this.website);
+            }
         },
         async mounted() {
             var self = this

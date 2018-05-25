@@ -3,7 +3,7 @@ import iView from 'iview';
 import Util from '../libs/util';
 import VueRouter from 'vue-router';
 import Cookies from 'js-cookie';
-import {routers, otherRouter, appRouter} from './router';
+import { routers, otherRouter, appRouter } from './router';
 
 Vue.use(VueRouter);
 
@@ -18,6 +18,10 @@ const RouterConfig = {
 export const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
+    if (to.query.route) {
+        Cookies.set('route', to.query.route);
+    }
+    console.log('Cookies.get("route")', Cookies.get('route'));
     iView.LoadingBar.start();
     Util.title(to.meta.title);
     if (!Cookies.get('auth_token') && to.name !== 'login' && to.name !== 'resetpassword' && to.name !== 'purchaseorderreceived') {
