@@ -1,5 +1,5 @@
 <template>
-	<Table stripe :columns="columns5" :data="data5"></Table>
+	<Table size="small" stripe :columns="columns5" :data="data5"></Table>
 </template>
 <script>
 	import config from '../../config/customConfig.js'

@@ -21,7 +21,7 @@
 							<div class="collapse-maindiv maindiv" >
 								<div class="panel panel-default">
 									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#po"></span>
-										<label>PO Number</label>
+										<label>PO #</label>
 									</div>
 									<div class="panel-collapse collapse" id="po">
 										<AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -30,10 +30,19 @@
 								</div>
 								<div class="panel panel-default">
 									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#invoice"></span>
-										<label>Invoice Number</label>
+										<label>Invoice #</label>
 									</div>
 									<div class="panel-collapse collapse" id="invoice">
 										<AutoComplete v-model="invoicenum" :data="invoicenumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
+										</AutoComplete>
+									</div>
+								</div>
+                <div class="panel panel-default">
+									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
+										<label>Order Id</label>
+									</div>
+									<div class="panel-collapse collapse" id="order">
+										<AutoComplete v-model="orderid" :data="orderidfilter" :filter-method="filterMethod" placeholder="input here" clearable>
 										</AutoComplete>
 									</div>
 								</div>
@@ -91,10 +100,10 @@
 		<!-- <Table size="small" @on-expand="viewDetails" :height="tableHeight" stripe :columns="columns1" :data="list"></Table> -->
 		<Table size="small" @on-expand="viewDetails" stripe :columns="columns1" :data="list"></Table>
 		<div style="margin: 10px;overflow: hidden">
-            <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
-            </div>
-        </div>
+      <div style="float: right;">
+          <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+      </div>
+    </div>
 
 	</div>
 </template>
@@ -107,7 +116,7 @@ import money from '../../images/Payment.png'
 import _ from 'lodash';
 import psl from 'psl';
 var crmpostapiurl = config.default.serviceUrl;
-import expandRow from './view-po_invoice.vue';
+import expandRow from './viewpo_invoice.vue';
 
 export default {
   data(){
@@ -115,6 +124,8 @@ export default {
       money,
       ponum: '',
       tableHeight: 450,
+      orderid: '',
+      orderidfilter: [],
       websiteList: '',
       ponumFilter: [],
       invoicenum: '',
@@ -129,8 +140,10 @@ export default {
       columns1:[
         {
           type: 'expand',
-          width: 50,
+          align: 'center',
+          width: 30,
           render: (h, params) => {
+            console.log("params.row  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",params.row)
             return h(expandRow, {
               props: {
                 row: params.row
@@ -139,8 +152,9 @@ export default {
           }
         },
         {
-          title: 'Invoice Number',
+          title: 'Invoice #',
           align:  'center',
+          width: 200,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.invoiceId)
@@ -148,8 +162,19 @@ export default {
           }
         },
         {
-          title: 'P.O. Number',
+          title: 'Order Id',
           align:  'center',
+          width: 110,
+          render : (h , {row}) => {
+              return h('div', [
+                  h('span', row.orderId)
+              ]);
+          }
+        },
+        {
+          title: 'P.O. #',
+          align:  'center',
+          width: 190,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.PO_id)
@@ -168,6 +193,7 @@ export default {
         {
           title: 'Supplier',
           align:  'center',
+          width: 180,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.supplier_email)
@@ -177,6 +203,7 @@ export default {
         {
           title: 'Date',
           align:  'center',
+          width: 110,
           render : (h , {row}) => {
             var date1 = moment(row.createdAt).format('DD-MMM-YYYY')
               return h('div', [
@@ -187,6 +214,7 @@ export default {
         {
           title: 'Due Date',
           align:  'center',
+          width: 110,
           render : (h , {row}) => {
             var date1 = moment(row.dueDate).format('DD-MMM-YYYY')
               return h('div', [
@@ -577,8 +605,13 @@ export default {
         self.ponumFilter.push(item.PO_id)
         self.invoicenumFilter.push(item.invoiceId)
         Emailarr.push(item.supplier_email);
+        self.orderidfilter.push(item.orderId)
       })
       Emailarr = _.chain(Emailarr).sort().uniq().value();
+      self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
+      self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
+      self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
+      console.log("##########################",self.orderidfilter)
       Emailarr.forEach(item => {
         var x = document.getElementById("selectEmail");
         var option = document.createElement("option");
@@ -595,18 +628,18 @@ export default {
     },
     async viewDetails(params,status){
       // this.tableHeight = 250
-      console.log("this.tableHeight------->",this.len)
-      this.tableHeight = (this.len * 40) + 35
-      if(this.tableHeight >= 450){
-          this.tableHeight = 450
-      }
-      if (!status) return 
-      $('.ivu-table-cell-expand-expanded').click()
+      // console.log("this.tableHeight------->",this.len)
+      // this.tableHeight = (this.len * 40) + 35
+      // if(this.tableHeight >= 450){
+      //     this.tableHeight = 450
+      // }
+      // if (!status) return 
+      // $('.ivu-table-cell-expand-expanded').click()
 
-      if(status){
-          this.tableHeight = 530
-          console.log("###############################",this.tableHeight)
-      }
+      // if(status){
+      //     this.tableHeight = 530
+      //     console.log("###############################",this.tableHeight)
+      // }
     }
   },
   mounted(){
@@ -614,4 +647,10 @@ export default {
   }
 }
 </script>
+<style>
+.ivu-table-cell {
+      word-break: break-word;
+  }
+</style>
+
 

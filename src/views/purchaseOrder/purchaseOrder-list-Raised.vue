@@ -16,7 +16,7 @@
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#poid"></span>
-                                      <label>P.O.Number</label>
+                                      <label>P.O.#</label>
                                   </div>
                                   <div class="panel-collapse collapse" id="poid">
                                      <AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -138,8 +138,9 @@
                         }
                     },
                     {
-                        title: 'P.O. Number',
+                        title: 'P.O. #',
                         align:  'center',
+                        width: 250,
                         render : (h , {row}) => {
                             return h('div', [
                                 h('span', row.PO_id)
@@ -149,6 +150,7 @@
                     {
                         title: 'P.O Generate Date',
                         align:  'center',
+                        width: 250,
                         render : (h , {row}) => {
                             var date1 = moment(row.PO_generate_date).format('DD-MMM-YYYY')
                             return h('div', [
