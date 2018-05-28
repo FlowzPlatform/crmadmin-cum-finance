@@ -359,7 +359,7 @@
 <script>
   import config from '@/config/customConfig.js'
   import axios from 'axios'
-  import jsPDF from 'jspdf'
+  // import jsPDF from 'jspdf'
   import money from '../../images/Payment.png'
   import eye from '../../images/Eye.png'
   import mail from '../../images/Mail.png'
