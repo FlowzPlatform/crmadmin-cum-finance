@@ -235,7 +235,8 @@
 					},
 				})
 				.then(async function(response) {
-						self.domainConfig=response.data.domain
+					let domaindata = response;
+						// self.domainConfig=response.data.domain
 					console.log(response)
 					if(response.data.domain == 'custom'){
 
@@ -250,10 +251,11 @@
 								Authorization : Cookies.get('auth_token')
 							}
 							})
-							.then(async function (response) {
+							.then(function (response) {
 								// console.log(response)
 								resp = response.data.data
-								self.customerData = await resp
+								self.customerData = resp
+								self.domainConfig=domaindata.data.domain
 								console.log("self.customerData", self.customerData)
 							})
 							.catch(function (error) {
@@ -303,8 +305,9 @@
 								}).then(function (response) {
 								
 									resp = response.data
-									// self.customerData = _.sortBy(resp[0].data,['Name']);
-									self.customerData = [{"ContactID":"ff457bf0-f34e-4110-806e-6bf0a4ce6c70","ContactStatus":"ACTIVE","Name":"Digitalize","EmailAddress":"digital@flowz.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"Nr. Railway Station","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"bc57877e-9d49-4ced-9e61-8a01272f6f8c","ContactStatus":"ACTIVE","Name":"Krishna","EmailAddress":"kdalsania@gmail.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"8004ac40-3d77-4371-98af-ebd1899b9f95","ContactStatus":"ACTIVE","Name":"Ekta","EmailAddress":"ektakaurc@officebrain.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"Waghodia","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":false}]
+									self.customerData = _.sortBy(resp[0].data,['Name']);
+									self.domainConfig = domaindata.data.domain;
+									// self.customerData = [{"ContactID":"ff457bf0-f34e-4110-806e-6bf0a4ce6c70","ContactStatus":"ACTIVE","Name":"Digitalize","EmailAddress":"digital@flowz.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"Nr. Railway Station","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"bc57877e-9d49-4ced-9e61-8a01272f6f8c","ContactStatus":"ACTIVE","Name":"Krishna","EmailAddress":"kdalsania@gmail.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"8004ac40-3d77-4371-98af-ebd1899b9f95","ContactStatus":"ACTIVE","Name":"Ekta","EmailAddress":"ektakaurc@officebrain.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"Waghodia","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":false}]
 									 
 								})
 								.catch(function (error) {
