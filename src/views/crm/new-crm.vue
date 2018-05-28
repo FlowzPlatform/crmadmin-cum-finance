@@ -54,7 +54,7 @@
 							        </Select>
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
-									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
+									<Select v-model="finaldata.cname" class="customer" style="width:100px;">
 										<div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
@@ -172,10 +172,19 @@
 		data() {
 			return {
 				uploadlist : false,
-				customerData:[],
+				customerData:[
+					{
+						'Name' : 'abc',
+						'id' : '123'
+					},
+					{
+						'Name' : 'pqr',
+						'id' : '456'
+					}
+				],
 				customCustomerUrl: '',
 				crmdata: [],
-				domainConfig: "",
+				domainConfig: "Xero",
 				loading: false,
 				file: '',
 				finaldata: {
