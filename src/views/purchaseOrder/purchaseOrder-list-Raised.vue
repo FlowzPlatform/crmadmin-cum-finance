@@ -133,6 +133,16 @@
                             return h(expandRow, {
                                 props: {
                                     row: params.row
+                                },
+                                on:{
+                                    mydataemit: (item) => {
+                                    let self = this
+                                        console.log("item-------->",item)
+                                        if(item.data != undefined){
+                                            self.listData(self.website)
+                                        }
+                                        // self.list[item.index] = item.data
+                                    }
                                 }
                             })
                         }
