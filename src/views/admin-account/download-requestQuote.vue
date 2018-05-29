@@ -139,7 +139,7 @@
                             <tbody>
                               <tr>
                                 <td style="border-left: solid 1px #e8e8e8;">
-                                  <img alt="" :src="getImgUrl(row.product_description.default_image)" style="height: 70px;width: 105px;margin-left: 15%;">
+                                  <img alt="" :src="getImgUrl(row.product_image_url , row.product_description.default_image)" style="height: 70px;width: 105px;margin-left: 15%;">
                                 </td>
                                 <td style="word-wrap:break-word;font-size:0;" align="left">
                                   <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{row.product_description.product_name}}</div>
@@ -386,19 +386,23 @@
 </div>
 </template>
 <script>
-
+    import config from '../../config/customConfig.js'
     export default {
         props: {
             row: Object
         },
         data() {
             return {
-              imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
+              imgurl: this.row.product_image_url
             }
         },
         methods: {
-          getImgUrl (url) {
-            return this.imgurl + url
+          getImgUrl (url, img) {
+            // if(this.imgurl == undefined) {
+            //   return config.default.productImageUrl + url        
+            // }
+            console.log(url+img)
+                return url + img
           },
         },
         mounted() {

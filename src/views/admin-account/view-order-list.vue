@@ -258,8 +258,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                                                <td><img :src="getImgUrl(item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                                                <td><img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
                                                 <td> {{item.product_description.sku}}</td>
                                                 <td> {{item.product_description.product_name}}</td>
                                                 <td> {{item.total_qty}}</td>
@@ -307,18 +306,19 @@
                                                                                             <div class="estimate-row">
                                                                                                 <span>Imprint Method: {{element.imprint_method_name}}</span>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div class="estimate-row" v-if="element.no_of_color">
-                                                                                                How many colours : <span>{{element.no_of_color}} Colour </span>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                        <div class="estimate-row" v-if="element.selected_colors">
-                                                                                            <div v-for="(item) in element.selected_colors">
-                                                                                                Colour : <span>{{item}}</span>
+                                                                                            <div class="estimate-row" v-if="element.no_of_color">
+                                                                                                    How many colours : <span>{{element.no_of_color}} Colour </span>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div v-else></div>
-                                                                                    </div> 
+                                                                                            <div v-else></div>
+                                                                                            <div class="estimate-row" v-if="element.selected_colors">
+                                                                                                <div v-for="(item) in element.selected_colors">
+                                                                                                    Colour : <span>{{item}}</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                        </div> 
+                                                                                    </span>
+                                                                                    <span v-else> N/A </span>
                                                                                 </td>
                                                                                 <td>
                                                                                     <span v-if="item.charges">{{Object.keys(item.charges)[0]}}-{{item.charges.setup_charge | upper}}</span>
@@ -349,7 +349,6 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-
                                                                                                 <td style="width:40%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
@@ -513,7 +512,7 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                imgurl: this.row.product_image_url,
                 invoice: {}
             }
         },
@@ -584,8 +583,12 @@
                 }
                 return accounting.formatMoney(sum)
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (url , img) {
+                // if(this.imgurl == undefined) {
+                //     return config.default.productImageUrl + url        
+                // }
+                console.log(url+img)
+                return url + img
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;

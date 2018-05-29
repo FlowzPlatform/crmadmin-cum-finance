@@ -29,7 +29,7 @@
                 <div class="row">
                   <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
                     <div class="detail-image">
-                      <img alt="" :src="getImgUrl(row.product_description.default_image)" id="order_product_image_0" class="img-responsive">
+                      <img alt="" :src="getImgUrl(row.product_image_url , row.product_description.default_image)" id="order_product_image_0" class="img-responsive">
                       </div>
                     </div>
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
@@ -294,6 +294,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import moment from 'moment';
+import config from '../../config/customConfig.js'
 const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
 import 'owl.carousel/dist/assets/owl.carousel.css';
@@ -318,11 +319,16 @@ export default {
     requestUser: '',
     requestUserEmail: '',
     messageData: []
+
     }
   },
   methods: {
-    getImgUrl (url) {
-      return this.imgurl + url
+    getImgUrl (url, img) {
+      // if(this.imgurl == undefined) {
+      //   return config.default.productImageUrl + url        
+      // }
+      console.log(url+img)
+      return url + img
     },
     accounting(item) {
       return accounting.formatMoney(item)

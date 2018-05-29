@@ -50,7 +50,7 @@
                                                         <tr>
                                                             <td align="left" valign="middle" width="10"></td>
                                                             <td align="left" valign="top" style="width: 50%;">ORDER ID :
-                                                                <br>{{row.id}}</td>
+                                                                <br>{{row.order_id}}</td>
                                                             <td align="left" valign="top">ORDER TYPE :
                                                                 <br>{{item.order_type | upper}}</td>
                                                             <td align="left" valign="top">SHIPPING :
@@ -77,7 +77,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td align="center" valign="" style="height: 70px;width: 105px">
-                                                                    <img :src="getImgUrl(item.product_description.default_image)" style="max-width:75px;max-height:75px"/>
+                                                                    <img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/>
                                                                 </td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.sku}}</td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.product_name}}</td>
@@ -351,6 +351,7 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     import jQuery from 'jquery';
     import owlCarousel from 'owl.carousel';
+    import config from '../../config/customConfig.js'
     const accounting = require('accounting-js');
     export default {
         props: {
@@ -358,15 +359,19 @@
         },
         data() {
             return {
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
+                imgurl: this.row.product_image_url
             }
         },
         methods: {
             getMulti(a, b) {
                 return accounting.formatMoney(a * b) ;
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (url, img) {
+                // if(this.imgurl == undefined) {
+                //     return config.default.productImageUrl + url        
+                // }
+                console.log(url+img)
+                return url + img
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;
