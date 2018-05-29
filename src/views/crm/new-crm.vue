@@ -54,9 +54,8 @@
 							        </Select>
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
-									{{customerData}}
 									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
-										<Option v-for="item in customerData" :value="item.Name" :key="item.Name">{{ item.Name }}</Option>
+										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										<!-- <div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
@@ -238,7 +237,7 @@
 				})
 				.then(async function(response) {
 					self.domainConfig=response.data.domain
-					console.log(response)
+					// console.log(response)
 					if(response.data.domain == 'custom'){
 
 							self.customCustomerUrl = response.data.customer_url;
@@ -311,13 +310,13 @@
 							for (let i=0; i<contacts.data.length; i++) {
                                 if (contacts.data[i].DisplayName) {
                                     cnt = {
-                                        Id : contacts.data[i].Id,
+                                        id : contacts.data[i].Id,
                                         Name : contacts.data[i].DisplayName
                                     }
                                 }
                                 else {
                                     cnt = {
-                                        Id : contacts.data[i].Name,
+                                        id : contacts.data[i].ContactID,
                                         Name : contacts.data[i].Name
                                     }
                                 }

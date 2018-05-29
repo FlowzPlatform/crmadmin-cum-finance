@@ -229,7 +229,7 @@ export const otherRouter = {
         component: resolve => {
             require(['@/views/purchaseOrder/checkout.vue'], resolve);
         }
-    },
+    }
         // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}
     ]
 };
@@ -392,7 +392,7 @@ export const appRouter = [
         children: [{
             path: '/purchaseOrder-list-Raised',
             title: 'Raised PO',
-            icon: 'ios-compose',
+            icon: 'ios-list-outline',
             name: 'Raised PO',
             component: resolve => {
                 require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);
@@ -403,7 +403,6 @@ export const appRouter = [
             title: 'PO Invoice',
             name: 'PO Invoice',
             icon: 'ios-paper-outline',
-            name: 'PO Invoice',
             component: resolve => {
                 require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
             }
