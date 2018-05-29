@@ -294,7 +294,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import moment from 'moment';
-import config from '../../config/customConfig.js'
 const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
 import 'owl.carousel/dist/assets/owl.carousel.css';
