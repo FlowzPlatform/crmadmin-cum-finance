@@ -54,8 +54,10 @@
 							        </Select>
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
-									<Select v-model="finaldata.cname" class="customer" style="width:100px;">
-										<div v-if="domainConfig=='Xero'">
+									{{customerData}}
+									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
+										<Option v-for="item in customerData" :value="item.Name" :key="item.Name">{{ item.Name }}</Option>
+										<!-- <div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='custom'">
@@ -63,7 +65,7 @@
 										</div>
 										<div v-if="domainConfig=='QB'">
 											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
-										</div>
+										</div>-->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
 									 </div> -->
@@ -172,19 +174,10 @@
 		data() {
 			return {
 				uploadlist : false,
-				customerData:[
-					{
-						'Name' : 'abc',
-						'id' : '123'
-					},
-					{
-						'Name' : 'pqr',
-						'id' : '456'
-					}
-				],
+				customerData:[],
 				customCustomerUrl: '',
 				crmdata: [],
-				domainConfig: "Xero",
+				domainConfig: "",
 				loading: false,
 				file: '',
 				finaldata: {
@@ -244,8 +237,7 @@
 					},
 				})
 				.then(async function(response) {
-					let domaindata = response;
-						// self.domainConfig=response.data.domain
+					self.domainConfig=response.data.domain
 					console.log(response)
 					if(response.data.domain == 'custom'){
 
@@ -259,98 +251,112 @@
 							headers:{
 								Authorization : Cookies.get('auth_token')
 							}
-							})
-							.then(function (response) {
-								// console.log(response)
-								resp = response.data.data
-								self.customerData = resp
-								self.domainConfig=domaindata.data.domain
-								console.log("self.customerData", self.customerData)
-							})
-							.catch(function (error) {
-								console.log(error.response)
-								if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-									let location = psl.parse(window.location.hostname)
-									location = location.domain === null ? location.input : location.domain
-									
-									Cookies.remove('auth_token' ,{domain: location}) 
-									Cookies.remove('subscriptionId' ,{domain: location}) 
-									self.$store.commit('logout', self);
-									
-									self.$router.push({
-										name: 'login'
-									});
-									self.$Notice.error({
-										title: error.response.data.name,
-										desc: error.response.data.message,
-										duration: 10
-									})
-								}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-									self.$Notice.error({
-										title: error.response.statusText,
-										desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-										duration: 4.5
-									})
-								}else {
-									self.$Notice.error({
-										title: error.response.data.name,
-										desc: error.response.data.message,
-										duration: 10
-									})
-								}
-							// self.$Message.error(error.response.data.data[0].message)
-							});
+						})
+						.then(function (response) {
+							// console.log("customcustomer get response",response)
+							resp = response.data.data
+							self.customerData = resp
+							console.log("self.customerData", self.customerData)
+						})
+						.catch(function (error) {
+							console.log(error.response)
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+						// self.$Message.error(error.response.data.data[0].message)
+						});
 
 					}else{
-							await axios({
-									method: 'get',
-									url: config.default.serviceUrl + 'contacts',
-									params: {
-									settingId : settingId
-									},
-									headers:{
-										Authorization : Cookies.get('auth_token')
-									},
-								}).then(function (response) {
+						await axios({
+							method: 'get',
+							url: config.default.serviceUrl + 'contacts',
+							params: {
+								settingId : settingId
+							},
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							},
+						}).then(function (response) {
+							console.log("contact response",response);
+							// resp = response.data
+							// self.customerData = _.sortBy(resp[0].data,['Name']);
+							let cnt;
+							let contacts = response.data[0];
+							for (let i=0; i<contacts.data.length; i++) {
+                                if (contacts.data[i].DisplayName) {
+                                    cnt = {
+                                        Id : contacts.data[i].Id,
+                                        Name : contacts.data[i].DisplayName
+                                    }
+                                }
+                                else {
+                                    cnt = {
+                                        Id : contacts.data[i].Name,
+                                        Name : contacts.data[i].Name
+                                    }
+                                }
+                                self.customerData.push(cnt)
+                            }
 								
-									resp = response.data
-									self.customerData = _.sortBy(resp[0].data,['Name']);
-									self.domainConfig = domaindata.data.domain;
-									// self.customerData = [{"ContactID":"ff457bf0-f34e-4110-806e-6bf0a4ce6c70","ContactStatus":"ACTIVE","Name":"Digitalize","EmailAddress":"digital@flowz.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"Nr. Railway Station","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"bc57877e-9d49-4ced-9e61-8a01272f6f8c","ContactStatus":"ACTIVE","Name":"Krishna","EmailAddress":"kdalsania@gmail.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"601-607, Lalita Tower","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":true},{"ContactID":"8004ac40-3d77-4371-98af-ebd1899b9f95","ContactStatus":"ACTIVE","Name":"Ekta","EmailAddress":"ektakaurc@officebrain.com","BankAccountDetails":"","Addresses":[{"AddressLine1":"Waghodia","AddressLine2":"","City":"Vadodara","Region":"","PostalCode":"390000","Country":"India","AddressType":"STREET"},{"City":"","Region":"","PostalCode":"","Country":"","AddressType":"POBOX"}],"Phones":[{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DDI"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"DEFAULT"},{"PhoneNumber":"","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"FAX"},{"PhoneNumber":"1234567890","PhoneAreaCode":"","PhoneCountryCode":"","PhoneType":"MOBILE"}],"IsSupplier":false,"IsCustomer":false}]
-									 
-								})
-								.catch(function (error) {
-									console.log(error);
-									if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-										let location = psl.parse(window.location.hostname)
-										location = location.domain === null ? location.input : location.domain
-										
-										Cookies.remove('auth_token' ,{domain: location}) 
-										Cookies.remove('subscriptionId' ,{domain: location}) 
-										self.$store.commit('logout', self);
-										
-										self.$router.push({
-											name: 'login'
-										});
-										self.$Notice.error({
-											title: error.response.data.name,
-											desc: error.response.data.message,
-											duration: 10
-										})
-									}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-										self.$Notice.error({
-											title: error.response.statusText,
-											desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-											duration: 4.5
-										})
-									}else {
-										self.$Notice.error({
-											title: error.response.data.name,
-											desc: error.response.data.message,
-											duration: 10
-										})
-									}
+						})
+						.catch(function (error) {
+							console.log(error);
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
 								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+						});
 					}
 				});
 				

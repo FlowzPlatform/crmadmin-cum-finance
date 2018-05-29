@@ -286,7 +286,7 @@ export const appRouter = [
     {
         path: '/relationship',
         icon: 'ios-people',
-        title: 'RELATIONSHIP',
+        title: 'SALES FUNNEL',
         name: 'RELATIONSHIP',
         component: Main,
         children: [{
