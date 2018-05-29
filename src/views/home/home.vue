@@ -215,7 +215,7 @@
                             value () {
                                 const end = new Date();
                                 const start = new Date();
-                                var s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                let s = start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
                                 this.daterange1 = s
                                 return [start, end];
                             }
@@ -271,7 +271,7 @@
             async ChartFun(chart,date1,date2,settingId,settingName,contact) {
                 this.$Loading.start()
                 let self = this;
-                var chartdata;
+                let chartdata;
                 await axios.get(serviceUrl+"invoice", {
                     params: {
                         chart : chart,
@@ -288,9 +288,37 @@
                     console.log("chart data",chartdata)
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    console.log("error",error.response);
                     self.$Loading.error()
-
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        // self.$Notice.error({
+                        //     title: error.response.data.name,
+                        //     desc: error.response.data.message,
+                        //     duration: 10
+                        // })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
                         
                     //     Cookies.remove('auth_token') 
                     //     self.$Message.error('Auth Error!');
@@ -304,11 +332,11 @@
             // Bar chart
             async barChartFun(date1,date2,settingId,settingName,contact) {
                 // based on prepared DOM, initialize echarts instance
-                var barchart = echarts.init(document.getElementById('barChart'))
+                let barchart = echarts.init(document.getElementById('barChart'))
                 barchart.showLoading();
-                var chart_data = await this.ChartFun("bar",date1,date2,settingId,settingName,contact)
+                let chart_data = await this.ChartFun("bar",date1,date2,settingId,settingName,contact)
                 // specify chart configuration item and data
-                var option = {
+                let option = {
                     tooltip: {
                         formatter: function (params) {
                             return accounting.formatMoney(params.value, {
@@ -336,7 +364,7 @@
                 })
 
                 chart_data.forEach(function(invoice) {
-                    var series = {
+                    let series = {
                         name: invoice.name,
                         type: 'bar',
                         data: []
@@ -355,7 +383,7 @@
             },
             //Pie Chart
             async PieChartFun(date1,date2,settingId,settingName,contact) {
-                var chartdata;
+                let chartdata;
                 let self = this;
                 await axios.get(serviceUrl+"invoice", {
                     params: {
@@ -379,6 +407,34 @@
                             title: "QB : Credential Expired",
                             desc: "Token is expired for " + settingName
                         });
+                    } else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        // self.$Notice.error({
+                        //     title: error.response.data.name,
+                        //     desc: error.response.data.message,
+                        //     duration: 10
+                        // })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
                     }
                 });
                 return chartdata;
@@ -386,11 +442,11 @@
             async pieChartFun(date1,date2,settingId,settingName,contact) {
                 // based on prepared DOM, initialize echarts instance
                 // document.getElementById('chart2_loading').style = "display:block"            
-                var piechart = echarts.init(document.getElementById('pieChart'));
+                let piechart = echarts.init(document.getElementById('pieChart'));
                 piechart.showLoading();
-                var chart_data = await this.PieChartFun(date1,date2,settingId,settingName,contact);
+                let chart_data = await this.PieChartFun(date1,date2,settingId,settingName,contact);
                 // specify chart configuration item and data
-                var option = {
+                let option = {
                 tooltip: {
                     formatter: function (params) {
                         return accounting.formatMoney(params.value, {
@@ -426,11 +482,11 @@
             },
             async lineChartFun(date1,date2,settingId,settingName,contact) {
                 // based on prepared DOM, initialize echarts instance
-                var linechart = echarts.init(document.getElementById('lineChart'));
+                let linechart = echarts.init(document.getElementById('lineChart'));
                 linechart.showLoading();
-                var chart_data = await this.ChartFun("line",date1,date2,settingId,settingName,contact);
+                let chart_data = await this.ChartFun("line",date1,date2,settingId,settingName,contact);
                 // specify chart configuration item and data
-                var option = {
+                let option = {
                 tooltip: {
                     axisPointer: {
                         type: 'cross'
@@ -465,7 +521,7 @@
                 option.xAxis[0].data.push(invoice_data.label);
                 })
                 chart_data.forEach(function(invoice) {
-                var series = {
+                let series = {
                     name: invoice.name,
                     type: 'line',
                     smooth: true,
@@ -484,7 +540,8 @@
             },
             //Cashflow
             async waterfall(date1,date2,settingId,settingName,contact) {
-                var chartdata;
+                let chartdata;
+                let self = this
                 await axios.get(serviceUrl+"invoice", {
                     params: {
                         chart : 'cashflow',
@@ -501,27 +558,56 @@
                 })
                 .catch(function (error) {
                     console.log("error",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        // self.$Notice.error({
+                        //     title: error.response.data.name,
+                        //     desc: error.response.data.message,
+                        //     duration: 10
+                        // })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
                 });
                 return chartdata;
             },
             async waterfallFun(date1,date2,settingId,settingName,contact) {
                 // based on prepared DOM, initialize echarts instance
-                var waterfallChart = echarts.init(document.getElementById('waterfall'));
+                let waterfallChart = echarts.init(document.getElementById('waterfall'));
                 waterfallChart.showLoading();
-                var chart_data = await this.waterfall(date1,date2,settingId,settingName,contact);
+                let chart_data = await this.waterfall(date1,date2,settingId,settingName,contact);
 
-                var data1 = [];
-                var data2 = [];
-                var data3 = [];
+                let data1 = [];
+                let data2 = [];
+                let data3 = [];
                 // specify chart configuration item and data
-                var option = {
+                let option = {
                 tooltip: {
                     trigger: 'axis',
                     axisPointer : {
                         type : 'shadow'
                     },
                     formatter: function (params) {
-                        var tar;
+                        let tar;
                         if (params[1].value != '-') {
                             tar = params[1];
                         }
@@ -587,15 +673,15 @@
                     }
                 ]
                 };
-                var data_arr = [];
+                let data_arr = [];
                 chart_data.forEach(function(chart_data1) {
                     option.xAxis[0].data.push(chart_data1.label);
                     data_arr.push(chart_data1.y);
                 })
                 // console.log("waterfall data_arr",data_arr);
 
-                for (var i = 0; i<data_arr.length; i++ ) {
-                    var diff = data_arr[i] - data_arr[i-1];
+                for (let i = 0; i<data_arr.length; i++ ) {
+                    let diff = data_arr[i] - data_arr[i-1];
                     diff = accounting.formatMoney(diff, {
                         symbol : '',
                         precision : 2,
@@ -641,7 +727,8 @@
             },
 
             async totalAmt(date1,date2,settingId,settingName,contact) {
-                var statsData;
+                let statsData;
+                let self = this
                 await axios.get(serviceUrl+"invoice", {
                     params: {
                         stats : true,
@@ -658,6 +745,35 @@
                 })
                 .catch(function (error) {
                     console.log("error",error);
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        // self.$Notice.error({
+                        //     title: error.response.data.name,
+                        //     desc: error.response.data.message,
+                        //     duration: 10
+                        // })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 4.5
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
                 });
                 this.count.total = statsData[0].value
                 this.count.paid = statsData[1].value
@@ -705,7 +821,7 @@
                                 Name : 'All'
                             };
                             self.contactData.push(cnt)
-                            for (var i=0; i<contacts.data.length; i++) { 
+                            for (let i=0; i<contacts.data.length; i++) { 
                                 cnt = {
                                     Id : contacts.data[i].Name,
                                     Name : contacts.data[i].Name
@@ -717,7 +833,36 @@
                         })
                         .catch(function (error) {
                             console.log(error.response)
-                            self.$Message.error(error.response.data.data[0].message)
+                            // self.$Message.error(error.response.data.data[0].message)
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                // self.$Notice.error({
+                                //     title: error.response.data.name,
+                                //     desc: error.response.data.message,
+                                //     duration: 10
+                                // })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         });
 
                     }else{
@@ -735,7 +880,7 @@
                                 Name : 'All'
                             };
                             self.contactData.push(cnt)
-                            for (var i=0; i<contacts.data.length; i++) {
+                            for (let i=0; i<contacts.data.length; i++) {
                                 if (contacts.data[i].DisplayName) {
                                     cnt = {
                                         Id : contacts.data[i].Id,
@@ -754,13 +899,42 @@
                         })
                         .catch(function(error) {
                             console.log("Inside getcontact error",error)
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                // self.$Notice.error({
+                                //     title: error.response.data.name,
+                                //     desc: error.response.data.message,
+                                //     duration: 10
+                                // })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                         })
                     }
                 });
             },
 
             async init() {
-                
+                let self = this
                 if(Cookies.get('auth_token')){
                     axios({
                         method: 'get',
@@ -772,13 +946,42 @@
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         Cookies.set('user',  result.data.data.email  , {domain: location}); 
+                    }).catch(function (error){
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            // self.$Notice.error({
+                            //     title: error.response.data.name,
+                            //     desc: error.response.data.message,
+                            //     duration: 10
+                            // })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 4.5
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                     })
                 }
                 
-                let self = this;
                 this.name = await Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
-                var resp;
+                let resp;
                 await axios.get(serviceUrl+"settings", {
                     params: {
                         isActive : true,
@@ -827,9 +1030,14 @@
                     
                 })
                 .catch(function (error) {
-                    
                     self.disabled = false;
-                    if(error.response.status == 401){
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         
@@ -839,6 +1047,11 @@
                         self.$router.push({
                             name: 'login'
                         });
+                        // self.$Notice.error({
+                        //     title: error.response.data.name,
+                        //     desc: error.response.data.message,
+                        //     duration: 10
+                        // })
                     }
                     else if(error.response.status == 403){
                         self.$Notice.error({
@@ -846,6 +1059,12 @@
                             title: error.response.statusText,
                             desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
                         });
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
                     }
                     
                 });
@@ -903,12 +1122,3 @@
 
     };
 </script>
-
-<style>
-    .ivu-card-body {
-        padding: 3px;
-    }
-    .demo-spin-icon-load{
-        animation: ani-demo-spin 1s linear infinite;
-    }
-</style>

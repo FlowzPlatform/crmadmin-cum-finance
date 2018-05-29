@@ -7,7 +7,7 @@
 			<div class="row">
 				<div class="col-md-12" style="margin-top: 20px;">
 					<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-						<FormItem label="Configuration Name">
+						<FormItem label="Configuration Name" prop="configuration">
 							<Select v-model="formValidate.configuration" style="width:100%;text-align:left">
 								<!--<Option  value='all'>All</Option>-->
 								<Option  v-for="item in configs" :value="item.id" :key="item">{{ item.configName }} ({{item.domain}})</Option>
@@ -49,6 +49,7 @@
 				</div>
 			</div>
 		</div>
+		<settingMenu></settingMenu>
 	</div>
 </template>
 
@@ -60,12 +61,23 @@
 	import _ from 'lodash'
 	import Vue from 'vue'
 	import axios from "axios"
+	import settingMenu from './settingMenu.vue';
 	export default {
+		components : {
+			settingMenu
+		},
 		data () {
+			const validateBlank = (rule, value, callback) => {
+				if (value.trim() === '') {
+					callback(new Error('Please enter valid key'));
+				} else {
+					callback();
+				}
+			};
 			return {
 				loading: false,
 				formValidate:{
-					configuration:'all',
+					configuration:'',
 					gateway:'',
 					Secret_Key: '',
 					Transaction_Key: '',
@@ -77,23 +89,26 @@
 				},
 				configs: [],
 				ruleValidate: {
+					configuration: [
+						{ required: true, message: 'Please select Configuration Name', trigger: 'blur' }	
+					],
 					gateway: [
 						{ required: true, message: 'Please select gateway', trigger: 'blur' }
 					],
 					Secret_Key: [
-						{ required: true, message: 'The Secret_Key cannot be empty', trigger: 'blur' }
+						{ required: true, message: 'The Secret_Key cannot be empty', validator: validateBlank, trigger: 'blur' }
 					],
 					Transaction_Key: [
-						{ required: true, message: 'The Transaction_Key cannot be empty', trigger: 'blur' }
+						{ required: true, message: 'The Transaction_Key cannot be empty', validator: validateBlank, trigger: 'blur' }
 					],
 					Signature_Key: [
-						{ required: true, message: 'The Signature_Key cannot be empty', trigger: 'blur' }
+						{ required: true, message: 'The Signature_Key cannot be empty', validator: validateBlank, trigger: 'blur' }
 					],
 					Client_Id: [
-						{ required: true, message: 'The Client_Id cannot be empty', trigger: 'blur' }
+						{ required: true, message: 'The Client_Id cannot be empty', validator: validateBlank, trigger: 'blur' }
 					],
 					Secret: [
-						{ required: true, message: 'The Secret cannot be empty', trigger: 'blur' }
+						{ required: true, message: 'The Secret cannot be empty', validator: validateBlank, trigger: 'blur' }
 					],
 					// x_api_login: [
 					// 	{ required: true, message: 'The x_api_login cannot be empty', trigger: 'blur' }
@@ -118,7 +133,7 @@
 					if (valid) {
 						self.loading = true;
 						console.log('formValidate----------------------------->',this.formValidate)
-						if(this.formValidate.configuration === 'all'){ 
+						if(this.formValidate.configuration === 'all'){
 							this.$Modal.confirm({
 								title: '',
 								content: '<h4>This Payment Credentials will be configured for all of your Accounts</h4>',
@@ -134,16 +149,21 @@
 										delete patchData.Signature_Key
 										delete patchData.Client_Id
 										delete patchData.Secret
+										patchData.Secret_Key = patchData.Secret_Key.trim()
 									}
 									if (this.formValidate.gateway == 'auth') {
 										delete patchData.Secret_Key
 										delete patchData.Client_Id
 										delete patchData.Secret
+										patchData.Transaction_Key = patchData.Transaction_Key.trim()
+										patchData.Signature_Key = patchData.Signature_Key.trim()
 									}
 									if (this.formValidate.gateway == 'paypal') {
 										delete patchData.Secret_Key
 										delete patchData.Transaction_Key
 										delete patchData.Signature_Key
+										patchData.Client_Id = patchData.Client_Id.trim()
+										patchData.Secret = patchData.Secret.trim()
 									}
 									this.configs.forEach(item => {
 										let gateway = this.formValidate.gateway;
@@ -175,6 +195,34 @@
 										.catch(function (error) {
 											self.loading = false;
 											console.log('error',error)
+											if(error.response.status == 401){
+												let location = psl.parse(window.location.hostname)
+												location = location.domain === null ? location.input : location.domain
+												
+												Cookies.remove('auth_token' ,{domain: location}) 
+												self.$store.commit('logout', self);
+												
+												self.$router.push({
+													name: 'login'
+												});
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}else if(error.response.status == 403){
+												self.$Notice.error({
+												duration:0, 
+												title: error.response.statusText,
+												desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+												});
+											}else {
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}
 										})
 									})
 								},
@@ -237,16 +285,21 @@
 										delete patchData.Signature_Key
 										delete patchData.Client_Id
 										delete patchData.Secret
+										patchData.Secret_Key = patchData.Secret_Key.trim()
 									}
 									if (this.formValidate.gateway == 'auth') {
 										delete patchData.Secret_Key
 										delete patchData.Client_Id
 										delete patchData.Secret
+										patchData.Transaction_Key = patchData.Transaction_Key.trim()
+										patchData.Signature_Key = patchData.Signature_Key.trim()
 									}
 									if (this.formValidate.gateway == 'paypal') {
 										delete patchData.Secret_Key
 										delete patchData.Transaction_Key
 										delete patchData.Signature_Key
+										patchData.Client_Id = patchData.Client_Id.trim()
+										patchData.Secret = patchData.Secret.trim()
 									}
 									let gateway = this.formValidate.gateway;
 									console.log("gateway",gateway);
@@ -280,6 +333,34 @@
 											.catch(function (error) {
 												self.loading = false;
 												console.log('error',error)
+												if(error.response.status == 401){
+													let location = psl.parse(window.location.hostname)
+													location = location.domain === null ? location.input : location.domain
+													
+													Cookies.remove('auth_token' ,{domain: location}) 
+													self.$store.commit('logout', self);
+													
+													self.$router.push({
+														name: 'login'
+													});
+													self.$Notice.error({
+														title: error.response.data.name,
+														desc: error.response.data.message,
+														duration: 10
+													})
+												}else if(error.response.status == 403){
+													self.$Notice.error({
+													duration:0, 
+													title: error.response.statusText,
+													desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+													});
+												}else {
+													self.$Notice.error({
+														title: error.response.data.name,
+														desc: error.response.data.message,
+														duration: 10
+													})
+												}
 											})
 										})
 									}
@@ -305,6 +386,34 @@
 										.catch(function (error) {
 											self.loading = false;
 											console.log('error',error)
+											if(error.response.status == 401){
+												let location = psl.parse(window.location.hostname)
+												location = location.domain === null ? location.input : location.domain
+												
+												Cookies.remove('auth_token' ,{domain: location}) 
+												self.$store.commit('logout', self);
+												
+												self.$router.push({
+													name: 'login'
+												});
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}else if(error.response.status == 403){
+												self.$Notice.error({
+												duration:0, 
+												title: error.response.statusText,
+												desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+												});
+											}else {
+												self.$Notice.error({
+													title: error.response.data.name,
+													desc: error.response.data.message,
+													duration: 10
+												})
+											}
 										})
 									}
 								},
@@ -321,7 +430,7 @@
 			},
 			handleReset (name) {
 				this.loading = false;
-				this.formValidate.configuration = 'all'
+				this.formValidate.configuration = ''
 				this.formValidate.gateway = '',
 				this.formValidate.Secret_Key = '',
 				this.formValidate.Transaction_Key = '',
@@ -366,23 +475,40 @@
 				})
 				.catch(function (error) {
 					console.log("error",error.response);
-					if(error.response.status == 401){
-						let location = psl.parse(window.location.hostname)
-						location = location.domain === null ? location.input : location.domain
-						
-						Cookies.remove('auth_token' ,{domain: location}) 
-						this.$store.commit('logout', this);
-						
-						this.$router.push({
-							name: 'login'
-						});
-					}else if(error.response.status == 403){
-						self.$Notice.error(
-						{duration:0, 
-						title: error.response.statusText,
-						desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-						);
-					}
+					if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                          }else if(error.response.status == 403){
+                            self.$Notice.error({
+                              duration:0, 
+                              title: error.response.statusText,
+                              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                              });
+                          }else {
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                          }
 				});
 			
 			},

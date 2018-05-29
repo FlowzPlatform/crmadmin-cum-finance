@@ -1,8 +1,8 @@
 <template>
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Open Sans',Helvetica,Arial,sans-serif;font-size:10px">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:10px">
         <tr>
             <td align="center" valign="top">
-                <table border="0" cellspacing="0" cellpadding="0" width="100%" style="background-color:#f0f0f0;font-family: 'Open Sans',Helvetica,Arial,sans-serif">
+                <table border="0" cellspacing="0" cellpadding="0" width="100%" style="background-color:#f0f0f0;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif">
                     <tr>
                         <td align="left" valign="top" width="20"></td>
                         <td align="left" valign="top">
@@ -169,108 +169,119 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td align="left" valign="top" style="background: #FFF;color: #404040; font-size:10px;border-bottom:1px dotted #ddd;border-top:1px solid #ddd;border-right:1px solid #ddd;border-left:1px solid #ddd;">
-                                                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                            <tr v-for="(i, j) in item.shipping_method.shipping_detail">
+                                                <td>
+                                                    <table width="100%">
                                                         <tr>
-                                                            <td align="left" valign="middle" height="5" style="background: #868686"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td rowspan="3" align="left" valign="middle" width="35" style="background:#868686;text-align: center;color: #FFF ">1</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="left" valign="middle" width="10"></td>
-                                                            <td align="left" valign="top" style="background: #FFF;font-size: 12px;font-weight: 600">PRODUCT QUANTITY</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="left" valign="middle" height="5"></td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="left" valign="top" style="color:#404040;font-size:10px;border-left:1px solid #ddd;border-right:1px solid #ddd;background-color:#fff;text-align: center;width:100%">
-                                                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
-                                                        <tr>
-                                                            <td width="20"></td>
-                                                            <td align="left" valign="top" style="text-align: center;line-height: 25px">
-                                                                <table border="0" cellspacing="0" cellpadding="" style="width:50%">
+                                                            <td align="left" valign="top" style="background: #FFF;color: #404040; font-size:10px;border-bottom:1px dotted #ddd;border-top:1px solid #ddd;border-right:1px solid #ddd;border-left:1px solid #ddd;">
+                                                                <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                                                     <tr>
-                                                                        <td valign="top" height="10" align="left"></td>
+                                                                        <td align="left" valign="middle" height="5" style="background: #868686"></td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;">Color</th>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">QUANTITY</th>
-                                                                        <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">TOTAL</th>
+                                                                        <td rowspan="3" align="left" valign="middle" width="35" style="background:#868686;text-align: center;color: #FFF ">{{j+1}}</td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td valign="top" height="5" align="left"></td>
+                                                                        <td align="left" valign="middle" width="10"></td>
+                                                                        <td align="left" valign="top" style="background: #FFF;font-size: 12px;font-weight: 600">PRODUCT QUANTITY</td>
                                                                     </tr>
-                                                                    <tr v-for="(item,inx) in item.color">
-                                                                        <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;" width="50">{{inx}}</td>
-                                                                        <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;color: #666">{{item}}</td>
-                                                                        <td style="border-bottom: 1px solid #DDD; font-size:10px;text-align:left;color: #666">{{item}}</td>
+                                                                    <tr>
+                                                                        <td align="left" valign="middle" height="5"></td>
                                                                     </tr>
                                                                 </table>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td align="left" valign="top" height="10"></td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="4" style="color:#404040;font-size:10px;border-top:  1px solid #ddd;border-left:  1px solid #ddd;border-right:  1px solid #ddd;background-color:#fff;font-weight: 600">
-                                                    <table width="100%">
-                                                        <tr height="10"></tr>
-                                                        <tr>
-                                                            <td width="16" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="font-size:12px">SHIPPING ADDRESS</td>
-                                                            <td align="left" valign="top" style="font-size:12px">SHIPPING</td>
-                                                            <td align="left" valign="top" style="font-size:12px">SHIPPING CHARGE</td>
-                                                            <!--<td align="left" valign="top" style="font-size:12px">TAX</td>-->
-                                                            <td width="20" align="left" valign="top"></td>
-                                                        </tr>
-                                                        <tr v-for="(i, j) in item.shipping_method.shipping_detail">
-                                                            <td width="20" align="left" valign="top"></td>
-                                                            <td style="font-weight: normal;font-size: 10px;color: #404040" align="left" valign="top">{{row.user_billing_info.name}} -
-                                                                <br>{{i.shipping_address.street1}},
-                                                                <br>{{i.shipping_address.city}} - {{i.shipping_address.postalcode}},
-                                                                <br>{{i.shipping_address.state}}, {{i.shipping_address.country}}.
-                                                                <br>T: {{i.shipping_address.phone}} </td>
-                                                            <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type : <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
-                                                                <br>Shipping Carrier :<span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span> <span v-else> -  </span>
-                                                                <br>Method : <span style="color: #404040" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span>
-                                                                <br>In hand Date :<span style="color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
+                                                            <td align="left" valign="top" style="color:#404040;font-size:10px;border-left:1px solid #ddd;border-right:1px solid #ddd;background-color:#fff;text-align: center;width:100%">
+                                                                <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                                                    <tr>
+                                                                        <td width="20"></td>
+                                                                        <td align="left" valign="top" style="text-align: center;line-height: 25px">
+                                                                            <table border="0" cellspacing="0" cellpadding="" style="width:50%">
+                                                                                <tr>
+                                                                                    <td valign="top" height="10" align="left"></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;">Color</th>
+                                                                                    <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">QUANTITY</th>
+                                                                                    <th style="border-bottom: 1px solid #404040; font-size:12px;text-align:left;" width="50">TOTAL</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td valign="top" height="5" align="left"></td>
+                                                                                </tr>
+                                                                                <tr v-for="(item,inx) in i.color_quantity">
+                                                                                    <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;" width="50">{{inx}}</td>
+                                                                                    <td style="border-bottom: 1px solid #DDD;text-align:left; font-size:10px;color: #666">{{item}}</td>
+                                                                                    <td style="border-bottom: 1px solid #DDD; font-size:10px;text-align:left;color: #666">{{item}}</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="left" valign="top" height="10"></td>
+                                                                    </tr>
+                                                                </table>
                                                             </td>
-                                                            <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span></td>
-                                                            <!--<td align="left" valign="top"> </td>-->
-                                                            <td width="20" align="left" valign="top"></td>
                                                         </tr>
-                                                        <tr height="10"></tr>
+                                                        <tr>
+                                                            <td colspan="4" style="color:#404040;font-size:10px;border-top:  1px solid #ddd;border-left:  1px solid #ddd;border-right:  1px solid #ddd;background-color:#fff;font-weight: 600">
+                                                                <table width="100%">
+                                                                    <tr height="10"></tr>
+                                                                    <tr>
+                                                                        <td width="16" align="left" valign="top"></td>
+                                                                        <td align="left" valign="top" style="font-size:12px">SHIPPING ADDRESS</td>
+                                                                        <td align="left" valign="top" style="font-size:12px">SHIPPING</td>
+                                                                        <td align="left" valign="top" style="font-size:12px">SHIPPING CHARGE</td>
+                                                                        <!--<td align="left" valign="top" style="font-size:12px">TAX</td>-->
+                                                                        <td width="20" align="left" valign="top"></td>
+                                                                    </tr>
+                                                                    <tr >
+                                                                        <td width="20" align="left" valign="top"></td>
+                                                                        <td style="font-weight: normal;font-size: 10px;color: #404040" align="left" valign="top">{{i.shipping_address.name}} -
+                                                                            <br>{{i.shipping_address.street1}},
+                                                                            <br>{{i.shipping_address.city}} - {{i.shipping_address.postalcode}},
+                                                                            <br>{{i.shipping_address.state}}, {{i.shipping_address.country}}.
+                                                                            <br>T: {{i.shipping_address.phone}} </td>
+                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type : <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
+                                                                            <br>Shipping Carrier :<span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span> <span v-else> -  </span>
+                                                                            <br>Method : <span style="color: #404040" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span>
+                                                                            <br>In hand Date :<span style="color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
+                                                                        </td>
+                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span></td>
+                                                                        <!--<td align="left" valign="top"> </td>-->
+                                                                        <td width="20" align="left" valign="top"></td>
+                                                                    </tr>
+                                                                    <tr height="10"></tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
                                                     </table>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td valign="top" height="10" align="left"></td>
                                             </tr>
-                                            <tr v-for="(i, j) in item.shipping_method.shipping_detail">
+                                            <tr>
                                                 <td colspan="4" style="color:#404040;font-size:12px;border:1px solid #ddd;background-color:#fff;text-align: center;font-weight: 600;background: #F0F0F0">
                                                     <table width="100%">
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">TOTAL : {{ getMulti(item.total_qty, item.unit_price) }}</td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
-                                                                                <span v-else> $00.00 </span> </td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES: <span v-if="i.shipping_detail.shipping_charge"> {{ getShippingCharge(i.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span></td>
-                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX : $00.00</td>
                                                             <td width="20" align="left" valign="top"></td>
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
+                                                                                <span v-else> $00.00 </span> 
+                                                            </td>
+                                                            <td width="20" align="left" valign="top"></td>
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES: <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span> 
+                                                                <span v-else> $00.00 </span>
+                                                            </td>
+                                                            <td width="20" align="left" valign="top"></td>
+                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX : $00.00</td>
                                                         </tr>
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr v-for="(i, j) in item.shipping_method.shipping_detail">
+                                            <tr>
                                                 <td align="left" valign="top" style="color:#fff;font-size:15px;background-color:#ec008c;">
                                                     <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                                         <tr>
@@ -279,7 +290,8 @@
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top"></td>
-                                                            <td align="right" valign="top" style="font-size:15px">SUB TOTAL : <span v-if="i.shipping_detail.shipping_charge"> {{ getSubTotal(item.total_qty, item.unit_price, item, i.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
+                                                            <td align="right" valign="top" style="font-size:15px">SUB TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr>
@@ -362,9 +374,15 @@
                 return url + img
             },
             getSubTotal (a, b, c, d) {
-                var sum = 0;
-                sum = sum + d;
-                var res = c.hasOwnProperty('charges')
+                let sum = 0;
+                for (let i of d) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
+                let res = c.hasOwnProperty('charges')
                 if ( res == false) {
                     return accounting.formatMoney((a*b) + parseFloat(sum))
                 }
@@ -375,11 +393,17 @@
             accounting(item){
               return accounting.formatMoney(item)
             },
-            getShippingCharge(item){
-                var sum = 0;
-                sum = sum + item;
+            getShippingCharge(arr){
+                let sum = 0;
+                for (let i of arr) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
                 return accounting.formatMoney(sum)
-            }
+            },
         },
         filters: {
             upper(item) {

@@ -40,24 +40,28 @@
         font-size: 15px;
         font-weight: 700
     }
-    .table {
+    .table, .table1 {
         border: 1px solid #e3e3e3;
         margin-bottom: 0px;
         table-layout: auto;
     }
     .table thead tr th,
      .table1 thead tr th {
-        text-align: -webkit-center;
+        text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .table1 {
         width: -webkit-fill-available;
+        border-top: 0px; 
         table-layout: auto;
     }
     .table1 tbody tr td {
         text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .table1 tbody tr th {
         text-align: center;
+        border-right: 1px solid #e3e3e3;
     }
     .ivu-table-border td,
     .ivu-table-border th {
@@ -140,16 +144,11 @@
     }
     .product-quantity-list thead tr th {
         background: #fafafa!important;
-        border-bottom: 1px dashed #e3e3e3;
-        border-top: 1px solid #e3e3e3;
         text-align: left;
     }
     .size-quantity-table {
-	    width: 83%;
-	    margin-top: 15px;
+        width: 80%;
     	margin-left: 30px;
-    	table-layout: auto;
-    	margin-bottom: 15px;
     }
     
     
@@ -169,7 +168,8 @@
         </div>
         <div v-else>
             <Card>
-                <div style="text-align:center">
+
+                <!--<div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12 header">
                             <p slot="header" style="color:white;text-align:center;margin-top: 10px;">
@@ -178,7 +178,8 @@
                             </p>
                         </div>
                     </div>
-                </div>    
+
+                </div>-->    
                 <div style="text-align:center">
                     <div class="row">
                         <div class="col-sm-12">
@@ -203,7 +204,7 @@
                             <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
                                 <h4>{{row.user_billing_info.name}}</h4> 
                                 <p>
-                                    <span class="address">Office Address</span> <br>
+                                    <!-- <span class="address">Office Address</span> <br> -->
                                     <span style="font-weight:500">
                                         {{row.user_billing_info.street1}} <br>
                                         <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}}<br></span>
@@ -274,14 +275,14 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>Quantity &amp; Price</th>
-                                                                                <th>Imprint Information</th>
+                                                                                <th style="text-align: left;">Imprint Information</th>
                                                                                 <th>Additional Charges</th>
                                                                                 <th>Charges</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="width:60%">
+                                                                                <td style="width:58%">
                                                                                     <div class="quantity-table" style="margin: 10px;">
                                                                                         <div class="quantity-table-title" style="margin-top: 15px;">
                                                                                             <div class="table-heading">Quantity </div>
@@ -299,13 +300,11 @@
                                                                                     </div>
                                                                                 </td>
                                                                                 <td class="estimate-detail" style="width:20%">
-                                                                                    <span v-if="item.imprint">
-                                                                                        <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align: -webkit-left;">
-                                                                                            <div class="estimate-row heading">
-                                                                                                <span>Print Position: {{element.imprint_position_name}}</span>
-                                                                                                <div class="estimate-row">
-                                                                                                    <span>Imprint Method: {{element.imprint_method_name}}</span>
-                                                                                                </div>
+                                                                                    <div class="estimate-tag-block" v-for="(element, index) in item.imprint" style="text-align:left;">
+                                                                                        <div class="estimate-row heading">
+                                                                                            <span>Print Position: {{element.imprint_position_name}}</span>
+                                                                                            <div class="estimate-row">
+                                                                                                <span>Imprint Method: {{element.imprint_method_name}}</span>
                                                                                             </div>
                                                                                             <div class="estimate-row" v-if="element.no_of_color">
                                                                                                     How many colours : <span>{{element.no_of_color}} Colour </span>
@@ -329,61 +328,69 @@
                                                                                     <span v-else> N/A </span>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
+                                                                            <tr v-for="(i, j) in item.shipping_method.shipping_detail">
                                                                                 <td colspan="4">
                                                                                     <table class="product-quantity-list">
                                                                                         <thead>
                                                                                             <tr>
                                                                                                 <th class="item-list-number">
-                                                                                                    <div class="quantity-item">1</div>
+                                                                                                    <div class="quantity-item">{{j+1}}</div>
                                                                                                     Product Quantity 
                                                                                                 </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                                                <th style="text-align: -webkit-center;">Shipping</th>
+
+                                                                                                
+                                                                                                
+                                                                                                <th style="text-align: left;">Shipping Address </th>
+                                                                                                <th style="text-align: left;">Shipping</th> 
                                                                                                 <th style="text-align: -webkit-center;">Shipping Charge</th>
+
                                                                                                 <!--<th style="text-align: -webkit-center;">Tax</th>-->
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="width:42%">
+                                                                                                <td style="width:40%">
                                                                                                     <table class="size-quantity-table">
                                                                                                         <thead>
                                                                                                             <tr>
                                                                                                                 <th style="text-align: -webkit-center;">COLOR</th>
                                                                                                                 <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                                                <th style="text-align: -webkit-center;">TOTAL</th>
+
                                                                                                             </tr>
                                                                                                         </thead>
                                                                                                         <tbody>
-                                                                                                            <tr v-for="(item,inx) in item.color">
-                                                                                                            <!--  <div v-for="(item,inx) in item.color"> -->
+                                                                                                            <tr v-for="(item,inx) in i.color_quantity">
+                                                                                                                <!-- <div > -->
                                                                                                                     <td>{{inx}}
                                                                                                                     </td>
                                                                                                                     <td>{{item}}
                                                                                                                     </td>
-                                                                                                                    <td>{{item}}
-                                                                                                                    </td>
-                                                                                                            <!--  </div> -->
+                                                                                                                    <!-- <td>{{item}}
+                                                                                                                    </td> -->
+                                                                                                                <!-- </div> -->
                                                                                                             </tr>
                                                                                                         </tbody>
                                                                                                     </table>
                                                                                                 </td>
-                                                                                                <td v-for="(i, j) in item.shipping_method.shipping_detail">
-                                                                                                    <span style="float: left">{{row.user_billing_info.name}}</span><br>
+                                                                                                <td>
+                                                                                                    <span style="float: left">{{i.shipping_address.name}}</span><br>
                                                                                                     <span style="float: left">{{i.shipping_address.street1}}</span><br>
                                                                                                     <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
                                                                                                     <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
                                                                                                 </td>
-                                                                                                <td style="width:22%" v-for="(i, j) in item.shipping_method.shipping_detail">
+
+                                                                                                <td style="width:20%">
+
                                                                                                     <span style="float: left">Shipping Type: </span> <span style="float: left">{{item.shipping_method.shipping_type}}</span> <br>
                                                                                                     <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                                                     <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                                                     <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
                                                                                                 </td>
-                                                                                                <td style="width:18%" v-for="(i, j) in item.shipping_method.shipping_detail">
+
+                                                                                                <td style="width:16%">
+
                                                                                                     Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
                                                                                                 </td>
                                                                                                 <!--<td style="width:10%"></td>-->
@@ -400,14 +407,24 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr class="item_total" v-for="(i, j) in item.shipping_method.shipping_detail">
+                                            <tr class="item_total" >
                                                 <th>Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
-                                                <th colspan="2">Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
+                                                <th>Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                     <span v-else> $00.00 </span> 
                                                 </th>
-                                                <th>Shipping Charge : <span v-if="i.shipping_detail.shipping_charge"> {{ getShippingCharge(i.shipping_detail.shipping_charge)}}</span> <span v-else> $00.00 </span> </th>
+                                                <th>Shipping Charge : 
+                                                    <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
+                                                        <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span> 
+                                                        <span v-else> $00.00 </span> 
+                                                    <!-- </span> -->
+                                                </th>
                                                 <th>Tax : $00.00 </th>
-                                                <th>Sub Total:<span style="color:#C11E19" v-if="i.shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, i.shipping_detail.shipping_charge) }}</span> <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> </th>
+                                                <th colspan="2">Sub Total:
+                                                    <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
+                                                        <span style="color:#C11E19" v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> 
+                                                    <!-- </span> -->
+                                                </th>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -422,7 +439,7 @@
                                     Transaction ID  : <label class="data"> {{row.transaction_id}} </label>
                             </label> 
                             <label class="col-sm-3"> 
-                                    Payment Via  : <label class="data"> {{row.payment_via}} </label>
+                                    Payment Via  : <label class="data" style=" text-transform: capitalize;"> {{row.payment_via}} </label>
                             </label>
                             <label class="col-sm-3"> 
                                     Total  : <label class="data"> $ {{row.total}} </label>
@@ -436,7 +453,7 @@
                                     Invoice ID  : <label class="data"> {{this.invoice.InvoiceNumber}} </label>
                             </label> 
                             <label class="col-sm-6"> 
-                                    Customer Name  : <label class="data"> {{this.invoice.Contact.Name}} </label>
+                                    Customer Name  : <label class="data" style=" text-transform: capitalize;"> {{this.invoice.Contact.Name}} </label>
                             </label>
                             <!--<label class="col-sm-6"> 
                                     Due Date  : <label class="data"> {{moment(this.invoice.DueDate).format('DD-MMM-YYYY')}} </label>
@@ -501,7 +518,9 @@
         },
         methods: {
             async invoiceData() {
-                var self = this
+
+                let self = this
+
                 // self.$Loading.start()
                 await axios({
                     method: 'get',
@@ -517,15 +536,51 @@
                         self.spinShow = false;
                         console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
                         self.invoice = response.data[0].data
-                })    
+                    }).catch(function (error){
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 0
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    })    
                 console.log('invoice', self.invoice)
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
-            getShippingCharge(item){
-                var sum = 0;
-                sum = sum + item;
+            getShippingCharge(arr){
+                let sum = 0;
+                for (let i of arr) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
                 return accounting.formatMoney(sum)
             },
             getImgUrl (url , img) {
@@ -536,9 +591,15 @@
                 return url + img
             },
             getSubTotal (a, b, c, d) {
-                var sum = 0;
-                sum = sum + d;
-                var res = c.hasOwnProperty('charges')
+                let sum = 0;
+                for (let i of d) {
+                    let Charge = i.shipping_detail.shipping_charge
+                    if (typeof Charge === 'string') {
+                        Charge = parseFloat(Charge)
+                    }
+                    sum = sum + Charge
+                }
+                let res = c.hasOwnProperty('charges')
                 if ( res == false) {
                     return accounting.formatMoney((a*b) + parseFloat(sum))
                 }
@@ -572,7 +633,7 @@
                 self.modal1 = false
             },
             async download() {
-                var self = this
+                let self = this
 		        self.$Loading.start()
                 console.log("billData-------------->>>",$('#InvoiceBill').html())
                 document.querySelector('#myfooter').style.position = 'fixed'
@@ -585,17 +646,47 @@
                     },
                     
                     }).then(function (response) {
-		            self.$Loading.finish()
-                    document.querySelector('#myfooter').style.position = 'initial'
-                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                    console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
-                    var arrayBufferView = new Uint8Array( response.data.data );
-                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                    var link=document.createElement('a');
-                    link.href=window.URL.createObjectURL(blob);
-                    link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
-                    link.click();
-                })    
+                        self.$Loading.finish()
+                        document.querySelector('#myfooter').style.position = 'initial'
+                        console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                        console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.billData.billing_details.data.InvoiceNumber);
+                        let arrayBufferView = new Uint8Array( response.data.data );
+                        let blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                        let link=document.createElement('a');
+                        link.href=window.URL.createObjectURL(blob);
+                        link.download=self.billData.billing_details.data.InvoiceNumber == undefined ? "custom_Invoice" : self.billData.billing_details.data.InvoiceNumber;
+                        link.click();
+                    }).catch(function (error){
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 0
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    })    
             }
         },
         filters: {
@@ -604,12 +695,11 @@
             }
         },
         mounted() {
-            
+            this.billData = this.row            
             this.invoiceData()
         },
          watch: {
             'row': async function(id) {
-                  this.billData = this.row
                   this.invoiceData()
             }
         }

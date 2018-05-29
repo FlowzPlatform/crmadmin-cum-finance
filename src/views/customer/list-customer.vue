@@ -50,18 +50,22 @@
         </div>
       </div>
     </div>
+  <div class="table-box">
     <div v-if="spinShow">
       <Spin size="large"></Spin>
     </div>
     <div v-else>
       <Tabs  @on-click="tabClicked" :value="tabIndex">
         <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
+        <!-- <i-table v-if ="tabPane.domain=='Xero'" :height="tableHeight" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='QB'" :height="tableHeight" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
+        <i-table v-if ="tabPane.domain=='custom'" :height="tableHeight" :columns="column3" :data="list" size="small" ref="table" stripe></i-table> -->
         <i-table v-if ="tabPane.domain=='Xero'" :columns="columns1" :data="list" size="small" ref="table" stripe></i-table>
         <i-table v-if ="tabPane.domain=='QB'" :columns="columns2" :data="list" size="small" ref="table" stripe></i-table>
         <i-table v-if ="tabPane.domain=='custom'" :columns="column3" :data="list" size="small" ref="table" stripe></i-table>
         <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
-                <Page :total="len" :current="1" @on-change="changePage"></Page>
+                <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
         </div>
         <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -70,27 +74,30 @@
       </Tabs>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
+
 let config = require("@/config/customConfig.js")
 import Cookies from 'js-cookie';
 // console.log(config)
 let feathersUrl =  config.default.serviceUrl;
 var _ = require('lodash');
-var pageSize = 10
 import axios from 'axios'
 export default {
   name: 'list-customer',
   data () {
   return {
+    tableHeight: 450,
     tabIndex: 0,
     tabPanes : [],
     spinShow: true,
+    pageSize: 10,
     page: 1,
     len: 1,
     list: [],
-    pageSize: pageSize,
+    // pageSize: pageSize,
     columns1: [
       {
         "title": "Customer Name",
@@ -202,113 +209,126 @@ export default {
             ]);
           }
 
-        }
-      },
-      {
-        "title": "Status",
-        "key": "ContactStatus",
-        "sortable": true,
-        "width":120,
-        filters: [
-          {
-            label: 'ACTIVE',
-            value: 1
-          },
-          {
-            label: 'INACTIVE',
-            value: 2
-          }
-        ],
-        filterMultiple: false,
-        filterMethod (value, row) {
-          if (value === 1) {
-            return row.ContactStatus ==  'ACTIVE';
-          } else if (value === 2) {
-            return row.ContactStatus == 'INACTIVE';
-          }
-        }
-      }
-    ],
-    columns2: [
-      {
-        "title": "Customer Name",
-        "key": "DisplayName"
-      },
-      {
-        "title": "Email",
-        "key": "PrimaryEmailAddr",
-        "sortable": true,
-        render:(h,{row})=>{
-          // return row.PrimaryEmailAddr.Address
-          return h('div', [
-                h('span', row.PrimaryEmailAddr.Address)
-            ]);
-        }
-      },
-      {
-        "title": "Mobile No.",
-        "key": "Mobile",
-        "sortable": true,
-        "align":"center",
-        render:(h,{row})=>{
-              // return "Not available"
-            return h('div', [
-                h('span', "Not available")
-            ]);
-          }
-      },
-      {
-        "title": "Phone No.",
-        "key": "PrimaryPhone",
-        "sortable": true,
-        "align":"center",
-        render:(h,{row})=>{
-          if(row.PrimaryPhone.FreeFormNumber == "'")
-            {
-              // return "Not available"
-              return h('div', [
-                  h('span', "Not available")
-              ]);
-            }
-            else {
-              // return row.PrimaryPhone.FreeFormNumber
-              return h('div', [
-                  h('span', row.PrimaryPhone.FreeFormNumber)
-              ]);
-            }
-          }
-      },
-      {
-        "title": "Fax No.",
-        "key": "active",
-        "sortable": true,
-        "align":"center",
-        render:(h,{row})=>{
-              // return "Not available"
-              return h('div', [
-                  h('span', "Not available")
-              ]);
-          }
-      },
-      {
-        "title": "Address",
-        "key": "BillAddr",
-        "sortable": false,
-        render:(h,{row})=>{
+							if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
+							{
+								// return "Not available"
+								return h('div', [            
+									h('span',  "Not available")
+								]);
+							}
+							else {
+								// return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
+								return h('div', [                
+									h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
+								]);
+							}
+						}
+					},
+					{
+						"title": "Status",
+						"key": "ContactStatus",
+						"sortable": true,
+						"width":120,
+						filters: [
+							{
+								label: 'ACTIVE',
+								value: 1
+							},
+							{
+								label: 'INACTIVE',
+								value: 2
+							}
+						],
+						filterMultiple: false,
+						filterMethod (value, row) {
+							if (value === 1) {
+								return row.ContactStatus ==  'ACTIVE';
+							} else if (value === 2) {
+								return row.ContactStatus == 'INACTIVE';
+							}
+						}
+					}
+				],
+				columns2: [
+					{
+					"title": "Customer Name",
+					"key": "DisplayName"
+					},
+					{
+					"title": "Email",
+					"key": "PrimaryEmailAddr",
+					"sortable": true,
+					render:(h,{row})=>{
+						// return row.PrimaryEmailAddr.Address
+						return h('div', [
+							h('span', row.PrimaryEmailAddr.Address)
+						]);
+					}
+					},
+					{
+					"title": "Mobile No.",
+					"key": "Mobile",
+					"sortable": true,
+					"align":"center",
+					render:(h,{row})=>{
+							// return "Not available"
+						return h('div', [
+							h('span', "Not available")
+						]);
+						}
+					},
+					{
+					"title": "Phone No.",
+					"key": "PrimaryPhone",
+					"sortable": true,
+					"align":"center",
+					render:(h,{row})=>{
+						if(row.PrimaryPhone.FreeFormNumber == "'")
+						{
+							// return "Not available"
+							return h('div', [
+								h('span', "Not available")
+							]);
+						}
+						else {
+							// return row.PrimaryPhone.FreeFormNumber
+							return h('div', [
+								h('span', row.PrimaryPhone.FreeFormNumber)
+							]);
+						}
+						}
+					},
+					{
+					"title": "Fax No.",
+					"key": "active",
+					"sortable": true,
+					"align":"center",
+					render:(h,{row})=>{
+							// return "Not available"
+							return h('div', [
+								h('span', "Not available")
+							]);
+						}
+					},
+					{
+					"title": "Address",
+					"key": "BillAddr",
+					"sortable": false,
+					render:(h,{row})=>{
 
-          if(row.BillAddr == "'")
-          {
-              // return "Not available"
-              return h('div', [
-                  h('span', "Not available")
-              ]);
-          }
-          else {
-              // return row.BillAddr.Line1 +", "+row.BillAddr.City
-              return h('div', [
-                  h('span', row.BillAddr.Line1 +", "+row.BillAddr.City)
-              ]);
-          }
+						if(row.BillAddr == "'")
+						{
+							// return "Not available"
+							return h('div', [
+								h('span', "Not available")
+							]);
+						}
+						else {
+							// return row.BillAddr.Line1 +", "+row.BillAddr.City
+							return h('div', [
+								h('span', row.BillAddr.Line1 +", "+row.BillAddr.City)
+							]);
+						}
 
         }
       },
@@ -408,6 +428,7 @@ export default {
     data6: [],
     data7: [],
     filterArray: [],
+    optionsPage:[10,20,30,50],
     listData: [],
     cname: '',
     status:'',
@@ -415,6 +436,16 @@ export default {
     }
   },
   methods: {
+    changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        if(this.pageSize > 10){
+          this.tableHeight = 530
+        }else{
+          this.tableHeight = 450
+        }
+        this.changePage(1)
+    },
     reset() {
       this.cname = '';
       this.status = '';
@@ -437,11 +468,11 @@ export default {
           }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
 
@@ -464,11 +495,11 @@ export default {
           }
         });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
       
       if(this.email != ''){
@@ -485,32 +516,50 @@ export default {
         }
       });
       //  console.log("myarr",this.filterArray)
-       this.list = await this.mockTableData2(1,pageSize)
+      //  this.list = await this.mockTableData2(1,self.pageSize)
       }else{
           // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           // console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,self.pageSize)
         }
+
+          this.list = await this.mockTableData2(1,self.pageSize)
+        
     },
     async mockTableData2 (p,size) {
       // console.log("p-------------->",p)
       // console.log("p-------------->",size)
       // console.log("console.log------------>",this.filterArray)
       this.len = this.filterArray.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else {
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = (this.len * 40) + 35
+        }
       return this.filterArray.slice((p - 1) * size, p * size);
     },
     async mockTableData1 (p,size) {
       this.len = this.data6.length
+      if(this.len == 0){
+          console.log("data length 0--------------->",this.tableHeight)
+          this.tableHeight = 100
+        }else {
+          console.log("data length 10--------------->",this.tableHeight)
+          this.tableHeight = (this.len * 40) + 35
+        }
       return this.data6.slice((p - 1) * size, p * size).reverse();
     },
     async changePage (p) {
+      var self = this
       this.page = p
       // console.log("not inside",this.filterArray.length)
       if(this.filterArray.length == 0){
         // console.log("inside",this.filterArray)
-        this.list = await this.mockTableData1(p,pageSize);
+        this.list = await this.mockTableData1(p,self.pageSize);
       }else{
-        this.list = await this.mockTableData2(p,pageSize);
+        this.list = await this.mockTableData2(p,self.pageSize);
       }
     },
     async tabClicked(data){
@@ -527,42 +576,72 @@ export default {
       let self = this;
       self.list = [];
 
-      if(settingDomain == 'custom'){
-        // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
-        let customerUrl = this.tabPanes[data].customer_url;
-        await axios({
-            method: 'get',
-            url: customerUrl,
-            params : {
-              settingId : this.tabPanes[data].id
-            },
-            headers:{
-                Authorization : Cookies.get('auth_token')
-            },
-        })
-        .then(async function (response) {
-          self.$Loading.finish();
-          // console.log("custom customer get response",response)
-          self.data6 = response.data.data.reverse();
 
-          let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
-          let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
-          let arr = [];
-          let len = columnArray.length;
-          for (let i = 0; i < len; i++) {
-              arr.push({
-                  title: columnArray[i],
-                  key : columnArray[i],
-                  sortable: true
+			if(settingDomain == 'custom'){
+			// console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
+			let customerUrl = this.tabPanes[data].customer_url;
+			await axios({
+				method: 'get',
+				url: customerUrl,
+				params : {
+					settingId : this.tabPanes[data].id
+				},
+				headers:{
+					Authorization : Cookies.get('auth_token')
+				},
+			})
+			.then(async function (response) {
+				self.$Loading.finish();
+				// console.log("custom customer get response",response)
+				self.data6 = response.data.data.reverse();
+
+				let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+				let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
+				let arr = [];
+				let len = columnArray.length;
+				for (let i = 0; i < len; i++) {
+					arr.push({
+						title: columnArray[i],
+						key : columnArray[i],
+						sortable: true
 
               });
           }
-          self.list = await self.mockTableData1(1,pageSize)
+          self.list = await self.mockTableData1(1,self.pageSize)
           // self.column3 = arr;
         })
         .catch(function (error) {
           self.$Loading.error();
           console.log("error in get customer",error);
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
         });
       }
       else{
@@ -579,7 +658,7 @@ export default {
           self.data6 = response.data[0].data.reverse();
           self.$Loading.finish();
           $('.preload').css("display","none")
-          self.list = await self.mockTableData1(1,pageSize)
+          self.list = await self.mockTableData1(1,self.pageSize)
         })
         .catch(function (error) {
             console.log("error",error);
@@ -589,145 +668,203 @@ export default {
                     title: "QB : Credential Expired",
                     desc: "Token is expired for "+settingName
                 });
-            }
+            } else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
             self.$Loading.error();
         });
       }
 
-      var NameArr = [];
-      $('#selectCustomer').children('option:not(:first)').remove();
-      var EmailArr = [];
-      $('#selectEmail').children('option:not(:first)').remove();
-      var StatusArr = [];
-      $('#selectStatus').children('option:not(:first)').remove();
+
+			var NameArr = [];
+			$('#selectCustomer').children('option:not(:first)').remove();
+			var EmailArr = [];
+			$('#selectEmail').children('option:not(:first)').remove();
+			var StatusArr = [];
+			$('#selectStatus').children('option:not(:first)').remove();
 
 
-      self.data6.forEach (obj => {
-        // console.log("obj------------------->",obj);
-        if(obj.Name != undefined){
-          NameArr.push(obj.Name);
-          StatusArr.push(obj.ContactStatus);
-          if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
+			self.data6.forEach (obj => {
+			// console.log("obj------------------->",obj);
+			if(obj.Name != undefined){
+				NameArr.push(obj.Name);
+				StatusArr.push(obj.ContactStatus);
+				if(obj.EmailAddress === undefined || obj.EmailAddress === ""){
 
-          }else{
-            EmailArr.push(obj.EmailAddress)
-          }
-        }else{
-          NameArr.push(obj.DisplayName)
-          if(obj.PrimaryEmailAddr != undefined){
-            // console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
-            EmailArr.push(obj.PrimaryEmailAddr.Address)
-          }
-          if(obj.Active != undefined){            
-              if(obj.Active == true){
-                  StatusArr.push("ACTIVE");
-              }else{
-                StatusArr.push("INACTIVE");
-              }
-          }
-          // console.log('StatusArr------------>',StatusArr)
-        }
-      })
+				}else{
+				EmailArr.push(obj.EmailAddress)
+				}
+			}else{
+				NameArr.push(obj.DisplayName)
+				if(obj.PrimaryEmailAddr != undefined){
+				// console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+				EmailArr.push(obj.PrimaryEmailAddr.Address)
+				}
+				if(obj.Active != undefined){            
+					if(obj.Active == true){
+						StatusArr.push("ACTIVE");
+					}else{
+					StatusArr.push("INACTIVE");
+					}
+				}
+				// console.log('StatusArr------------>',StatusArr)
+			}
+			})
 
-      // console.log("NameArr----------->before", NameArr);
-      NameArr.sort();
-      // console.log("NameArr----------->after", NameArr);
+			// console.log("NameArr----------->before", NameArr);
+			NameArr.sort();
+			// console.log("NameArr----------->after", NameArr);
 
-      // console.log("EmailArr----------->before", EmailArr);
-      EmailArr.sort();
-      // console.log("EmailArr----------->after", EmailArr);
+			// console.log("EmailArr----------->before", EmailArr);
+			EmailArr.sort();
+			// console.log("EmailArr----------->after", EmailArr);
 
-      NameArr.forEach(item => {
-        var x = document.getElementById("selectCustomer");
-        var option = document.createElement("option");
-        option.text = item;
-        x.add(option);
-      })
+			NameArr.forEach(item => {
+			var x = document.getElementById("selectCustomer");
+			var option = document.createElement("option");
+			option.text = item;
+			x.add(option);
+			})
 
-      EmailArr.forEach(item => {
-        var y = document.getElementById("selectEmail");
-        var option = document.createElement("option");
-        option.text = item;
-        y.add(option);
-      })
+			EmailArr.forEach(item => {
+			var y = document.getElementById("selectEmail");
+			var option = document.createElement("option");
+			option.text = item;
+			y.add(option);
+			})
 
-      StatusArr = _.chain(StatusArr).sort().uniq().value();
-      StatusArr.forEach(item => {
-        var y = document.getElementById("selectStatus");
-        var option = document.createElement("option");
-        option.text = item;
-        y.add(option);
-      })
+			StatusArr = _.chain(StatusArr).sort().uniq().value();
+			StatusArr.forEach(item => {
+			var y = document.getElementById("selectStatus");
+			var option = document.createElement("option");
+			option.text = item;
+			y.add(option);
+			})
 
-    },
-    async getAllSettings(){
-        let self = this;
-        axios.get(config.default.serviceUrl + 'settings?isActive=true', {
-            headers:{
-                Authorization : Cookies.get('auth_token'),
-                subscriptionId : Cookies.get('subscriptionId')
-            },
-        })
-        .then(function (response) {
-            // console.log("response------>iuy",response);
-            // console.log('this.tabIndex', self.tabIndex)
-            self.spinShow = false;
-            if (response.data.data.length != 0)
-            {
-              self.tabPanes = response.data.data;
-              $('.preload').css("display","none")
-              let settingName = self.tabPanes[self.tabIndex].configName;            
-              let settingId = self.tabPanes[self.tabIndex].id
-              let settingDomain = self.tabPanes[self.tabIndex].domain;
-              self.getContactBySettingId(settingId , settingDomain , 0)
-            }
-            else {
-                self.$Modal.warning({
-                title: 'No Configuration available',
-                okText : "Go to Settings",
-                content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
-                onOk: () => {
-                      self.$router.push({
-                          name: 'Settings'
-                      })
-                  }
-                });
-            }
+		},
+		async getAllSettings(){
+			let self = this;
+			axios.get(config.default.serviceUrl + 'settings?isActive=true', {
+				headers:{
+					Authorization : Cookies.get('auth_token'),
+					subscriptionId : Cookies.get('subscriptionId')
+				},
+			})
+			.then(function (response) {
+				// console.log("response------>iuy",response);
+				// console.log('this.tabIndex', self.tabIndex)
+				self.spinShow = false;
+				if (response.data.data.length != 0)
+				{
+					self.tabPanes = response.data.data;
+					$('.preload').css("display","none")
+					let settingName = self.tabPanes[self.tabIndex].configName;            
+					let settingId = self.tabPanes[self.tabIndex].id
+					let settingDomain = self.tabPanes[self.tabIndex].domain;
+					self.getContactBySettingId(settingId , settingDomain , 0)
+				}
+				else {
+					self.$Modal.warning({
+					title: 'No Configuration available',
+					okText : "Go to Settings",
+					content: '<h3 style="font-family: initial;">Please navigate to settings and configure or activate at least one Xero or Quickbook account </h3>',
+					onOk: () => {
+							self.$router.push({
+								name: 'Settings'
+							})
+						}
+					});
+				}
 
-        })
-        .catch(function (error) {
-            console.log("error",error);
-            self.spinShow = false;
-            if(error.response.status == 403){
-                self.$Notice.error({
-                  duration:0, 
-                  title: error.response.statusText,
-                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                });
-            }
-        });
-    },
-    exportData (type) {
-                if (type === 1) {
-                  console.log(this.$refs);
-                    this.$refs.table[0].exportCsv({
-                        filename: 'The original data'
-                    });
-                } else if (type === 2) {
-                    this.$refs.table[0].exportCsv({
-                        filename: 'Sorting and filtering data',
-                        original: false
-                    });
-                }
-    }
-  },
-  mounted(){
-    this.getAllSettings();
-  }
-}
+			})
+			.catch(function (error) {
+				console.log("error",error);
+				self.spinShow = false;
+				if(error.message == 'Network Error'){
+					self.$Notice.error({
+						title: "Error",
+						desc: 'API service unavailable',
+						duration: 10
+					})
+				}else if(error.response.status == 403){
+					self.$Notice.error({
+					duration:0, 
+					title: error.response.statusText,
+					desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+					});
+				}else if(error.response.status == 401){
+					
+					let location = psl.parse(window.location.hostname)
+					location = location.domain === null ? location.input : location.domain
+					
+					Cookies.remove('auth_token' ,{domain: location}) 
+					self.$store.commit('logout', self);
+					
+					self.$router.push({
+						name: 'login'
+					});
+					self.$Notice.error({
+						title: error.response.data.name,
+						desc: error.response.data.message,
+						duration: 10
+					})
+				}else {
+					self.$Notice.error({
+					title: error.response.data.name,
+					desc: error.response.data.message,
+					duration: 10
+					})
+				}
+			});
+		},
+		exportData (type) {
+					if (type === 1) {
+						console.log(this.$refs);
+						this.$refs.table[0].exportCsv({
+							filename: 'The original data'
+						});
+					} else if (type === 2) {
+						this.$refs.table[0].exportCsv({
+							filename: 'Sorting and filtering data',
+							original: false
+						});
+					}
+		}
+		},
+		mounted(){
+		this.getAllSettings();
+		}
+	}
 </script>
 
 <style>
+
   .ivu-spin-main {
       width: 100%;
       text-align: -webkit-center;
@@ -738,4 +875,6 @@ export default {
   .ivu-table-cell {
       word-break: break-word;
   }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
+
 </style>

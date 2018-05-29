@@ -44,7 +44,7 @@
 						</Row>        
 					</FormItem>
 					<div style="text-align:center;">
-						<Button type="primary" @click="formData('formItem')" :loading="loading">Submit</Button>
+						<Button type="primary" @click="InvoiceSubmit('formItem')" :loading="loading">Submit</Button>
 						<Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Cancel</Button>
 					</div>
 				</Form>
@@ -58,6 +58,7 @@ import config from '@/config/customConfig.js'
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import _ from 'lodash'
+import psl from 'psl';
 export default {
   name: 'newinvoice',
   data () {
@@ -71,10 +72,29 @@ export default {
       }
     };
     const validateAmount = async(rule, value, callback) => {
-      let patt = new RegExp('^[0-9].+$')
+
+      let patt = new RegExp('^(-?0[.]\\d+)$|^(-?[1-9]+\\d*([.]\\d+)?)$|^0$')
       let _res = patt.test(value)
       if (!_res) {
         callback(new Error('Not Allowed Special Character'))
+      } else {
+        callback();
+      }
+    };
+    // const validateBlank = async(rule, value, callback) => {
+          //   let blankPatt = /^\S*$/g
+          //   console.log("------------value", typeof value)
+          //   let blankTest = value.match(blankPatt)
+          //   console.log("======================_res",blankTest);
+          //   if (!blankTest) {
+          //     callback(new Error('Password Does not Allow Spaces'))
+          //   } else {
+          //     callback();
+          //   }
+          // };
+    const validateBlank = (rule, value, callback) => {
+      if (value.trim() === '') {
+        callback(new Error('Space is not allowed'));
       } else {
         callback();
       }
@@ -111,7 +131,7 @@ export default {
              { required: true, message: 'Please select the customer name', trigger: 'change' }
           ],
           description: [
-              { required: true, message: 'Description cannot be empty', trigger: 'blur' }
+              { required: true, message: 'Description cannot be empty', validator: validateBlank, trigger: 'blur' }
           ],
           duedate: [
               { required: true, type: 'date', message: 'Please select the date', trigger: 'change' }
@@ -169,6 +189,35 @@ export default {
       })
       .catch(function (error) {
         console.log("error",error);
+        if(error.response.status == 401){
+              
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.response.status == 403){
+            self.$Notice.error({
+              duration:0, 
+              title: error.response.statusText,
+              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+              });
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
       });
       resp.forEach(obj =>{
         self.data3.push(obj.project_name)
@@ -216,13 +265,41 @@ export default {
       })
       .catch(function (error) {
         console.log("error",error);
-        if(error.response.status == 403){
-               self.$Notice.error(
-                   {duration:0, 
-                   title: error.response.statusText,
-                   desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                   );
-                }
+        if(error.message == 'Network Error'){
+            self.$Notice.error({
+                title: "Error",
+                desc: 'API service unavailable',
+                duration: 10
+            })
+        }else if(error.response.status == 401){
+              
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.response.status == 403){
+            self.$Notice.error({
+              duration:0, 
+              title: error.response.statusText,
+              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+              });
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
       });
       
     },
@@ -286,11 +363,13 @@ export default {
               })
               .catch(function (error) {
                   console.log(error);
-                  self.$Notice.error({
-                    duration:0, 
-                    title: "QB : Credential Expired",
-                    desc: "Token is expired for "+response.data.configName
-                  });
+                  if (error.response.data.message === 'invalid_grant') {
+                    self.$Notice.error({
+                      duration:0, 
+                      title: "QB : Credential Expired",
+                      desc: "Token is expired for "+response.data.configName
+                    });
+                  }
               });
           }
       })
@@ -298,13 +377,35 @@ export default {
         console.log("error----------",error);
         self.loading = false;
         // self.spinShow = false;
-          if(error.response.status == 403){
-              self.$Notice.error(
-                  {duration:0, 
-                  title: error.response.statusText,
-                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                  );
-              }
+          if(error.response.status == 401){
+              
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.response.status == 403){
+            self.$Notice.error({
+              duration:0, 
+              title: error.response.statusText,
+              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+              });
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
       });
       
       
@@ -316,15 +417,14 @@ export default {
       //})
     },
 
-    async formData (name) {
+    async InvoiceSubmit (name) {
       console.log(name)
       this.$refs[name].validate((valid) => {
-        //if (valid) {
+        if (valid) {
           this.newInvoice();
-        // } else {
-         
-        //   this.$Message.error('Data not valid!!!');
-        // }
+        } else {
+          this.$Message.error('Please Enter valid Input');
+        }
       })
     },
     async newInvoice () {
@@ -377,7 +477,7 @@ export default {
               self.$router.push({
                 name:'Invoice List'
               })
-              self.Cancel();
+              // self.Cancel();
             })
             .catch(function (error) {
               console.log("error",error);
@@ -418,7 +518,7 @@ export default {
                 self.$router.push({
                   name:'Invoice List'
                 })
-                self.Cancel();
+                // self.Cancel();
               })
               .catch(function (err) {
                 console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
@@ -432,12 +532,34 @@ export default {
         console.log("error",error);
         self.loading = false;
         // self.spinShow = false;
-          if(error.response.status == 403){
-              self.$Notice.error(
-                  {duration:0, 
-                  title: error.response.statusText,
-                  desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-              );
+          if(error.response.status == 401){
+              
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.response.status == 403){
+            self.$Notice.error({
+              duration:0, 
+              title: error.response.statusText,
+              desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+              });
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
           }
       });
 
