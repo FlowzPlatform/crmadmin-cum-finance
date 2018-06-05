@@ -1,53 +1,72 @@
 <template>
   <div class="Login">
     <div>
-        <div class="container-fluid">
-                        <header class="hh-page-title">
-                            <span>Invite</span>
-                        </header>
+      <div class="container-fluid">
+        <header class="hh-page-title">
+          <span>Invite</span>
+        </header>
         <div class="row">
-        <div class="col-md-3">
-            <el-input placeholder="Please enter email id" v-model="input"></el-input>
-        </div>  
-        <div class="col-md-3" >
-            <el-select no-data-text="No Role Found" v-model="value1" placeholder="Select Role" style="width:38   0px">
-            <el-option
-            v-for="item in options"
-            :key="item.value1"
-            :label="item.label1"
-            :value="item.value1">
-            </el-option>
-        </el-select>
-        </div>
-        <div class="col-md-3">
-            <el-select no-data-text="No Subscription Found" v-model="value2" placeholder="Select subscription">
-                <el-option
+          <div class="col-md-3">
+            <el-input 
+              v-model="input" 
+              placeholder="Please enter email id"/>
+          </div>  
+          <div class="col-md-3" >
+            <el-select 
+              v-model="value1" 
+              no-data-text="No Role Found" 
+              placeholder="Select Role" 
+              style="width:38   0px">
+              <el-option
+                v-for="item in options"
+                :key="item.value1"
+                :label="item.label1"
+                :value="item.value1"/>
+            </el-select>
+          </div>
+          <div class="col-md-3">
+            <el-select 
+              v-model="value2" 
+              no-data-text="No Subscription Found" 
+              placeholder="Select subscription">
+              <el-option
                 v-for="item in options2"
                 :key="item.value2"
                 :label="item.label2"
-                :value="item.value2">
-                </el-option>
+                :value="item.value2"/>
             </el-select>
         
-        </div>
-        <div class="col-md-3">
-            <el-button type="primary" :loading="loading" @click="inviteNow()">Invite Now</el-button>
-        </div>
+          </div>
+          <div class="col-md-3">
+            <el-button 
+              :loading="loading" 
+              type="primary" 
+              @click="inviteNow()">Invite Now</el-button>
+          </div>
         </div>
 
-        <Tabs  style="margin-top: 20px">
-            <TabPane label="Own Subscription">
-                <Table :columns="columns3" :data="data3" stripe></Table>
-            </TabPane>
-            <TabPane label="Assigned Subscription">
-                <Table :columns="columns2" :data="data2" stripe></Table>
-            </TabPane>
-            <TabPane label="Assigned History">
-                <Table :columns="columns4" :data="data4" stripe></Table>
-            </TabPane>
+        <Tabs style="margin-top: 20px">
+          <TabPane label="Own Subscription">
+            <Table 
+              :columns="columns3" 
+              :data="data3" 
+              stripe/>
+          </TabPane>
+          <TabPane label="Assigned Subscription">
+            <Table 
+              :columns="columns2" 
+              :data="data2" 
+              stripe/>
+          </TabPane>
+          <TabPane label="Assigned History">
+            <Table 
+              :columns="columns4" 
+              :data="data4" 
+              stripe/>
+          </TabPane>
            
         </Tabs>
-    </div>
+      </div>
     </div>
     
     
@@ -56,7 +75,7 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
     import Cookies from 'js-cookie';
     import Vue from 'vue';
     import ElementUI from 'element-ui';
@@ -69,7 +88,7 @@
     import _ from 'lodash'
     // import locale from 'element-ui/src/locale/lang/en';
     // import 'element-ui/lib/theme-default/index.css';
-    Vue.use(ElementUI);
+         Vue.use(ElementUI);
     export default {
         components: { expandRow, expandInviteRow },
         data() {

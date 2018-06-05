@@ -978,7 +978,7 @@
 
             //             if (file) {
             //                 // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
-            //                 reader.readAsDataURL(file);
+            //                 reader.readAsDataURL(file);
             //             }
             //         }
             //         else if (self.file == '') {

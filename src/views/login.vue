@@ -244,10 +244,8 @@ export default {
             username: '',
             signupemail: '',
             signuppassword: '',
-            selectedTabIndex: '',
             saveFileLoading: false,
             saveFileLoadingLogin: false,
-            showForgotPassword: false,
             emailLoading: false,
             login: {
                 email: "",
@@ -293,7 +291,7 @@ export default {
         // }
        async  getTokenFromSocialLogin(){
                 let self = this
-                let valid = await this.validateEmail(this.varifyEmail); ;
+                let valid = await this.validateEmail(this.varifyEmail); 
                 if(!valid){
                     this.$message.warning("Please enter a valid email address")
                 }else{
@@ -839,7 +837,7 @@ export default {
             
         var q = searchParams[s].split('=');
        
-        configObj[q[0]] = !!q[1] ? unescape(q[1]) : "";
+        configObj[q[0]] = q[1] ? unescape(q[1]) : "";
         }
         }
         if(Object.keys(configObj)[0] == "/login?ob_id")

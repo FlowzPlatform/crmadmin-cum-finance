@@ -19,19 +19,19 @@
 						</AutoComplete>
 					</FormItem>
 					<FormItem label="Description" prop="description">
-						<Input v-model="formItem.description" type="textarea"  placeholder="Enter Description"></Input>
+						<Input v-model="formItem.description" type="textarea"  placeholder="Enter Description"/>
 					</FormItem>
 					<FormItem label="Due Date" prop="duedate">
 						<DatePicker type="date" placeholder="Select date" v-model="formItem.duedate"></DatePicker>
 					</FormItem>
 					<FormItem label="Quantity" prop="qty">
-						<Input v-model="formItem.qty" placeholder="Enter Quantity" style="width:100%"></Input>
+						<Input v-model="formItem.qty" placeholder="Enter Quantity" style="width:100%"/>
 					</FormItem>
 					<FormItem label="Unit Amount" :input-width="40">
 						<Row>
 						<Col span="12">
 							<FormItem prop="amount1">
-							<Input v-model="formItem.amount1" placeholder="Enter Amount"></Input>
+							<Input v-model="formItem.amount1" placeholder="Enter Amount"/>
 							</FormItem>
 						</Col>
 						<Col span="12">

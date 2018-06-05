@@ -8,7 +8,10 @@
                     </Button>
                     <DropdownMenu style="width: 200px;" slot="list">
                         <template v-for="(child, i) in item.children">
-                            <DropdownItem :name="child.name" :key="i"><Icon :type="child.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(child) }}</span></DropdownItem>
+                            <DropdownItem :name="child.name" :key="i">
+                                <Icon :type="child.icon"></Icon>
+                                <span style="padding-left:10px;">{{ itemTitle(child) }}</span>
+                            </DropdownItem>
                         </template>
                     </DropdownMenu>
                 </Dropdown>
@@ -17,7 +20,10 @@
                         <Icon :size="20" :color="iconColor" :type="item.icon"></Icon>
                     </Button>
                     <DropdownMenu style="width: 200px;" slot="list">
-                        <DropdownItem :name="item.children[0].name" :key="'d' + index"><Icon :type="item.icon"></Icon><span style="padding-left:10px;">{{ itemTitle(item.children[0]) }}</span></DropdownItem>
+                        <DropdownItem :name="item.children[0].name" :key="'d' + index">
+                            <Icon :type="item.icon"></Icon>
+                            <span style="padding-left:10px;">{{ itemTitle(item.children[0]) }}</span>
+                        </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
             </div>
@@ -26,32 +32,32 @@
 </template>
 
 <script>
-export default {
-    name: 'sidebarMenuShrink',
-    props: {
-        menuList: {
-            type: Array
+    export default {
+        name: 'sidebarMenuShrink',
+        props: {
+            menuList: {
+                type: Array
+            },
+            iconColor: {
+                type: String,
+                default: 'white'
+            },
+            menuTheme: {
+                type: String,
+                default: 'darck'
+            }
         },
-        iconColor: {
-            type: String,
-            default: 'white'
-        },
-        menuTheme: {
-            type: String,
-            default: 'darck'
-        }
-    },
-    methods: {
-        changeMenu (active) {
-            this.$emit('on-change', active);
-        },
-        itemTitle (item) {
-            if (typeof item.title === 'object') {
-                return this.$t(item.title.i18n);
-            } else {
-                return item.title;
+        methods: {
+            changeMenu(active) {
+                this.$emit('on-change', active);
+            },
+            itemTitle(item) {
+                if (typeof item.title === 'object') {
+                    return this.$t(item.title.i18n);
+                } else {
+                    return item.title;
+                }
             }
         }
-    }
-};
+    };
 </script>

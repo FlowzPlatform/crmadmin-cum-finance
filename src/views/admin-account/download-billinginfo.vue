@@ -1,12 +1,14 @@
 <template>
     <div style="position: relative;width: 21cm; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
-        <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
+        <header style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
             <div id="logo" style="float: left;margin-top: 8px;">
                 <img :src="emailDataCompany.logo" style="height: 70px;">
             </div>
-            <div v-if = "emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
-                <h2  style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
-                <div>{{emailDataCompany.address.AddressLine1}}<br> {{emailDataCompany.address.AddressLine2}}<br> {{emailDataCompany.address.city}}  {{emailDataCompany.address.PostalCode}}</div>
+            <div v-if="emailDataCompany.address != undefined" id="company" style="float: right;text-align: right;font-size: 14px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
+                <h2 style="font-size: 18px;font-weight: normal;margin: 0;">{{emailDataCompany.address.name}}</h2>
+                <div>{{emailDataCompany.address.AddressLine1}}
+                    <br> {{emailDataCompany.address.AddressLine2}}
+                    <br> {{emailDataCompany.address.city}} {{emailDataCompany.address.PostalCode}}</div>
                 <div>{{emailDataCompany.address.country}}</div>
                 <!--<div>
                         <a href="mailto:company@example.com" style="color: #0087C3;text-decoration: none;">company@example.com</a>
@@ -17,40 +19,42 @@
         <main>
             <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <div id="client" style="padding-left: 6px;border-left: 6px solid #0087C3;float: left;">
-                    <div  style="color: #777777;">INVOICE TO:</div>
-                    <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.user_billing_info.name}}</h2>
-                    <div >{{row.user_billing_info.street1}}, <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}},</span> {{row.user_billing_info.city}}-{{row.user_billing_info.postalcode}}, </div>
-                    <div >{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>                    
-                    <div >
+                    <div style="color: #777777;">INVOICE TO:</div>
+                    <h2 style="font-size: 16px;font-weight: normal;margin: 0;">{{row.user_billing_info.name}}</h2>
+                    <div>{{row.user_billing_info.street1}},
+                        <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}},</span> {{row.user_billing_info.city}}-{{row.user_billing_info.postalcode}},
+                    </div>
+                    <div>{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>
+                    <div>
                         <a href="mailto:john@example.com" style="color: #0087C3;text-decoration: none;">{{row.user_billing_info.email}} </a>
                     </div>
                 </div>
                 <div id="invoice" style="float: right;text-align: right;">
                     <h1 style="color: #0087C3;font-size: 18px;line-height: 1em;font-weight: normal;margin: 0 0 10px 0;">{{row.billing_details.data.InvoiceNumber}}</h1>
-                    <div  style="font-size: 12px;color: #777777;">Date of Invoice: {{moment(row.billing_details.data.Date).format('DD-MMM-YYYY')}}</div>
+                    <div style="font-size: 12px;color: #777777;">Date of Invoice: {{moment(row.billing_details.data.Date).format('DD-MMM-YYYY')}}</div>
                     <!--<div  style="font-size: 12px;color: #777777;">Due Date: {{moment(row.billing_details.data.DueDate).format('DD-MMM-YYYY')}}</div>-->
                 </div>
             </div>
             <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;margin-bottom:20px;">
                 <thead>
                     <tr>
-                        <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                        <th style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
                         ">#</th>
-                        <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                        <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                        <th  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                        <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                        <th style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
+                        <th style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
+                        <th style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
+                        <th style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, inx) in row.products">
-                        <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                        <td  style="text-align: left;font-weight: normal;padding: 5px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                        <td style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                        <td style="text-align: left;font-weight: normal;padding: 5px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
                             <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_description.product_name}}</h3>
                             {{text(item.product_description.description)}}</td>
-                        <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.unit_price)}}</td>
-                        <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.total_qty}}</td>
-                        <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ getMulti(item.total_qty, item.unit_price) }}</td>
+                        <td style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.unit_price)}}</td>
+                        <td style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.total_qty}}</td>
+                        <td style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ getMulti(item.total_qty, item.unit_price) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -97,8 +101,8 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     import jQuery from 'jquery';
     import owlCarousel from 'owl.carousel';
-     import config from '../../config/customConfig.js'    
-    import Cookies from 'js-cookie'; 
+    import config from '../../config/customConfig.js'
+    import Cookies from 'js-cookie';
     const accounting = require('accounting-js');
     let axios = require('axios');
     let result;
@@ -115,23 +119,23 @@
         },
         methods: {
             getMulti(a, b) {
-                return accounting.formatMoney(a * b) ;
+                return accounting.formatMoney(a * b);
             },
-            getSubTotal (a, b, c, d) {
+            getSubTotal(a, b, c, d) {
                 var sum = 0;
                 sum = sum + d;
                 var res = c.hasOwnProperty('charges')
-                if ( res == false) {
-                    return accounting.formatMoney((a*b) + parseFloat(sum))
+                if (res == false) {
+                    return accounting.formatMoney((a * b) + parseFloat(sum))
                 }
                 else {
-                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
+                    return accounting.formatMoney((a * b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
                 }
             },
-            accounting(item){
-              return accounting.formatMoney(item)
+            accounting(item) {
+                return accounting.formatMoney(item)
             },
-            getShippingCharge(item){
+            getShippingCharge(item) {
                 var sum = 0;
                 sum = sum + item;
                 return accounting.formatMoney(sum)
@@ -146,60 +150,60 @@
                 }
                 return accounting.formatMoney(sum)
             },
-            getCharges(charge, products){
+            getCharges(charge, products) {
                 let sum = 0
                 for (let item of products) {
                     sum += item.total_qty * item.unit_price
                 }
                 let res = charge - sum
-                return accounting.formatMoney(res)                
+                return accounting.formatMoney(res)
             },
-            invoiceData(){
+            invoiceData() {
                 let self = this;
                 axios.get(config.default.serviceUrl + 'settings/' + self.row.setting_id, {
-                    headers:{
-                        Authorization : Cookies.get('auth_token'),
-                        subscriptionId : Cookies.get('subscriptionId')
+                    headers: {
+                        Authorization: Cookies.get('auth_token'),
+                        subscriptionId: Cookies.get('subscriptionId')
                     },
                 })
-                .then(function (response) {
-                    console.log("response------>iuy",response.data);
-                    self.emailDataCompany = response.data
-                })
-                .catch(function (error) {
-                    console.log("error",error);
-                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                        let location = psl.parse(window.location.hostname)
-                        location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
-                        self.$store.commit('logout', self);
-                        
-                        self.$router.push({
-                            name: 'login'
-                        });
-                        self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                        self.$Notice.error({
-                            title: error.response.statusText,
-                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                            duration: 0
-                        })
-                    }else {
-                        self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                    }
-                });
+                    .then(function (response) {
+                        console.log("response------>iuy", response.data);
+                        self.emailDataCompany = response.data
+                    })
+                    .catch(function (error) {
+                        console.log("error", error);
+                        if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+
+                            Cookies.remove('auth_token', { domain: location })
+                            Cookies.remove('subscriptionId', { domain: location })
+                            self.$store.commit('logout', self);
+
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 0
+                            })
+                        } else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    });
             }
-            
+
         },
         filters: {
             upper(item) {
@@ -207,11 +211,11 @@
             }
         },
         mounted() {
-            
+
         },
         watch: {
-            'row': async function(id) {
-                  this.invoiceData()
+            'row': async function (id) {
+                this.invoiceData()
             }
         }
     };

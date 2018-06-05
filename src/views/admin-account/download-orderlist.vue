@@ -77,7 +77,8 @@
                                                             </tr>
                                                             <tr>
                                                                 <td align="center" valign="" style="height: 70px;width: 105px">
-                                                                    <img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/>
+                                                                    <img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"
+                                                                    />
                                                                 </td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.sku}}</td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.product_name}}</td>
@@ -118,14 +119,21 @@
                                                                     <table border="0" cellpadding="0" cellspacing="0" width="200">
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top">Imprint Method : <span style="color: #404040"> {{element.imprint_method_name}}</span>
-                                                                                    <br><span v-if="element.no_of_color">How Many Colors : <span style="color: #404040">{{element.no_of_color}} Color</span></span><span v-else></span>
-                                                                                    <br><span v-if="element.selected_colors">
-                                                                                            <span v-for="(item) in element.selected_colors"> Color : 
-                                                                                                <span style="color: #404040">{{item}} </span>
-                                                                                            </span>
+                                                                                <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top">Imprint Method :
+                                                                                    <span style="color: #404040">
+                                                                                        {{element.imprint_method_name}}</span>
+                                                                                    <br>
+                                                                                    <span v-if="element.no_of_color">How Many Colors :
+                                                                                        <span style="color: #404040">{{element.no_of_color}} Color</span>
+                                                                                    </span>
+                                                                                    <span v-else></span>
+                                                                                    <br>
+                                                                                    <span v-if="element.selected_colors">
+                                                                                        <span v-for="(item) in element.selected_colors"> Color :
+                                                                                            <span style="color: #404040">{{item}} </span>
                                                                                         </span>
-                                                                                        <span v-else></span>
+                                                                                    </span>
+                                                                                    <span v-else></span>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -156,7 +164,8 @@
                                                             </tr>
                                                             <tr>
                                                                 <td align="left" valign="top" width="15"></td>
-                                                                <td style="text-align: justify;background: #FFF;font-size: 10px;color: #404040;color: #666;font-style: italic" align="left" valign="top">{{item.special_instruction}}</td>
+                                                                <td style="text-align: justify;background: #FFF;font-size: 10px;color: #404040;color: #666;font-style: italic" align="left"
+                                                                    valign="top">{{item.special_instruction}}</td>
                                                                 <td align="right" valign="top" width="15"></td>
                                                             </tr>
                                                             <tr>
@@ -235,19 +244,30 @@
                                                                         <!--<td align="left" valign="top" style="font-size:12px">TAX</td>-->
                                                                         <td width="20" align="left" valign="top"></td>
                                                                     </tr>
-                                                                    <tr >
+                                                                    <tr>
                                                                         <td width="20" align="left" valign="top"></td>
                                                                         <td style="font-weight: normal;font-size: 10px;color: #404040" align="left" valign="top">{{i.shipping_address.name}} -
                                                                             <br>{{i.shipping_address.street1}},
                                                                             <br>{{i.shipping_address.city}} - {{i.shipping_address.postalcode}},
                                                                             <br>{{i.shipping_address.state}}, {{i.shipping_address.country}}.
                                                                             <br>T: {{i.shipping_address.phone}} </td>
-                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type : <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
-                                                                            <br>Shipping Carrier :<span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span> <span v-else> -  </span>
-                                                                            <br>Method : <span style="color: #404040" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span>
-                                                                            <br>In hand Date :<span style="color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
+                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Shipping Type :
+                                                                            <span style="color: #404040">{{item.shipping_method.shipping_type}}</span>
+                                                                            <br>Shipping Carrier :
+                                                                            <span style="color: #404040" v-if="i.shipping_detail.shipping_carrier"> {{i.shipping_detail.shipping_carrier}}</span>
+                                                                            <span v-else> - </span>
+                                                                            <br>Method :
+                                                                            <span style="color: #404040" v-if="i.shipping_detail.shipping_method">
+                                                                                {{i.shipping_detail.shipping_method}}</span>
+                                                                            <span v-else> - </span>
+                                                                            <br>In hand Date :
+                                                                            <span style="color: #404040" v-if="i.shipping_detail.on_hand_date">
+                                                                                {{i.shipping_detail.on_hand_date}} </span>
+                                                                            <span v-else> - </span>
                                                                         </td>
-                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span></td>
+                                                                        <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top ">Charge :
+                                                                            <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
+                                                                        </td>
                                                                         <!--<td align="left" valign="top"> </td>-->
                                                                         <td width="20" align="left" valign="top"></td>
                                                                     </tr>
@@ -268,11 +288,14 @@
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">TOTAL : {{ getMulti(item.total_qty, item.unit_price) }}</td>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
-                                                                                <span v-else> $00.00 </span> 
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :
+                                                                <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
+                                                                <span v-else> $00.00 </span>
                                                             </td>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES: <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span> 
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES:
+                                                                <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">
+                                                                    {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span>
                                                                 <span v-else> $00.00 </span>
                                                             </td>
                                                             <td width="20" align="left" valign="top"></td>
@@ -290,8 +313,13 @@
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top"></td>
-                                                            <td align="right" valign="top" style="font-size:15px">SUB TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
-                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
+                                                            <td align="right" valign="top" style="font-size:15px">SUB TOTAL :
+                                                                <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">
+                                                                    {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}
+                                                                </span>
+                                                                <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0)
+                                                                    }} </span>
+                                                            </td>
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr>
@@ -364,16 +392,16 @@
         },
         methods: {
             getMulti(a, b) {
-                return accounting.formatMoney(a * b) ;
+                return accounting.formatMoney(a * b);
             },
-            getImgUrl (url, img) {
+            getImgUrl(url, img) {
                 // if(this.imgurl == undefined) {
                 //     return config.default.productImageUrl + url        
                 // }
-                console.log(url+img)
+                console.log(url + img)
                 return url + img
             },
-            getSubTotal (a, b, c, d) {
+            getSubTotal(a, b, c, d) {
                 let sum = 0;
                 for (let i of d) {
                     let Charge = i.shipping_detail.shipping_charge
@@ -383,17 +411,17 @@
                     sum = sum + Charge
                 }
                 let res = c.hasOwnProperty('charges')
-                if ( res == false) {
-                    return accounting.formatMoney((a*b) + parseFloat(sum))
+                if (res == false) {
+                    return accounting.formatMoney((a * b) + parseFloat(sum))
                 }
                 else {
-                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
+                    return accounting.formatMoney((a * b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
                 }
             },
-            accounting(item){
-              return accounting.formatMoney(item)
+            accounting(item) {
+                return accounting.formatMoney(item)
             },
-            getShippingCharge(arr){
+            getShippingCharge(arr) {
                 let sum = 0;
                 for (let i of arr) {
                     let Charge = i.shipping_detail.shipping_charge

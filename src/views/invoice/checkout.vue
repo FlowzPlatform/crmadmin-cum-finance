@@ -119,7 +119,7 @@
                                     </div>
                                     <div class="col-xs-6 col-lg-6 col-md-6">EXPIRY YEAR
                                       <FormItem prop="expiryYY">  
-                                        <date-picker type="year" :options="options3" v-model="payDetail.expiryYY"placeholder="Select year" style="width: 200px"></date-picker>
+                                        <date-picker type="year" :options="options3" v-model="payDetail.expiryYY" placeholder="Select year" style="width: 200px"></date-picker>
                                       </FormItem>
                                     </div>
                                   </div>

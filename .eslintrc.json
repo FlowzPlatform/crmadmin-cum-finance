@@ -1,24 +1,40 @@
 {
-    "extends": "standard",
-    "root": true,
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/essential"
+    ],
+    "parser": "vue-eslint-parser",
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 2017,
         "sourceType": "module"
     },
+    "root": true,
     "env": {
         "browser": true,
         "node": true
     },
-    "plugins": [ "html", "standard" ],
+    "plugins": [
+        "vue"
+    ],
+    "settings": {
+        "html/html-extensions": [
+            ".html",
+            ".vue"
+        ]
+    },
     "rules": {
-        "indent": ["error", 4, { "SwitchCase": 1 }],
-        "quotes": ["error", "single"],
-        "semi": ["error", "always"],
-        "no-console": ["error"],
-        "no-empty": 2,
-        "no-eq-null": 2,
-        "no-new": 0,
-        "no-fallthrough": 0,
-        "no-unreachable": 0
+        "no-console": 1,
+        "no-unused-vars": 1,
+        "no-undef": 1,
+        "no-empty": 1,
+        "vue/require-v-for-key": 1,
+        "vue/valid-v-for": 1,
+        "vue/no-parsing-error": [
+            1,
+            {
+                "x-invalid-end-tag": false
+            }
+        ],
+        "vue/no-unused-vars": 1
     }
 }

@@ -490,7 +490,7 @@
                                         label: k
                                     }
                                 }, [
-                                    h('Checkbox', {
+                                    h('Checkbox', {	
                                         props: {
                                             value: self.exData[k]
                                         },
@@ -686,8 +686,7 @@
 					}
 				}).then(function (response){
 					console.log("------------------------response",response.data.data[0]);
-					
-					 	let poData=response.data.data;
+						let poData=response.data.data;
 						if(poData && poData.length>0){
 							let poDetail=poData[0]
 							self.date = moment(poDetail.PO_generate_date).format('DD-MMM-YYYY')  
@@ -946,7 +945,7 @@
 					this.$Notice.error({
 						title: 'Error',
 						desc: 'Please Select Due Date of Invoice',
-						duration: 4.5
+						duration: 4.50
 					})
 				}
 

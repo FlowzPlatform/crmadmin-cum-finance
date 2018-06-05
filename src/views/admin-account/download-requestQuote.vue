@@ -1,8 +1,9 @@
 <template>
   <div>
-  <!-- <div class="mj-container"> -->
+    <!-- <div class="mj-container"> -->
     <div style="margin:0 auto;background:#f0f0f0">
-      <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%;background:#f0f0f0" align="center" border="0">
+      <table role="presentation" cellpadding="0" cellspacing="0" style="font-size:0;width:100%;background:#f0f0f0" align="center"
+        border="0">
         <tbody>
           <tr>
             <td style="text-align:center;vertical-align:top;border:1px solid #ddd;direction:ltr;font-size:0;padding:0px 0">
@@ -39,7 +40,8 @@
                     <tr>
                       <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:20px 0;padding-bottom:0;padding-left:10px;padding-right:10px;padding-top:10px">
                         <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #ddd;border-top:2px solid red" width="100%" border="0">
+                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #ddd;border-top:2px solid red"
+                            width="100%" border="0">
                             <tbody>
                               <tr>
                                 <td style="word-wrap:break-word;font-size:0;padding:5px 15px" align="left">
@@ -114,7 +116,8 @@
                     <tr>
                       <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
                         <div class="mj-column-per-100 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #ddd;border-top:2px solid red" width="100%" border="0">
+                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #ddd;border-top:2px solid red"
+                            width="100%" border="0">
                             <tbody>
                               <tr>
                                 <td style="word-wrap:break-word;font-size:0;padding:5px 15px" align="left">
@@ -135,7 +138,8 @@
                     <tr>
                       <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0;padding:0;padding-left:10px;padding-right:10px">
                         <div class="mj-column-per-80 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-right:1px solid #ddd" width="100%" border="0">
+                          <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-right:1px solid #ddd" width="100%"
+                            border="0">
                             <tbody>
                               <tr>
                                 <td style="border-left: solid 1px #e8e8e8;">
@@ -174,7 +178,7 @@
                             </tbody>
                           </table>
                         </div>
-                        </td>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -222,7 +226,8 @@
                           </table>
                         </div> -->
                         <div class="mj-column-per-90 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;">
-                          <table role="presentation" cellpadding="0" cellspacing="0" style="background: rgb(255, 255, 255);border-width: 2px 1px 1px;border-style: solid;border-color: red rgb(221, 221, 221) rgb(221, 221, 221);border-image: initial;" width="100%" border="0">
+                          <table role="presentation" cellpadding="0" cellspacing="0" style="background: rgb(255, 255, 255);border-width: 2px 1px 1px;border-style: solid;border-color: red rgb(221, 221, 221) rgb(221, 221, 221);border-image: initial;"
+                            width="100%" border="0">
                             <tbody>
                               <tr>
                                 <td style="word-wrap:break-word;font-size:0;padding:5px 15px" align="left">
@@ -245,28 +250,29 @@
                           </div>
                           <div class="mj-column-per-65 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
                             <div class="row">
-                            <div class="col-sm-12">
-                            <!-- <div class="estimate-row heading" style="backgroundColor:white;">
+                              <div class="col-sm-12">
+                                <!-- <div class="estimate-row heading" style="backgroundColor:white;">
                               <span>Quantity {{index+1}}</span>
                             </div> -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-left: solid 1px #e5e5e5;" width="100%" border="0">
-                            <tbody>
-                              <tr v-for="(element,inx) in item.color_quantity">
-                                <td style="word-wrap:break-word;font-size:0;padding-top:5px;padding-bottom:5px" align="center">
-                                  <div :style="{ backgroundColor: inx }" style="height:25px;width:25px;border: solid 1px #e8e8e8;">
-                                    </div>
-                                </td>
-                                <td align="center">{{inx}}</td>
-                                <td align="left">
-                                  <strong>Total : {{element}}</strong>
-                                </td>
-                              </tr>
+                                <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd;border-left: solid 1px #e5e5e5;"
+                                  width="100%" border="0">
+                                  <tbody>
+                                    <tr v-for="(element,inx) in item.color_quantity">
+                                      <td style="word-wrap:break-word;font-size:0;padding-top:5px;padding-bottom:5px" align="center">
+                                        <div :style="{ backgroundColor: inx }" style="height:25px;width:25px;border: solid 1px #e8e8e8;">
+                                        </div>
+                                      </td>
+                                      <td align="center">{{inx}}</td>
+                                      <td align="left">
+                                        <strong>Total : {{element}}</strong>
+                                      </td>
+                                    </tr>
 
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-          
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
                           </div>
                           <!-- <div class="mj-column-per-20 outlook-group-fix" style="vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%">
                             <table role="presentation" cellpadding="0" cellspacing="0" style="background:#fff;border-bottom:1px solid #ddd;border-right:1px solid #ddd" width="100%" border="0">
@@ -382,32 +388,32 @@
         </tbody>
       </table>
     </div>
-  <!-- </div> -->
-</div>
+    <!-- </div> -->
+  </div>
 </template>
 <script>
-    import config from '../../config/customConfig.js'
-    export default {
-        props: {
-            row: Object
-        },
-        data() {
-            return {
-              imgurl: this.row.product_image_url
-            }
-        },
-        methods: {
-          getImgUrl (url, img) {
-            // if(this.imgurl == undefined) {
-            //   return config.default.productImageUrl + url        
-            // }
-            console.log(url+img)
-                return url + img
-          },
-        },
-        mounted() {
-        }
-    };
+  import config from '../../config/customConfig.js'
+  export default {
+    props: {
+      row: Object
+    },
+    data() {
+      return {
+        imgurl: this.row.product_image_url
+      }
+    },
+    methods: {
+      getImgUrl(url, img) {
+        // if(this.imgurl == undefined) {
+        //   return config.default.productImageUrl + url        
+        // }
+        console.log(url + img)
+        return url + img
+      },
+    },
+    mounted() {
+    }
+  };
 </script>
 <style>
 </style>

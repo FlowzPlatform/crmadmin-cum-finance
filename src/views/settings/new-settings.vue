@@ -9,7 +9,7 @@
                     <FormItem label="Configuration Name" prop="configName">
                         <Input v-model="XeroformValidate.configName" placeholder="Enter your Configuration Name"></Input>
                     </FormItem>
-                    
+
                     <FormItem label="User Agent" prop="useragent">
                         <Input v-model="XeroformValidate.useragent" placeholder="Enter your useragent"></Input>
                     </FormItem>
@@ -22,10 +22,7 @@
                     <FormItem label="Private Key" prop="privateKey">
                         <!-- <Input v-model="XeroformValidate.privateKey" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
                          -->
-                         <Upload v-model="XeroformValidate.privateKey"
-                            :before-upload="handleUpload"
-                            action=""
-                            :show-upload-list="uploadlist">
+                        <Upload v-model="XeroformValidate.privateKey" :before-upload="handleUpload" action="" :show-upload-list="uploadlist">
                             <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
                         </Upload>
                         <div v-if="file !== null">Uploaded file: {{ file.name }} </div>
@@ -34,10 +31,10 @@
                         <Checkbox size="large" v-model="isActive"></Checkbox>
                     </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="XerohandleSubmit('XeroformValidate')" :loading ="loading">Submit</Button>
+                        <Button type="primary" @click="XerohandleSubmit('XeroformValidate')" :loading="loading">Submit</Button>
                         <Button type="ghost" @click="handleReset('XeroformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
-                    
+
                 </Form>
             </TabPane>
             <TabPane label="Quickbook">
@@ -61,7 +58,7 @@
                         <Checkbox size="large" v-model="isActiveQb"></Checkbox>
                     </FormItem>
                     <FormItem>
-                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')" :loading ="loading" >Submit</Button>
+                        <Button type="primary" @click="QBhandleSubmit('QBformValidate')" :loading="loading">Submit</Button>
                         <Button type="ghost" @click="handleReset('QBformValidate')" style="margin-left: 8px">Reset</Button>
                     </FormItem>
                 </Form>
@@ -93,13 +90,13 @@
 
 <script>
     let config = require("@/config/customConfig.js")
-    let feathersUrl =  config.default.serviceUrl;
+    let feathersUrl = config.default.serviceUrl;
     import _ from 'lodash'
     import Vue from 'vue'
     import VueWidgets from 'vue-widgets'
     import 'vue-widgets/dist/styles/vue-widgets.css'
     import axios from "axios"
-    const reader  = new FileReader();
+    const reader = new FileReader();
     import Cookies from 'js-cookie';
     import settingMenu from './settingMenu.vue';
 
@@ -107,10 +104,10 @@
 
 
     export default {
-        components : {
+        components: {
             settingMenu
         },
-        data () {
+        data() {
             const validateBlank = (rule, value, callback) => {
                 if (value.trim() === '') {
                     callback(new Error('Space is not allowed'));
@@ -120,18 +117,18 @@
             };
             return {
                 uploadlist: false,
-               tabs: 1 ,
-               loading : false,
-               file: null,
-               isActive: false,
-               isActiveQb:false,
-               isActivecustom:false,
+                tabs: 1,
+                loading: false,
+                file: null,
+                isActive: false,
+                isActiveQb: false,
+                isActivecustom: false,
                 loadingStatus: false,
-               XeroformValidate: {
-                    configName : '',
+                XeroformValidate: {
+                    configName: '',
                     useragent: '',
-                    consumerKey:'',
-                    consumerSecret:'',
+                    consumerKey: '',
+                    consumerSecret: '',
                     privateKey: ''
                 },
                 XeroruleValidate: {
@@ -149,10 +146,10 @@
                     ]
                 },
                 QBformValidate: {
-                    configName : '',
+                    configName: '',
                     refresh_token: '',
-                    client_id:'',
-                    client_secret:'',
+                    client_id: '',
+                    client_secret: '',
                     realmId: ''
                 },
                 QBruleValidate: {
@@ -172,12 +169,12 @@
                         { required: true, message: "RealmId cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ]
                 },
-                customformValidate : {
-                    configName : '',
+                customformValidate: {
+                    configName: '',
                     customer_url: '',
-                    invoice_url:'',
+                    invoice_url: '',
                 },
-                customruleValidate : {
+                customruleValidate: {
                     configName: [
                         { required: true, message: "Configuration name Key cannot be empty", trigger: 'blur' }
                     ],
@@ -188,7 +185,7 @@
                         { required: true, message: 'invoice Url cannot be empty', trigger: 'blur' }
                     ]
                 }
-                
+
             }
         },
         methods: {
@@ -200,111 +197,111 @@
                     this.handleReset('QBformValidate')
                 }
             },
-            goToSettingsList(){
+            goToSettingsList() {
                 this.$router.push({
                     name: 'Settings'
                 });
             },
-            async handleUpload (file) {
+            async handleUpload(file) {
                 this.file = file
                 return false;
             },
-            
-            async XerohandleSubmit (name) {
+
+            async XerohandleSubmit(name) {
                 let self = this;
-                
-                this.$refs[name].validate(async  (valid)   => {
+
+                this.$refs[name].validate(async (valid) => {
                     if (valid) {
                         console.log(this.file)
                         let file_ext = this.file.name.split('.').pop()
                         console.log("self.file.type file_ext", file_ext)
-                        if( self.file == null || file_ext !== "pem"){
+                        if (self.file == null || file_ext !== "pem") {
                             self.$Message.error({
                                 content: ' Please, attach a .pem file!',
                                 duration: 4.5
                             });
 
-                        }else{
+                        } else {
                             this.loading = true;
-                            var file    =this.file
-                            var reader  = new FileReader();
+                            var file = this.file
+                            var reader = new FileReader();
 
-                            reader.addEventListener("load", function () {
-                                let lastModified = self.file.lastModified +"-"+self.file.name;
-                                
-                                let  data = {
+                            reader.addEventListener("load", function () {
+                                let lastModified = self.file.lastModified + "-" + self.file.name;
+
+                                let data = {
                                     "configName": self.XeroformValidate.configName.trim(),
-                                    "certificate" : reader.result.substring( reader.result.indexOf(",")+1)  ,
-                                    "useragent" :  self.XeroformValidate.useragent.trim(),
-                                    "consumerKey" : self.XeroformValidate.consumerKey.trim(),
-                                    "consumerSecret" : self.XeroformValidate.consumerSecret.trim(),
-                                    "domain" :  'Xero' ,
-                                    "pem" : lastModified,
-                                    "isActive" : self.isActive,
-                                    "isDeleated" : false,
-                                    "subscriptionId" : Cookies.get('subscriptionId')
+                                    "certificate": reader.result.substring(reader.result.indexOf(",") + 1),
+                                    "useragent": self.XeroformValidate.useragent.trim(),
+                                    "consumerKey": self.XeroformValidate.consumerKey.trim(),
+                                    "consumerSecret": self.XeroformValidate.consumerSecret.trim(),
+                                    "domain": 'Xero',
+                                    "pem": lastModified,
+                                    "isActive": self.isActive,
+                                    "isDeleated": false,
+                                    "subscriptionId": Cookies.get('subscriptionId')
                                 };
-                                
+
                                 axios({
                                     method: 'post',
-                                    url: feathersUrl +'settings',
-                                    headers:{
-                                        Authorization : Cookies.get('auth_token'),
-                                        subscriptionId : Cookies.get('subscriptionId')
+                                    url: feathersUrl + 'settings',
+                                    headers: {
+                                        Authorization: Cookies.get('auth_token'),
+                                        subscriptionId: Cookies.get('subscriptionId')
                                     },
                                     data: data
-                                })  
-                                .then(function (response) {
-                                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
-                                    self.loading = false;
-                                    self.$Message.success('Configuration Added Successfully');
-                                    self.handleReset('XeroformValidate')
-                                    self.$router.push({
-                                        name: 'Settings'
-                                    });
                                 })
-                                .catch(function (error) {
-                                    self.loading = false;
-                                    if(error.message == 'Network Error'){
-                                        self.$Notice.error({
-                                            title: "Error",
-                                            desc: 'API service unavailable',
-                                            duration: 10
-                                        })
-                                    }else if(error.response.status == 401){
-                                        let location = psl.parse(window.location.hostname)
-                                        location = location.domain === null ? location.input : location.domain
-                                        
-                                        Cookies.remove('auth_token' ,{domain: location}) 
-                                        self.$store.commit('logout', self);
-                                        
+                                    .then(function (response) {
+                                        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> ", response)
+                                        self.loading = false;
+                                        self.$Message.success('Configuration Added Successfully');
+                                        self.handleReset('XeroformValidate')
                                         self.$router.push({
-                                            name: 'login'
+                                            name: 'Settings'
                                         });
-                                        self.$Notice.error({
-                                            title: error.response.data.name,
-                                            desc: error.response.data.message,
-                                            duration: 10
-                                        })
-                                    }else if(error.response.status == 403){
-                                        self.$Notice.error({
-                                        duration:0, 
-                                        title: error.response.statusText,
-                                        desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                                        });
-                                    }else {
-                                        self.$Notice.error({
-                                            title: error.response.data.name,
-                                            desc: error.response.data.message,
-                                            duration: 10
-                                        })
-                                    }
-                                
-                                });
-                            }, false);
+                                    })
+                                    .catch(function (error) {
+                                        self.loading = false;
+                                        if (error.message == 'Network Error') {
+                                            self.$Notice.error({
+                                                title: "Error",
+                                                desc: 'API service unavailable',
+                                                duration: 10
+                                            })
+                                        } else if (error.response.status == 401) {
+                                            let location = psl.parse(window.location.hostname)
+                                            location = location.domain === null ? location.input : location.domain
+
+                                            Cookies.remove('auth_token', { domain: location })
+                                            self.$store.commit('logout', self);
+
+                                            self.$router.push({
+                                                name: 'login'
+                                            });
+                                            self.$Notice.error({
+                                                title: error.response.data.name,
+                                                desc: error.response.data.message,
+                                                duration: 10
+                                            })
+                                        } else if (error.response.status == 403) {
+                                            self.$Notice.error({
+                                                duration: 0,
+                                                title: error.response.statusText,
+                                                desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>'
+                                            });
+                                        } else {
+                                            self.$Notice.error({
+                                                title: error.response.data.name,
+                                                desc: error.response.data.message,
+                                                duration: 10
+                                            })
+                                        }
+
+                                    });
+                            }, false);
 
                             if (file) {
-                                reader.readAsDataURL(file);
+                                reader.readAsDataURL(file);
                             }
                         }
                     } else {
@@ -314,80 +311,80 @@
                 })
             },
 
-            async QBhandleSubmit (name) {
+            async QBhandleSubmit(name) {
 
                 let self = this;
-                this.$refs[name].validate(async  (valid)   => {
+                this.$refs[name].validate(async (valid) => {
                     if (valid) {
                         self.loading = true;
 
-                        let  data = {
+                        let data = {
                             "configName": self.QBformValidate.configName.trim(),
-                            "refresh_token" :  self.QBformValidate.refresh_token.trim(),
-                            "client_id" : self.QBformValidate.client_id.trim(),
-                            "client_secret" : self.QBformValidate.client_secret.trim(),
-                            "domain" : 'QB',
-                            "realmId" : self.QBformValidate.realmId.trim(),
-                            "isActive" : self.isActiveQb,
-                            "isDeleated" : false,
-                            "subscriptionId" : Cookies.get('subscriptionId')
+                            "refresh_token": self.QBformValidate.refresh_token.trim(),
+                            "client_id": self.QBformValidate.client_id.trim(),
+                            "client_secret": self.QBformValidate.client_secret.trim(),
+                            "domain": 'QB',
+                            "realmId": self.QBformValidate.realmId.trim(),
+                            "isActive": self.isActiveQb,
+                            "isDeleated": false,
+                            "subscriptionId": Cookies.get('subscriptionId')
                         };
                         axios({
                             method: 'post',
-                            url: feathersUrl +'settings',
-                            headers:{
-                                Authorization : Cookies.get('auth_token'),
-                                subscriptionId : Cookies.get('subscriptionId')
+                            url: feathersUrl + 'settings',
+                            headers: {
+                                Authorization: Cookies.get('auth_token'),
+                                subscriptionId: Cookies.get('subscriptionId')
                             },
                             data: data
-                        })  
-                        .then(function (response) {
-                            console.log(response)
+                        })
+                            .then(function (response) {
+                                console.log(response)
                                 self.loading = false;
                                 self.$Message.success('Configuration Added Successfully');
                                 self.handleReset('QBformValidate')
                                 self.$router.push({
-                                name: 'Settings'
+                                    name: 'Settings'
+                                });
+                            })
+                            .catch(function (error) {
+                                self.loading = false;
+                                if (error.message == 'Network Error') {
+                                    self.$Notice.error({
+                                        title: "Error",
+                                        desc: 'API service unavailable',
+                                        duration: 10
+                                    })
+                                } else if (error.response.status == 401) {
+                                    let location = psl.parse(window.location.hostname)
+                                    location = location.domain === null ? location.input : location.domain
+
+                                    Cookies.remove('auth_token', { domain: location })
+                                    self.$store.commit('logout', self);
+
+                                    self.$router.push({
+                                        name: 'login'
+                                    });
+                                    self.$Notice.error({
+                                        title: error.response.data.name,
+                                        desc: error.response.data.message,
+                                        duration: 10
+                                    })
+                                } else if (error.response.status == 403) {
+                                    self.$Notice.error({
+                                        duration: 0,
+                                        title: error.response.statusText,
+                                        desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>'
+                                    });
+                                } else {
+                                    self.$Notice.error({
+                                        title: error.response.data.name,
+                                        desc: error.response.data.message,
+                                        duration: 10
+                                    })
+                                }
                             });
-                        })
-                        .catch(function (error) {
-                            self.loading = false;
-                            if(error.message == 'Network Error'){
-                                self.$Notice.error({
-                                    title: "Error",
-                                    desc: 'API service unavailable',
-                                    duration: 10
-                                })
-                            }else if(error.response.status == 401){
-                                let location = psl.parse(window.location.hostname)
-                                location = location.domain === null ? location.input : location.domain
-                                
-                                Cookies.remove('auth_token' ,{domain: location}) 
-                                self.$store.commit('logout', self);
-                                
-                                self.$router.push({
-                                    name: 'login'
-                                });
-                                self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
-                                    duration: 10
-                                })
-                            }else if(error.response.status == 403){
-                                self.$Notice.error({
-                                duration:0, 
-                                title: error.response.statusText,
-                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                                });
-                            }else {
-                                self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
-                                    duration: 10
-                                })
-                            }  
-                        });
-                        
+
                     }
                     else {
                         self.$Message.error('Fail!');
@@ -398,8 +395,8 @@
             // async customhandleSubmit (name) {
 
             //     let self = this;
-                
-                   
+
+
             //             self.loading = true;
             //             let  data = {
             //                         "configName": "Custom Configuration",
@@ -431,10 +428,10 @@
             //                        self.$router.push({
             //                         name: 'login'
             //                     })
-                               
+
             //                 });
-                    
-                
+
+
             // },
 
             // async customhandleSubmit (name) {
@@ -473,10 +470,10 @@
             //                        self.$router.push({
             //                         name: 'login'
             //                     })
-                               
+
             //                 });
-                        
-                        
+
+
             //         }
             //         else {
             //             self.$Message.error('Fail!');
@@ -484,7 +481,7 @@
             //     })
             // },
 
-            handleReset (name) {
+            handleReset(name) {
                 this.$refs[name].resetFields();
                 this.file = null
                 this.isActive = false
@@ -492,7 +489,7 @@
             }
         },
         computed: {
-            productChunks(){
+            productChunks() {
                 return _.chunk(this.data6, 2);
             }
         },
@@ -504,14 +501,15 @@
 </script>
 
 <style scoped>
-.settings_header{
-    padding : 10px;
-    text-align:right;
-    background: #cacaca;
-    width:100%;
-    margin:14px 2px;
-}
-.ivu-upload-list{
-    display: none;
-}
+    .settings_header {
+        padding: 10px;
+        text-align: right;
+        background: #cacaca;
+        width: 100%;
+        margin: 14px 2px;
+    }
+
+    .ivu-upload-list {
+        display: none;
+    }
 </style>

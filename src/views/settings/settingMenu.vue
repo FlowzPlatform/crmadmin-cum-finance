@@ -1,9 +1,9 @@
 <style>
-    .slide{
+    .slide {
         position: fixed;
         background: #485060;
         color: #fff;
-        width: 0px; 
+        width: 0px;
         right: 30px;
         z-index: 9;
         height: auto;
@@ -15,7 +15,7 @@
         bottom: 75px;
     }
 
-    #toggle{
+    #toggle {
         cursor: pointer;
         position: absolute;
         right: 0;
@@ -28,16 +28,19 @@
         border-radius: 23px;
         box-shadow: 0px 0px 5px #3ac5fc;
     }
+
     .box {
         padding: 20px;
         cursor: pointer;
     }
+
     .ivu-tree-title {
-        color: hsla(0,0%,100%,.7);
+        color: hsla(0, 0%, 100%, .7);
         padding: 5px 4px;
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: 15px;
     }
+
     .ivu-tree-arrow {
         cursor: pointer;
         width: 12px;
@@ -55,14 +58,17 @@
         background-color: #475060;
     }
 
-    .ivu-tree-title-selected, .ivu-tree-title-selected:hover {
+    .ivu-tree-title-selected,
+    .ivu-tree-title-selected:hover {
         /*background-color: #475060;*/
         background: #363e4f;
-        color: #2d8cf0  ;
+        color: #2d8cf0;
     }
+
     #slide .ivu-tree {
         position: absolute;
     }
+
     #slide.opens .ivu-tree {
         bottom: 15px;
         right: 10px;
@@ -72,35 +78,35 @@
         padding: 10px;
         border-radius: 5px;
         box-shadow: 0px 0px 6px #3ac5fc;
-        min-width:220px;
+        min-width: 220px;
     }
 
-    #slide.opens .ivu-tree ul.ivu-tree-children > li > span {
-        float:  right;
+    #slide.opens .ivu-tree ul.ivu-tree-children>li>span {
+        float: right;
         width: auto;
         padding: 5px 0;
         margin: 0;
     }
 
-    #slide.opens .ivu-tree ul.ivu-tree-children li > ul {
+    #slide.opens .ivu-tree ul.ivu-tree-children li>ul {
         padding: 0 18px 0 0;
-        float:  left;
+        float: left;
         width: 100%;
     }
 
     #slide.opens .ivu-tree ul.ivu-tree-children li {
         display: inline-block;
         width: 100%;
-        float:  left;
+        float: left;
         margin: 0;
         white-space: nowrap;
     }
 
-    #slide.opens .ivu-tree ul.ivu-tree-children > li > span.ivu-tree-title {
+    #slide.opens .ivu-tree ul.ivu-tree-children>li>span.ivu-tree-title {
         margin-right: 7px;
     }
 
-    #slide.opens > .ivu-tree:before {
+    #slide.opens>.ivu-tree:before {
         content: "\F10A";
         display: inline-block;
         font-family: Ionicons;
@@ -135,7 +141,7 @@
 
 <script>
     export default {
-        data () {
+        data() {
             return {
                 toggle: false,
                 accountTab: true,
@@ -179,7 +185,7 @@
                 }
             },
             treeNodeClick(data) {
-                console.log("--------treedata",data)
+                console.log("--------treedata", data)
                 if (data[0].title === 'ACCOUNT') {
                     this.accountTab = true;
                     this.$store.state.settingData = ""
