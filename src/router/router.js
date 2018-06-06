@@ -483,23 +483,23 @@ export const appRouter = [
                 require(['@/views/invite/invite.vue'], resolve);
             }
         }]
+    },
+    {
+        path: '/received-po',
+        icon: 'ios-list-outline',
+        title: 'RECEIVED PO',
+        name: 'RECEIVED PO',
+        component: Main,
+        children: [{
+            path: 'received-po',
+            title: 'ReceivedPO',
+            icon: 'ios-list-outline',
+            name: 'ReceivedPO',
+            component: resolve => {
+                require(['@/views/purchaseOrder/received_po_list.vue'], resolve);
+            }
+        }]
     }
-    // {
-    //     path: '/invite',
-    //     icon: 'cash',
-    //     title: 'INVITE',
-    //     name: 'INVITE',
-    //     component: Main,
-    //     children: [
-    //         {
-    //             path: 'list-transaction',
-    //             title: 'List',
-    //             icon: 'ios-list-outline',
-    //             name: 'Transaction List',
-    //             component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
-    //         }
-    //     ]
-    // },
     // {
     //     path: '/crm',
     //     icon: 'person-stalker',

@@ -413,6 +413,9 @@
                             name :"Raised PO"
                         })
                     })
+                    .catch(function(error) {
+                        self.loading = false
+                    })
                 }
                 else {
 
