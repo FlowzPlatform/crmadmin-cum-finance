@@ -262,7 +262,9 @@ export default {
                 data: body,
                 headers:header,
             }).then(async function (response) {
+
                 console.log(">>>>>>>>>>>>>> response ",response.data.status)
+
                 if (response.status == 401) {
                     if(response.data.messages != undefined){
                         self.$Message.error({
