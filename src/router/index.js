@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
     if (to.query.route) {
         Cookies.set('route', to.query.route);
     }
-    console.log('Cookies.get("route")', Cookies.get('route'));
+    // console.log('Cookies.get("route")', Cookies.get('route'));
     iView.LoadingBar.start();
     Util.title(to.meta.title);
     if (!Cookies.get('auth_token') && to.name !== 'login' && to.name !== 'resetpassword' && to.name !== 'purchaseorderreceived') {

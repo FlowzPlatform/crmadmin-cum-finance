@@ -217,7 +217,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie';
 import moment from 'moment';
-import config from '../../config/customConfig.js'
 const accounting = require('accounting-js');
 // import eye from '../../images/Eye.png'
 import 'owl.carousel/dist/assets/owl.carousel.css';
@@ -232,15 +231,15 @@ export default {
   },
   name: 'list-billing',
   data () {
-  return {
-    imgurl: this.row.product_image_url,
-    data: '',
-    created_date: '',
-    commentMessage: '',
-    userid: '',
-    messageDataDisplay: [],
-    requestUser: '',
-    colors:[]
+    return {
+      imgurl: this.row.product_image_url,
+      data: '',
+      created_date: '',
+      commentMessage: '',
+      userid: '',
+      messageDataDisplay: [],
+      requestUser: '',
+      colors:[]
     }
   },
   methods: {
