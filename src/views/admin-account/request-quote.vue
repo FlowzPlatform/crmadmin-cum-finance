@@ -521,6 +521,7 @@ export default {
           self.list = await self.mockTableData(1,self.pageSize)
         //   self.data = self.list
           self.data.forEach(obj => {
+            
             Namearr.push(obj.user_info.fullname)
             Productarr.push(obj.product_description.product_name)
           })

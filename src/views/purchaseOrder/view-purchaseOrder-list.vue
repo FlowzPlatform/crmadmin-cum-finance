@@ -43,7 +43,7 @@
             <h2>Purchase Order</h2>
             <p style="font-size:16px">Purchase order received from {{row.PO_id}}</p>
             <p style="font-size:16px">To view the order please click below Button.</p>
-            <a :href='"http://localhost:8080/#/purchase-order-received?PO_id="+row.PO_id' style="background-color:#EB7035;border:1px solid #EB7035;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">View PO</a>  
+            <a :href='"https://crm.flowzcluster.tk/#/purchase-order-received?PO_id="+row.PO_id' style="background-color:#EB7035;border:1px solid #EB7035;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">View PO</a>  
         </div>
     </div>
 </template>

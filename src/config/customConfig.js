@@ -84,11 +84,12 @@ module.exports = {
         projecturl: 'https://api.' + process.env.domainkey + '/mom/',
         assigneeapi: 'https://api.' + process.env.domainkey + '/user/alluserdetails/',
         orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',
-
+        
         requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
         subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',
         commentrequestapi: 'https://api.' + process.env.domainkey + '/serverapi/comment-request',
         socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort
+
     }
 };

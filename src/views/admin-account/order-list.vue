@@ -343,7 +343,6 @@
               this.itemno = '';
               this.po_sent = ''; 
               this.listData(this.website)
-
             },
             async changeData() {
               console.log("Before this.filterArray------->",this.filterArray)
@@ -658,9 +657,6 @@
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c) {
                 var res = c.hasOwnProperty('charges')

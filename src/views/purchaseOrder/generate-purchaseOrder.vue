@@ -386,6 +386,9 @@
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
                     })
+                    .catch(function(error) {
+                        self.loading = false
+                    })
                 }
                 else {
 

@@ -202,6 +202,7 @@ export default {
     reset() {
       this.cname = '';
       this.pname = '';
+      this.listData(this.website);
     },
     async viewDetails(params,status){
         if (!status) return
