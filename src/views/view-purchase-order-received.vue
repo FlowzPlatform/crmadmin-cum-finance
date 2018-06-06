@@ -240,15 +240,20 @@
 
             quntityFun(row){    
                 let self=this
-                var shipDetail=row.shipping_method.shipping_detail
-                shipDetail.forEach((element) => {
-                    if(self.selected_address_id == element.selected_address_id){
-                     if(element.edited_color_quantity)
-                        self.productitem= element.edited_color_quantity
-                     else
-                        self.productitem= element.color_quantity
-                    }
-                })
+                console.log("row",row)
+                // var shipDetail=row.shipping_method.shipping_detail
+                // shipDetail.forEach((element) => {
+                    // if(self.selected_address_id == element.selected_address_id){
+                     if(row.edited_color_quantity){
+                        console.log("edited_color_quantity")
+                        self.productitem= row.edited_color_quantity
+                     }
+                     else{
+                        console.log("color")                         
+                        self.productitem= row.color
+                     }
+                    // }
+                // })
             console.log("---Quntiity----end",this.productitem)
 
                 // return {} 
@@ -347,9 +352,15 @@
 
                 data.total_qty = totalValue
                 data.unit_price = this.price
-                data.color_quantity = this.productitem               
-                data.color_quantity[name] = value
-                console.log("this.productitem",data)
+                if(this.row.edited_color_quantity){
+                    data.edited_color_quantity = _.cloneDeep(this.row.edited_color_quantity)                                       
+                }
+                else{
+                    data.edited_color_quantity = _.cloneDeep(this.row.color)               
+                }
+                data.edited_color_quantity[name] = value
+                this.productitem = data.edited_color_quantity
+                console.log("this.productitem",data, this.productitem)
                 // this.productitem = data.color_quantity
 
                 if(this.price == ''){
@@ -361,7 +372,8 @@
                 }
                 else{
                     this.modal2 = false;
-                    // console.log(this.productData)
+                    this.quntityFun(data)                    
+                    console.log(data)
                     this.$emit('myemitter',data)
                     
                 }                    

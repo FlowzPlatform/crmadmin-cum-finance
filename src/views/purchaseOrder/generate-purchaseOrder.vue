@@ -24,7 +24,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <table class="invoice-head col-md-4">
+                                <!-- <table class="invoice-head col-md-4">
                                     <tbody>
                                         <tr>
                                             <td><strong>SHIP TO :</strong></td>
@@ -53,11 +53,11 @@
                                         <tr>
                                             <td></td>
                                             <td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-                                        </tr> -->
+                                        </tr> 
                                     </tbody>
-                                </table>
+                                </table> -->
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <table class="col-md-12 table table-bordered" style="text-align:center">
                                     <thead>
                                         <tr>
@@ -72,11 +72,11 @@
                                             <td>{{item.shipping_detail.shipping_method}}</td>
                                             <td>{{item.shipping_detail.shipping_carrier}}</td>
                                             <td>{{item.shipping_detail.on_hand_date}}</td>
-                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td>
+                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td> 
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <div class="span8 well invoice-body" style="padding: 0px;border: none;">
                                     <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
@@ -128,7 +128,7 @@
             return {
                 orderDetail: {},
                 date: '',
-                poBillAddress: {},
+                poBillAddress: [],
                 modal2: false,
                 productData: [],
                 columns1: [
@@ -153,6 +153,8 @@
                                             this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
                                             this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
+                                            this.poBillAddress[cardIndex].product[params.index].edited_color_quantity = item.edited_color_quantity
+                                            this.poBillAddress[cardIndex].product[params.index]._expanded = true
                                             // params.row.color_quantity = item.color_quantity
                                             console.log("item************",this.poBillAddress)
 
@@ -214,47 +216,19 @@
                             //     //     })
                             //     // }
                             // })
-                            let t = 0;
-                            console.log('parmas', params.row)
-                            for (let [inx, item] of params.row.totalColorQuantity.entries()) {
-                                console.log('', inx)
-                                if (params.index === inx) {
-                                    console.log('MATCH')
-                                    for (let k in item) {
-                                        t += parseInt(item[k]);
-                                    }
-                                }
-                            } 
+                            // let t = 0;
+                            // console.log('parmas', params.row)
+                            // for (let [inx, item] of params.row.totalColorQuantity.entries()) {
+                            //     console.log('', inx)
+                            //     if (params.index === inx) {
+                            //         console.log('MATCH')
+                            //         for (let k in item) {
+                            //             t += parseInt(item[k]);
+                            //         }
+                            //     }
+                            // } 
                             return h('div', [   
-                                h('span', t),
-                                // h('Tooltip', {
-                                //     props: {
-                                //     placement: 'top',
-                                //         content: 'Change the Quantity'
-                                //     },
-                                //     style:{
-                                //         float:'center',
-                                //         cursor:'pointer'
-                                //     }
-                                // }, [
-                                //     h('Button', {
-                                //         props: {
-								// 		type: 'text',
-								// 		size: 'large',
-								// 		icon: 'edit'
-                                //         },
-                                //         style: {
-                                //             marginLeft: '20px',
-                                //             padding: '0px',
-                                //             color: 'rgb(106, 114, 140)'
-                                //         },
-                                //         on: {
-                                //             click: () => {
-                                //                 self.show(row)
-                                //             }
-                                //         }
-                                //     }, '')
-                                // ])
+                                h('span', params.row.total_qty),
                             ]);
                         }
                     },
@@ -337,26 +311,25 @@
                 for (let index = 0; index < products.length; index++) {
                     const product = products[index];
                     let shipping_detail = product.shipping_method.shipping_detail
-                    for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
-                        const shipingDetail = shipping_detail[sDIndex];
+                    // for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
+                        const shipingDetail = shipping_detail;
                         let shipAddId = shipingDetail.selected_address_id
                         productColor.push(shipingDetail.color_quantity)
                         let tempProdut = product;
-                        tempProdut.totalColorQuantity = productColor
-                        if(shippingIds.indexOf(shipAddId)<0){
-                            let tempObj= {
-                                product:[tempProdut],
-                                selected_address_id:shipAddId,
-                                shipping_address:shipingDetail.shipping_address,
-                                shipping_detail:shipingDetail.shipping_detail
-                            };
-                            tempPOAddressBill.push(tempObj)
-                        }else{
-                            let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
-                            tempPOAddressBill[billIndex].product.push(tempProdut)
-                        }
-                        shippingIds.push(shipAddId);
-                    }
+                        // tempProdut.totalColorQuantity = productColor
+                        let tempObj= {
+                            product:[tempProdut],
+                            shipping_address:shipingDetail.shipping_address,
+                            shipping_detail:shipingDetail.shipping_detail
+                        };
+                        tempPOAddressBill.push(tempObj)
+                        // if(shippingIds.indexOf(shipAddId)<0){
+                        // }else{
+                        //     let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
+                        //     tempPOAddressBill[billIndex].product.push(tempProdut)
+                        // }
+                        // shippingIds.push(shipAddId);
+                    // }
                 }
                 console.log("Temp",tempPOAddressBill)
                 return tempPOAddressBill;
@@ -389,6 +362,9 @@
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
                 this.orderDetail.products = this.poBillAddress[0].product
+                // for(let i=0; i<this.poBillAddress.length; i++){
+                //     this.orderDetail.products[i] = this.poBillAddress[i].product
+                // }
                 let quantity = 0
                 let total = 0
                 this.orderDetail.products.forEach((item) => {
@@ -409,9 +385,6 @@
                         self.loading = false
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
-                        self.$router.push({
-                            name :"Raised PO"
-                        })
                     })
                 }
                 else {
