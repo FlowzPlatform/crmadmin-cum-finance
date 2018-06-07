@@ -250,7 +250,8 @@ export default {
                 myData = JSON.stringify(myData)
                 axios({
                     method: 'post',
-                    url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                    // url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                    url: 'https://api.flowzcluster.tk/vmailmicro/sendemaildata',
                     data: myData,
                     headers: {
                         'authorization':  Cookies.get('auth_token'),
@@ -260,7 +261,7 @@ export default {
                     self.$message.success("Email Send Successfully");
                     await axios({
                         method: 'patch',
-                        url: config.default.serviceUrl + 'purchase-order',
+                        url: config.default.serviceUrl + 'purchase-order/' + self.row.id,
                         data: {
                             "EmailStatus":"Sent"
                         },

@@ -361,15 +361,18 @@
                 this.loading = true;
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
-                this.orderDetail.products = this.poBillAddress[0].product
+                console.log("this.poBillAddress[0]",this.poBillAddress[0])
                 // for(let i=0; i<this.poBillAddress.length; i++){
                 //     this.orderDetail.products[i] = this.poBillAddress[i].product
                 // }
-                let quantity = 0
-                let total = 0
-                this.orderDetail.products.forEach((item) => {
-                    quantity = quantity + item.total_qty
-                    total = total + (item.total_qty * item.unit_price)
+                let quantity = 0;
+                let total = 0;
+                this.poBillAddress.forEach((data) => {
+                    this.orderDetail.products = data.product
+                    this.orderDetail.products.forEach((item) => {
+                        quantity = quantity + parseFloat(item.total_qty)
+                        total = total + (parseFloat(item.total_qty) * parseFloat(item.unit_price))
+                    })
                 })
 
                 this.orderDetail.quantity = quantity
@@ -385,6 +388,9 @@
                         self.loading = false
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
+                        self.$router.push({
+                            name: 'Raised PO'
+                        });
                     })
                     .catch(function(error) {
                         self.loading = false

@@ -232,11 +232,11 @@ export default {
             }
         return this.filterArray.slice((p - 1) * size, p * size);
     },
-    reset(){
-        this.pname = '';
-        this.cname = '';
-        this.listData(this.website);
-    },
+    // reset(){
+    //     this.pname = '';
+    //     this.cname = '';
+    //     this.listData(this.website);
+    // },
      click (index) {
       console.log("Tab clicked", index)
       if(index == 1){
@@ -257,39 +257,39 @@ export default {
     //     }  
     // },
     async getReuestInfoData () {
-      console.log("getReuestInfoData getReuestInfoData getReuestInfoData")
-      var self = this;
-      await axios({
-        method: 'get',
-        url: config.default.subscriptionWebsitesapi,
-        // params : {
-        //   userId:self.userid,
-        // },
-        headers:{
-          'Authorization': Cookies.get('auth_token'),
-          'subscriptionId': Cookies.get('subscriptionId')    
-        }
+        console.log("getReuestInfoData getReuestInfoData getReuestInfoData")
+        var self = this;
+        await axios({
+            method: 'get',
+            url: config.default.subscriptionWebsitesapi,
+            // params : {
+            //   userId:self.userid,
+            // },
+            headers:{
+                'Authorization': Cookies.get('auth_token'),
+                'subscriptionId': Cookies.get('subscriptionId')    
+            }
         }).then(async function (response) {
-           if(response.data.data.length == 0){
-            console.log("in if condition")
-            self.$Notice.error({
-              desc: 'Websites not available for this subscription',
-              title: 'Error',
-              duration: 4.5
-            })
-          }else{    
-            console.log("in else condition")       
-            var result = _.uniqBy(response.data.data,'websiteId')
-            self.websiteList = result
+            if(response.data.data.length == 0){
+                console.log("in if condition")
+                self.$Notice.error({
+                    desc: 'Websites not available for this subscription',
+                    title: 'Error',
+                    duration: 4.5
+                })
+            }else{    
+                console.log("in else condition")       
+                var result = _.uniqBy(response.data.data,'websiteId')
+                self.websiteList = result
+                // self.website = self.websiteList[0].websiteId
+                // console.log("websiteList websiteList", self.website)
+            }
+            // console.log('response------>',response)
+            // self.list = response.data.data
+            // var result = _.uniqBy(response.data.data,'websiteId')
+            // self.websiteList = result
+            console.log("self.websiteList self.websiteList self.websiteList", self.websiteList)
             // self.website = self.websiteList[0].websiteId
-            // console.log("websiteList websiteList", self.website)
-          }
-          // console.log('response------>',response)
-          // self.list = response.data.data
-          // var result = _.uniqBy(response.data.data,'websiteId')
-          // self.websiteList = result
-          console.log("self.websiteList self.websiteList self.websiteList", self.websiteList)
-          // self.website = self.websiteList[0].websiteId
         }).catch(error => {
             console.log("-------",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -591,7 +591,7 @@ export default {
     //       self.$Message.error(error)
     //   });
     console.log("mounted of request quote")
-  this.getReuestQuoteData();
+    this.getReuestQuoteData();
   }
 }
 </script>

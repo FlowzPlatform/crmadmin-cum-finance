@@ -404,6 +404,7 @@
                       self.websiteList = result
                       console.log("self.websiteList", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
+                      self.listData(self.website);
                     }                       
 
                 }).catch(error => {
