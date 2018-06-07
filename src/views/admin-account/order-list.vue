@@ -510,6 +510,7 @@
 
             },
             listData (val) {
+	    	console.log("inside listdata");
                 var self = this
                 var len
                 console.log("val", val)
