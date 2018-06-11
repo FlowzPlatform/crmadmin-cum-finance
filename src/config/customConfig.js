@@ -89,7 +89,9 @@ module.exports = {
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
         subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',
         commentrequestapi: 'https://api.' + process.env.domainkey + '/serverapi/comment-request',
-        socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort
+        socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort,
 
+        emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendemaildata',
+        // emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendEmail'
     }
 };

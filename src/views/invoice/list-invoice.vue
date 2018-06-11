@@ -2034,7 +2034,7 @@
                         myData = JSON.stringify(myData)
                         axios({
                           method: 'post',
-                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          url: config.default.emailUrl,
                           data: myData,
                           headers: {
                             'authorization':  Cookies.get('auth_token'),
@@ -2260,7 +2260,7 @@
 					myData = JSON.stringify(myData)
 					axios({
 						method: 'post',
-						url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+						url:  config.default.emailUrl,
 						data: myData,
 						headers: {
 							'authorization':  Cookies.get('auth_token'),
@@ -3156,7 +3156,7 @@
                         myData = JSON.stringify(myData)
                         axios({
                           method: 'post',
-                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          url:  config.default.emailUrl,
                           data: myData,
                           headers: {
                             'authorization':  Cookies.get('auth_token'),

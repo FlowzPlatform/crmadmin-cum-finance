@@ -5,11 +5,11 @@
                 <Card>
                     <h2 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h2>
                     <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
-                        <ButtonGroup slot="extra">
+                        <!--<ButtonGroup slot="extra">
                             <Tooltip placement="top" content="Delete" style="padding-left:3px;">
                                 <Button class="ButtonGroup" @click="deleteSupplierProduct(item)"   type="ghost" icon="trash-b"></Button>
                             </Tooltip>
-                        </ButtonGroup>
+                        </ButtonGroup>-->
                         <div class="dweep" style="padding: 40px 10px 10px 10px;">
                             <div class="row well">
                                 <table class="invoice-head col-md-8">
@@ -252,40 +252,40 @@
                             ]);
                         }
                     },
-                    {
-                        title: 'Action',
-                        align: 'center',
-                        render: (h, {row}) => {
-                            return h('div', [
-                                h('Tooltip', {
-                                    props: {
-                                    placement: 'top',
-                                        content: 'Delete'
-                                    },
-                                    style:{
-                                        float:'center',
-                                        cursor:'pointer'
-                                    }
-                                }, [
-                                    h('Button', {
-                                        on: {
-                                            click: () => {
-                                                // alert('delete',row)
-                                                console.log("row",row);
-                                                this.removeSingleProduct(row)
-                                            }
-                                        }
-                                    },[
-                                        h('icon', {
-                                            props: {
-                                                type: "trash-b"
-                                            }
-                                        }, '')
-                                    ])
-                                ])
-                            ])
-                        }
-                    }
+                    // {
+                    //     title: 'Action',
+                    //     align: 'center',
+                    //     render: (h, {row}) => {
+                    //         return h('div', [
+                    //             h('Tooltip', {
+                    //                 props: {
+                    //                 placement: 'top',
+                    //                     content: 'Delete'
+                    //                 },
+                    //                 style:{
+                    //                     float:'center',
+                    //                     cursor:'pointer'
+                    //                 }
+                    //             }, [
+                    //                 h('Button', {
+                    //                     on: {
+                    //                         click: () => {
+                    //                             // alert('delete',row)
+                    //                             console.log("row",row);
+                    //                             this.removeSingleProduct(row)
+                    //                         }
+                    //                     }
+                    //                 },[
+                    //                     h('icon', {
+                    //                         props: {
+                    //                             type: "trash-b"
+                    //                         }
+                    //                     }, '')
+                    //                 ])
+                    //             ])
+                    //         ])
+                    //     }
+                    // }
                 ],
                 loading: false
                 // formValidate: {
@@ -364,6 +364,7 @@
                 // this.orderDetail.products = this.poBillAddress[0].product
                 for(let i=0; i<this.poBillAddress.length; i++){
                     this.orderDetail.products[i] = this.poBillAddress[i].product[0]
+                    delete this.orderDetail.products[i]._expanded;
                 }
                 let quantity = 0
                 let total = 0

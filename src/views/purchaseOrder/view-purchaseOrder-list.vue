@@ -263,8 +263,7 @@ export default {
                     console.log("=============----------------mail data",myData);
                     axios({
                         method: 'post',
-                        // url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
-                        url: 'https://api.flowzcluster.tk/vmailmicro/sendemaildata',
+                        url: config.default.emailUrl,
                         data: myData,
                         headers: {
                             'authorization':  Cookies.get('auth_token'),
