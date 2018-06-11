@@ -307,7 +307,7 @@ export default {
                         console.log("$$$$$$$$$$$$$$$$$",error)
                     })
                     self.$router.push({
-                        name:'PO Invoice'
+                        name:'PO Bill'
                     })
                 }
             })

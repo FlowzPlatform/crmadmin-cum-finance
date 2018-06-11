@@ -150,7 +150,7 @@
                                         myemitter: (item) => {
                                             // alert(item);
                                             // this.EditBanner(item)
-                                            this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
+                                            // this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
                                             this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
                                             this.poBillAddress[cardIndex].product[params.index].edited_color_quantity = item.edited_color_quantity
@@ -315,10 +315,10 @@
                         const shipingDetail = shipping_detail;
                         let shipAddId = shipingDetail.selected_address_id
                         productColor.push(shipingDetail.color_quantity)
-                        let tempProdut = product;
+                        // let tempProdut = product;
                         // tempProdut.totalColorQuantity = productColor
                         let tempObj= {
-                            product:[tempProdut],
+                            product:[product],
                             shipping_address:shipingDetail.shipping_address,
                             shipping_detail:shipingDetail.shipping_detail
                         };
@@ -356,27 +356,37 @@
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
             },
-            generatePO(value) {
+            async generatePO(value) {
                 let self = this;
                 this.loading = true;
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
-                console.log("this.poBillAddress[0]",this.poBillAddress[0])
-                // for(let i=0; i<this.poBillAddress.length; i++){
-                //     this.orderDetail.products[i] = this.poBillAddress[i].product
-                // }
-                let quantity = 0;
-                let total = 0;
-                this.poBillAddress.forEach((data) => {
-                    this.orderDetail.products = data.product
-                    this.orderDetail.products.forEach((item) => {
-                        quantity = quantity + parseFloat(item.total_qty)
-                        total = total + (parseFloat(item.total_qty) * parseFloat(item.unit_price))
-                    })
+                // this.orderDetail.products = this.poBillAddress[0].product
+                for(let i=0; i<this.poBillAddress.length; i++){
+                    this.orderDetail.products[i] = this.poBillAddress[i].product[0]
+                }
+                let quantity = 0
+                let total = 0
+                this.orderDetail.products.forEach((item) => {
+                    quantity = quantity + item.total_qty
+                    total = total + (item.total_qty * item.unit_price)
                 })
 
                 this.orderDetail.quantity = quantity
                 this.orderDetail.total = total
+                this.orderDetail.distributor_email = Cookies.get("user");
+
+                await axios ({
+                    method: 'get',
+                    url: config.default.serviceUrl + 'settings/' + this.orderDetail.setting_id,
+                })
+                .then(function(response){
+                    console.log("setting response",response)
+                    self.orderDetail.distributor_info = {
+                        address : response.data.address,
+                        logo : response.data.logo
+                    };
+                })
                 console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({

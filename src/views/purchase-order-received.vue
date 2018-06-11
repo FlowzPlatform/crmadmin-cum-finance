@@ -6,21 +6,21 @@
 				<Card class="container">
 					<h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
 					<div class="row">
-						<div class="container-fluid">
-							<img src="../images/flowz-logo1.png" class="img-rounded logo" style="height:70px">
-							<table style="position: relative;float: right;width: 20%;">
+						<div class="container-fluid" v-if="data1.distributor_info">
+							<img :src="data1.distributor_info.logo" class="img-rounded logo" style="height:70px">
+							<table style="position: relative;float: right;width: 20%;" v-if="data1.distributor_info.address">
 								<tbody>
 									<tr>
-										<td style="font-size: 20px;font-weight: 700;">Flowz Digital, LLC  </td>
+										<td style="font-size: 20px;font-weight: 700;">{{data1.distributor_info.address.name}}  </td>
 									</tr>
 									<tr>
-										<td>409 N. Pacific Coast Hwy, Ste. 583</td>
+										<td>{{data1.distributor_info.address.AddressLine1}} , {{data1.distributor_info.address.AddressLine2}}</td>
 									</tr>
 									<tr>
-										<td>Redondo Beach, California</td>
+										<td>{{data1.distributor_info.address.city}}, {{data1.distributor_info.address.state}}</td>
 									</tr>
 									<tr>
-										<td>USA 90277</td>
+										<td>{{data1.distributor_info.address.country}} {{data1.distributor_info.address.PostalCode}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -48,7 +48,7 @@
 										</tr>
 									</tbody>
 								</table>
-								<table class="invoice-head col-md-4">
+								<!-- <table class="invoice-head col-md-4">
 									<tbody>
 										<tr>
 											<td><strong>SHIP TO</strong></td>
@@ -70,16 +70,16 @@
 											<td></td>
 											<td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
 										</tr>
-										<!-- <tr>
+										<tr>
 											<td></td>
 											<td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
 										</tr>
 										<tr>
 											<td></td>
 											<td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-										</tr> -->
+										</tr> 
 									</tbody>
-								</table>
+								</table> -->
 							</div>
 							<!-- <div class="row">
 								<table class="col-md-12 table table-bordered" style="text-align:center">
@@ -694,7 +694,7 @@
 							self.poBillAddress  =  self.splitProductAddress(poDetail);
 							self.supplierPayment()
 							self.data1 = poDetail
-							self.total = parseInt(poDetail.total);
+							self.total = parseFloat(poDetail.total);
 						}else{
 								self.showError = true
 						}
@@ -744,24 +744,25 @@
 				for (let index = 0; index < products.length; index++) {
 					const product = products[index];
 					let shipping_detail=product.shipping_method.shipping_detail
-					for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
-						const shipingDetail = shipping_detail[sDIndex];
+					// for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
+						const shipingDetail = shipping_detail;
 						let shipAddId=shipingDetail.selected_address_id
 						let productColor = shipingDetail.color_quantity
 						let tempProdut=product;
 						// tempProdut.color_quantity=productColor
-						if(shippingIds.indexOf(shipAddId)<0){
 							let tempObj={
 								product:[tempProdut],
 								selected_address_id:shipAddId,
-								shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail}
+								shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
+							}
 							tempPOAddressBill.push(tempObj)
-						}else{
-							let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
-							tempPOAddressBill[billIndex].product.push(tempProdut)
-						}
-						shippingIds.push(shipAddId);
-					}
+						// if(shippingIds.indexOf(shipAddId)<0){
+						// }else{
+						// 	let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
+						// 	tempPOAddressBill[billIndex].product.push(tempProdut)
+						// }
+						// shippingIds.push(shipAddId);
+					// }
 				}
 
 				console.log("Temp",tempPOAddressBill)

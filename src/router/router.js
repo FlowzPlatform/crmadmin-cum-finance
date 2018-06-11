@@ -399,9 +399,9 @@ export const appRouter = [
             }
         },
         {
-            path: '/po_invoice',
-            title: 'PO Invoice',
-            name: 'PO Invoice',
+            path: '/po_bill',
+            title: 'PO Bill',
+            name: 'PO Bill',
             icon: 'ios-paper-outline',
             component: resolve => {
                 require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
