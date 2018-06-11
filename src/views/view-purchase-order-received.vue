@@ -34,7 +34,7 @@
                         <td> {{ accounting(row.unit_price)}} </td>
                         <td> {{ getMulti(row.total_qty, row.unit_price) }}</td>
                     </tr>
-                    <tr class="description" :id="'description'+row._index+this.total" style="display: none;">
+                    <tr class="description" :id="'description'+this.total+row._index"  v-show="isShow">
                         <td colspan="6">
                             <table class="details" style="width:100%">
                                 <tbody>
@@ -45,11 +45,12 @@
                                                     <tr>
                                                         <th>Quantity &amp; Price</th>
                                                         <th>Imprint Information</th>
+                                                        <th class="item-list-number">Product Quantity </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td style="width:62%">
+                                                        <td style="width:55%">
                                                             <div class="quantity-table" style="margin: 10px;">
                                                                 <div class="quantity-table-title" style="margin-top: 15px;">
                                                                     <div class="table-heading">Quantity </div>
@@ -69,12 +70,12 @@
                                                         <td class="estimate-detail">
                                                             <div class="estimate-tag-block" v-for="(element, index) in row.imprint" style="text-align: -webkit-left;">
                                                                 <div class="estimate-row heading">
-                                                                    <span>Print Position: {{element.imprint_position_name}}</span>
+                                                                    <span style="padding-left: 5px;">Print Position: {{element.imprint_position_name}}</span>
                                                                     <div class="estimate-row">
-                                                                        <span>Imprint Method: {{element.imprint_method_name}}</span>
+                                                                        <span style="padding-left: 5px;">Imprint Method: {{element.imprint_method_name}}</span>
                                                                     </div>
                                                                 </div>
-                                                                <div class="estimate-row" v-if="element.no_of_color">
+                                                                <div class="estimate-row" v-if="element.no_of_color" style="padding-left: 5px;">
                                                                         How many colours : <span>{{element.no_of_color}} Colour </span>
                                                                 </div>
                                                                 <div v-else><br></div>
@@ -86,9 +87,32 @@
                                                                 <div v-else></div>
                                                             </div> 
                                                         </td>
-                                                        
+                                                        <td style="width:25%">
+                                                                <table class="size-quantity-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th style="text-align: -webkit-center;">COLOR</th>
+                                                                            <th style="text-align: -webkit-center;">QUANTITY</th>
+                                                                            <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr v-for="(item,inx) in productitem">
+                                                                            <!-- <div > -->
+                                                                                <td>{{inx}}
+                                                                                </td>
+                                                                                <td>{{item}}
+                                                                                    <div v-if="editIcon" style="display:inline-block;margin-left:20px"><Button class="editIcon" type="text" icon="edit"  @click="show(row,item,inx)"></Button></div>
+                                                                                </td>
+                                                                                <!-- <td>{{item}}
+                                                                                </td> -->
+                                                                            <!-- </div> -->
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
                                                     </tr>
-                                                    <tr>
+                                                    <!-- <tr>
                                                         <td colspan="4">
                                                             <table class="product-quantity-list">
                                                                 <thead>
@@ -97,12 +121,12 @@
                                                                             <div class="quantity-item">1</div>
                                                                             Product Quantity 
                                                                         </th>
-                                                                        <!-- <th style="text-align: -webkit-center;">Shipping Address </th>
-                                                                        <th style="text-align: -webkit-center;">Shipping</th> -->
-                                                                        <!-- <th style="text-align: -webkit-center;">Shipping Charge</th> -->
+                                                                        <th style="text-align: -webkit-center;">Shipping Address </th>
+                                                                        <th style="text-align: -webkit-center;">Shipping</th> 
+                                                                        <th style="text-align: -webkit-center;">Shipping Charge</th>
                                                                         <th style="text-align:center">Additional Charges</th>
-                                                                        <th style="text-align:center">Charges</th>
-                                                                        <!--<th style="text-align: -webkit-center;">Tax</th>-->
+                                                                        <th style="text-align:center">Charges</th> 
+                                                                        <th style="text-align: -webkit-center;">Tax</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -113,41 +137,39 @@
                                                                                     <tr>
                                                                                         <th style="text-align: -webkit-center;">COLOR</th>
                                                                                         <th style="text-align: -webkit-center;">QUANTITY</th>
-                                                                                        <!-- <th style="text-align: -webkit-center;">TOTAL</th> -->
+                                                                                        <th style="text-align: -webkit-center;">TOTAL</th> 
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                     <tr v-for="(item,inx) in productitem">
-                                                                                        <!-- <div > -->
+                                                                                        
                                                                                             <td>{{inx}}
                                                                                             </td>
                                                                                             <td>{{item}}
                                                                                                 <div v-if="editIcon" style="display:inline-block;margin-left:20px"><Button class="editIcon" type="text" icon="edit"  @click="show(row,item,inx)"></Button></div>
                                                                                             </td>
-                                                                                            <!-- <td>{{item}}
-                                                                                            </td> -->
-                                                                                        <!-- </div> -->
+                                                                                          
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
                                                                         </td>
-                                                                        <!-- <td v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                        <td v-for="(i, j) in row.shipping_method.shipping_detail">
                                                                             <span style="float: left">{{i.shipping_address.name}}</span><br>
                                                                             <span style="float: left">{{i.shipping_address.street1}}</span><br>
                                                                             <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
                                                                             <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
                                                                             <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                             <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
-                                                                        </td> -->
-                                                                        <!-- <td style="width:20%" v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                        </td>
+                                                                        <td style="width:20%" v-for="(i, j) in row.shipping_method.shipping_detail">
                                                                             <span style="float: left">Shipping Type: </span> <span style="float: left">{{row.shipping_method.shipping_type}}</span> <br>
                                                                             <span style="float: left">Shipping Carrier: </span> <span style="float: left" v-if="i.shipping_detail.shipping_carrier">{{i.shipping_detail.shipping_carrier}}</span> <span v-else> - </span><br>
                                                                             <span style="float: left">Method: </span> <span style="float: left" v-if="i.shipping_detail.shipping_method"> {{i.shipping_detail.shipping_method}}</span> <span v-else> -  </span> <br>
                                                                             <span style="float: left">In Hand Date : </span> <span style="float: left;color: #404040" v-if="i.shipping_detail.on_hand_date"> {{i.shipping_detail.on_hand_date}} </span> <span v-else> -  </span>
-                                                                        </td> -->
-                                                                        <!-- <td style="width:16%" v-for="(i, j) in row.shipping_method.shipping_detail">
+                                                                        </td>
+                                                                        <td style="width:16%" v-for="(i, j) in row.shipping_method.shipping_detail">
                                                                             Charge : <span style="color: #404040">{{accounting(i.shipping_detail.shipping_charge)}}</span>
-                                                                        </td> -->
+                                                                        </td>
                                                                         <td style="width:21%">
                                                                             <span v-if="row.charges">{{Object.keys(row.charges)[0]}}-{{row.charges.setup_charge | upper}}</span>
                                                                             <span v-else> N/A </span>
@@ -155,12 +177,12 @@
                                                                         <td> <span v-if="row.charges">{{ accounting(row.charges.setup_charge)}}</span>
                                                                             <span v-else> N/A </span>
                                                                         </td>
-                                                                        <!--<td style="width:10%"></td>-->
+                                                                        <td style="width:10%"></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
                                                         </td>
-                                                    </tr>
+                                                    </tr> -->
                                                 </tbody>
                                             </table>
                                         </td>
@@ -217,6 +239,7 @@
         },
         data () {
             return {
+                isShow:false,
                 price: '',
                 spinShow : true,
                 moment: moment,
@@ -287,8 +310,9 @@
               return accounting.formatMoney(item)
             },
             clicked (inx) {
+                this.isShow=!this.isShow
                 console.log("Clickeddddd...............",inx);
-                $('#description'+inx+this.total).slideToggle(700);
+                // $('#description'+this.total+inx).slideToggle(700);
                 // if($('#description'+inx).css('display') === 'none') {
                 //     $('#description'+inx).css('display', 'table-row');
                 // } else {

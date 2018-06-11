@@ -3,9 +3,10 @@
 		<div v-if="!showError" class="mainBody">
 			<!-- <vue-particles color="#dedede"></vue-particles> -->
 			<div class="po">
+				
 				<Card class="container">
-					<h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
-					<div class="row">
+					<h1 style="margin-top: 0px;text-align:center;" ref="purchaseOrderLable"> PURCHASE ORDER </h1>
+					<div class="row"  ref="distributorDetail">
 						<div class="container-fluid" v-if="data1.distributor_info">
 							<img :src="data1.distributor_info.logo" class="img-rounded logo" style="height:70px">
 							<table style="position: relative;float: right;width: 20%;" v-if="data1.distributor_info.address">
@@ -33,10 +34,11 @@
 							
 						</div>
 					</div>
-					<Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
+					<div ref="itemDetail" >
+					<Card  :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
 						<div style="padding:10px">
-							<div class="row well">
-								<table class="invoice-head col-md-8">
+							<div class="row well" v-show="inx==0">
+								<table class="invoice-head col-md-8" >
 									<tbody>
 										<tr>
 											<td><strong>VENDOR</strong></td>                                            
@@ -108,6 +110,7 @@
 							</div>
 						</div>
 					</Card>
+					</div>
 					<!-- Payment config -->
 					<div class="row">
 						<div class=" col-md-12">
@@ -260,6 +263,7 @@
 									<tr>
 										<td></td>
 										<td><Button type="success" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Invoice</Button></td>
+										<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Show PDF</Button></td>
 									</tr>
 								</tbody>
 							</table>
@@ -303,6 +307,16 @@
 			</div>
 		</div>
 		<errorpage v-else></errorpage>
+		
+        <Modal
+            v-model="modal1"
+            title="Purchase Order PDF"
+            width="59%"
+            ok-text= "Download PDF"
+            @on-ok="download"
+            @on-cancel="cancel">
+            <downloadOrderList id="orderList" :row="data1"></downloadOrderList>
+        </Modal>
 	</div>
 </template>
 
@@ -314,12 +328,13 @@
 	import moment from 'moment';
 	import expandRow from './view-purchase-order-received.vue';
 	import errorpage from './error-page/404.vue'
+	import downloadOrderList from './download-po.vue';
 	const accounting = require('accounting-js');
 	let _ = require('lodash');
 
 	export default {
 		name: 'purchase-order',
-		components: {errorpage},
+		components: {errorpage,downloadOrderList},
 		data () {
 			return {
 				columns1: [
@@ -404,7 +419,8 @@
 				shippingMethod: '',
 				note: '',
 				total: 0,
-                unchecked: false,
+				unchecked: false,
+				modal1:false,
 				formValidate: {
 					Account_Name: '',
 					gateway:'',
@@ -888,6 +904,10 @@
                     return 'Stripe'
                 }
 			},
+			generatePDF()
+			{
+				this.modal1=true;
+			},
 			generateInvoice () {
 				let self = this;
 				let paymentInfo = {}
@@ -951,7 +971,62 @@
 					})
 				}
 
-			}
+			},
+			async cancel() {
+                self.modal1 = false
+            },
+            async download() {
+                var self = this
+		        self.$Loading.start()
+
+                await axios({
+                    method: 'post',
+                    url: config.default.serviceUrl + 'exporttopdf',
+                    data: {
+                        "html" : $('#orderList').html()
+                    },  
+                }).then(function (response) {
+                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    self.$Loading.finish()
+                    var arrayBufferView = new Uint8Array( response.data.data );
+                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                    var link=document.createElement('a');
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=self.data1.id == undefined ? "custom_po" : self.data1.id;
+                    link.click();
+                }).catch(function (error){
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                })    
+            },
+            
 		},
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
