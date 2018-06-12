@@ -34,10 +34,23 @@
 							
 						</div>
 					</div>
-					<div ref="itemDetail" >
+					<div class="row well" style="margin-right: 0px;margin-left: 0px; border:0px;"> 
+						<table class="invoice-head col-md-8" >
+							<tbody>
+								<tr>
+									<td><strong>VENDOR</strong></td>                                            
+									<td>{{this.poBillAddress[0].product[0].product_description.supplier_info.supplier_name}}</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><Icon type="ios-email" size="15"></Icon>   {{this.poBillAddress[0].product[0].product_description.supplier_info.email}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<Card  :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
 						<div style="padding:10px">
-							<div class="row well" v-show="inx==0">
+							<!-- <div class="row well" v-show="inx==0">
 								<table class="invoice-head col-md-8" >
 									<tbody>
 										<tr>
@@ -49,7 +62,7 @@
 											<td><Icon type="ios-email" size="15"></Icon>   {{item.product[0].product_description.supplier_info.email}}</td>
 										</tr>
 									</tbody>
-								</table>
+								</table> -->
 								<!-- <table class="invoice-head col-md-4">
 									<tbody>
 										<tr>
@@ -82,7 +95,7 @@
 										</tr> 
 									</tbody>
 								</table> -->
-							</div>
+							<!-- </div> -->
 							<!-- <div class="row">
 								<table class="col-md-12 table table-bordered" style="text-align:center">
 									<thead>
@@ -110,7 +123,6 @@
 							</div>
 						</div>
 					</Card>
-					</div>
 					<!-- Payment config -->
 					<div class="row">
 						<div class=" col-md-12">
@@ -119,7 +131,7 @@
 								<Tooltip style="float:right;margin-left: 15px;" placement="top">
 									<Icon  type="ios-help-outline" size=28></Icon>
 									<div slot="content">
-										<p>You can configure payment gateway <br/>here which will be used  while pay <br/> the invoices from the distributor. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
+										<p>You can configure payment gateway <br/>here which will be used  while pay <br/> the Bill from the distributor. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
 									</div>
 								</Tooltip>
 								<Button type="primary" @click="clicked()" style="float:right">Add New Payment Configuration</Button>
@@ -241,7 +253,7 @@
 										<td><Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-left: 25px;" @on-change="calculateAmount"></Input></td>
 									</tr>
 									<tr>
-										<td><strong>Due Date of Invoice :</strong></td>
+										<td><strong>Due Date of Bill :</strong></td>
 										<td><DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
 									</tr>
 									<tr>
@@ -260,13 +272,13 @@
 										<td><strong>Special Instruction :</strong></td>
 										<td><Input v-model="note" type="textarea" placeholder="Enter Special Instructions..." style="width: 215px;margin-left: 25px;margin-top:10px;"></Input></td>
 									</tr>
-									<tr>
+									<!-- <tr>
 										<td></td>
 										<td><Button type="success" v-if="!invoiceBillGenerated" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Invoice</Button>
 											<Button type="success"v-else @click="generateInvoicePDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
 										</td>
 										<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Show PDF</Button></td>
-									</tr>
+									</tr> -->
 								</tbody>
 							</table>
 							<!--<label>Shipping Charges : </label>
@@ -288,6 +300,18 @@
 							<Button type="success" @click="generateInvoice()" style="float:right;margin-right: 0px;">Generate Invoice</Button>
 							<div class="clearfix"></div>-->							
 						</div>
+					</div>
+					<div class="row well" style="background-color:#fff;border: 0px;box-shadow: none;padding:0px; padding-right:19px;">
+						<table style="float:right;">
+							<tbody>
+								<tr>
+									<td><Button type="success"  v-if="!invoiceBillGenerated" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Bill</Button>
+										<Button type="success"v-else @click="generateBillPDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
+									</td>
+									<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Download Purchase Order</Button></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="row">
 						<div class="span8 well invoice-thank" style="margin-bottom:0px;margin-top:15px">
@@ -321,6 +345,7 @@
 		</Modal>
 		
 		<Modal
+		v-show="invoiceModel"
 		v-model="invoiceModel"
 		title="Purchase Order Bill"
 		width="59%"
@@ -927,7 +952,7 @@
 			{
 				this.modal1=true;
 			},
-			generateInvoicePDF(){
+			generateBillPDF(){
 				this.invoiceModel=true;	
 			},
 			generateInvoice () {
@@ -964,7 +989,7 @@
 							'dueDate': this.dueDate,
 							'paymentInfo': paymentInfo
 						}
-						console.log("invoiceData", invoiceData)
+						console.log("po bill data", invoiceData)
 					
 					axios({
 							method: 'post',
@@ -973,14 +998,13 @@
 							
 						}).then(function(response){
 							console.log('Generate PO...........', response)
-							self.invoiceBillObject=response.data.data
+							self.invoiceBillObject=response.data
 							self.$Message.success("Purchase Order Invoice Generated Successfully");
 							// self.invoiceBillGenerated=true;
 							// self.data2 = response.data.data
 							// console.log('data2 data2 data2', self.data2)
 							self.invoiceBillGenerated=true;
 						}).catch(function (error){
-								self.invoiceBillGenerated=true;
 							console.log("error", error)
 							self.$Notice.error({
 								title: error.response.data.name,
@@ -991,7 +1015,7 @@
 				} else { 
 					this.$Notice.error({
 						title: 'Error',
-						desc: 'Please Select Due Date of Invoice',
+						desc: 'Please Select Due Date of Bill',
 						duration: 4.5
 					})
 				}
@@ -1052,7 +1076,7 @@
                 })    
             },
 			async cancelBillInvoice() {
-                self.modalBillInvoice = false
+                this.invoiceModel = false
             },
             async downloadBillInvoice() {
                 var self = this
@@ -1110,7 +1134,7 @@
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()	
-						
+			
 		}
 
 	}

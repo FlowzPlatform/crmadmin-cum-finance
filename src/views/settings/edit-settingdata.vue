@@ -234,7 +234,7 @@ export default {
             if(file.size >= 1e+8){
                 this.$Notice.error({
                 title: 'File Limit',
-                desc: 'File size should be less than or equal to 50Kb. ',
+                desc: 'File size should be less than or equal to 100mb. ',
                 duration: 4.5
                 });
                 self.file = ''

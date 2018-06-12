@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </Card>
-                    <div style="padding: 35px;padding-top:10px;">
+                    <div style="padding: 35px;padding-top:10px;" v-if="!poRefreshed">
                     <Button type="primary" style="float:right;" :loading="loading" @click="generatePO">
                         Generate Purchase Order
                     </Button>
@@ -119,6 +119,7 @@
     import Cookies from 'js-cookie';
     import psl from 'psl';
     import expandRow from '../view-purchase-order-received.vue';
+    let _ = require('lodash');
     export default {
         props: {
             row: Object,
@@ -126,6 +127,7 @@
         },
         data() {
             return {
+                poRefreshed: false,
                 orderDetail: {},
                 date: '',
                 poBillAddress: [],
@@ -419,8 +421,9 @@
         mounted() {
             let self = this;
             this.orderDetail = this.$route.params;
-            console.log("********************///////////////////////",this.orderDetail);
-            if(this.orderDetail) {
+            if(!(_.isEmpty(this.orderDetail))) {
+                self.poRefreshed = false;
+                console.log("********************///////////////////////",this.orderDetail);
                 // let poDetail=poData[0]
                 self.date = moment().format('DD-MMM-YYYY')  
                 self.poBillAddress = self.splitProductAddress(this.orderDetail);
@@ -428,7 +431,8 @@
                 self.data2 = this.orderDetail.products;
                 console.log("poBillAddress poBillAddress", self.poBillAddress)
             }else{
-                
+                console.log("inside else")
+                self.poRefreshed = true;
             }
         }
     }

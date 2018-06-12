@@ -18,7 +18,7 @@
             <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <div id="client" style="padding-left: 6px;border-left: 6px solid rgb(114, 114, 114);float: left;">
                     <div  style="color: #777777;">INVOICE TO:</div>
-                    <!-- <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.distributor_name ? row.distributor_name :row.distributor_email}}</h2> -->
+                    <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.distributor_name ? row.distributor_name :row.distributor_email}}</h2>
                     <!-- <div >{{row.user_billing_info.street1}}, <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}},</span> {{row.user_billing_info.city}}-{{row.user_billing_info.postalcode}}, </div>
                     <div >{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>                     -->
                     <!-- <div >
