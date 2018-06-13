@@ -306,7 +306,7 @@
 							<tbody>
 								<tr>
 									<td><Button type="success"  v-if="!invoiceBillGenerated" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Bill</Button>
-										<Button type="success"v-else @click="generateBillPDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
+										<Button type="success" v-else @click="generateBillPDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
 									</td>
 									<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Download Purchase Order</Button></td>
 								</tr>
@@ -336,8 +336,8 @@
 		
         <Modal
             v-model="modal1"
-            title="Purchase Order PDF"
             width="59%"
+			:closable=false
             ok-text= "Download PDF"
             @on-ok="download"
             @on-cancel="cancel">
@@ -345,15 +345,15 @@
 		</Modal>
 		
 		<Modal
-		v-show="invoiceModel"
-		v-model="invoiceModel"
-		title="Purchase Order Bill"
-		width="59%"
-		ok-text= "Download PDF"
-		@on-ok="downloadBillInvoice"
-		@on-cancel="cancelBillInvoice">
-		<downloadPoBillList id="invoiceBillList" :row="invoiceBillObject"></downloadPoBillList>
-	</Modal>
+			v-show="invoiceModel"
+			v-model="invoiceModel"
+			title="Purchase Order Bill"
+			width="59%"
+			ok-text= "Download PDF"
+			@on-ok="downloadBillInvoice"
+			@on-cancel="cancelBillInvoice">
+			<downloadPoBillList id="invoiceBillList" :row="invoiceBillObject"></downloadPoBillList>
+		</Modal>
 	</div>
 </template>
 
@@ -503,12 +503,13 @@
 			calculateAmount () {
 				console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
 				if (this.shippingCharge > 0) {
-					this.total = parseInt(this.data1.total) + parseInt(this.shippingCharge);
-					// this.total = parseInt(this.total);
+					this.total = (parseFloat(this.data1.total) + parseFloat(this.shippingCharge)).toFixed(2);
+					// this.total = parseFloat(this.total);
 				}
 				else {
-					this.total = parseInt(this.data1.total);
+					this.total = parseFloat(this.data1.total).toFixed(2);
 				}
+				this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 			},
 			handleEdit (tabname, rowinx) {
 				console.log('handleEdit............', tabname, rowinx)
@@ -754,7 +755,8 @@
 							self.poBillAddress  =  self.splitProductAddress(poDetail);
 							self.supplierPayment()
 							self.data1 = poDetail
-							self.total = parseFloat(poDetail.total);
+							// self.total = accounting.formatMoney(parseFloat(poDetail.total));
+							self.total = parseFloat(poDetail.total).toFixed(2)
 						}else{
 								self.showError = true
 						}
@@ -1134,7 +1136,7 @@
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()	
-			
+			this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 		}
 
 	}
