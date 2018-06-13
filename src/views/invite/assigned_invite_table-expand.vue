@@ -143,7 +143,7 @@
                 // console.log("SendEmailBody",SendEmailBody)
                 axios({
                     method: 'post',
-                    url: config.default.baseUrl +'/vmailmicro/sendEmail',
+                    url: config.default.emailUrl,
                     headers: {Authorization : Cookies.get('auth_token')},
                     data: { "to": data.toEmail, "from": data.fromEmail, "subject": "Invitation from Flowz", "body": SendEmailBody}
                 })

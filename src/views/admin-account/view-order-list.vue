@@ -589,12 +589,14 @@
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;
-                for (let i of d) {
-                    let Charge = i.shipping_detail.shipping_charge
-                    if (typeof Charge === 'string') {
-                        Charge = parseFloat(Charge)
+                if (d != 0) {
+                    for (let i of d) {
+                        let Charge = i.shipping_detail.shipping_charge
+                        if (typeof Charge === 'string') {
+                            Charge = parseFloat(Charge)
+                        }
+                        sum = sum + Charge
                     }
-                    sum = sum + Charge
                 }
                 let res = c.hasOwnProperty('charges')
                 if ( res == false) {
