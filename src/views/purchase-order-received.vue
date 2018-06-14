@@ -213,17 +213,17 @@
 													</FormItem>
 													<FormItem label="Country" prop="country">
 														<Select v-model="formValidateProfile.country" style="width:100%;text-align:left" @on-change="countryChange">
-															<Option  v-for="item in this.allCountry" :value="item.id" :key="item.id">{{ item.name }}</Option>
+															<Option  v-for="item in this.allCountry" :value="item.id" :key="item.name">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="State" prop="state" class="state1" style="display:none">
 														<Select v-model="formValidateProfile.state" style="width:100%;text-align:left" name ="state" id ="state" @on-change="stateChange">
-															<Option  v-for="item in this.allState" :value="item.id" :key="item.id">{{ item.name }}</Option>
+															<Option  v-for="item in this.allState" :value="item.id" :key="item.name">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="City" prop="city" class="city1" style="display:none">
 														<Select v-model="formValidateProfile.city" style="width:100%;text-align:left" name ="city" id ="city">
-															<Option  v-for="item in this.allCity" :value="item.id" :key="item.id">{{ item.name }}</Option>
+															<Option  v-for="item in this.allCity" :value="item.id" :key="item.name">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="Postal code" prop="PostalCode">
@@ -233,7 +233,7 @@
 														<Input v-model="formValidateProfile.mobile" placeholder="Enter your Mobile No"></Input>
 													</FormItem>
 													<FormItem label="Upload Logo" prop="uploadLogo">
-														<Upload id="fileUpload" v-model="formData.logo" :before-upload="handleUpload" :show-upload-list="uploadlist" action=''> 
+														<Upload id="fileUpload" v-model="formValidateProfile.logo" :before-upload="handleUpload" :show-upload-list="uploadlist" action=''> 
 															<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
 														</Upload>
 														<div v-if="file !== ''">Uploaded file: {{ file.name }} 
@@ -354,7 +354,7 @@
 		components: {errorpage,downloadOrderList,downloadPoBillList},
 		data () {
 			const validateNum = async(rule, value, callback) => {
-				let patt = new RegExp('^[0-9]+$')
+				let patt = /^[0-9]{1,6}$/
 				let _res = patt.test(value)
 				if (!_res) {
 				callback(new Error('Not Allowed Special Character'))
@@ -473,9 +473,6 @@
 					country: '',
 					PostalCode: ''
 				},
-				formData: {
-					logo: '',
-				},
 				formValidateProfile : {
 					name: '',
 					mobile : '',
@@ -484,10 +481,8 @@
 					city: '',
 					state: '',
 					country: '',
-					PostalCode: ''
-				},
-				formData: {
-					logo: '',
+					PostalCode: '',
+					logo: [],
 				},
 				ruleValidate: {
 					Account_Name: [
@@ -916,14 +911,32 @@
 				this.formValidateProfile.state = '',
 				this.formValidateProfile.country = '',
 				this.formValidateProfile.PostalCode = '',
-				this.formData.logo = '',
+				this.formValidateProfile.logo = '',
 				this.file = ''																
 			},
 			handleSubmitProfile (name) {
 				var self = this;
+				var file = this.file
+				console.log("HandleSubmitProfile call")
 				this.$refs[name].validate((valid) => {
 					if (valid) {
-						
+						console.log("Inside Valid If")
+						if(file != ''){
+							console.log("inside file If")
+							var reader = new FileReader();
+							console.log('uuuuuu',file)
+							reader.readAsDataURL(file);
+						  	reader.addEventListener("load", function () {
+								console.log('uuuuuu',file.name)
+								var fileupObj = {
+									"filename":file.name,
+									"url":reader.result
+								}
+								console.log('fileupObj fileupObj',fileupObj)								
+								self.formValidateProfile.logo.push(fileupObj);
+							})
+						}
+						console.log("address", this.formValidateProfile)
 					} 
 					else {
 						this.$Message.error('Please fill up all the fields correctly');
