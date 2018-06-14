@@ -50,62 +50,6 @@
 					</div>
 					<Card  :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
 						<div style="padding:10px">
-<<<<<<< HEAD
-=======
-								<!-- <table class="invoice-head col-md-4">
-									<tbody>
-										<tr>
-											<td><strong>SHIP TO</strong></td>
-											<td>{{item.shipping_address.name}}</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td>
-												<span>{{item.shipping_address.street1}}</span>
-												<span v-if="item.shipping_address.street2">,{{item.shipping_address.street2}}</span>
-												<span v-else></span>
-											</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td>{{item.shipping_address.city}},{{item.shipping_address.state}}</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
-										</tr>
-										<tr>
-											<td></td>
-											<td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-										</tr> 
-									</tbody>
-								</table> -->
-							<!-- </div> -->
-							<!-- <div class="row">
-								<table class="col-md-12 table table-bordered" style="text-align:center">
-									<thead>
-										<tr>
-											<td> <strong> METHOD </strong></td>
-											<td> <strong>SHIPPING CARRIER </strong></td>
-											<td> <strong>DELIVERY DATE </strong></td>
-											<td> <strong>SHIPPING CHARGE </strong></td>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>{{item.shipping_detail.shipping_method}}</td>
-											<td>{{item.shipping_detail.shipping_carrier}}</td>
-											<td>{{item.shipping_detail.on_hand_date}}</td>
-											<td>{{accounting(item.shipping_detail.shipping_charge)}}</td>
-										</tr>
-									</tbody>
-								</table>
-							</div> -->
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 							<div class="row">
 								<div class="span8 well invoice-body" style="padding: 0px;border: none;">
 									<Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
@@ -157,13 +101,8 @@
 												</FormItem>
 												
 												<div style="text-align:center;">
-<<<<<<< HEAD
 													<Button type="primary" @click="handleSubmitPayment('formValidatePayment')" :loading="loading">Submit</Button>
 													<Button type="ghost" @click="handleResetPayment('formValidatePayment')" style="margin-left: 8px;">Reset</Button>
-=======
-													<Button type="primary" @click="handleSubmitPayment('formValidate')" :loading="loading">Submit</Button>
-													<Button type="ghost" @click="handleResetPayment('formValidate')" style="margin-left: 8px;">Reset</Button>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 												</div>
 											</Form>
 										</div>
@@ -254,77 +193,44 @@
 									<div class="profileConfig" style="display:none">
 										<div class="" style="margin-top: 20px;">
 											<div class="col-md-12">
-<<<<<<< HEAD
 												<Form class="form" label-position="left" ref="formValidateProfile" :model="formValidateProfile" :rules="ruleValidate" :label-width="140">
 													<FormItem label="Name" prop="name" id="CustomerName">
 														<Input v-model="formValidateProfile.name" placeholder="Enter comapny name"></Input>
-=======
-												<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
-													<FormItem label="Name" prop="name" id="CustomerName">
-														<Input v-model="formValidate.name" placeholder="Enter comapny name"></Input>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 													</FormItem>
 													<FormItem label="Address" class="ivu-form-item-required">
 														<Row>
 															<Col span="12">
 																<FormItem prop="AddressLine1">
-<<<<<<< HEAD
 																	<Input v-model="formValidateProfile.AddressLine1" placeholder="AddressLine1"></Input>
-=======
-																	<Input v-model="formValidate.AddressLine1" placeholder="AddressLine1"></Input>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 																</FormItem>
 															</Col>
 															<Col span="12">
 																<FormItem>
-<<<<<<< HEAD
 																	<Input v-model="formValidateProfile.AddressLine2" placeholder="AddressLine2"></Input>
-=======
-																	<Input v-model="formValidate.AddressLine2" placeholder="AddressLine2"></Input>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 																</FormItem>
 															</Col>
 														</Row>
 													</FormItem>
 													<FormItem label="Country" prop="country">
-<<<<<<< HEAD
 														<Select v-model="formValidateProfile.country" style="width:100%;text-align:left" @on-change="countryChange">
-=======
-														<Select v-model="formValidate.country" style="width:100%;text-align:left" @on-change="countryChange">
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 															<Option  v-for="item in this.allCountry" :value="item.id" :key="item.id">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="State" prop="state" class="state1" style="display:none">
-<<<<<<< HEAD
 														<Select v-model="formValidateProfile.state" style="width:100%;text-align:left" name ="state" id ="state" @on-change="stateChange">
-=======
-														<Select v-model="formValidate.state" style="width:100%;text-align:left" name ="state" id ="state" @on-change="stateChange">
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 															<Option  v-for="item in this.allState" :value="item.id" :key="item.id">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="City" prop="city" class="city1" style="display:none">
-<<<<<<< HEAD
 														<Select v-model="formValidateProfile.city" style="width:100%;text-align:left" name ="city" id ="city">
-=======
-														<Select v-model="formValidate.city" style="width:100%;text-align:left" name ="city" id ="city">
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 															<Option  v-for="item in this.allCity" :value="item.id" :key="item.id">{{ item.name }}</Option>
 														</Select>
 													</FormItem>
 													<FormItem label="Postal code" prop="PostalCode">
-<<<<<<< HEAD
 														<Input v-model="formValidateProfile.PostalCode" placeholder="Enter PostalCode"></Input>
 													</FormItem>
 													<FormItem label="Mobile" prop="mobile">
 														<Input v-model="formValidateProfile.mobile" placeholder="Enter your Mobile No"></Input>
-=======
-														<Input v-model="formValidate.PostalCode" placeholder="Enter PostalCode"></Input>
-													</FormItem>
-													<FormItem label="Mobile" prop="mobile">
-														<Input v-model="formValidate.mobile" placeholder="Enter your Mobile No"></Input>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 													</FormItem>
 													<FormItem label="Upload Logo" prop="uploadLogo">
 														<Upload id="fileUpload" v-model="formData.logo" :before-upload="handleUpload" :show-upload-list="uploadlist" action=''> 
@@ -335,13 +241,8 @@
 														</div>
 													</FormItem>
 													<div style="text-align:center;">
-<<<<<<< HEAD
 														<Button type="primary" @click="handleSubmitProfile('formValidateProfile')" :loading="loading">Submit</Button>
 														<Button type="ghost" @click="handleResetProfile('formValidateProfile')" style="margin-left: 8px;">Reset</Button>
-=======
-														<Button type="primary" @click="handleSubmitProfile('formValidate')" :loading="loading">Submit</Button>
-														<Button type="ghost" @click="handleResetProfile('formValidate')" style="margin-left: 8px;">Reset</Button>
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 													</div>
 													<div style="color:blue;font-size: smaller;">**You will see this address in your bill</div>
 												</Form>
@@ -445,12 +346,7 @@
 	import downloadOrderList from './download-po.vue';
 	import downloadPoBillList from './download-po-bill.vue';
 	const accounting = require('accounting-js');
-<<<<<<< HEAD
 	import countryStateCity from 'country-state-city'	
-=======
-	import countryStateCity from 'country-state-city'
-	
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 	let _ = require('lodash');
 
 	export default {
@@ -1002,7 +898,6 @@
 			},
 			handleResetPayment (name) {
 				this.loading = false;
-<<<<<<< HEAD
 				this.formValidatePayment.gateway = '',
 				this.formValidatePayment.Secret_Key = '',
 				this.formValidatePayment.Transaction_Key = '',
@@ -1021,26 +916,6 @@
 				this.formValidateProfile.state = '',
 				this.formValidateProfile.country = '',
 				this.formValidateProfile.PostalCode = '',
-=======
-				this.formValidate.gateway = '',
-				this.formValidate.Secret_Key = '',
-				this.formValidate.Transaction_Key = '',
-				this.formValidate.Signature_Key = '',
-				this.formValidate.Client_Id = '',
-				this.formValidate.Secret = '',
-				this.formValidate.Account_Name = ''
-			},
-			handleResetProfile (valid) {
-				this.loading = false;
-				this.formValidate.name = '',
-				this.formValidate.mobile = '',
-				this.formValidate.AddressLine1 = '',
-				this.formValidate.AddressLine2 = '',
-				this.formValidate.city = '',
-				this.formValidate.state = '',
-				this.formValidate.country = '',
-				this.formValidate.PostalCode = '',
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 				this.formData.logo = '',
 				this.file = ''																
 			},
@@ -1354,10 +1229,7 @@
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()
-<<<<<<< HEAD
 			this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
-=======
->>>>>>> 4e85fa2b1d695bb27606d49d85dd15f9700d79a4
 			this.allCountry = countryStateCity.getAllCountries()				
 			console.log("allCountry allCountry", this.allCountry)			
 		}
