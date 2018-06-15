@@ -250,11 +250,11 @@
 								<tbody>
 									<tr>
 										<td><strong>Shipping Charges : </strong></td>                                            
-										<td><Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-left: 25px;" @on-change="calculateAmount"></Input></td>
+										<td><Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-left: 25px;" @on-blur="calculateAmount"></Input></td>
 									</tr>
 									<tr>
-										<td><strong>Due Date of Bill :</strong></td>
-										<td><DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
+										<td><strong>Due Date of Bill<span style="color:red;">*</span> :</strong></td>
+										<td><DatePicker v-model="dueDate" type="date" :options="disableDate" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
 									</tr>
 									<tr>
 										<td><strong>Total Amount :</strong></td>
@@ -375,6 +375,11 @@
 		components: {errorpage,downloadOrderList,downloadPoBillList},
 		data () {
 			return {
+				disableDate: {
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
 				columns1: [
 					{
 						type: 'expand',
@@ -504,12 +509,13 @@
 				console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
 				if (this.shippingCharge > 0) {
 					this.total = (parseFloat(this.data1.total) + parseFloat(this.shippingCharge)).toFixed(2);
+					this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 					// this.total = parseFloat(this.total);
 				}
 				else {
 					this.total = parseFloat(this.data1.total).toFixed(2);
+					this.shippingCharge = parseFloat(0).toFixed(2)
 				}
-				this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 			},
 			handleEdit (tabname, rowinx) {
 				console.log('handleEdit............', tabname, rowinx)
@@ -962,7 +968,6 @@
 				let paymentInfo = {}
 
 				if(this.dueDate != "" ) {
-
 					if (this.data2.length > 0) {
 						console.log("poData data1", this.data2[0].online_payment)
 						let payment =  this.data2[0].online_payment

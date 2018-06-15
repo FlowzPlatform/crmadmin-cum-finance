@@ -2601,21 +2601,31 @@
           .then(async function (response) {
               console.log("response------>iuy",response);
 
-              self.data6 = response.data[0].data.reverse();
-              self.invnoFilter = []
-              if(response.data[0].data[0].InvoiceNumber != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.InvoiceNumber)
-                })
-              }else if(response.data[0].data[0].Id != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.Id)
-                })
+              if (response.data[0].data.data.oauth_problem) {
+                self.$Notice.error({
+                  duration:0, 
+                  title: "Xero : Organisation Expired",
+                  desc: "Organisation for "+settingName+" is not active"
+                });
+                self.$Loading.finish();
               }
-              self.$Loading.finish();
-              $('.preload').css("display","none")
-              self.filterArray = []
-              self.list = await self.mockTableData1(1,pageSize)
+              else {
+                self.data6 = response.data[0].data.reverse();
+                self.invnoFilter = []
+                if(response.data[0].data[0].InvoiceNumber != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.InvoiceNumber)
+                  })
+                }else if(response.data[0].data[0].Id != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.Id)
+                  })
+                }
+                self.$Loading.finish();
+                $('.preload').css("display","none")
+                self.filterArray = []
+                self.list = await self.mockTableData1(1,pageSize)
+              }
           })
           .catch(function (error) {
             console.log("error",error);
@@ -3225,9 +3235,10 @@
             $('.preload').css("display","none")
             let settingId = self.tabPanes[self.tabIndex].id;
             let settingDomain = self.tabPanes[self.tabIndex].domain;
+            let settingName = self.tabPanes[self.tabIndex].configName;
             self.settingIdForPayment = self.tabPanes[self.tabIndex].id;
-            self.getInvoiceBySettingId(settingId , settingDomain , 0)
-            self.getCustomerBySettingId(settingId , settingDomain , 0)
+            self.getInvoiceBySettingId(settingId , settingDomain , 0, settingName)
+            self.getCustomerBySettingId(settingId , settingDomain , 0, settingName)
           }else
           {
               self.$Modal.warning({

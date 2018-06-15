@@ -62,7 +62,7 @@
         </div>
         <Table size="small" stripe @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
-            <Button type="primary" @click= "generatePO()" style="float:left;">Generate PO</Button>
+            <Button type="primary" @click= "generatePO()" v-if="list1.length != 0" style="float:left;">Generate PO</Button>
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
@@ -466,7 +466,7 @@
                 }
                 self.loading = false;
                 self.$Message.success("Purchase Order Generated Successfully");
-                this.listData(this.website);
+                self.listData(this.website);
             }
         },
         async mounted() {
