@@ -311,22 +311,22 @@
               <tfoot>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
                       <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
                       <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3" style="border: none;"></td>
-                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
                       <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
                       <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
                   </tr>
               </tfoot>
@@ -1046,7 +1046,7 @@
          try{
            return JSON.parse(item).sku
          } catch(e) {
-           return item
+           return ''
          }
           // return (typeof item === 'object')? JSON.parse(item).description : item
           // return $(item).text();

@@ -173,7 +173,7 @@
                         }
                     },
                     {
-                        title: 'PO_Sent',
+                        title: 'PO Sent',
                         width: 125,
                         align:  'center',
                         render : (h , {row}) => { 

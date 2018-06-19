@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative;width: 21cm; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
+    <div style="position: relative; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
         <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
             <div id="logo" style="float: left;margin-top: 8px;">
                 <img :src="emailDataCompany.logo" style="height: 70px;">
