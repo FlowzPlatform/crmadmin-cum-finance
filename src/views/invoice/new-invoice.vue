@@ -477,7 +477,7 @@ export default {
               self.$router.push({
                 name:'Invoice List'
               })
-              self.Cancel();
+              // self.Cancel();
             })
             .catch(function (error) {
               console.log("error",error);
@@ -518,7 +518,7 @@ export default {
                 self.$router.push({
                   name:'Invoice List'
                 })
-                self.Cancel();
+                // self.Cancel();
               })
               .catch(function (err) {
                 console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)

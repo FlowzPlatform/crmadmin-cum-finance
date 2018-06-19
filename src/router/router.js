@@ -229,7 +229,7 @@ export const otherRouter = {
         component: resolve => {
             require(['@/views/purchaseOrder/checkout.vue'], resolve);
         }
-    },
+    }
         // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}
     ]
 };
@@ -286,7 +286,7 @@ export const appRouter = [
     {
         path: '/relationship',
         icon: 'ios-people',
-        title: 'RELATIONSHIP',
+        title: 'SALES FUNNEL',
         name: 'RELATIONSHIP',
         component: Main,
         children: [{
@@ -392,18 +392,17 @@ export const appRouter = [
         children: [{
             path: '/purchaseOrder-list-Raised',
             title: 'Raised PO',
-            icon: 'ios-compose',
+            icon: 'ios-list-outline',
             name: 'Raised PO',
             component: resolve => {
                 require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);
             }
         },
         {
-            path: '/po_invoice',
-            title: 'PO Invoice',
-            name: 'PO Invoice',
-            icon: 'document-text',
-            name: 'PO Invoice',
+            path: '/po_bill',
+            title: 'PO Bill',
+            name: 'PO Bill',
+            icon: 'ios-paper-outline',
             component: resolve => {
                 require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
             }
@@ -411,7 +410,7 @@ export const appRouter = [
         {
             path: 'newpo',
             title: 'New PO',
-            icon: 'ios-compose',
+            icon: 'compose',
             name: 'New PO',
             component: resolve => {
                 require(['@/views/purchaseOrder/new_po.vue'], resolve);
@@ -484,23 +483,23 @@ export const appRouter = [
                 require(['@/views/invite/invite.vue'], resolve);
             }
         }]
+    },
+    {
+        path: '/received-po',
+        icon: 'ios-list-outline',
+        title: 'RECEIVED PO',
+        name: 'RECEIVED PO',
+        component: Main,
+        children: [{
+            path: 'received-po',
+            title: 'ReceivedPO',
+            icon: 'ios-list-outline',
+            name: 'ReceivedPO',
+            component: resolve => {
+                require(['@/views/purchaseOrder/received_po_list.vue'], resolve);
+            }
+        }]
     }
-    // {
-    //     path: '/invite',
-    //     icon: 'cash',
-    //     title: 'INVITE',
-    //     name: 'INVITE',
-    //     component: Main,
-    //     children: [
-    //         {
-    //             path: 'list-transaction',
-    //             title: 'List',
-    //             icon: 'ios-list-outline',
-    //             name: 'Transaction List',
-    //             component: resolve => { require(['@/views/transaction/list-transaction.vue'], resolve);}
-    //         }
-    //     ]
-    // },
     // {
     //     path: '/crm',
     //     icon: 'person-stalker',

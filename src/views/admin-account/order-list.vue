@@ -76,8 +76,8 @@
                   </div>
               </div>
           </div>
-
-        <Table stripe :height="tableHeight" @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table>
+        <!-- <Table stripe :height="tableHeight" @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table> -->
+        <Table stripe @on-expand="viewDetails" size="small" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
@@ -124,7 +124,7 @@
                 orderidFilter:[],
                 pageSize:10,
                 itemno: '',
-                optionsPage:[10,20,50,100,200],
+                optionsPage:[10,20,30,50],
                 itemnoFilter:[],
                 cname:'',
                 email:'',
@@ -309,15 +309,15 @@
             async mockTableData1 (p,size) {
                 console.log("mocktable call---------------")
                 this.len = this.data1.length
-                if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
-                    this.tableHeight = 100
-                }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
-                     this.tableHeight = (this.len * 40) + 35
-                }else{
-                    this.tableHeight = 450
-                }
+                // if(this.len == 0){
+                //     console.log("data length 0--------------->",this.tableHeight)
+                //     this.tableHeight = 100
+                // }else if(this.len < 10){
+                //     console.log("data length 10--------------->",this.tableHeight)
+                //      this.tableHeight = (this.len * 40) + 35
+                // }else{
+                //     this.tableHeight = 450
+                // }
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
@@ -325,15 +325,15 @@
                 console.log("p-------------->",size)
                 console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
-                if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
-                    this.tableHeight = 100
-                }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
-                     this.tableHeight = (this.len * 40) + 35
-                }else{
-                    this.tableHeight = 450
-                    }
+                // if(this.len == 0){
+                //     console.log("data length 0--------------->",this.tableHeight)
+                //     this.tableHeight = 100
+                // }else if(this.len < 10){
+                //     console.log("data length 10--------------->",this.tableHeight)
+                //      this.tableHeight = (this.len * 40) + 35
+                // }else{
+                //     this.tableHeight = 450
+                //     }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             reset() {
@@ -341,8 +341,8 @@
               this.cname = '';
               this.email = '';
               this.itemno = '';
+              this.po_sent = ''; 
               this.listData(this.website)
-
             },
             async changeData() {
               console.log("Before this.filterArray------->",this.filterArray)
@@ -360,7 +360,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 console.log(" Filter this.filterArray------->",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
@@ -382,7 +382,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 console.log(" Filter this.filterArray------->",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
                 console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
@@ -394,11 +394,11 @@
                   return item.user_billing_info.name === self.cname;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.list1 = await this.mockTableData2(1,self.pageSize)
+                //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.email != ''){
@@ -408,11 +408,11 @@
                   return item.user_billing_info.email === self.email;                 
                 });
                 console.log("myarr",this.filterArray)
-                 this.list1 = await this.mockTableData2(1,self.pageSize)
+                //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.itemno != ''){
@@ -430,13 +430,13 @@
                 });
                 console.log("myarr result",self.finalresult)
                 this.filterArray = self.finalresult
-                 this.list1 = await this.mockTableData2(1,self.pageSize)
+                //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
                 console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
                 console.log("myarr",this.filterArray)
-                this.list1 = await this.mockTableData2(1,self.pageSize)
+                // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
-
+                this.list1 = await this.mockTableData2(1,self.pageSize)            
 
             },
             filterMethod (value, option) {
@@ -452,6 +452,7 @@
                     // params: {
                     //   owner_id: self.userid
                     // },
+                    // config.default.subscriptionWebsitesapi
                     headers: {
                       'Authorization': Cookies.get('auth_token'),
                       'subscriptionId': Cookies.get('subscriptionId')
@@ -472,6 +473,7 @@
                       self.websiteList = result
                       console.log("self.websiteList", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
+                      self.listData(self.website)
                     }                       
 
                 }).catch(error => {
@@ -509,6 +511,7 @@
 
             },
             listData (val) {
+	    	console.log("inside listdata");
                 var self = this
                 var len
                 console.log("val", val)
@@ -657,9 +660,6 @@
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
-            getImgUrl (url) {
-                return this.imgurl + url
-            },
             getSubTotal (a, b, c) {
                 var res = c.hasOwnProperty('charges')
                 if ( res == false) {
@@ -692,7 +692,19 @@
                 this.billinfo = true
             },
             async viewDetails(params,status){
-                this.tableHeight = 450
+                // this.tableHeight = 250
+                // console.log("this.tableHeight------->",this.len)
+                // this.tableHeight = (this.len * 40) + 35
+                // if(this.tableHeight >= 450){
+                //     this.tableHeight = 450
+                // }
+                // if (!status) return 
+                // $('.ivu-table-cell-expand-expanded').click()
+
+                // if(status){
+                //     this.tableHeight = 530
+                //     console.log("###############################",this.tableHeight)
+                // }
             }
         },
         async mounted() {

@@ -16,7 +16,7 @@
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
                                   <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#poid"></span>
-                                      <label>P.O.Number</label>
+                                      <label>P.O.#</label>
                                   </div>
                                   <div class="panel-collapse collapse" id="poid">
                                      <AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -79,10 +79,10 @@
                     </button>
                 </h4>
             </div>
-
-            <Table stripe @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table>
+            <!-- <Table stripe size="small" @on-expand="viewDetails" :height="tableHeight" :columns="columns1" :data="list"></Table> -->
+            <Table stripe size="small" @on-expand="viewDetails" :columns="columns1" :data="list"></Table>
              <div style="margin: 10px;overflow: hidden">
-                    <div style="float: right;">
+                    <div class="pagination" style="float: right;">
                     <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                 dategt: '',
                 datelt: '',
                 pageSize: 10,
-                optionsPage:[10,50,100,200],
+                optionsPage:[10,20,30,50],
                 mode: '',
                 len: 1,
                 order_id: '',
@@ -138,8 +138,9 @@
                         }
                     },
                     {
-                        title: 'P.O. Number',
+                        title: 'P.O. #',
                         align:  'center',
+                        width: 230,
                         render : (h , {row}) => {
                             return h('div', [
                                 h('span', row.PO_id)
@@ -149,6 +150,7 @@
                     {
                         title: 'P.O Generate Date',
                         align:  'center',
+                        // width: 250,
                         render : (h , {row}) => {
                             var date1 = moment(row.PO_generate_date).format('DD-MMM-YYYY')
                             return h('div', [
@@ -230,18 +232,181 @@
                                 ]);
                             }
                         }
+                    },
+                    {
+                        title: 'Action',
+                        width: 100,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Tooltip', {
+                                    props: {
+                                    placement: 'top',
+                                    content: 'Resend Email'
+                                    },
+                                    style:{
+                                    // float:'left',
+                                    cursor:'pointer'
+                                    }
+                                },[
+                                    h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'large',
+                                        icon: 'android-send'
+                                    },
+                                    style: {
+                                        marginRight: '3px',
+                                        padding: '0px',
+                                        fontSize: '20px',
+                                        color: '#2d8cf0'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            console.log("=========resend mail",params.row)
+                                            this.resendEmail(params.row)
+                                        }
+                                    }
+                                }, '')
+                                ])
+                            ]);
+                        }
                     }
                 ]
             }
         },
         methods: {
+            resendEmail (data) {
+                this.$Modal.confirm({
+                    title: 'Email would be sent to',
+                    okText: 'OK',
+                    cancelText: 'Cancel',
+                    render: (h) => {
+                        return h('Input', {
+                            props: {
+                                value: data.products[0].product_description.supplier_info.email,
+                                autofocus: true,
+                                placeholder: 'Please enter email Id...'
+                            },
+                            on: {
+                                input: (val) => {
+                                    data.products[0].product_description.supplier_info.email = val;
+                                }
+                            }
+                        })
+                    },
+                    onOk: ()=>{
+                        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
+                        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
+                        this.$Loading.start()
+                        var self = this;
+                        let supplierName = data.products[0].product_description.supplier_info.supplier_name;
+                        let toMail = data.products[0].product_description.supplier_info.email;
+                        let websiteName = data.websiteName;
+                        let websiteId = data.websiteId;
+                        let distributorEmail = data.distributor_email;
+                        let emailBody = `<div ref="email">
+                            <h3>Dear ${(supplierName && supplierName.length > 0) ? supplierName : toMail}</h3>
+                            <p style="font-size:16px">You have received purchase order for website <b>${(websiteName && websiteName.length > 0) ? websiteName : websiteId}</b> for distributor <b>${distributorEmail}</b></p>
+                            <p style="font-size:16px">To view the Purchase order detail:</p>
+                            <a href=" https://crm.${process.env.domainkey}/#/purchase-order-received?PO_id=${data.PO_id}" style="background-color:#EB7035;border:1px solid #EB7035;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:14px;line-height:30px;text-align:center;text-decoration:none;width:90px;-webkit-text-size-adjust:none;mso-hide:all;">View Order</a>    
+                            <p style="font-size:16px">Regards</p>
+                            </div>`;
+                        let myData = {
+                            "to":  toMail,
+                            "from": Cookies.get('user'),
+                            "subject": "Purchase order for website " + data.websiteName,
+                            "body": emailBody
+                        };
+                        myData = JSON.stringify(myData)
+                        console.log("=============----------------mail data",myData);
+                        axios({
+                            method: 'post',
+                            url: config.default.emailUrl,
+                            data: myData,
+                            headers: {
+                                'authorization':  Cookies.get('auth_token'),
+                            }
+                        }).then(async function (response) {
+                            console.log(response);
+                            self.$message.success("Email Send Successfully");
+                            self.$Loading.finish()
+                            await axios({
+                                method: 'patch',
+                                url: config.default.serviceUrl + 'purchase-order/' + data.id,
+                                data: {
+                                    "EmailStatus":"Sent"
+                                },
+                                headers: {
+                                    'Authorization': Cookies.get('auth_token'),
+                                    'subscriptionId': Cookies.get('subscriptionId')
+                                } 
+                            }).then(async function (response){
+                                console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
+                            })
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            self.$Loading.error()
+                            self.$Message.warning("Email Send Failed, Please try again later");
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                        });
+                    }
+                })
+            },
+            reset() {
+                this.ponum = ''
+                this.dategt = ''
+                this.datelt = ''
+                this.order_id = ''
+                this.mode = ''
+                this.listData(this.website)
+            },
             viewDetails (row,status) {
-                console.log("on-expand call",status)
-                if(status){
-                    this.tableHeight = 450
-                }else{
-                    this.tableHeight = (this.len * 40) + 35
-                }
+                // if(this.row === undefined){
+                //     console.log("on-expand call",status)
+                //     this.tableHeight = (this.len * 40) + 35
+                //     if (!status) return 
+                //     $('.ivu-table-cell-expand-expanded').click()
+                // }
+
+                // if(status){
+                //     this.tableHeight = 530
+                //     console.log("###############################",this.tableHeight)
+                // }
+                // if(status){
+                //     this.tableHeight = 450
+                // }else{
+                //     this.tableHeight = (this.len * 40) + 35
+                // }
             },
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
@@ -298,7 +463,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.order_id != ''){
@@ -309,7 +474,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.mode != ''){
@@ -330,7 +495,7 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
@@ -343,9 +508,10 @@
                 });
                 console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
-                this.list = await this.mockTableData2(1,self.pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
+                this.list = await this.mockTableData2(1,self.pageSize)
                
             },
             filterMethod (value, option) {
@@ -383,6 +549,7 @@
                       self.websiteList = result
                       console.log("self.websiteList", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
+                      self.listData(self.website);
                     }                       
 
                 }).catch(error => {
@@ -515,6 +682,7 @@
             var self = this
             if(this.row != undefined){
                 $('.generate-po-button').css("display","block")
+                $('.pagination .ivu-page-options').css("display","none")
                 $('.drpdwn1').css("display","none")
                 $('.filterData').css("display","none")
                 self.listData(this.row.website_id);
@@ -531,5 +699,8 @@
         width: 100%;
         height: 100px;
         position: relative;
+    }
+    .ivu-table-body {
+        overflow-x: hidden;
     }
 </style>

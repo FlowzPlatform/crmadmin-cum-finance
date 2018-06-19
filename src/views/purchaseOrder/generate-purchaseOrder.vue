@@ -5,11 +5,11 @@
                 <Card>
                     <h2 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h2>
                     <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
-                        <ButtonGroup slot="extra">
+                        <!--<ButtonGroup slot="extra">
                             <Tooltip placement="top" content="Delete" style="padding-left:3px;">
                                 <Button class="ButtonGroup" @click="deleteSupplierProduct(item)"   type="ghost" icon="trash-b"></Button>
                             </Tooltip>
-                        </ButtonGroup>
+                        </ButtonGroup>-->
                         <div class="dweep" style="padding: 40px 10px 10px 10px;">
                             <div class="row well">
                                 <table class="invoice-head col-md-8">
@@ -24,7 +24,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <table class="invoice-head col-md-4">
+                                <!-- <table class="invoice-head col-md-4">
                                     <tbody>
                                         <tr>
                                             <td><strong>SHIP TO :</strong></td>
@@ -53,11 +53,11 @@
                                         <tr>
                                             <td></td>
                                             <td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-                                        </tr> -->
+                                        </tr> 
                                     </tbody>
-                                </table>
+                                </table> -->
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <table class="col-md-12 table table-bordered" style="text-align:center">
                                     <thead>
                                         <tr>
@@ -72,11 +72,11 @@
                                             <td>{{item.shipping_detail.shipping_method}}</td>
                                             <td>{{item.shipping_detail.shipping_carrier}}</td>
                                             <td>{{item.shipping_detail.on_hand_date}}</td>
-                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td>
+                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td> 
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <div class="span8 well invoice-body" style="padding: 0px;border: none;">
                                     <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </Card>
-                    <div style="padding: 35px;padding-top:10px;">
+                    <div style="padding: 35px;padding-top:10px;" v-if="!poRefreshed">
                     <Button type="primary" style="float:right;" :loading="loading" @click="generatePO">
                         Generate Purchase Order
                     </Button>
@@ -119,6 +119,7 @@
     import Cookies from 'js-cookie';
     import psl from 'psl';
     import expandRow from '../view-purchase-order-received.vue';
+    let _ = require('lodash');
     export default {
         props: {
             row: Object,
@@ -126,33 +127,39 @@
         },
         data() {
             return {
+                poRefreshed: false,
                 orderDetail: {},
                 date: '',
                 poBillAddress: [],
                 modal2: false,
-                productData: {},
+                productData: [],
                 columns1: [
                     {
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
                             if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+                                let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
 									props: {
 										row: params.row,
                                         total: cardIndex,
-                                        editIcon: true
+                                        editIcon: true,
+                                        selected_address_id:addressId
 									},
                                     on: {
                                         myemitter: (item) => {
                                             // alert(item);
                                             console.log("item************",item, this.poBillAddress)
                                             // this.EditBanner(item)
-                                            this.poBillAddress[cardIndex].product[params.index].color_quantity = item.color_quantity
+                                            // this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
                                             this.poBillAddress[cardIndex].product[params.index].unit_price = item.unit_price
+                                            this.poBillAddress[cardIndex].product[params.index].edited_color_quantity = item.edited_color_quantity
+                                            this.poBillAddress[cardIndex].product[params.index]._expanded = true
                                             // params.row.color_quantity = item.color_quantity
+                                            console.log("item************",this.poBillAddress)
 
                                         }    
                                     }
@@ -186,37 +193,45 @@
                     {
                         title: 'Quantity',
                         align:  'center',
-                        render : (h , {row}) => {
+                        render : (h , params) => {
+                            // let total = 0
+                            // console.log("Quantity ------------", this.poBillAddress)
+                            // this.poBillAddress.forEach(element => {
+                            //     element.product.forEach((item,inx) => {
+                            //         total = 0
+                            //         item.totalColorQuantity.forEach((key,val) => {
+                            //             if(inx == val) {
+                            //                 console.log("val",key, val)
+                            //                 for (let k in key ){
+                            //                     total = total + parseInt(key[k])
+                            //                 } 
+                            //                 console.log("total",total)
+                            //             }
+                            //         })
+                                    
+
+                            //     })
+                            //     // if (inx == params.index) {
+                            //     //     console.log("inside if", Object.values(element.totalColorQuantity))
+                            //     //     Object.values(element.totalColorQuantity).forEach(item => {
+                            //     //         total = total + parseInt(item)
+                            //     //         console.log("total", item)
+                            //     //     })
+                            //     // }
+                            // })
+                            // let t = 0;
+                            // console.log('parmas', params.row)
+                            // for (let [inx, item] of params.row.totalColorQuantity.entries()) {
+                            //     console.log('', inx)
+                            //     if (params.index === inx) {
+                            //         console.log('MATCH')
+                            //         for (let k in item) {
+                            //             t += parseInt(item[k]);
+                            //         }
+                            //     }
+                            // } 
                             return h('div', [   
-                                h('span', row.total_qty),
-                                // h('Tooltip', {
-                                //     props: {
-                                //     placement: 'top',
-                                //         content: 'Change the Quantity'
-                                //     },
-                                //     style:{
-                                //         float:'center',
-                                //         cursor:'pointer'
-                                //     }
-                                // }, [
-                                //     h('Button', {
-                                //         props: {
-								// 		type: 'text',
-								// 		size: 'large',
-								// 		icon: 'edit'
-                                //         },
-                                //         style: {
-                                //             marginLeft: '20px',
-                                //             padding: '0px',
-                                //             color: 'rgb(106, 114, 140)'
-                                //         },
-                                //         on: {
-                                //             click: () => {
-                                //                 self.show(row)
-                                //             }
-                                //         }
-                                //     }, '')
-                                // ])
+                                h('span', params.row.total_qty),
                             ]);
                         }
                     },
@@ -240,40 +255,40 @@
                             ]);
                         }
                     },
-                    {
-                        title: 'Action',
-                        align: 'center',
-                        render: (h, {row}) => {
-                            return h('div', [
-                                h('Tooltip', {
-                                    props: {
-                                    placement: 'top',
-                                        content: 'Delete'
-                                    },
-                                    style:{
-                                        float:'center',
-                                        cursor:'pointer'
-                                    }
-                                }, [
-                                    h('Button', {
-                                        on: {
-                                            click: () => {
-                                                // alert('delete',row)
-                                                console.log("row",row);
-                                                this.removeSingleProduct(row)
-                                            }
-                                        }
-                                    },[
-                                        h('icon', {
-                                            props: {
-                                                type: "trash-b"
-                                            }
-                                        }, '')
-                                    ])
-                                ])
-                            ])
-                        }
-                    }
+                    // {
+                    //     title: 'Action',
+                    //     align: 'center',
+                    //     render: (h, {row}) => {
+                    //         return h('div', [
+                    //             h('Tooltip', {
+                    //                 props: {
+                    //                 placement: 'top',
+                    //                     content: 'Delete'
+                    //                 },
+                    //                 style:{
+                    //                     float:'center',
+                    //                     cursor:'pointer'
+                    //                 }
+                    //             }, [
+                    //                 h('Button', {
+                    //                     on: {
+                    //                         click: () => {
+                    //                             // alert('delete',row)
+                    //                             console.log("row",row);
+                    //                             this.removeSingleProduct(row)
+                    //                         }
+                    //                     }
+                    //                 },[
+                    //                     h('icon', {
+                    //                         props: {
+                    //                             type: "trash-b"
+                    //                         }
+                    //                     }, '')
+                    //                 ])
+                    //             ])
+                    //         ])
+                    //     }
+                    // }
                 ],
                 loading: false
                 // formValidate: {
@@ -295,32 +310,33 @@
                 let tempPOAddressBill=[];
                 let products = orderData.products;
                 let shippingIds = [];
+                let productColor = [];
                 for (let index = 0; index < products.length; index++) {
                     const product = products[index];
                     let shipping_detail = product.shipping_method.shipping_detail
-                    for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
-                        const shipingDetail = shipping_detail[sDIndex];
+                    // for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
+                        const shipingDetail = shipping_detail;
                         let shipAddId = shipingDetail.selected_address_id
-                        let productColor = shipingDetail.color_quantity
-                        let tempProdut = product;
-                        tempProdut.color_quantity = productColor
-                        if(shippingIds.indexOf(shipAddId)<0){
-                            let tempObj= {
-                                product:[tempProdut],
-                                selected_address_id:shipAddId,
-                                shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
-                            };
-                            tempPOAddressBill.push(tempObj)
-                        }else{
-                            let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
-                            tempPOAddressBill[billIndex].product.push(tempProdut)
-                        }
-                        shippingIds.push(shipAddId);
-                    }
+                        productColor.push(shipingDetail.color_quantity)
+                        // let tempProdut = product;
+                        // tempProdut.totalColorQuantity = productColor
+                        let tempObj= {
+                            product:[product],
+                            shipping_address:shipingDetail.shipping_address,
+                            shipping_detail:shipingDetail.shipping_detail
+                        };
+                        tempPOAddressBill.push(tempObj)
+                        // if(shippingIds.indexOf(shipAddId)<0){
+                        // }else{
+                        //     let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
+                        //     tempPOAddressBill[billIndex].product.push(tempProdut)
+                        // }
+                        // shippingIds.push(shipAddId);
+                    // }
                 }
                 console.log("Temp",tempPOAddressBill)
                 return tempPOAddressBill;
-            },
+            },                            
             accounting(item){
                 return accounting.formatMoney(item)
             },
@@ -343,12 +359,16 @@
                 this.orderDetail.products = this.data2
                 console.log("final order object",this.orderDetail)
             },
-            generatePO(value) {
+            async generatePO(value) {
                 let self = this;
                 this.loading = true;
                 this.orderDetail.subscription_id = Cookies.get("subscriptionId");
                 this.orderDetail.isManual = true;
-                this.orderDetail.products = this.poBillAddress[0].product
+                // this.orderDetail.products = this.poBillAddress[0].product
+                for(let i=0; i<this.poBillAddress.length; i++){
+                    this.orderDetail.products[i] = this.poBillAddress[i].product[0]
+                    delete this.orderDetail.products[i]._expanded;
+                }
                 let quantity = 0
                 let total = 0
                 this.orderDetail.products.forEach((item) => {
@@ -358,7 +378,20 @@
 
                 this.orderDetail.quantity = quantity
                 this.orderDetail.total = total
-                console.log("purchase order post object",this.orderDetail)
+                this.orderDetail.distributor_email = Cookies.get("user");
+
+                await axios ({
+                    method: 'get',
+                    url: config.default.serviceUrl + 'settings/' + this.orderDetail.setting_id,
+                })
+                .then(function(response){
+                    console.log("setting response",response)
+                    self.orderDetail.distributor_info = {
+                        address : response.data.address,
+                        logo : response.data.logo
+                    };
+                })
+                console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({
                         method: 'post',
@@ -369,6 +402,12 @@
                         self.loading = false
                         console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
+                        self.$router.push({
+                            name: 'Raised PO'
+                        });
+                    })
+                    .catch(function(error) {
+                        self.loading = false
                     })
                 }
                 else {
@@ -383,16 +422,18 @@
         mounted() {
             let self = this;
             this.orderDetail = this.$route.params;
-            console.log("********************///////////////////////",this.orderDetail);
-            if(this.orderDetail) {
+            if(!(_.isEmpty(this.orderDetail))) {
+                self.poRefreshed = false;
+                console.log("********************///////////////////////",this.orderDetail);
                 // let poDetail=poData[0]
                 self.date = moment().format('DD-MMM-YYYY')  
                 self.poBillAddress = self.splitProductAddress(this.orderDetail);
                 self.data1 = this.orderDetail;
                 self.data2 = this.orderDetail.products;
-                // console.log("data2", self.data2)
+                console.log("poBillAddress poBillAddress", self.poBillAddress)
             }else{
-                
+                console.log("inside else")
+                self.poRefreshed = true;
             }
         }
     }

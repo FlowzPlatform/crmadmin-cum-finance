@@ -3,24 +3,25 @@
 		<div v-if="!showError" class="mainBody">
 			<!-- <vue-particles color="#dedede"></vue-particles> -->
 			<div class="po">
+				
 				<Card class="container">
-					<h1 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h1>
-					<div class="row">
-						<div class="container-fluid">
-							<img src="../images/flowz-logo1.png" class="img-rounded logo" style="height:70px">
-							<table style="position: relative;float: right;width: 20%;">
+					<h1 style="margin-top: 0px;text-align:center;" ref="purchaseOrderLable"> PURCHASE ORDER </h1>
+					<div class="row"  ref="distributorDetail">
+						<div class="container-fluid" v-if="data1.distributor_info">
+							<img :src="data1.distributor_info.logo" class="img-rounded logo" style="height:70px">
+							<table style="position: relative;float: right;width: 20%;" v-if="data1.distributor_info.address">
 								<tbody>
 									<tr>
-										<td style="font-size: 20px;font-weight: 700;">Flowz Digital, LLC  </td>
+										<td style="font-size: 20px;font-weight: 700;">{{data1.distributor_info.address.name}}  </td>
 									</tr>
 									<tr>
-										<td>409 N. Pacific Coast Hwy, Ste. 583</td>
+										<td>{{data1.distributor_info.address.AddressLine1}} , {{data1.distributor_info.address.AddressLine2}}</td>
 									</tr>
 									<tr>
-										<td>Redondo Beach, California</td>
+										<td>{{data1.distributor_info.address.city}}, {{data1.distributor_info.address.state}}</td>
 									</tr>
 									<tr>
-										<td>USA 90277</td>
+										<td>{{data1.distributor_info.address.country}} {{data1.distributor_info.address.PostalCode}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -33,10 +34,24 @@
 							
 						</div>
 					</div>
-					<Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
-						<div class="dweep" style="padding:10px">
-							<div class="row well">
-								<table class="invoice-head col-md-8">
+					<div class="row well" style="margin-right: 0px;margin-left: 0px; border:0px;"> 
+						<table class="invoice-head col-md-8" >
+							<tbody>
+								<tr>
+									<td><strong>VENDOR</strong></td>                                            
+									<td>{{this.poBillAddress[0].product[0].product_description.supplier_info.supplier_name}}</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><Icon type="ios-email" size="15"></Icon>   {{this.poBillAddress[0].product[0].product_description.supplier_info.email}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<Card  :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
+						<div style="padding:10px">
+							<!-- <div class="row well" v-show="inx==0">
+								<table class="invoice-head col-md-8" >
 									<tbody>
 										<tr>
 											<td><strong>VENDOR</strong></td>                                            
@@ -47,8 +62,8 @@
 											<td><Icon type="ios-email" size="15"></Icon>   {{item.product[0].product_description.supplier_info.email}}</td>
 										</tr>
 									</tbody>
-								</table>
-								<table class="invoice-head col-md-4">
+								</table> -->
+								<!-- <table class="invoice-head col-md-4">
 									<tbody>
 										<tr>
 											<td><strong>SHIP TO</strong></td>
@@ -70,18 +85,18 @@
 											<td></td>
 											<td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
 										</tr>
-										<!-- <tr>
+										<tr>
 											<td></td>
 											<td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
 										</tr>
 										<tr>
 											<td></td>
 											<td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-										</tr> -->
+										</tr> 
 									</tbody>
-								</table>
-							</div>
-							<div class="row">
+								</table> -->
+							<!-- </div> -->
+							<!-- <div class="row">
 								<table class="col-md-12 table table-bordered" style="text-align:center">
 									<thead>
 										<tr>
@@ -100,7 +115,7 @@
 										</tr>
 									</tbody>
 								</table>
-							</div>
+							</div> -->
 							<div class="row">
 								<div class="span8 well invoice-body" style="padding: 0px;border: none;">
 									<Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
@@ -108,6 +123,7 @@
 							</div>
 						</div>
 					</Card>
+					<!-- Payment config -->
 					<div class="row">
 						<div class=" col-md-12">
 							<div class="well" style="background-color:#fff">
@@ -115,7 +131,7 @@
 								<Tooltip style="float:right;margin-left: 15px;" placement="top">
 									<Icon  type="ios-help-outline" size=28></Icon>
 									<div slot="content">
-										<p>You can configure payment gateway <br/>here which will be used  while pay <br/> the invoices from the distributor. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
+										<p>You can configure payment gateway <br/>here which will be used  while pay <br/> the Bill from the distributor. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
 									</div>
 								</Tooltip>
 								<Button type="primary" @click="clicked()" style="float:right">Add New Payment Configuration</Button>
@@ -227,15 +243,75 @@
 							
 						</div>        
 					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="well" style="background-color:#fff">
-								<label> Due Date of Invoice : </label>
-								<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-left:20px"></DatePicker>
-								<Button type="success" @click="generateInvoice()" style="float:right">Generate Invoice</Button>
-								<div class="clearfix"></div>								
+					<!-- Generate Invoice -->
+					<div style="padding-left:15px;padding-right:15px;">
+						<div class="row well" style="background-color:#fff">
+							<table class="col-md-6">
+								<tbody>
+									<tr>
+										<td><strong>Shipping Charges : </strong></td>                                            
+										<td><Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-left: 25px;" @on-change="calculateAmount"></Input></td>
+									</tr>
+									<tr>
+										<td><strong>Due Date of Bill :</strong></td>
+										<td><DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
+									</tr>
+									<tr>
+										<td><strong>Total Amount :</strong></td>
+										<td><Input v-model="total" placeholder="Total Amount" style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input></td>
+									</tr>
+								</tbody>
+							</table>
+							<table class="col-md-6">
+								<tbody style="float:right;">
+									<tr>
+										<td><strong>Shipping Method : </strong></td>
+										<td><Input v-model="shippingMethod" placeholder="Enter Shipping Method..." style="width: 215px;margin-left: 25px;"></Input></td>
+									</tr>
+									<tr>
+										<td><strong>Special Instruction :</strong></td>
+										<td><Input v-model="note" type="textarea" placeholder="Enter Special Instructions..." style="width: 215px;margin-left: 25px;margin-top:10px;"></Input></td>
+									</tr>
+									<!-- <tr>
+										<td></td>
+										<td><Button type="success" v-if="!invoiceBillGenerated" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Invoice</Button>
+											<Button type="success"v-else @click="generateInvoicePDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
+										</td>
+										<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Show PDF</Button></td>
+									</tr> -->
+								</tbody>
+							</table>
+							<!--<label>Shipping Charges : </label>
+							<Input v-model="shippingCharge" placeholder="Enter Shipping Charges..." style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input>
+							<div style="float:right;">
+								<label>Shipping Method : </label>
+								<Input v-model="shippingMethod" placeholder="Enter Shipping Method..." style="width: 215px;"></Input>
 							</div>
+							<br/>
+							<label> Due Date of Invoice : </label>
+							<DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker>
+							<div style="float:right;">
+								<label>Special Instruction : </label>
+								<Input v-model="note" type="textarea" placeholder="Enter Special Instructions..." style="width: 215px;"></Input>
+							</div>
+							<br/>
+							<label>Total Amount : </label>
+							<Input v-model="total" placeholder="Total Amount" style="width: 215px;margin-top: 10px;margin-left: 25px;"></Input>
+							<Button type="success" @click="generateInvoice()" style="float:right;margin-right: 0px;">Generate Invoice</Button>
+							<div class="clearfix"></div>-->							
 						</div>
+					</div>
+					<div class="row well" style="background-color:#fff;border: 0px;box-shadow: none;padding:0px; padding-right:19px;">
+						<table style="float:right;">
+							<tbody>
+								<tr>
+									<td><Button type="success"  v-if="!invoiceBillGenerated" @click="generateInvoice()" style="float:right;margin-top:10px;">Generate Bill</Button>
+										<Button type="success" v-else @click="generateBillPDF()" style="float:right;margin-top:10px;">Download Bill PDF</Button>
+									</td>
+									<td><Button type="success" @click="generatePDF()" style="float:right;margin-top:10px; margin-left:10px;">Download Purchase Order</Button></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="row">
 						<div class="span8 well invoice-thank" style="margin-bottom:0px;margin-top:15px">
@@ -257,6 +333,27 @@
 			</div>
 		</div>
 		<errorpage v-else></errorpage>
+		
+        <Modal
+            v-model="modal1"
+            width="59%"
+			:closable=false
+            ok-text= "Download PDF"
+            @on-ok="download"
+            @on-cancel="cancel">
+            <downloadOrderList id="orderList" :row="data1"></downloadOrderList>
+		</Modal>
+		
+		<Modal
+			v-show="invoiceModel"
+			v-model="invoiceModel"
+			title="Purchase Order Bill"
+			width="59%"
+			ok-text= "Download PDF"
+			@on-ok="downloadBillInvoice"
+			@on-cancel="cancelBillInvoice">
+			<downloadPoBillList id="invoiceBillList" :row="invoiceBillObject"></downloadPoBillList>
+		</Modal>
 	</div>
 </template>
 
@@ -268,12 +365,14 @@
 	import moment from 'moment';
 	import expandRow from './view-purchase-order-received.vue';
 	import errorpage from './error-page/404.vue'
+	import downloadOrderList from './download-po.vue';
+	import downloadPoBillList from './download-po-bill.vue';
 	const accounting = require('accounting-js');
 	let _ = require('lodash');
 
 	export default {
 		name: 'purchase-order',
-		components: {errorpage},
+		components: {errorpage,downloadOrderList,downloadPoBillList},
 		data () {
 			return {
 				columns1: [
@@ -284,11 +383,13 @@
 							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
 								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
 								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
+								let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
 									props: {
 										row: params.row,
 										total: cardIndex,
-										editIcon: false
+										editIcon: false,
+										selected_address_id: addressId
 									}
 								})
 							}
@@ -352,8 +453,16 @@
 				checked: true,
 				tabIndex : 0,
 				dueDate: '',
-                unchecked: false,
-				formValidate:{
+				shippingCharge: 0,
+				shippingMethod: '',
+				note: '',
+				total: 0,
+				unchecked: false,
+				modal1:false,
+				invoiceModel:false,
+				invoiceBillObject:{},
+				invoiceBillGenerated:false,
+				formValidate: {
 					Account_Name: '',
 					gateway:'',
 					Secret_Key: '',
@@ -364,7 +473,7 @@
 				},
 				ruleValidate: {
 					Account_Name: [
-						{ required: true, message: 'Please Enter Account Name', trigger: 'blur'}
+						{ required: true, message: 'Please Enter Account Name', trigger: 'blur' }
 					],
 					gateway: [
 						{ required: true, message: 'Please select gateway', trigger: 'blur' }
@@ -388,6 +497,20 @@
 			}
 		},
 		methods: {
+			dummyData(){
+				return {"PO_id":"PO_36e76_7a053_457c0_1","shippingCharges":"50","shippingMethod":"UPS","specialInstruction":"Special Instruction for shipping methods and facility","createdAt":"Wed May 23 2018 11:22:48 GMT+00:00","distributorId":"5a8592331b23f5001257a039","distributor_email":"dweepp@officebrain.com","dueDate":"2018-05-14T18:30:00.000Z","id":"09f7f6be-10cb-42ac-8576-5e86b7ba7e6e","invoiceId":"INV_PO_36e76_18-14","orderId":"Hir-2018-14","paymentInfo":{"stripe":{"Account_Name":"One","Secret_Key":"sk_test_V8ZICJodc73pjyGVBBzA0Dkb","isDefault":true,"isDeleted":false}},"products":[{"charges":{"setup_charge":"45"},"color":{"Translucent Clear":"200"},"color_quantity":{"Translucent Clear":"200"},"createdAt":"2018-05-02T07:06:05.178Z","id":"fe50b196-a226-4e63-9449-98f7efcf592a","imprint":[{"artwork":{"artwork_instruction":"test","artwork_text":["test"]},"artwork_type":"typeset","imprint_method_name":"4 Color Process","imprint_position_name":"Side 1"}],"order_type":"decorative","product_description":{"activeSummary":"Translucent Clear,Translucent Red,Translucent Blue,Translucent Green,Translucent Purple,2,Pricing Includes,Full color printing using four-color process colors (cyan, magenta, yellow and black) on one side. Images and type should be in CMYK. Additional art charges will apply to convert colors. Exact PMS matches are not possible. Neon and metallics are not available.,Setup Charge,Add $45.00 (G) for new orders. No initial set-up charge on exact reorders.,Change Copy,$35.00 (G) per change. Must be at least 1/2 of the lowest quantity offered.,Multi Color,Full color digital printing included in price.,Less Than Minimum,Not available.,Proof,E-Proof $10.00 (G) each, Fax Proof $12.50 (G) each, Product Proof $35.00 (G) each (suggested when color matching is critical). Artwork charges are additional if required.,Additional Artwork,The first 1/2 hour is FREE! Additional time will be charged $35.00 (G) per hour.,Second Side Print,Not Available,Variable Data,Add $.05(G)per item, per location.,Imprint Colors,Full Color Digital printing using four-color process colors (CMYK). On colored products, there may be a slight variation in the imprint.,FOB,NY,Imprint Area,5-1/2\" Diameter,Shipping Weight,Approx. 18 lbs. per 100 pcs.,Packaging,250 per box.,Flyer Inserts,Full Color Digital Flyer Inserts (that fit in back of flyers) are available with custom or stock designs. See item #45950.,Size,9\" Diameter","attr_imprint_color":"","attr_shape":"","attributes":{"colors":["Translucent Clear","Translucent Red","Translucent Blue","Translucent Green","Translucent Purple"],"decimal":["2"]},"available_currencies":["USD","CAD","AUD"],"available_regions":["US","AU"],"categories":["FLYERS","COASTERS"],"company":"","country":"US","currency":"USD","default_color":"Translucent Clear","default_image":"5/80-45905-translucent-clear.jpg","default_image_color_code":"","description":"<ul class=\"productFeature\" style=\"border: 0px; list-style: none; text-decoration: none; margin: 6px 0px 0px 6px; padding: 0px; color: #2c302f; font-size: 12px; font-family: Arial, Helvetica, sans-serif; font-style: normal; font-variant: normal; font-weight: bold; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\">\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">9\" Translucent Flyer, Full Color Digital</li>\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">9\" Diameter</li>\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">High quality translucent plastic</li>\n</ul>","distributor_central_url":"http://www.distributorcentral.com/resources/templates/freight_estimate.cfm?SupplierItemGUID=22DDF7E0-A059-4E0E-BB17-51F3EE91D097","features":[{"key":"Pricing Includes","value":"Full color printing using four-color process colors (cyan, magenta, yellow and black) on one side. Images and type should be in CMYK. Additional art charges will apply to convert colors. Exact PMS matches are not possible. Neon and metallics are not available."},{"key":"Setup Charge","value":"Add $45.00 (G) for new orders. No initial set-up charge on exact reorders."},{"key":"Change Copy","value":"$35.00 (G) per change. Must be at least 1/2 of the lowest quantity offered."},{"key":"Multi Color","value":"Full color digital printing included in price."},{"key":"Less Than Minimum","value":"Not available."},{"key":"Proof","value":"E-Proof $10.00 (G) each, Fax Proof $12.50 (G) each, Product Proof $35.00 (G) each (suggested when color matching is critical). Artwork charges are additional if required."},{"key":"Additional Artwork","value":"The first 1/2 hour is FREE! Additional time will be charged $35.00 (G) per hour."},{"key":"Second Side Print","value":"Not Available"},{"key":"Variable Data","value":"Add $.05(G)per item, per location."},{"key":"Imprint Colors","value":"Full Color Digital printing using four-color process colors (CMYK). On colored products, there may be a slight variation in the imprint."},{"key":"FOB","value":"NY"},{"key":"Imprint Area","value":"5-1/2\" Diameter"},{"key":"Shipping Weight","value":"Approx. 18 lbs. per 100 pcs."},{"key":"Packaging","value":"250 per box."},{"key":"Flyer Inserts","value":"Full Color Digital Flyer Inserts (that fit in back of flyers) are available with custom or stock designs. See item #45950."},{"key":"Size","value":"9\" Diameter"}],"images":[{"Web_image_3":"","_id":"934a7ce2-17d7-11e8-bc23-2ddb89254a62","images":[{"color":"Translucent Clear","image_color_code":"","web_image":"80-45905-translucent-clear_1.jpg"},{"color":"Translucent Red","image_color_code":"","web_image":"80-45905-translucent-red.jpg"},{"color":"Translucent Green","image_color_code":"","web_image":"80-45905-translucent-green.jpg"},{"color":"Translucent Purple","image_color_code":"","web_image":"80-45905-translucent-purple.jpg"}],"import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","product_id":"418","sku":"80-45905"}],"import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","imprint_data":[{"_id":"6e347821-17d7-11e8-bc23-2ddb89254a62","additional_color_charge":"","additional_location_charge":"","full_color":"1","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","imprint_area":"","imprint_data_range":[],"imprint_method":"4 Color Process","imprint_position":"Side 1","is_pms_color_allow":"1","location_price_included":1,"ltm_charge":"","matrix":"","max_imprint_color_allowed":0,"max_location_allowed":0,"pms_charge":"","price_included":0,"product_id":"418","production_days":"0","production_unit":"days","rush_charge":"","setup_charge":"45(G)","sku":"80-45905","type_of_charge":""}],"language":"en","linename":"AAkron Line","matrix_frieght":"","matrix_price":"","max_price":2.95,"min_price":3.35,"non-available_regions":[],"nonavailable_regions":"CA","packaging_charges":"","packaging_code":"","packaging_type":"","price_1":18.39,"pricing":[{"_id":"0e82f0f1-17d7-11e8-bc23-2ddb89254a62","currency":"USD","global_price_type":"above_catalog","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","price_range":[{"code":"C","price":2.833,"qty":{"gte":5000,"lte":9999}},{"code":"C","price":2.75,"qty":{"gte":10000}}],"price_type":"regular","price_unit":"each","product_id":"418","sku":"80-45905","type":"decorative"},{"_id":"0e82f0f2-17d7-11e8-bc23-2ddb89254a62","currency":"USD","global_price_type":"global","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","price_range":[{"code":"C","price":3.35,"qty":{"gte":200,"lte":499}},{"code":"C","price":3.15,"qty":{"gte":500,"lte":999}},{"code":"C","price":3.05,"qty":{"gte":1000,"lte":2499}},{"code":"C","price":2.95,"qty":{"gte":2500}}],"price_type":"regular","price_unit":"each","product_id":"418","sku":"80-45905","type":"decorative"}],"private":"","product_id":"418","product_name":"9\" Translucent Flyer, Full Color Digital","search_keyword":["9\"","Translucent","Flyer","Full","Color","Digital","Full Color Digital","Fun","9\" Translucent Flyer","Fitness & Safety","Flyers","8045905"],"shipping":[{"_id":"f9833db0-17d9-11e8-911f-3f76566caa00","carton_height":"","carton_length":"","carton_size_unit":"inches","carton_weight":"18","carton_weight_unit":"LBS","carton_width":"","fob_city":"Akron","fob_country_code":"US","fob_state_code":"NY","fob_zip_code":"14001","free_on_board":"NY 14001 US","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","product_height":"","product_id":"","product_length":"9","product_size_unit":"inches","product_weight":"0.21","product_weight_unit":"LBS","product_width":"","shipping_qty_per_carton":250,"shipping_range":[{"qty":{"gte":1000,"lte":2000}}],"sku":"80-45905"}],"sku":"80-45905","special_price_valid_up_to":"2019-11-30","supplier":"","supplier_id":"5a8eaf141b23f5001257a053","supplier_info":{"company":"","email":"aakron@flowz.com","supplier_name":"Aakron","username":"5a8eaf141b23f5001257a053"},"username":"aakron@flowz.com","valid_up_to":"2019-11-30","vat":"","vat_unit":"","vid":["sup5a8eaf141b23f5001257a053-1","sup5a8eaf141b23f5001257a053-2","distad94a6fd-2014-4f9c-a1e8-673e8cc8cdb6-1","distad94a6fd-2014-4f9c-a1e8-673e8cc8cdb6-1","dist054364d4-3a0b-436a-8144-04cbffb0587d-1","dist054364d4-3a0b-436a-8144-04cbffb0587d-1","dist6f2157f7-52bd-4949-945e-19c35e1ddfd4-1","dist6f2157f7-52bd-4949-945e-19c35e1ddfd4-1",null,null,null,null,null,null,null,"distd8d7221c-7797-4abc-bdd3-4eadf5f17ae8-1","distec9363f2-4b81-4559-b27d-f125991d4c69-1","dist5bb39293-0ab0-40ff-9ee6-e06a702ad044-1",null,"dist1b4335fd-9478-468e-a733-f18c2821ccf2-1","distd7148887-74e9-4216-ac69-8c8c2c7bd298-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","distb7c68ae2-d0fa-4867-9623-14255c7aef9c-1","diste0825e50-bd9b-41d8-9da3-e649d1783400-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","dist2fdb391a-9cd5-4d40-b647-3cf4d3ddc3b2-1","dist27a283f9-9140-434c-8b75-820a6bcfead0-1","distdd2e1dd3-9aa6-4f05-96d3-1970f8f9589f-1","dist5e2460e5-95ef-4ff2-9ae4-fbd3a9399032-1","dist9177e799-64a0-444d-919e-a5bf186dad1a-1","distbca1661d-087e-4050-ba69-b5137ab3a195-1","dista69b4724-a670-4ffe-869e-ab5aa3b16471-1","dist0acc50ae-91f0-4467-b72b-a9344768aede-1","dist4c97ee2d-6e42-4299-b8a6-d362d6e9ca58-1","dist4607f7df-0f77-4493-97f3-595a1a85cb95-1","dist02823715-2401-44a5-866c-1550394bec33-1","distd68bac81-7bd2-4dfa-9a4f-f02239524501-1","dist0c503695-437b-4052-b744-a86faaef863f-1","dist10c3c3ac-c5fb-45b2-84d6-13c7ae94be12-1","dist6f383830-1e25-48f0-b99b-8b48c65d695a-1"],"video_url":""},"product_id":"9f57a230-17da-11e8-a1bc-f349bccc39a5","shipping_method":{"shipping_detail":[{"color_quantity":{"Translucent Clear":"200"},"selected_address_id":"cf44202e-0bba-405a-9684-fce988251f4a","shipping_address":{"address_type":["shipping","billing"],"city":"Zavalla","country":"United States","culture":"en_us","email":"neelpatel@officebrain.com","name":"Neel Patel","phone":"545-655-9898","postalcode":"75980","state":"Texas","street1":"ABC"},"shipping_detail":{"on_hand_date":"05/08/2018","ship_date":"","ship_transittime":"4","shipping_carrier":"ups","shipping_charge":"42.17","shipping_method":"Ground"},"shipping_from":"shipping_book"}],"shipping_type":"standard"},"special_instruction":"test","total_qty":"200","type":"2","unit_price":"3.35","user_id":"59a9427ce4900900285ac278","website_id":"93219617816448cb812e0170fcab089a"}],"status":"pending","supplierId":"5a8eaf141b23f5001257a053","supplier_email":"aakron@flowz.com","total_amount":"757.17","websiteId":"93219617816448cb812e0170fcab089a","websiteName":"Hiral"}
+			},
+			calculateAmount () {
+				console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
+				if (this.shippingCharge > 0) {
+					this.total = (parseFloat(this.data1.total) + parseFloat(this.shippingCharge)).toFixed(2);
+					// this.total = parseFloat(this.total);
+				}
+				else {
+					this.total = parseFloat(this.data1.total).toFixed(2);
+				}
+				this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
+			},
 			handleEdit (tabname, rowinx) {
 				console.log('handleEdit............', tabname, rowinx)
 				let self = this;
@@ -621,11 +744,7 @@
 					params: {
 						"PO_id[$eq]" : self.$route.query.PO_id
 						// user : Cookies.get('user')
-					},
-					headers: {
-					'Authorization': Cookies.get('auth_token'),
-					'subscriptionId': Cookies.get('subscriptionId')
-					} 
+					}
 				}).then(function (response){
 					console.log("------------------------response",response.data.data[0]);
 					
@@ -636,10 +755,10 @@
 							self.poBillAddress  =  self.splitProductAddress(poDetail);
 							self.supplierPayment()
 							self.data1 = poDetail
+							// self.total = accounting.formatMoney(parseFloat(poDetail.total));
+							self.total = parseFloat(poDetail.total).toFixed(2)
 						}else{
-							console.log("dweep patel !!!!!!!!!!!!!!")
 								self.showError = true
-							console.log("@@@@@@@@@@@@@")
 						}
 				}).catch(error => {
 					console.log("-------",error);
@@ -687,26 +806,25 @@
 				for (let index = 0; index < products.length; index++) {
 					const product = products[index];
 					let shipping_detail=product.shipping_method.shipping_detail
-					for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
-
-
-						const shipingDetail = shipping_detail[sDIndex];
+					// for (let sDIndex = 0; sDIndex < shipping_detail.length; sDIndex++) {
+						const shipingDetail = shipping_detail;
 						let shipAddId=shipingDetail.selected_address_id
 						let productColor = shipingDetail.color_quantity
 						let tempProdut=product;
-						tempProdut.color_quantity=productColor
-						if(shippingIds.indexOf(shipAddId)<0){
+						// tempProdut.color_quantity=productColor
 							let tempObj={
 								product:[tempProdut],
 								selected_address_id:shipAddId,
-								shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail}
+								shipping_address:shipingDetail.shipping_address,shipping_detail:shipingDetail.shipping_detail
+							}
 							tempPOAddressBill.push(tempObj)
-						}else{
-							let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
-							tempPOAddressBill[billIndex].product.push(tempProdut)
-						}
-						shippingIds.push(shipAddId);
-					}
+						// if(shippingIds.indexOf(shipAddId)<0){
+						// }else{
+						// 	let billIndex= _.findIndex(tempPOAddressBill, function(o) { return o.selected_address_id == shipAddId; });
+						// 	tempPOAddressBill[billIndex].product.push(tempProdut)
+						// }
+						// shippingIds.push(shipAddId);
+					// }
 				}
 
 				console.log("Temp",tempPOAddressBill)
@@ -734,7 +852,7 @@
 				// this.$refs[name].resetFields();
 			},
 			handleSubmit (name) {
-				var self = this
+				var self = this;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
 						console.log('formValidate----------------------------->',this.formValidate, this.poBillAddress)
@@ -832,7 +950,15 @@
                     return 'Stripe'
                 }
 			},
+			generatePDF()
+			{
+				this.modal1=true;
+			},
+			generateBillPDF(){
+				this.invoiceModel=true;	
+			},
 			generateInvoice () {
+				let self = this;
 				let paymentInfo = {}
 
 				if(this.dueDate != "" ) {
@@ -847,7 +973,6 @@
 								}
 							}
 						}
-
 					}
 					let invoiceData = {
 							'PO_id': this.data1.PO_id,
@@ -857,13 +982,16 @@
 							'products': this.data1.products,
 							'websiteName': this.data1.websiteName,
 							'websiteId': this.data1.websiteId,
-							'total_amount': this.data1.total,
+							'shippingCharges': this.shippingCharge,
+							'shippingMethod' : this.shippingMethod,
+							'specialInstruction' : this.note, 
+							'total_amount': this.total,
 							'supplierId': this.data1.products[0].product_description.supplier_id,
 							'supplier_email': this.data1.products[0].product_description.supplier_info.email,
 							'dueDate': this.dueDate,
 							'paymentInfo': paymentInfo
 						}
-						console.log("invoiceData", invoiceData)
+						console.log("po bill data", invoiceData)
 					
 					axios({
 							method: 'post',
@@ -872,9 +1000,12 @@
 							
 						}).then(function(response){
 							console.log('Generate PO...........', response)
+							self.invoiceBillObject=response.data
+							self.$Message.success("Purchase Order Invoice Generated Successfully");
+							// self.invoiceBillGenerated=true;
 							// self.data2 = response.data.data
 							// console.log('data2 data2 data2', self.data2)
-							
+							self.invoiceBillGenerated=true;
 						}).catch(function (error){
 							console.log("error", error)
 							self.$Notice.error({
@@ -886,17 +1017,126 @@
 				} else { 
 					this.$Notice.error({
 						title: 'Error',
-						desc: 'Please Select Due Date of Invoice',
+						desc: 'Please Select Due Date of Bill',
 						duration: 4.5
 					})
 				}
 
-			}
+			},
+			async cancel() {
+                self.modal1 = false
+            },
+            async download() {
+                var self = this
+		        self.$Loading.start()
+
+                await axios({
+                    method: 'post',
+                    url: config.default.serviceUrl + 'exporttopdf',
+                    data: {
+                        "html" : $('#orderList').html()
+                    },  
+                }).then(function (response) {
+                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    self.$Loading.finish()
+                    var arrayBufferView = new Uint8Array( response.data.data );
+                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                    var link=document.createElement('a');
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=self.data1.id == undefined ? "custom_po" : self.data1.id;
+                    link.click();
+                }).catch(function (error){
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                })    
+            },
+			async cancelBillInvoice() {
+                this.invoiceModel = false
+            },
+            async downloadBillInvoice() {
+                var self = this
+		        self.$Loading.start()
+
+                await axios({
+                    method: 'post',
+                    url: config.default.serviceUrl + 'exporttopdf',
+                    data: {
+                        "html" : $('#invoiceBillList').html()
+                    },  
+                }).then(function (response) {
+                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    self.$Loading.finish()
+                    var arrayBufferView = new Uint8Array( response.data.data );
+                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                    var link=document.createElement('a');
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=self.invoiceBillObject.id == undefined ? "custom_po" : self.invoiceBillObject.id;
+                    link.click();
+                }).catch(function (error){
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                })    
+            }
+            
 		},
 		mounted() {
 			console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()	
-						
+			this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 		}
 
 	}

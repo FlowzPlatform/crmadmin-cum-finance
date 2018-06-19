@@ -262,8 +262,10 @@ export default {
                 data: body,
                 headers:header,
             }).then(async function (response) {
-                console.log(">>>>>>>>>>>>>> response ",response)
-                if (response.status == 201) {
+
+                console.log(">>>>>>>>>>>>>> response ",response.data.status)
+
+                if (response.status == 401) {
                     if(response.data.messages != undefined){
                         self.$Message.error({
                             duration: 5,
@@ -281,6 +283,7 @@ export default {
                     status = response.data.status || response.data.state || response.data.messages.resultCode
                     self.loading = false
                 }
+                console.log("================status",status);
                 if (status == "Error") {
                     self.$Message.error({
                         duration: 5,
@@ -304,7 +307,7 @@ export default {
                         console.log("$$$$$$$$$$$$$$$$$",error)
                     })
                     self.$router.push({
-                        name:'PO Invoice'
+                        name:'PO Bill'
                     })
                 }
             })

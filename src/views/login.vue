@@ -135,21 +135,29 @@
                </div> -->
 
                <div class="social">
-                  <span @click="facebookLogin2()">
+                  <!-- <span @click="facebookLogin2()">
                   <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
-                  </span>
+                  </span> -->
+                 
                   <span @click="googleLogin2()">
-                  <i class="fa fa-google-plus-square fa-2x" aria-hidden="true"></i>
+                       
+                  <Icon type="social-google" style="font-size:29px;padding: 10px 25px;"></Icon>
+                   
                   </span>
+                 
+                 
                   <span @click="twitterLogin2()">
-                  <i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+                  <Icon type="social-twitter" style="font-size:29px;padding: 10px 0px;"></Icon>
                   </span>
+                  
+                  
                   <span @click="githubLogin2()">
-                  <i class="fa fa-github-square fa-2x" aria-hidden="true"></i>
+                  <Icon type="social-github" style="font-size:29px;padding: 10px 25px;"></Icon>
                   </span>
-                  <span @click="linkdinLogin2()">
+                   
+                  <!-- <span @click="linkdinLogin2()">
                   <i class="fa fa-linkedin-square  fa-2x" aria-hidden="true"></i>
-                  </span>
+                  </span> -->
                </div>
             </div>
             <div class="signup hide">
@@ -500,9 +508,19 @@ export default {
                             } else {
                                 Cookies.set('access', 1);
                             }
-                            self.$router.push({
-                                name: 'Dashboard'
-                            });
+                            let route = Cookies.get('route');
+                            console.log('route',route, typeof route);
+                            if (route === undefined) {
+                                self.$router.push({
+                                    name: 'Dashboard'
+                                });
+                            }
+                            else {
+                                self.$router.push({
+                                    name: route
+                                });
+                                Cookies.remove('route');
+                            }
                         }).catch(function(error){
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
@@ -597,7 +615,7 @@ export default {
            }else if(self.signup.password == ""){
                self.$message.warning("password is required");
            }else{
-               self.saveFileLoading = true;
+               self.saveFileLoadingLogin = true;
                axios.post(config.default.signupUrl, {
                 email: self.signup.email.trim(),
                 password: self.signup.password.trim(),
@@ -606,8 +624,9 @@ export default {
             })
             .then(function (response) {
                 console.log(response);
+                self.saveFileLoadingLogin = false;
                 if(response.data.code == 200){
-                    self.saveFileLoading = false;
+                    
                     //alert(response.data.message+", please check your email for password")
                     self.$message({
                         message : response.data.message,
@@ -632,7 +651,7 @@ export default {
                  console.log(error.response);
                 //self.saveFileLoading = false;
                 //alert(error);
-                
+                self.saveFileLoadingLogin = false;
                 if(error.response.status == 409){
                     self.$message.error(error.response.data);
                 }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){

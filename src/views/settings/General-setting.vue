@@ -21,7 +21,7 @@
               </Select>
             </FormItem>
             <FormItem label="Name" prop="name" id="CustomerName">
-                <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
+                <Input v-model="formValidate.name" placeholder="Enter comapny name"></Input>
             </FormItem>
             <FormItem label="Address" prop="AddressLine1">
 
