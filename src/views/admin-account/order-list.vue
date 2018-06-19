@@ -237,7 +237,7 @@
                         }
                     },
                     {
-                        title: 'po_Sent',
+                        title: 'PO_Sent',
                         width: 125,
                         align:  'center',
                         render : (h , {row}) => { 
