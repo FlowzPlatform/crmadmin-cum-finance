@@ -254,7 +254,7 @@
 									</tr>
 									<tr>
 										<td><strong>Due Date of Bill :</strong></td>
-										<td><DatePicker v-model="dueDate" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
+										<td><DatePicker v-model="dueDate" :options="options3" type="date" placeholder="Select date" placement="right" style="width: 215px;margin-top: 10px;margin-left: 25px;"></DatePicker></td>
 									</tr>
 									<tr>
 										<td><strong>Total Amount :</strong></td>
@@ -443,6 +443,11 @@
 						}
 					}
 				],
+				 options3: {
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
 				data2: [], 
 				showError: false,               
 				data1: {},
