@@ -172,22 +172,62 @@
                             ]);
                         }
                     },
+                    // {
+                    //     title: 'PO Sent',
+                    //     width: 125,
+                    //     align:  'center',
+                    //     render : (h , {row}) => { 
+                    //         if(row.po_detail != undefined){
+                    //             return h('div', [
+                    //                 h('span','true')
+                    //             ]);
+                    //         }else{
+                    //             return h('div', [
+                    //                 h('span','false')
+                    //             ]);
+                    //         }
+                    //     }
+                    // },
                     {
                         title: 'PO Sent',
                         width: 125,
                         align:  'center',
-                        render : (h , {row}) => { 
+                        render : (h , {row}) => {
                             if(row.po_detail != undefined){
                                 return h('div', [
-                                    h('span','true')
+                                        h('Button', {
+                                        props: {
+                                            type: 'text',
+                                            size: 'large',
+                                            icon: 'checkmark'
+                                        },
+                                        style: {
+                                            marginRight: '3px',
+                                            padding: '0px',
+                                            fontSize: '20px',
+                                            color: 'green'
+                                        }
+                                    }, '')
                                 ]);
                             }else{
-                                return h('div', [
-                                    h('span','false')
+                               return h('div', [
+                                        h('Button', {
+                                        props: {
+                                            type: 'text',
+                                            size: 'large',
+                                            icon: 'close'
+                                        },
+                                        style: {
+                                            marginRight: '3px',
+                                            padding: '0px',
+                                            fontSize: '20px',
+                                            color: 'red'
+                                        }
+                                    }, '')
                                 ]);
                             }
                         }
-                    }
+                    },
                 ],
                 data1: [],
                 list1: [],
