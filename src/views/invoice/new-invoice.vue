@@ -22,7 +22,7 @@
 						<Input v-model="formItem.description" type="textarea"  placeholder="Enter Description"></Input>
 					</FormItem>
 					<FormItem label="Due Date" prop="duedate">
-						<DatePicker type="date" placeholder="Select date" v-model="formItem.duedate"></DatePicker>
+						<DatePicker type="date" :options="options3" placeholder="Select date" v-model="formItem.duedate"></DatePicker>
 					</FormItem>
 					<FormItem label="Quantity" prop="qty">
 						<Input v-model="formItem.qty" placeholder="Enter Quantity" style="width:100%"></Input>
@@ -114,6 +114,11 @@ export default {
         amount1: '',
         selectamount: '',
         selectProject: ''
+      },
+      options3: {
+          disabledDate (date) {
+              return date && date.valueOf() < Date.now() - 86400000;
+          }
       },
       data3: [],
       data2: [],
@@ -227,6 +232,8 @@ export default {
     configChange(data){
       console.log("-------------------configChange data",data)
       $('#CustomerName').css("display","block")
+      this.formItem.name = ''
+      this.data2 = []
       if (data != '') {
         this.customerData(data);
       }

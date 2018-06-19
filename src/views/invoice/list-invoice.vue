@@ -135,7 +135,8 @@
 
    <div v-if="emailData != ''" ref="email1" style="display:none">
 
-    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
+    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px;size: 7in 9.25in;">
+      
       <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
           <div id="logo" style="float: left;margin-top: 8px;">
               <img :src="emailDataCompany.logo" style="height: 70px;">
@@ -174,67 +175,69 @@
                   <div  style="font-size: 12px;color: #777777;">Due Date: {{dueDate}}</div>
               </div>
           </div>
-          <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
+          <table border="0" cellspacing="0" cellpadding="0" style="width:100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                      <th  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 10px;width:10%;text-align: center;border-bottom: 1px solid #FFFFFF;
                       ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:35%;">PRODUCT NAME</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:10%;">SKU</th>
+                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;width:15%;">UNIT PRICE</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:15%;">QUANTITY</th>
+                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;width:15%;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
                       <div v-if="item.Description">
-                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>
-                        
-                        <span v-html="text(item.Description)"></span>
+                      <td  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                          <div class="uldesc" v-html="text(item.Description)"></div>
+                      </td>
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                          <div class="uldesc" v-html="text1(item.Description)"></div>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
 
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
-                      <!-- <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else>Not available</td> -->
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
+                      <!-- <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;"v-else>Not available</td> -->
 
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
-                       <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
-                       <!-- <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else></td> -->
+                      <td  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
+                       <td  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
+                       <!-- <td  style="text-align: right;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;"v-else></td> -->
 
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
-                     <!--  <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else></td> -->
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
+                     <!--  <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else></td> -->
                   </tr>
               </tbody>
               <tfoot>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{ accounting(emailData.row.SubTotal) }}</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{accounting(emailData.TotalAmt-emailData.TxnTaxDetail.TotalTax)}}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{ accounting(emailData.row.SubTotal) }}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{accounting(emailData.TotalAmt-emailData.TxnTaxDetail.TotalTax)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3" style="border: none;"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row">{{accounting(emailData.row.Total)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row">{{accounting(emailData.row.Total)}}</td>
 
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.TotalAmt)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.TotalAmt)}}</td>
 
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row != undefined">{{accounting(emailData.row.AmountDue)}}</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.Balance)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row != undefined">{{accounting(emailData.row.AmountDue)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.Balance)}}</td>
                   </tr>
               </tfoot>
           </table>
@@ -281,50 +284,50 @@
           <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
                       ">#</th>
                       <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
                       <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
                       <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
                       <div v-if="item.description">
-                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
                       <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>                       
+                        <h3 style="color: #57B223;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_name}}</h3>                       
                         <span>{{item.description}}</span>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.amount)}}</td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">{{ accounting(item.amount)}}</td>
   
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.qty}}</td>
+                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">{{item.qty}}</td>
                      
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.amount * item.qty) }}</td>
+                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.amount * item.qty) }}</td>
                   </tr>
               </tbody>
               <tfoot>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3" style="border: none;"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
                   </tr>
               </tfoot>
           </table>
@@ -1032,7 +1035,16 @@
       },
       text(item) {
          try{
-           return JSON.parse(item).description
+           return JSON.parse(item).title
+         } catch(e) {
+           return item
+         }
+          // return (typeof item === 'object')? JSON.parse(item).description : item
+          // return $(item).text();
+      },
+      text1(item) {
+         try{
+           return JSON.parse(item).sku
          } catch(e) {
            return item
          }

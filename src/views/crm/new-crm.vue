@@ -222,11 +222,11 @@
 				self.file = file
 				return false;
 			},
-			async calldata() {
+			async calldata(id) {
 				let resp
 				let self = this
 
-				var settingId = self.finaldata.config
+				var settingId = id
 				await axios({
 					method:'get',
 					url: config.default.serviceUrl + 'settings/'+settingId,
@@ -360,7 +360,7 @@
 				});
 				
 				
-				console.log("response------>iuy",resp);
+				console.log("response------>iuy",self.customerData);
 				$('.customer').css("display","inline-block")				
 				// resp.forEach(obj =>{
 				//   console.log(obj[0].data)
@@ -457,8 +457,10 @@
                 });
 			},
 			configChange(data){
-				console.log(data)
+				console.log("dweep",data)
 				$('.autoCompleteDropdown').css("display","inline-block")
+				this.finaldata.cname = ''
+				this.customerData = []
 				this.calldata(data);
 			},
 			async dbdata() {
