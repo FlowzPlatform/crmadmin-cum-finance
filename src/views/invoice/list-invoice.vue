@@ -178,38 +178,37 @@
           <table border="0" cellspacing="0" cellpadding="0" style="width:100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 10px;width:10%;text-align: center;border-bottom: 1px solid #FFFFFF;
-                      ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:35%;">PRODUCT NAME</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:10%;">SKU</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;width:15%;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:15%;">QUANTITY</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;width:15%;">TOTAL</th>
+                      <th  style="background: rgb(248, 248, 248);white-space: nowrap;font-weight: normal;padding: 10px;width:10%;text-align: center;border: 1px solid #000000;">#</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: rgb(251, 251, 251);border: 1px solid #000000;border-collapse: collapse;width:35%;">PRODUCT NAME</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;width:10%;">SKU</th>
+                      <th  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;width:15%;">UNIT PRICE</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;width:15%;">QUANTITY</th>
+                      <th  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;width:15%;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
                       <div v-if="item.Description">
-                      <td  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                      <td  style="background: rgb(248, 248, 248);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: rgb(251, 251, 251);border: 1px solid #000000;border-collapse: collapse;">
                           <div class="uldesc" v-html="text(item.Description)"></div>
                       </td>
-                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;">
                           <div class="uldesc" v-html="text1(item.Description)"></div>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
 
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
-                      <!-- <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;"v-else>Not available</td> -->
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
+                      <!-- <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: right;border: 1px solid #000000;color: #555555;"v-else>Not available</td> -->
 
-                      <td  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
-                       <td  style="text-align: center;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
-                       <!-- <td  style="text-align: right;font-weight: normal;padding: 10px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;"v-else></td> -->
+                      <td  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
+                       <td  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
+                       <!-- <td  style="text-align: right;font-weight: normal;padding: 10px;background: #EEEEEE;border: 1px solid #000000;border-collapse: collapse;"v-else></td> -->
 
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
-                     <!--  <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else></td> -->
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
+                     <!--  <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-else></td> -->
                   </tr>
               </tbody>
               <tfoot>
@@ -284,28 +283,28 @@
           <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;
                       ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">DESCRIPTION</th>
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;color: #555555;">UNIT PRICE</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">QUANTITY</th>
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
                       <div v-if="item.description">
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">
                         <h3 style="color: #57B223;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_name}}</h3>                       
                         <span>{{item.description}}</span>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">{{ accounting(item.amount)}}</td>
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;color: #555555;">{{ accounting(item.amount)}}</td>
   
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">{{item.qty}}</td>
+                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">{{item.qty}}</td>
                      
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.amount * item.qty) }}</td>
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">{{ accounting(item.amount * item.qty) }}</td>
                   </tr>
               </tbody>
               <tfoot>
