@@ -188,6 +188,7 @@
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
+                      
                       <div v-if="item.Description">
                       <td  style="background: rgb(248, 248, 248);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;">{{inx+1}}</td>
                       <td  style="text-align: left;font-weight: normal;padding: 10px;background: rgb(251, 251, 251);border: 1px solid #000000;border-collapse: collapse;">
@@ -212,6 +213,16 @@
                   </tr>
               </tbody>
               <tfoot>
+                  <tr>
+                      <td colspan="3"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">ADITIONAL CHARGES</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(additional_charges) }}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="3"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SHIPPING CHARGES</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(shipping_charges) }}</td>
+                  </tr>
                   <tr>
                       <td colspan="3"></td>
                       <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
@@ -244,9 +255,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
 
@@ -334,9 +345,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
  
@@ -996,8 +1007,8 @@
             }
 
         ],
-
-
+        additional_charges: '',
+        shipping_charges: '',
         settingIdForPayment : '',
         data6: [],
         data7: [],
@@ -1033,11 +1044,11 @@
           return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       },
       text(item) {
-         try{
-           return JSON.parse(item).title
-         } catch(e) {
-           return item
-         }
+        try{
+          return JSON.parse(item).title
+        } catch(e) {
+          return item
+        }
           // return (typeof item === 'object')? JSON.parse(item).description : item
           // return $(item).text();
       },
@@ -1083,7 +1094,12 @@
         this.duegt = '';
         this.duelt = '';
         this.invoiceno = '';
-        this.getAllSettings();
+        let settingId = this.tabPanes[this.tabIndex].id;
+        let settingDomain = this.tabPanes[this.tabIndex].domain;
+        this.settingIdForPayment = this.tabPanes[this.tabIndex].id;
+        this.getInvoiceBySettingId(settingId , settingDomain , this.tabIndex)
+        this.getCustomerBySettingId(settingId , settingDomain , this.tabIndex)
+        // this.getAllSettings();
       },
 
       async changeData() {
@@ -1097,8 +1113,10 @@
             console.log("item",item)
             if(item.InvoiceNumber != undefined){
               return item.InvoiceNumber === self.invoiceno;
-            }else {
+            }else if(item.Id != undefined) {
               return item.Id === self.invoiceno;
+            }else {
+              return item.Invoice_No === self.invoiceno;
             }
           });
           console.log("myarr",this.filterArray)
@@ -1391,15 +1409,15 @@
           }
       },
       async createPDFXero (params) {
-        this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
-        this.emailData = params;
-        var self = this
-        var date = new Date(params.row.Date);
-        this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-        var date1 = new Date(params.row.DueDate);
-        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-        await axios({
+          this.$Loading.start();
+          console.log("paramsssssssssssssssss " , params)
+          this.emailData = params;
+          var self = this
+          var date = new Date(params.row.Date);
+          this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+          var date1 = new Date(params.row.DueDate);
+          this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+          await axios({
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1407,46 +1425,45 @@
                 Name : params.row.Contact.Name
               },
               headers:{
-              Authorization : Cookies.get('auth_token')
-          },
-              }).then(function (response) {
-                self.emailDataCustomer = response.data[0].data[0]
-              })
-              .catch(function (error) {
-                console.log(error);
-                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                  let location = psl.parse(window.location.hostname)
-                  location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
-                  self.$store.commit('logout', self);
-                  
-                  self.$router.push({
-                      name: 'login'
-                  });
+                  Authorization : Cookies.get('auth_token')
+              },
+          }).then(function (response) {
+            self.emailDataCustomer = response.data[0].data[0]
+          }).catch(function (error) {
+              console.log(error);
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
                   self.$Notice.error({
                       title: error.response.data.name,
                       desc: error.response.data.message,
                       duration: 10
                   })
-                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                    self.$Notice.error({
-                        title: error.response.statusText,
-                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                        duration: 4.5
-                    })
-                }else {
-                    self.$Notice.error({
-                        title: error.response.data.name,
-                        desc: error.response.data.message,
-                        duration: 10
-                    })
-                }
-              });
-        await axios({
+              }
+            });
+          await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
                   subscriptionId : Cookies.get('subscriptionId')
@@ -1500,7 +1517,17 @@
         })
         .then(async function (response) {
           console.log('response>>>>>>>>>>>>>>', response)
-          self.DescriptionPdf = response.data[0].data.LineItems;
+          self.DescriptionPdf = _.filter(response.data[0].data.LineItems, function(desc) {
+            if(desc.Description == 'additional_charges') {
+              self.additional_charges = (desc.Quantity * desc.UnitAmount)
+            }
+            if(desc.Description == 'shipping_charges') {
+              self.shipping_charges = desc.Quantity * desc.UnitAmount
+            }
+            return desc.Description != 'additional_charges' && desc.Description != 'shipping_charges';
+          });
+
+          // self.DescriptionPdf = response.data[0].data.LineItems;
 
         })
         .catch(function (error) {
@@ -1539,14 +1566,15 @@
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
             width: 1000,
+            closable: true,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
                 method: 'post',
                 url: config.default.serviceUrl + 'exporttopdf',
@@ -1558,7 +1586,7 @@
               })
               .then(function (response) {
                   console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                  document.querySelector('#myfooter').style.position = 'initial' 
+                  // document.querySelector('#myfooter').style.position = 'initial' 
                   var arrayBufferView = new Uint8Array( response.data.data );
                   var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                   var link=document.createElement('a');
@@ -1682,7 +1710,7 @@
               });
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
                   subscriptionId : Cookies.get('subscriptionId')
@@ -1782,7 +1810,7 @@
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-            document.querySelector('#myfooter').style.position = 'fixed'
+            // document.querySelector('#myfooter').style.position = 'fixed'
             axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -1793,7 +1821,7 @@
 
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial' 
+                // document.querySelector('#myfooter').style.position = 'initial' 
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
@@ -1928,7 +1956,7 @@
         });
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
                   subscriptionId : Cookies.get('subscriptionId')
@@ -2155,7 +2183,7 @@
 			});
 			await axios({
 				method: 'get',
-				url: config.default.serviceUrl + 'Settings/' + settingID,
+				url: config.default.serviceUrl + 'settings/' + settingID,
 				headers:{
 					Authorization : Cookies.get('auth_token'),
 					subscriptionId : Cookies.get('subscriptionId')
@@ -2323,20 +2351,20 @@
       },
       async tabClicked(data){
         // console.log(data)
-        this.reset();
         this.tabIndex = data;
-        this.newList = [];
-        this.newTabIndex = '';
-        let settingName = this.tabPanes[data].configName;
-        let settingId = this.tabPanes[data].id;
-        let settingDomain = this.tabPanes[data].domain;
-        this.settingIdForPayment = settingId;
+        this.reset();
+        // this.newList = [];
+        // this.newTabIndex = '';
+        // let settingName = this.tabPanes[data].configName;
+        // let settingId = this.tabPanes[data].id;
+        // let settingDomain = this.tabPanes[data].domain;
+        // this.settingIdForPayment = settingId;
 
-        this.getInvoiceBySettingId(settingId ,settingDomain , data, settingName)
-        this.getCustomerBySettingId(settingId , settingDomain , data)
+        // this.getInvoiceBySettingId(settingId ,settingDomain , data, settingName)
+        // this.getCustomerBySettingId(settingId , settingDomain , data)
       },
       async getInvoiceBySettingId(settingId , settingDomain , data, settingName){
-        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
+        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId,settingDomain)
         settingID = settingId
         this.$Loading.start();
         this.data6 = [];
@@ -2361,6 +2389,9 @@
             console.log("iiiiiiiii------------------>",response);
             self.data6 = response.data.data;
             self.invnoFilter = []
+            response.data.data.forEach(item => {
+              self.invnoFilter.push(item.Invoice_No)
+            })
             let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
@@ -2770,73 +2801,73 @@
           $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
         },1000)
         let self = this;
-        console.log(self.tabPanes[self.tabIndex].domain)
+        // console.log(self.tabPanes[self.tabIndex].domain)
         console.log('id..........',params.Id)
-        let id
+        let id;
         if(self.tabPanes[self.tabIndex].domain == "QB"){
           id = params.Id
         } else if(self.tabPanes[self.tabIndex].domain == "Xero"){
           id = params.InvoiceID
         }
         await axios.get(config.default.serviceUrl + 'transaction', {
-              params : {
-                  settingId : self.tabPanes[self.tabIndex].id,
-                  InvoiceID : id
-              }
-          })
-          .then(function (response) {
-            console.log('rrrrrrrrrrrrrrrrrr',response)
-              self.newTabIndex = self.tabIndex
-              console.log(response.data.data)
-              if(response.data.data.length == 0){
-                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
-                console.log("self.newList>>>>>>>>>>>>>", self.newList)
-                // self.newList = [{key : "No transaction has been made for this Invoice"}]
-                self.newList = []
-              } else {
-                  var deep = _.cloneDeep(response.data.data);
-                  _(deep).each(function(item , index){
-                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
-                      item.paymentAccounting.Invoice.Date = dt._d
-                  })
-                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
-                    // self.data = desc;
-                  self.newList = desc;
-              }
-          })
-          .catch(function (error) {
-              console.log("error",error);
-              self.$Loading.error();
-              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                  let location = psl.parse(window.location.hostname)
-                  location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
-                  self.$store.commit('logout', self);
-                  
-                  self.$router.push({
-                      name: 'login'
-                  });
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 4.5
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }
-          });
+            params : {
+              settingId : self.tabPanes[self.tabIndex].id,
+              InvoiceID : id
+            }
+        })
+        .then(function (response) {
+          console.log('rrrrrrrrrrrrrrrrrr',response)
+            self.newTabIndex = self.tabIndex
+            console.log(response.data.data)
+            if(response.data.data.length == 0){
+              // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
+              console.log("self.newList>>>>>>>>>>>>>", self.newList)
+              // self.newList = [{key : "No transaction has been made for this Invoice"}]
+              self.newList = []
+            } else {
+                var deep = _.cloneDeep(response.data.data);
+                _(deep).each(function(item , index){
+                    var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                    item.paymentAccounting.Invoice.Date = dt._d
+                })
+                var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                  // self.data = desc;
+                self.newList = desc;
+            }
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+        });
       },
 
 
@@ -2902,7 +2933,7 @@
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
                   subscriptionId : Cookies.get('subscriptionId')
@@ -2967,14 +2998,14 @@
                 // });
         setTimeout(function(){
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email2.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -2983,7 +3014,7 @@
               },
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial'
+                // document.querySelector('#myfooter').style.position = 'initial'
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
@@ -3089,7 +3120,7 @@
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
                   subscriptionId : Cookies.get('subscriptionId')
@@ -3220,6 +3251,7 @@
 
       async getAllSettings(){
         let self = this;
+        console.log('============getallsettings call',Cookies.get('subscriptionId'))
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
               Authorization : Cookies.get('auth_token'),
@@ -3239,8 +3271,7 @@
             self.settingIdForPayment = self.tabPanes[self.tabIndex].id;
             self.getInvoiceBySettingId(settingId , settingDomain , 0)
             self.getCustomerBySettingId(settingId , settingDomain , 0)
-          }else
-          {
+          }else {
               self.$Modal.warning({
               title: 'No Configuration available',
               okText : "Go to Settings",
