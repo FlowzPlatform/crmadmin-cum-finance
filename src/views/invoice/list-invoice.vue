@@ -256,9 +256,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
 
@@ -346,9 +346,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
  
@@ -1567,14 +1567,15 @@
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
             width: 1000,
+            closable: true,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
                 method: 'post',
                 url: config.default.serviceUrl + 'exporttopdf',
@@ -1586,7 +1587,7 @@
               })
               .then(function (response) {
                   console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                  document.querySelector('#myfooter').style.position = 'initial' 
+                  // document.querySelector('#myfooter').style.position = 'initial' 
                   var arrayBufferView = new Uint8Array( response.data.data );
                   var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                   var link=document.createElement('a');
@@ -1810,7 +1811,7 @@
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-            document.querySelector('#myfooter').style.position = 'fixed'
+            // document.querySelector('#myfooter').style.position = 'fixed'
             axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -1821,7 +1822,7 @@
 
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial' 
+                // document.querySelector('#myfooter').style.position = 'initial' 
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
@@ -2810,64 +2811,64 @@
           id = params.InvoiceID
         }
         await axios.get(config.default.serviceUrl + 'transaction', {
-              params : {
-                  settingId : self.tabPanes[self.tabIndex].id,
-                  InvoiceID : id
-              }
-          })
-          .then(function (response) {
-            console.log('rrrrrrrrrrrrrrrrrr',response)
-              self.newTabIndex = self.tabIndex
-              console.log(response.data.data)
-              if(response.data.data.length == 0){
-                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
-                console.log("self.newList>>>>>>>>>>>>>", self.newList)
-                // self.newList = [{key : "No transaction has been made for this Invoice"}]
-                self.newList = []
-              } else {
-                  var deep = _.cloneDeep(response.data.data);
-                  _(deep).each(function(item , index){
-                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
-                      item.paymentAccounting.Invoice.Date = dt._d
-                  })
-                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
-                    // self.data = desc;
-                  self.newList = desc;
-              }
-          })
-          .catch(function (error) {
-              console.log("error",error);
-              self.$Loading.error();
-              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                  let location = psl.parse(window.location.hostname)
-                  location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
-                  self.$store.commit('logout', self);
-                  
-                  self.$router.push({
-                      name: 'login'
-                  });
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 4.5
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }
-          });
+            params : {
+              settingId : self.tabPanes[self.tabIndex].id,
+              InvoiceID : id
+            }
+        })
+        .then(function (response) {
+          console.log('rrrrrrrrrrrrrrrrrr',response)
+            self.newTabIndex = self.tabIndex
+            console.log(response.data.data)
+            if(response.data.data.length == 0){
+              // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
+              console.log("self.newList>>>>>>>>>>>>>", self.newList)
+              // self.newList = [{key : "No transaction has been made for this Invoice"}]
+              self.newList = []
+            } else {
+                var deep = _.cloneDeep(response.data.data);
+                _(deep).each(function(item , index){
+                    var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                    item.paymentAccounting.Invoice.Date = dt._d
+                })
+                var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                  // self.data = desc;
+                self.newList = desc;
+            }
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+        });
       },
 
 
@@ -2998,14 +2999,14 @@
                 // });
         setTimeout(function(){
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email2.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -3014,7 +3015,7 @@
               },
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial'
+                // document.querySelector('#myfooter').style.position = 'initial'
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');

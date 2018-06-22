@@ -86,9 +86,9 @@
         </main>
         <footer style="font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
             Invoice was created on a computer and is valid without the signature and seal.
-            <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+            <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
                 Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-            </div>
+            </div>-->
         </footer>
     </div>
 </template>
