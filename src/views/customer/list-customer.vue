@@ -787,7 +787,7 @@ export default {
 					let settingName = self.tabPanes[self.tabIndex].configName;            
 					let settingId = self.tabPanes[self.tabIndex].id
 					let settingDomain = self.tabPanes[self.tabIndex].domain;
-					self.getContactBySettingId(settingId , settingDomain , 0)
+					self.getContactBySettingId(settingId , settingDomain , self.tabIndex, settingName)
 				}
 				else {
 					self.$Modal.warning({

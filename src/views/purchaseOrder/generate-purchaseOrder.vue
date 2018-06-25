@@ -151,6 +151,7 @@
                                     on: {
                                         myemitter: (item) => {
                                             // alert(item);
+                                            console.log("item************",item, this.poBillAddress)
                                             // this.EditBanner(item)
                                             // this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty

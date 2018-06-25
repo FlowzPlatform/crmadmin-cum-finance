@@ -62,7 +62,7 @@
         </div>
         <Table size="small" stripe @on-selection-change="Onselectdata" :columns="columns1" :data="list1"></Table>
         <div style="margin: 10px;overflow: hidden">
-            <Button type="primary" @click= "generatePO()" style="float:left;">Generate PO</Button>
+            <Button v-show="selectedRows.length > 0" type="primary" @click= "generatePO()" style="float:left;">Generate PO</Button>
             <div style="float: right;">
                 <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
             </div>
@@ -172,22 +172,62 @@
                             ]);
                         }
                     },
+                    // {
+                    //     title: 'PO Sent',
+                    //     width: 125,
+                    //     align:  'center',
+                    //     render : (h , {row}) => { 
+                    //         if(row.po_detail != undefined){
+                    //             return h('div', [
+                    //                 h('span','true')
+                    //             ]);
+                    //         }else{
+                    //             return h('div', [
+                    //                 h('span','false')
+                    //             ]);
+                    //         }
+                    //     }
+                    // },
                     {
-                        title: 'po_Sent',
+                        title: 'PO Sent',
                         width: 125,
                         align:  'center',
-                        render : (h , {row}) => { 
+                        render : (h , {row}) => {
                             if(row.po_detail != undefined){
                                 return h('div', [
-                                    h('span','true')
+                                        h('Button', {
+                                        props: {
+                                            type: 'text',
+                                            size: 'large',
+                                            icon: 'checkmark'
+                                        },
+                                        style: {
+                                            marginRight: '3px',
+                                            padding: '0px',
+                                            fontSize: '20px',
+                                            color: 'green'
+                                        }
+                                    }, '')
                                 ]);
                             }else{
-                                return h('div', [
-                                    h('span','false')
+                               return h('div', [
+                                        h('Button', {
+                                        props: {
+                                            type: 'text',
+                                            size: 'large',
+                                            icon: 'close'
+                                        },
+                                        style: {
+                                            marginRight: '3px',
+                                            padding: '0px',
+                                            fontSize: '20px',
+                                            color: 'red'
+                                        }
+                                    }, '')
                                 ]);
                             }
                         }
-                    }
+                    },
                 ],
                 data1: [],
                 list1: [],
@@ -444,29 +484,33 @@
 
             },
             async generatePO() {
-                let self = this;
-                this.loading = true;
-                for (let po in this.selectedRows) {
-                    console.log('-----------------------',this.selectedRows[po])
-                    this.selectedRows[po].isManual = true;
-                    this.selectedRows[po].subscription_id = Cookies.get("subscriptionId");
-                    if (this.selectedRows[po].products.length > 0) {
-                        await axios({
-                            method: 'post',
-                            url: config.default.serviceUrl + 'purchase-order',
-                            data: this.selectedRows[po]
-                        })
-                        .then(function(response) {
-                            console.log("purchase order post response------------------",response)
-                        })
-                    }
-                    else {
+                if (this.selectedRows.length > 0) {
+                    let self = this;
+                    self.loading = true;
+                    for (let po in self.selectedRows) {
+                        console.log('-----------------------', self.selectedRows[po])
+                        self.selectedRows[po].isManual = true;
+                        self.selectedRows[po].subscription_id = Cookies.get("subscriptionId");
+                        if (self.selectedRows[po].products.length > 0) {
+                            await axios({
+                                method: 'post',
+                                url: config.default.serviceUrl + 'purchase-order',
+                                data: self.selectedRows[po]
+                            }).then(function (response) {
+                                    self.selectedRows.length = 0
+                                    console.log("purchase order post response------------------", response)
+                                    self.loading = false;
+                                    self.$Message.success("Purchase Order Generated Successfully");
+                                    self.listData(self.website);
+                                })
+                        }
+                        else {
 
+                        }
                     }
+                } else {
+                    this.$Message.error("No Purchase Order selected");
                 }
-                self.loading = false;
-                self.$Message.success("Purchase Order Generated Successfully");
-                this.listData(this.website);
             }
         },
         async mounted() {
