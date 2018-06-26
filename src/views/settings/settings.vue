@@ -140,7 +140,7 @@
                                                     </div>
                                                 </span>
                                             </p>
-                                            <p slot="content" v-else-if="item.logo !== ''">
+                                            <p slot="content" v-else-if="item.logo && item.logo !== ''">
                                                 <table id="t01">
                                                     <tr>
                                                         <td>Logo</td>

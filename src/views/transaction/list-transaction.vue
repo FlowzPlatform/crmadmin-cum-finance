@@ -400,12 +400,13 @@
             //             this.message = event.target.value;
             //             this.$emit('messageChanged', this.message);
             // },
-            reset() {
+            reset(settingId) {
                 this.cname = '';
                 this.invoiceId = '';
                 this.dategt = '';
                 this.datelt = '';
-                this.getAllSettings();
+                // this.getAllSettings();
+                this.getTransaction(settingId);
             },
             async changeData() {
                 console.log("this.data", this.data)
@@ -537,7 +538,6 @@
                         console.log('this.tabIndex', self.tabIndex)
                         let settingId = self.tabPanes[self.tabIndex].id;
                         // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
-
                         self.getTransaction(settingId)
                     }
                     else {
@@ -596,10 +596,10 @@
             async tabClicked(data){
                 console.log(this.tabPanes)
                 console.log(">>>>>>>>>>>>>>>>>> " , data)
-                this.reset();
                 this.tabIndex = data;
                 let settingId = this.tabPanes[data].id
-                this.getTransaction(settingId);
+                this.reset(settingId);
+                // this.getTransaction(settingId);
             },
 
             async mockTableData1 (p,size) {

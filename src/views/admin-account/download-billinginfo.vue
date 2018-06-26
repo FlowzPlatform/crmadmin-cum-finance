@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative;width: 21cm; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
+    <div style="position: relative; margin: 0 auto; color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
         <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
             <div id="logo" style="float: left;margin-top: 8px;">
                 <img :src="emailDataCompany.logo" style="height: 70px;">
@@ -34,50 +34,51 @@
             <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;margin-bottom:20px;">
                 <thead>
                     <tr>
-                        <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
-                        ">#</th>
-                        <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                        <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                        <th  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                        <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                        <th  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;width:10%">#</th>
+                        <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:35%">PRODUCT NAME</th>
+                        <th  style="text-align: left;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:10%">SKU</th>
+                        <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;width:15%">UNIT PRICE</th>
+                        <th  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;width:15%">QUANTITY</th>
+                        <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;width:15%">TOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, inx) in row.products">
-                        <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                        <td  style="background: #EEEEEE;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
+                        <td  style="text-align: left;font-weight: normal;padding: 5px;background: #DDDDDD;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
+                            {{item.product_description.product_name}}</td>
                         <td  style="text-align: left;font-weight: normal;padding: 5px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                            <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_description.product_name}}</h3>
-                            {{text(item.product_description.description)}}</td>
-                        <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.unit_price)}}</td>
-                        <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.total_qty}}</td>
-                        <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ getMulti(item.total_qty, item.unit_price) }}</td>
+                            {{item.product_description.sku}}</td>
+                        <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;">{{ accounting(item.unit_price)}}</td>
+                        <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">{{item.total_qty}}</td>
+                        <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ getMulti(item.total_qty, item.unit_price) }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2"></td>
-                        <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                        <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ getAdd(row.products) }}</td>
+                        <td colspan="3"></td>
+                        <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                        <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ getAdd(row.products) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2"></td>
-                        <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">ADDITIONAL CHARGES</td>
-                        <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{getCharges(row.total, row.products)}}</td>
+                        <td colspan="3"></td>
+                        <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">ADDITIONAL CHARGES</td>
+                        <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{getCharges(row.total, row.products)}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
+                        <td colspan="3" style="border: none;"></td>
+                        <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                        <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(row.total)}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
-                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
+                        <td colspan="3" style="border: none;"></td>
+                        <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT PAID </td>
+                        <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountPaid)}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="border: none;"></td>
-                        <td colspan="2" style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
-                        <td style="color: #57B223;font-size: 1.2em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
+                        <td colspan="3" style="border: none;"></td>
+                        <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">AMOUNT DUE </td>
+                        <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(invoice.AmountDue)}}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -85,9 +86,9 @@
         </main>
         <footer style="font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
             Invoice was created on a computer and is valid without the signature and seal.
-            <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+            <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
                 Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-            </div>
+            </div>-->
         </footer>
     </div>
 </template>
@@ -211,6 +212,7 @@
         },
         watch: {
             'row': async function(id) {
+                console.log("Row Data Invoice",this.row)
                   this.invoiceData()
             }
         }

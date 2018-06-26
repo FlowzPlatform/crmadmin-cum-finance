@@ -131,6 +131,33 @@
                                                                         </tbody>
                                                                     </table>
                                                                 </td>
+                                                                <td style="background: #FFF;" align="left" valign="top">
+                                                                    <table width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td style="height: 7" align="left" valign="top"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td align="left" valign="top" width="15"></td>
+                                                                                <td style="background: #FFF;font-weight: 600;font-size: 10px;color: #404040" align="left" valign="top">SPECIAL INSTRUCTIONS</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td valign="top" height="5" align="left"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td align="left" valign="top" width="15"></td>
+                                                                                <td style="text-align: justify;background: #FFF;font-size: 10px;color: #404040;color: #666;font-style: italic" align="left" valign="top">{{item.special_instruction}}</td>
+                                                                                <td align="right" valign="top" width="15"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="height: 7" align="left" valign="top"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td valign="top" height="10" align="left"></td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
                                                                 <td align="left" valign="top" width="20"></td>
                                                             </tr>
                                                             <tr>
@@ -140,35 +167,8 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td style="background: #FFF;border-left: 1px solid #DDD;border-right: 1px solid #DDD; " align="left" valign="top">
-                                                    <table width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td style="height: 7" align="left" valign="top"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td align="left" valign="top" width="15"></td>
-                                                                <td style="background: #FFF;font-weight: 600;font-size: 10px;color: #404040" align="left" valign="top">SPECIAL INSTRUCTIONS</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td valign="top" height="5" align="left"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td align="left" valign="top" width="15"></td>
-                                                                <td style="text-align: justify;background: #FFF;font-size: 10px;color: #404040;color: #666;font-style: italic" align="left" valign="top">{{item.special_instruction}}</td>
-                                                                <td align="right" valign="top" width="15"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td style="height: 7" align="left" valign="top"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td valign="top" height="10" align="left"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
+                                            <!-- <tr>
+                                            </tr> -->
                                             <tr v-for="(i, j) in item.shipping_method.shipping_detail">
                                                 <td>
                                                     <table width="100%">
@@ -330,13 +330,13 @@
                                 <tr>
                                     <td valign="top" height="10" align="left"></td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td>
                                         <div style="font-size:10px;text-align:center;bottom:0px;width: 100%;padding-bottom:5px">
                                             Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>-->
                             </table>
                         </td>
                         <td align="left" valign="top" width="20"></td>

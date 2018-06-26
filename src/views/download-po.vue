@@ -318,13 +318,13 @@
                                 <tr>
                                     <td valign="top" height="10" align="left"></td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td>
                                         <div style="font-size:10px;text-align:center;bottom:0px;width: 100%;padding-bottom:5px">
                                             Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>-->
                             </table>
                         </td>
                         <td align="left" valign="top" width="20"></td>

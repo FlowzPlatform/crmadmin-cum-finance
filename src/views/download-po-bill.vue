@@ -17,7 +17,7 @@
         <main>
             <div id="details" style="display: inline-block;width: 100%;margin-bottom: 20px;font-size:12px; font-family: 'Open Sans',Helvetica,Arial,sans-serif;">
                 <div id="client" style="padding-left: 6px;border-left: 6px solid rgb(114, 114, 114);float: left;">
-                    <div  style="color: #777777;">INVOICE TO:</div>
+                    <div style="color: #777777;">INVOICE TO:</div>
                     <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.distributor_name ? row.distributor_name :row.distributor_email}}</h2>
                     <!-- <div >{{row.user_billing_info.street1}}, <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}},</span> {{row.user_billing_info.city}}-{{row.user_billing_info.postalcode}}, </div>
                     <div >{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>                     -->
@@ -59,18 +59,18 @@
                         <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
                         <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ getAdd(row.products) }}</td>
                     </tr>
-                    <tr >
+                    <tr>
                         <td colspan="2" rowspan="3" style="border: none;vertical-align:  baseline;"> <span v-show="row.specialInstruction && row.specialInstruction.length>0"><b>Special Instruction :</b> {{row.specialInstruction}}</span></td>
                         <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SHIPPING CHARGES</td>
                         <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(row.shippingCharges)}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="color: #555555;font-size: 1.2em;border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                        <td style="color: #555555;font-size: 1.2em;border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{getGrandTotal(row.products,row.shippingCharges)}}</td>
+                        <td colspan="2" style="font-size: 1.2em;border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                        <td style="font-size: 1.2em;border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{getGrandTotal(row.products,row.shippingCharges)}}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="color: #313131;font-size: 1.2em;border-top: 1px solid rgb(92, 92, 92);padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;"><b>NET AMOUNT</b></td>
-                        <td style="color: #313131;font-size: 1.2em;border-top: 1px solid rgb(92, 92, 92);padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;"><b>{{accounting(row.total_amount)}}</b></td>
+                        <td colspan="2" style="font-size: 1.2em;border-top: 1px solid rgb(92, 92, 92);padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;"><b>NET AMOUNT</b></td>
+                        <td style="font-size: 1.2em;border-top: 1px solid rgb(92, 92, 92);padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;"><b>{{accounting(row.total_amount)}}</b></td>
                     </tr>
                     <!-- <tr>
                         <td colspan="2" style="border: none;"></td>

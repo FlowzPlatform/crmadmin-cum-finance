@@ -155,7 +155,7 @@ export default {
         {
           title: 'Invoice #',
           align:  'center',
-          width: 200,
+          // width: 145,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.invoiceId)
@@ -165,7 +165,7 @@ export default {
         {
           title: 'Order Id',
           align:  'center',
-          width: 110,
+          // width: 110,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.orderId)
@@ -175,7 +175,7 @@ export default {
         {
           title: 'P.O. #',
           align:  'center',
-          width: 190,
+          // width: 145,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.PO_id)
@@ -185,6 +185,7 @@ export default {
         {
           title: 'Total Amount',
           align:  'center',
+          // width: 110,
           render : (h , {row}) => {
               return h('div', [
                   h('span', accounting.formatMoney(row.total_amount))
@@ -194,7 +195,7 @@ export default {
         {
           title: 'Supplier',
           align:  'center',
-          width: 180,
+          // width: 180,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.supplier_email)
@@ -226,6 +227,7 @@ export default {
         {
           title: 'Status',
           align:  'center',
+          width: 80,
           render : (h , {row}) => {
               return h('div', [
                   h('span', row.status)
