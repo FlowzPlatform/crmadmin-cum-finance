@@ -199,36 +199,6 @@
                 </div>
                 <Collapse v-model="value1" accordion>
                     <Panel name="1">
-                        Personal Information
-                        <p slot="content">
-                            <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
-                                <h4>{{row.user_billing_info.name}}</h4> 
-                                <p>
-                                    <!-- <span class="address">Office Address</span> <br> -->
-                                    <span style="font-weight:500">
-                                        {{row.user_billing_info.street1}} <br>
-                                        <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}}<br></span>
-                                        <span v-else></span>
-                                        {{row.user_billing_info.city}} - {{row.user_billing_info.postalcode}}<br>
-                                        {{row.user_billing_info.state}} , {{row.user_billing_info.country}}
-                                    </span>
-                                </p>
-                            </label>
-                            <label class="col-sm-12 col-md-6 col-lg-3 col-xs-12"> 
-                                <ul class="ulList">
-                                    <li>
-                                        <Icon type="ios-telephone" size="15"></Icon> 
-                                        <label style="font-weight:500">{{row.user_billing_info.phone}}</label>
-                                    </li>
-                                    <li>
-                                        <Icon type="ios-email" size="15"></Icon> 
-                                        <label style="font-weight:500">{{row.user_billing_info.email}}</label>
-                                    </li>
-                                </ul>
-                            </label>
-                        </p>
-                    </Panel>
-                    <Panel name="2">
                         Product Information
                         <p slot="content">
 
@@ -266,7 +236,7 @@
                                                 <td> {{ accounting(item.unit_price)}} </td>
                                                 <td> {{ getMulti(item.total_qty, item.unit_price) }}</td>
                                             </tr>
-                                            <tr class="description" :id="'description'+inx" style="display: none;">
+                                            <tr class="description" :id="'description'+inx" v-show="isShow">
                                                 <td colspan="6">
                                                     <table class="details" style="width:100%">
                                                         <tbody>
@@ -308,16 +278,42 @@
                                                                                                 <span>Imprint Method: {{element.imprint_method_name}}</span>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div class="estimate-row" v-if="element.no_of_color">
+                                                                                        <div class="estimate-row" v-show="element.no_of_color">
                                                                                                 How many colours : <span>{{element.no_of_color}} Colour </span>
                                                                                         </div>
-                                                                                        <div v-else></div>
-                                                                                        <div class="estimate-row" v-if="element.selected_colors">
+                                                                                        <div class="estimate-row" v-show="element.selected_colors">
                                                                                             <div v-for="(item) in element.selected_colors">
                                                                                                 Colour : <span>{{item}}</span>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div v-else></div>
+                                                                                        <div v-if="element.hasOwnProperty('artwork_type') && element.hasOwnProperty('artwork')">
+                                                                                            <div v-if="element.artwork_type == 'upload_artwork_typeset'">
+                                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_text_email')">
+                                                                                                    Art Work Via Email: <span>artwork@flowz.com</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else-if="element.artwork_type == 'upload_artwork'">
+                                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_email')">
+                                                                                                    Art Work Via Email: <span>artwork@flowz.com</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_thumb')">
+                                                                                                <div v-for="(i,j) in element.artwork.artwork_thumb">
+                                                                                                    Uploaded Artwork {{j+1}} : <img :src="i" style="max-width:50px;max-height:50px;"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_text')">
+                                                                                                <div v-for="(i,j) in element.artwork.artwork_text">
+                                                                                                    Text {{j+1}} : <span> {{i}}</span><br>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_instruction')">
+                                                                                                    Instructions : <span> {{element.artwork.artwork_instruction}} </span><br>                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                        </div>
                                                                                     </div> 
                                                                                 </td>
                                                                                 <td>
@@ -376,7 +372,7 @@
                                                                                                 <td>
                                                                                                     <span style="float: left">{{i.shipping_address.name}}</span><br>
                                                                                                     <span style="float: left">{{i.shipping_address.street1}}</span><br>
-                                                                                                    <span style="float: left" v-if="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
+                                                                                                    <span style="float: left" v-show="i.shipping_address.street2"> {{i.shipping_address.street2}} <br></span>
                                                                                                     <span style="float: left"> {{i.shipping_address.city}} - {{i.shipping_address.postalcode}}</span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.state}} </span> <br>
                                                                                                     <span style="float: left"> {{i.shipping_address.country}} </span>                                                                                                          
@@ -450,6 +446,32 @@
                     <Panel name="4">
                         Billing Information
                         <p slot="content">
+                            <label class="col-sm-12 col-md-12">
+                                <label class="col-sm-12 col-md-6"> 
+                                    <h4>{{row.user_billing_info.name}}</h4> 
+                                    <p>
+                                        <!-- <span class="address">Office Address</span> <br> -->
+                                        <span style="font-weight:500">
+                                            {{row.user_billing_info.street1}} <br>
+                                            <span v-show="row.user_billing_info.street2"> {{row.user_billing_info.street2}}<br></span>
+                                            {{row.user_billing_info.city}} - {{row.user_billing_info.postalcode}}<br>
+                                            {{row.user_billing_info.state}} , {{row.user_billing_info.country}}
+                                        </span>
+                                    </p>
+                                </label>
+                                <label class="col-sm-12 col-md-6"> 
+                                    <ul class="ulList">
+                                        <li>
+                                            <Icon type="ios-telephone" size="15"></Icon> 
+                                            <label style="font-weight:500">{{row.user_billing_info.phone}}</label>
+                                        </li>
+                                        <li>
+                                            <Icon type="ios-email" size="15"></Icon> 
+                                            <label style="font-weight:500">{{row.user_billing_info.email}}</label>
+                                        </li>
+                                    </ul>
+                                </label>
+                            </label>
                             <label class="col-sm-6"> 
                                     Invoice ID  : <label class="data"> {{this.invoice.InvoiceNumber}} </label>
                             </label> 
@@ -508,6 +530,7 @@
         data() {
             return {
                 spinShow : true,
+                isShow:false,
                 value1: '1',
                 modal1: false,
                 orderDate: '',
@@ -610,8 +633,13 @@
               return accounting.formatMoney(item)
             },
             clicked (inx) {
+                console.log("row.products", this.row.products.length)
+                if( this.row.products.length > 1 ) {
+                    $('#description'+inx).slideToggle(700);
+                } else {
+                    this.isShow=!this.isShow
+                }
                 console.log("Clickeddddd...............", inx);
-                $('#description'+inx).slideToggle(700);
                 $(document).ready(function(){
                     $('.owl-carousel').owlCarousel({
                         stopOnHover : true,

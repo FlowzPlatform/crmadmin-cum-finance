@@ -567,25 +567,36 @@ export default {
       })
     },
     markAsPaid(value,params){
-      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRR",value,params)
-      let self = this
-      if(value){
-        axios({
-          method: 'patch',
-          url: config.default.serviceUrl +  'po-invoice/'+params.row.id,
-          data:{
-              "status":"paid"
+      this.$Modal.confirm({
+        title: "Payment confirmation Alert!",
+        content: `Is payment of invoice <b>${params.row.invoiceId}</b> completed?`,
+        okText:"YES",
+        onOk: () => {
+          let self = this
+          if (value) {
+            axios({
+              method: 'patch',
+              url: config.default.serviceUrl + 'po-invoice/' + params.row.id,
+              data: {
+                "status": "paid"
+              }
+            })
+              .then(async function (res) {
+                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@", res)
+                self.data[params.index] = res.data
+                self.list = await self.mockTableData1(1, self.pageSize)
+                this.$Message.info(`Payment status changed for ${params.row.invoiceId}`);
+              })
+              .catch(function (error) {
+                console.log("$$$$$$$$$$$$$$$$$", error)
+              })
           }
-        })
-        .then(async function(res){
-          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
-          self.data[params.index] = res.data
-          self.list = await self.mockTableData1(1,self.pageSize)
-        })
-        .catch(function(error){
-          console.log("$$$$$$$$$$$$$$$$$",error)
-        })
-      }
+        },
+        onCancel: () => {
+          this.$Message.info('Cancel');
+        }
+      });
+      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRR",value,params)
     },
     listData (val) {
       let self = this

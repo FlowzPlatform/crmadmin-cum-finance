@@ -531,13 +531,15 @@ export default {
             })
             .then(function (res) {
                 console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
-                if (res.data.data.Elements) {
-                  self.loading = false;
-                  self.$Notice.error({
-                      title: 'Validation Error',
-                      desc: res.data.data.Elements[0].ValidationErrors[0].Message,
-                      duration: 10
-                  });
+                if (res.data.data) {
+                  if (res.data.data.Elements) {
+                    self.loading = false;
+                    self.$Notice.error({
+                        title: 'Validation Error',
+                        desc: res.data.data.Elements[0].ValidationErrors[0].Message,
+                        duration: 10
+                    });
+                  }
                 }else {
                   self.$Message.success('invoice created successfully');
                   self.loading = false;
