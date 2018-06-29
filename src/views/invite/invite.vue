@@ -462,32 +462,41 @@
                         }
                     })
             },
+            checkEmail(emailValue) {
+                
+                var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return filter.test(emailValue)
+            },
             async inviteNow() {
                 
                 if(this.value2 == undefined || this.value2 == '' || this.value1 == ''){
                     this.$message.warning("Please select both subscription & role for invitation");
                 }else{
+                     if(!this.input || !this.checkEmail(this.input) ){
+                        this.$message.warning("Invite email invalid ");
+                        return
+                    }
                     this.loading = true;
                     let new_data;
-                let self = this;
+                    let self = this;
+                    
+                    let obj =_.find(this.options2, {value2:this.value2});
                 
-                let obj =_.find(this.options2, {value2:this.value2});
-               
-                
-                // console.log(this.input)
-                // console.log(this.value1)
-                // console.log(this.value2)
-                let userId;
-                let previous_packages;
-                let params = {
-                    "toEmail": this.input,
-                    "subscriptionId": this.value2,
-                    "name" : obj.label2,  
-                    "role": {
-                        "crm": this.value1
-                    },
-                    "fromEmail" : Cookies.get('user')
-                }
+                    
+                    // console.log(this.input)
+                    // console.log(this.value1)
+                    // console.log(this.value2)
+                    let userId;
+                    let previous_packages;
+                    let params = {
+                        "toEmail": this.input,
+                        "subscriptionId": this.value2,
+                        "name" : obj.label2,  
+                        "role": {
+                            "crm": this.value1
+                        },
+                        "fromEmail" : Cookies.get('user')
+                    }
 
                 await axios({
                         method: 'POST',
@@ -545,7 +554,7 @@
                             })
                         }
                     })
-                }
+            }
                 
 
             }

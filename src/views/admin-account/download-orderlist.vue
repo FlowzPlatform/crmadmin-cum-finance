@@ -126,6 +126,34 @@
                                                                                             </span>
                                                                                         </span>
                                                                                         <span v-else></span>
+                                                                                        <div v-if="element.hasOwnProperty('artwork_type') && element.hasOwnProperty('artwork')">
+                                                                                            <div v-if="element.artwork_type == 'upload_artwork_typeset'">
+                                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_text_email')">
+                                                                                                    Art Work Via Email: <span>artwork@flowz.com</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else-if="element.artwork_type == 'upload_artwork'">
+                                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_email')">
+                                                                                                    Art Work Via Email: <span>artwork@flowz.com</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_thumb')">
+                                                                                                <div v-for="(i,j) in element.artwork.artwork_thumb">
+                                                                                                    Uploaded Artwork {{j+1}} : <img :src="i" style="max-width:50px;max-height:50px;"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_text')">
+                                                                                                <div v-for="(i,j) in element.artwork.artwork_text">
+                                                                                                    Text {{j+1}} : <span> {{i}}</span><br>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_instruction')">
+                                                                                                    Instructions : <span> {{element.artwork.artwork_instruction}} </span><br>                                                                                            </div>
+                                                                                            <div v-else></div>
+                                                                                        </div>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -291,7 +319,7 @@
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top"></td>
                                                             <td align="right" valign="top" style="font-size:15px">SUB TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
-                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
+                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item) }} </span></td>
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr>
@@ -375,12 +403,14 @@
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;
-                for (let i of d) {
-                    let Charge = i.shipping_detail.shipping_charge
-                    if (typeof Charge === 'string') {
-                        Charge = parseFloat(Charge)
+                if (d) {
+                    for (let i of d) {
+                        let Charge = i.shipping_detail.shipping_charge
+                        if (typeof Charge === 'string') {
+                            Charge = parseFloat(Charge)
+                        }
+                        sum += Charge
                     }
-                    sum = sum + Charge
                 }
                 let res = c.hasOwnProperty('charges')
                 if ( res == false) {

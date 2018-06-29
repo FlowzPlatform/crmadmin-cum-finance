@@ -248,6 +248,7 @@
               return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
             changepagesize(pageSize){
+                this.selectedRows.length=0
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 this.pageSize = pageSize
@@ -259,6 +260,7 @@
                 this.changePage(1)
             },
             async changePage (p) {
+                this.selectedRows.length=0
                 console.log("page------------------------->",p)
                 var self = this
                 if(self.filterArray.length == 0){
@@ -497,12 +499,17 @@
                                 url: config.default.serviceUrl + 'purchase-order',
                                 data: self.selectedRows[po]
                             }).then(function (response) {
-                                    self.selectedRows.length = 0
-                                    console.log("purchase order post response------------------", response)
-                                    self.loading = false;
-                                    self.$Message.success("Purchase Order Generated Successfully");
-                                    self.listData(self.website);
-                                })
+                                self.loading = false;
+                                self.$Message.success("Purchase Order Generated Successfully");
+                                let removeIndex = _.findIndex(self.list1, function (item) { return item.id == self.selectedRows[po].id })
+                                self.list1.splice(removeIndex, 1)
+                                self.filterArray.splice(removeIndex, 1)
+                                let removeDataIndex = _.findIndex(self.data1, function (item) { return item.id == self.selectedRows[po].id })
+                                self.data1.splice(removeDataIndex, 1)
+                                self.selectedRows.length = 0
+
+                                    //self.listData(self.website);
+                            })
                         }
                         else {
 

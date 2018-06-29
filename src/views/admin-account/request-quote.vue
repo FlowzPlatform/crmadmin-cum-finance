@@ -463,6 +463,7 @@ export default {
             var result = _.uniqBy(response.data.data,'websiteId')
             self.websiteList = result
             self.website = self.websiteList[0].websiteId
+            self.listData(self.website);
           }
         }).catch(error => {
             console.log("-------",error);

@@ -921,10 +921,10 @@
       init() {
         let self = this;
         axios.get(serviceUrl+"settings", {
-          params: {
-            isActive : true
-            // user : Cookies.get('user')
-          },
+          // params: {
+          //   isActive : true
+          //   // user : Cookies.get('user')
+          // },
           headers: {
             Authorization : Cookies.get('auth_token'),
             subscriptionId : Cookies.get('subscriptionId')

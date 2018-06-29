@@ -3174,6 +3174,7 @@
                       title: 'Email would be sent to',
                       okText: 'OK',
                       cancelText: 'Cancel',
+                      loading:true,
                       render: (h) => {
                           return h('Input', {
                               props: {
@@ -3188,8 +3189,9 @@
                               }
                           })
                       },
-                    onOk: ()=>{                   
-                      let myData = {
+                    onOk: ()=>{  
+                      if(self.checkEmail(self.emailIdTobeSent)){                 
+                        let myData = {
                           "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
                           "from": "obsoftcare@gmail.com",
                           "subject": "email invoice",
@@ -3205,12 +3207,14 @@
                             
                           }
                           }).then(function (response) {
+                            self.$Modal.remove();
                             console.log(response);
                             self.$Message.success(response.data.success);
                             self.$Loading.finish();
                             // self.list[params.index].loading1 = false
                           })
                           .catch(function (error) {
+                            self.$Modal.remove();
                             self.$Message.warning("email send failed , Please try again later");
                             self.$Loading.finish();
                             console.log(error);
@@ -3244,9 +3248,18 @@
                                 })
                             }
                           });
+                         }else{
+                            this.$Modal.remove();
+                            this.$message.error("Invalid Email Id");
+                        }
                       }
                   })
         
+      },
+      checkEmail(emailValue) {
+                
+          var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return filter.test(emailValue)
       },
 
       async getAllSettings(){

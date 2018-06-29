@@ -82,9 +82,13 @@
                     <div class="estimate-tag-block border-bottom">
                       <div class="row">
                         <div class="col-sm-12">
-                          <div class="inquiry-color-block">
-                            <ul class="ulList" v-for="i in item.attributes.colors">
-                              <li class="color2" data-original-title="i" :style="{ backgroundColor: i }"></li>
+                          <div class="inquiry-color-block" v-for="i in item.attributes.colors" style="display:inline-block">
+                            <ul class="ulList">                              
+                              <li class="color2">
+                                <i class="white-color-box" :style="{ backgroundColor: i }"  :title="i">
+                                    <img src="">
+                                  </i>
+                              </li>
                             </ul>
                           </div>
                         </div>
