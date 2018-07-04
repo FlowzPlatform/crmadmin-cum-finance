@@ -227,12 +227,12 @@
                                                         </div>
                                                     </TabPane>
                                                     <TabPane v-else style="text-align:center;color:#fd5e5e" :label="keyName(k)" :name="setname(k, inx)" :key="k">
-                                                        {{keyName(k)}} Payment Information is deleted. <a @click="addNewPaymentSettings">Create New One</a>
+                                                        {{keyName(k)}} Payment Information is deleted. <a @click="addNewPaymentSettingsAfterDelete(k,item.configName)">Create New One</a>
                                                     </TabPane>
                                                 </Tabs>
                                             </p>
                                             <p slot="content" v-else style="text-align:center;color:#fd5e5e">
-                                                Payment Information is not Available. <a @click="addNewPaymentSettings">Add new payment configuration.</a>
+                                                Payment Information is not Available. <a @click="addNewPaymentSettingsConfig(item.configName)">Add new payment configuration.</a>
                                             </p>
                                         </Panel>
                                     </Collapse>
@@ -697,6 +697,29 @@
                 this.$store.state.settingData = ""
                 this.$router.push({
                     name: 'Profile Settings'
+                });
+            },
+            addNewPaymentSettingsAfterDelete (key,config) {
+                console.log("here")
+                this.$store.state.settingData = ""
+                this.$router.push({
+                    name: 'Payment Settings',
+                    params: {
+                        paymentgateway : key,
+                        paymentconfig: config,
+                        message : 'AfterDelete'
+                    }
+                });
+            },
+            addNewPaymentSettingsConfig (key) {
+                console.log("here")
+                this.$store.state.settingData = ""
+                this.$router.push({
+                    name: 'Payment Settings',
+                    params: {
+                        paymentconfig : key,
+                        message : 'FromAccount'
+                    }
                 });
             },
             addNewPaymentSettings() {

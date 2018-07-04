@@ -1096,9 +1096,10 @@
         this.invoiceno = '';
         let settingId = this.tabPanes[this.tabIndex].id;
         let settingDomain = this.tabPanes[this.tabIndex].domain;
+        let settingName = this.tabPanes[this.tabIndex].configName;
         this.settingIdForPayment = this.tabPanes[this.tabIndex].id;
-        this.getInvoiceBySettingId(settingId , settingDomain , this.tabIndex)
-        this.getCustomerBySettingId(settingId , settingDomain , this.tabIndex)
+        this.getInvoiceBySettingId(settingId , settingDomain , this.tabIndex, settingName)
+        this.getCustomerBySettingId(settingId , settingDomain , this.tabIndex, settingName)
         // this.getAllSettings();
       },
 
@@ -2087,7 +2088,7 @@
                             self.$Loading.finish();
                           })
                           .catch(function (error) {
-                            self.$Message.warning("Email Send Failed, Please try again later");
+                            self.$Message.warning("Email Sent Failed, Please try again later");
                             self.$Loading.finish();
                             console.log(error);
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -2126,195 +2127,31 @@
       },
       async sendemailQB(params){
 
-			this.$Loading.start();
-			console.log("paramsssssssssssssssss " , params)
-			this.emailData = params;
-			var self = this
-			var date = new Date(params.TxnDate);
-			this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-			var date1 = new Date(params.DueDate);
-			this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-			await axios({
-				method: 'get',
-				url: config.default.serviceUrl + 'contacts',
-				params: {
-					settingId : settingID,
-					Name : params.CustomerRef.name
-				},
-				headers:{
-					Authorization : Cookies.get('auth_token')
-				},
-			}).then(function (response) {
-				console.log("contact response",response);
-				self.emailDataCustomer = response.data[0].data[0]
-				// console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
-			})
-			.catch(function (error) {
-        console.log(error);
-        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-            let location = psl.parse(window.location.hostname)
-            location = location.domain === null ? location.input : location.domain
-            
-            Cookies.remove('auth_token' ,{domain: location}) 
-            Cookies.remove('subscriptionId' ,{domain: location}) 
-            self.$store.commit('logout', self);
-            
-            self.$router.push({
-                name: 'login'
-            });
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-            self.$Notice.error({
-                title: error.response.statusText,
-                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                duration: 4.5
-            })
-        }else {
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }
-			});
-			await axios({
-				method: 'get',
-				url: config.default.serviceUrl + 'settings/' + settingID,
-				headers:{
-					Authorization : Cookies.get('auth_token'),
-					subscriptionId : Cookies.get('subscriptionId')
-				},
-			}).then(function (response) {
-				console.log("ooooooooooooooooosetting response",response);
-				self.emailDataCompany = response.data
-			})
-			.catch(function (error) {
-        console.log(error);
-        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-            let location = psl.parse(window.location.hostname)
-            location = location.domain === null ? location.input : location.domain
-            
-            Cookies.remove('auth_token' ,{domain: location}) 
-            Cookies.remove('subscriptionId' ,{domain: location}) 
-            self.$store.commit('logout', self);
-            
-            self.$router.push({
-                name: 'login'
-            });
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-            self.$Notice.error({
-                title: error.response.statusText,
-                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                duration: 4.5
-            })
-        }else {
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }
-			});
-
-				//   console.log('self.emailDataCompany--------------->',self.emailDataCompany)
-			axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
-				headers:{
-					Authorization : Cookies.get('auth_token')
-				},
-				params : {
-					settingId : settingID
-				}
-			}).then(async function (response) {
-				console.log('response>>>>>>>>>>>>>>', response)
-				self.DescriptionPdf = response.data[0].data[0].Line;
-				//   console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
-			})
-			.catch(function (error) {
-        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-            let location = psl.parse(window.location.hostname)
-            location = location.domain === null ? location.input : location.domain
-            
-            Cookies.remove('auth_token' ,{domain: location}) 
-            Cookies.remove('subscriptionId' ,{domain: location}) 
-            self.$store.commit('logout', self);
-            
-            self.$router.push({
-                name: 'login'
-            });
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-            self.$Notice.error({
-                title: error.response.statusText,
-                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                duration: 4.5
-            })
-        }else {
-            self.$Notice.error({
-                title: error.response.data.name,
-                desc: error.response.data.message,
-                duration: 10
-            })
-        }
-			});
-			
-			console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
-			this.$Modal.confirm({
-				title: 'Email would be sent to',
-				okText: 'OK',
-				cancelText: 'Cancel',
-				render: (h) => {
-					return h('Input', {
-						props: {
-							value: self.emailDataCustomer.EmailAddress,
-							autofocus: true,
-							placeholder: 'Please enter email Id...'
-						},
-						on: {
-							input: (val) => {
-								self.emailIdTobeSent = val;
-							}
-						}
-					})
-				},
-				onOk: ()=>{                   
-					let myData = {
-						"to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
-						"from": "obsoftcare@gmail.com",
-						"subject": "email invoice",
-						"body": self.$refs.email1.innerHTML
-					};
-					myData = JSON.stringify(myData)
-					axios({
-						method: 'post',
-						url:  config.default.emailUrl,
-						data: myData,
-						headers: {
-							'authorization':  Cookies.get('auth_token'),
-						}
-					}).then(function (response) {
-						console.log(response);
-						// self.$Message.success(response.data.success);
-						self.$message.success("Email Send Successfully");
-						self.$Loading.finish();
-						// self.list[params.index].loading1 = false
-					})
-					.catch(function (error) {
-						console.log(error);
-						self.$Message.warning("Email Send Failed, Please try again later");
-            self.$Loading.finish();
+          this.$Loading.start();
+          console.log("paramsssssssssssssssss " , params)
+          this.emailData = params;
+          var self = this
+          var date = new Date(params.TxnDate);
+          this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+          var date1 = new Date(params.DueDate);
+          this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+          await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.CustomerRef.name
+            },
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
+          }).then(function (response) {
+            console.log("contact response",response);
+            self.emailDataCustomer = response.data[0].data[0]
+            // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+          })
+          .catch(function (error) {
+            console.log(error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -2331,22 +2168,186 @@
                     desc: error.response.data.message,
                     duration: 10
                 })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 4.5
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }
-					});
-				}
-			})
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
+          await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'settings/' + settingID,
+            headers:{
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : Cookies.get('subscriptionId')
+            },
+          }).then(function (response) {
+            console.log("ooooooooooooooooosetting response",response);
+            self.emailDataCompany = response.data
+          })
+          .catch(function (error) {
+            console.log(error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
+
+            //   console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+          axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
+            params : {
+              settingId : settingID
+            }
+          }).then(async function (response) {
+            console.log('response>>>>>>>>>>>>>>', response)
+            self.DescriptionPdf = response.data[0].data[0].Line;
+            //   console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+          })
+          .catch(function (error) {
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
+          
+          console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
+          this.$Modal.confirm({
+            title: 'Email would be sent to',
+            okText: 'OK',
+            cancelText: 'Cancel',
+            render: (h) => {
+              return h('Input', {
+                props: {
+                  value: self.emailDataCustomer.EmailAddress,
+                  autofocus: true,
+                  placeholder: 'Please enter email Id...'
+                },
+                on: {
+                  input: (val) => {
+                    self.emailIdTobeSent = val;
+                  }
+                }
+              })
+            },
+            onOk: ()=>{                   
+              let myData = {
+                "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                "from": "obsoftcare@gmail.com",
+                "subject": "email invoice",
+                "body": self.$refs.email1.innerHTML
+              };
+              myData = JSON.stringify(myData)
+              axios({
+                method: 'post',
+                url:  config.default.emailUrl,
+                data: myData,
+                headers: {
+                  'authorization':  Cookies.get('auth_token'),
+                }
+              }).then(function (response) {
+                console.log(response);
+                // self.$Message.success(response.data.success);
+                self.$message.success("Email Sent Successfully");
+                self.$Loading.finish();
+                // self.list[params.index].loading1 = false
+              })
+              .catch(function (error) {
+                console.log(error);
+                self.$Message.warning("Email Sent Failed, Please try again later");
+                self.$Loading.finish();
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    Cookies.remove('subscriptionId' ,{domain: location}) 
+                    self.$store.commit('logout', self);
+                    
+                    self.$router.push({
+                        name: 'login'
+                    });
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                  }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                      self.$Notice.error({
+                          title: error.response.statusText,
+                          desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                          duration: 4.5
+                      })
+                  }else {
+                      self.$Notice.error({
+                          title: error.response.data.name,
+                          desc: error.response.data.message,
+                          duration: 10
+                      })
+                  }
+              });
+            }
+          })
 
       },
       async tabClicked(data){
@@ -2642,22 +2643,30 @@
           })
           .then(async function (response) {
               console.log("response------>iuy",response);
-
-              self.data6 = response.data[0].data.reverse();
               self.invnoFilter = []
-              if(response.data[0].data[0].InvoiceNumber != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.InvoiceNumber)
-                })
-              }else if(response.data[0].data[0].Id != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.Id)
-                })
+              if (response.data[0].data.data) {
+                self.$Loading.finish();
+                self.$Notice.error({
+                  duration:4.5, 
+                  title: "Xero : Account Credential Incorrect",
+                  desc: "Invalid key for "+settingName
+                });
+              } else {
+                self.data6 = response.data[0].data.reverse();
+                if(response.data[0].data[0].InvoiceNumber != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.InvoiceNumber)
+                  })
+                }else if(response.data[0].data[0].Id != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.Id)
+                  })
+                }
+                self.$Loading.finish();
+                $('.preload').css("display","none")
+                self.filterArray = []
+                self.list = await self.mockTableData1(1,pageSize)
               }
-              self.$Loading.finish();
-              $('.preload').css("display","none")
-              self.filterArray = []
-              self.list = await self.mockTableData1(1,pageSize)
           })
           .catch(function (error) {
             console.log("error",error);
@@ -3215,7 +3224,7 @@
                           })
                           .catch(function (error) {
                             self.$Modal.remove();
-                            self.$Message.warning("email send failed , Please try again later");
+                            self.$Message.warning("email sent failed , Please try again later");
                             self.$Loading.finish();
                             console.log(error);
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
