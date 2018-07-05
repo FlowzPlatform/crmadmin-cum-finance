@@ -84,6 +84,7 @@
   // console.log(config)
   let feathersUrl =  config.default.serviceUrl;
   var _ = require('lodash');
+  let subscriptionId = Cookies.get('subscriptionId')
   import axios from 'axios'
   export default {
     name: 'list-customer',
@@ -661,7 +662,7 @@
               self.$Notice.error({
                   duration:4.5, 
                   title: "Xero : Account Credential Incorrect",
-                  desc: "Invalid key for "+settingName
+                  desc: "Invalid key for <b>"+settingName+"</b>"
               });
             }
             else {
@@ -784,7 +785,7 @@
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
             Authorization : Cookies.get('auth_token'),
-            subscriptionId : Cookies.get('subscriptionId')
+            subscriptionId : subscriptionId
           },
         })
         .then(function (response) {

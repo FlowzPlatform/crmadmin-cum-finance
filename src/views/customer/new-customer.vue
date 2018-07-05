@@ -186,9 +186,7 @@
               mobile: [
                   { required: true, message: 'Mobile number can not be empty', validator: validateBlank, trigger: 'blur' },
                   { validator: validateNum, trigger: 'blur' },
-                  {
-                    max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' 
-                  }
+                  { max: 10 ,min:10, message: 'Please Enter 10 digit mobile number', trigger: 'blur' }
               ]
               // phone: [
               //     { required: true, message: 'Phone no cannot be empty', trigger: 'blur' },
@@ -296,6 +294,10 @@
         async createCustomer () {
           this.loading = true;
           var self = this;
+          let ConfigName = _.filter(this.configs , function(o){
+              return o.id == settingId
+          });
+          let configName = ConfigName[0].configName;
           console.log(">>>>>>>>>>> " , settingId)
           await axios({
               method:'get',
@@ -393,6 +395,7 @@
                         }
                       })
                       .then(function (response) {
+                        console.log('contact post response------------------',response)
                         self.loading = false;
                         self.$Message.success('created customer successfully');
                         self.$router.push({
@@ -401,7 +404,7 @@
                         self.$refs['formValidate'].resetFields();
                       })
                       .catch(function (error) {
-                        console.log("error",error);
+                        console.log("error",error.response);
                         self.loading = false;
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
@@ -424,6 +427,12 @@
                                 title: error.response.statusText,
                                 desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                                 duration: 4.5
+                            })
+                        }else if (error.response.data.name === 'GeneralError') {
+                          self.$Notice.error({
+                                title: 'Credential Error',
+                                desc: 'Account credential incorrect for <b>'+configName+'</b>',
+                                duration: 10
                             })
                         }else {
                             self.$Notice.error({

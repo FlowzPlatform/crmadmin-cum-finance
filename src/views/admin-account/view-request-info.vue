@@ -150,7 +150,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageDataDisplay" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid && item.created_by == requestUser">
+                    <div class="message"  v-if="item.created_by != userid || item.created_by == requestUser">
                       <Row>
                         <Col span="24" >
                           <div >

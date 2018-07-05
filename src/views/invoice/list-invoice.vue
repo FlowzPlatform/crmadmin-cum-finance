@@ -388,6 +388,7 @@
   const accounting = require('accounting-js');  
   var pageSize = 10
   var settingID
+  let subscriptionId = Cookies.get('subscriptionId')
   export default {
     name: 'hello',
     data () {
@@ -1467,7 +1468,7 @@
               url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -1714,7 +1715,7 @@
               url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooosetting response",response);
@@ -1960,7 +1961,7 @@
               url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
 		}).then(function (response) {
 			// console.log("ooooooooooooooooo",response);
@@ -2187,7 +2188,7 @@
             url: config.default.serviceUrl + 'settings/' + settingID,
             headers:{
               Authorization : Cookies.get('auth_token'),
-              subscriptionId : Cookies.get('subscriptionId')
+              subscriptionId : subscriptionId
             },
           }).then(function (response) {
             console.log("ooooooooooooooooosetting response",response);
@@ -2442,7 +2443,7 @@
                 width: 210,
                 align: 'center',
                 render: (h, params) => {
-                  console.log("============params",params);
+                  // console.log("============params",params);
                   if (params.row.Due != 0) {
                     return h('div', [
                       h('Tooltip', {
@@ -2649,7 +2650,7 @@
                 self.$Notice.error({
                   duration:4.5, 
                   title: "Xero : Account Credential Incorrect",
-                  desc: "Invalid key for "+settingName
+                  desc: "Invalid key for <b>"+settingName+"</b>"
                 });
               } else {
                 self.data6 = response.data[0].data.reverse();
@@ -2945,7 +2946,7 @@
               url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -3132,7 +3133,7 @@
               url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -3273,11 +3274,10 @@
 
       async getAllSettings(){
         let self = this;
-        console.log('============getallsettings call',Cookies.get('subscriptionId'))
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
               Authorization : Cookies.get('auth_token'),
-              subscriptionId : Cookies.get('subscriptionId')
+              subscriptionId : subscriptionId
           },
         })
         .then(function (response) {

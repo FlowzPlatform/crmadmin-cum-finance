@@ -330,7 +330,10 @@ export default {
     async customerData (settingId) {
       let resp
       let self = this
-
+      let ConfigName = _.filter(this.configs , function(o){
+          return o.id == settingId
+      });
+      let configName = ConfigName[0].configName;
       await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
@@ -379,10 +382,22 @@ export default {
                   },
               })
               .then(function (response) {
-                  resp = response.data
-                  console.log("resp",resp[0].data)
-                  self.data2 = _.sortBy(resp[0].data, ['Name']);
-                  console.log("self.data2---------------->after",self.data2)
+                  console.log('contacts get response',response);
+                  if (response.data[0].data.hasOwnProperty('data')) {
+                    if (response.data[0].data.data.oauth_problem) {
+                      self.$Notice.error({
+                        title: 'Xero: Account Credential Incorrect',
+                        desc: 'Invalid key for <b>'+configName+'</b>. Not able to get contact name',
+                        duration: 10
+                      })
+                    }
+                  }
+                  else {
+                    resp = response.data
+                    console.log("resp",resp[0].data)
+                    self.data2 = _.sortBy(resp[0].data, ['Name']);
+                    console.log("self.data2---------------->after",self.data2)
+                  }
               })
               .catch(function (error) {
                   console.log(error);
