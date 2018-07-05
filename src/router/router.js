@@ -168,6 +168,7 @@ export const otherRouter = {
         path: 'Payment-settings',
         title: 'Payment Settings',
         name: 'Payment Settings',
+        props: true,
         component: resolve => {
             require(['@/views/settings/Online-Payment.vue'], resolve);
         }
@@ -224,8 +225,8 @@ export const otherRouter = {
     },
     {
         path: 'po-checkout',
-        title: 'POCheckout',
-        name: 'POCheckout',
+        title: 'PO Checkout',
+        name: 'PO Checkout',
         component: resolve => {
             require(['@/views/purchaseOrder/checkout.vue'], resolve);
         }
@@ -389,33 +390,35 @@ export const appRouter = [
         title: 'PURCHASE ORDER',
         name: 'PURCHASE ORDER',
         component: Main,
-        children: [{
-            path: '/purchaseOrder-list-Raised',
-            title: 'Raised PO',
-            icon: 'ios-list-outline',
-            name: 'Raised PO',
-            component: resolve => {
-                require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);
+        children: [
+            {
+                path: 'newpo',
+                title: 'New PO',
+                icon: 'compose',
+                name: 'New PO',
+                component: resolve => {
+                    require(['@/views/purchaseOrder/new_po.vue'], resolve);
+                }
+            },
+            {
+                path: '/purchaseOrder-list-Raised',
+                title: 'Sent PO',
+                icon: 'ios-list-outline',
+                name: 'Sent PO',
+                component: resolve => {
+                    require(['@/views/purchaseOrder/purchaseOrder-list-Raised.vue'], resolve);
+                }
+            },
+            {
+                path: '/po_bill',
+                title: 'PO Bill',
+                name: 'PO Bill',
+                icon: 'ios-paper-outline',
+                component: resolve => {
+                    require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
+                }
             }
-        },
-        {
-            path: '/po_bill',
-            title: 'PO Bill',
-            name: 'PO Bill',
-            icon: 'ios-paper-outline',
-            component: resolve => {
-                require(['@/views/purchaseOrder/po_invoice.vue'], resolve);
-            }
-        },
-        {
-            path: 'newpo',
-            title: 'New PO',
-            icon: 'compose',
-            name: 'New PO',
-            component: resolve => {
-                require(['@/views/purchaseOrder/new_po.vue'], resolve);
-            }
-        }]
+        ]
     },
     // {
     //     path: '/admin-account',
@@ -492,9 +495,9 @@ export const appRouter = [
         component: Main,
         children: [{
             path: 'received-po',
-            title: 'ReceivedPO',
+            title: 'Received PO',
             icon: 'ios-list-outline',
-            name: 'ReceivedPO',
+            name: 'Received PO',
             component: resolve => {
                 require(['@/views/purchaseOrder/received_po_list.vue'], resolve);
             }

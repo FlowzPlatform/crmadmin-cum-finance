@@ -138,37 +138,37 @@
 								<div style="float:left; width:100%;">
 									<div class="online_payment" style="display:none">
 										<div class="" style="margin-top: 20px;">
-											<Form class="form" label-position="left" ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="140">
+											<Form class="form" label-position="left" ref="formValidatePayment" :model="formValidatePayment" :rules="ruleValidate" :label-width="140">
 												<FormItem label="Account Name" prop="Account_Name">
-													<Input v-model="formValidate.Account_Name" placeholder="Enter Account Name"></Input>
+													<Input v-model="formValidatePayment.Account_Name" placeholder="Enter Account Name"></Input>
 												</FormItem>
 												<FormItem label="Gateway" prop="gateway">
-													<Select v-model="formValidate.gateway" style="width:100%;text-align:left">
+													<Select v-model="formValidatePayment.gateway" style="width:100%;text-align:left">
 													<Option  value='auth'>Authrize.Net</Option>
 													<Option  value='paypal'>PayPal</Option>
 													<Option value='stripe'>Stripe</Option>
 													</Select>
 												</FormItem>
-												<FormItem label="Secret key" v-if="formValidate.gateway == 'stripe'" prop="Secret_Key">
-													<Input v-model="formValidate.Secret_Key" placeholder="Enter Secret key"></Input>
+												<FormItem label="Secret key" v-if="formValidatePayment.gateway == 'stripe'" prop="Secret_Key">
+													<Input v-model="formValidatePayment.Secret_Key" placeholder="Enter Secret key"></Input>
 												</FormItem>
 												
-												<FormItem label="Transaction Key" v-if="formValidate.gateway == 'auth'" prop="Transaction_Key">
-													<Input v-model="formValidate.Transaction_Key" placeholder="Enter Transaction Key"></Input>
+												<FormItem label="Transaction Key" v-if="formValidatePayment.gateway == 'auth'" prop="Transaction_Key">
+													<Input v-model="formValidatePayment.Transaction_Key" placeholder="Enter Transaction Key"></Input>
 												</FormItem>
-												<FormItem label="Signature Key" v-if="formValidate.gateway == 'auth'" prop="Signature_Key">
-													<Input v-model="formValidate.Signature_Key" placeholder="Enter Signature Key"></Input>
+												<FormItem label="Signature Key" v-if="formValidatePayment.gateway == 'auth'" prop="Signature_Key">
+													<Input v-model="formValidatePayment.Signature_Key" placeholder="Enter Signature Key"></Input>
 												</FormItem>
-												<FormItem label="Client Id" v-if="formValidate.gateway == 'paypal'" prop="Client_Id">
-													<Input v-model="formValidate.Client_Id" placeholder="Enter Client Id"></Input>
+												<FormItem label="Client Id" v-if="formValidatePayment.gateway == 'paypal'" prop="Client_Id">
+													<Input v-model="formValidatePayment.Client_Id" placeholder="Enter Client Id"></Input>
 												</FormItem>
-												<FormItem label="Secret" v-if="formValidate.gateway == 'paypal'" prop="Secret">
-													<Input v-model="formValidate.Secret" placeholder="Enter Secret"></Input>
+												<FormItem label="Secret" v-if="formValidatePayment.gateway == 'paypal'" prop="Secret">
+													<Input v-model="formValidatePayment.Secret" placeholder="Enter Secret"></Input>
 												</FormItem>
 												
 												<div style="text-align:center;">
-													<Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">Submit</Button>
-													<Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px;">Reset</Button>
+													<Button type="primary" @click="handleSubmitPayment('formValidatePayment')" :loading="loading">Submit</Button>
+													<Button type="ghost" @click="handleResetPayment('formValidatePayment')" style="margin-left: 8px;">Reset</Button>
 												</div>
 											</Form>
 										</div>
@@ -237,6 +237,86 @@
 											</div>
 										</TabPane>
 									</Tabs>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							
+						</div>        
+					</div>
+					<!-- Profile config-->
+					<div class="row">
+						<div class=" col-md-12">
+							<div class="well" style="background-color:#fff">
+								<label> Profile Configuration : </label>
+								<Tooltip style="float:right;margin-left: 15px;" placement="top">
+									<Icon  type="ios-help-outline" size=28></Icon>
+									<div slot="content">
+										<p>You can configure your profile <br/>here which will be used  while <br/> generate the bills. <br/> In case of multiple accounts, the <br/> default selected one will be used. <br/></p>
+									</div>
+								</Tooltip>
+								<Button type="primary" @click="clickedProfile()" style="float:right">Add New Profile Configuration</Button>
+								<div style="float:left; width:100%;">
+									<div class="profileConfig" style="display:none">
+										<div class="" style="margin-top: 20px;">
+											<div class="col-md-12">
+												<Form class="form" label-position="left" ref="formValidateProfile" :model="formValidateProfile" :rules="ruleValidate" :label-width="140">
+													<FormItem label="Name" prop="name" id="CustomerName">
+														<Input v-model="formValidateProfile.name" placeholder="Enter comapny name"></Input>
+													</FormItem>
+													<FormItem label="Address" class="ivu-form-item-required">
+														<Row>
+															<Col span="12">
+																<FormItem prop="AddressLine1">
+																	<Input v-model="formValidateProfile.AddressLine1" placeholder="AddressLine1"></Input>
+																</FormItem>
+															</Col>
+															<Col span="12">
+																<FormItem>
+																	<Input v-model="formValidateProfile.AddressLine2" placeholder="AddressLine2"></Input>
+																</FormItem>
+															</Col>
+														</Row>
+													</FormItem>
+													<FormItem label="Country" prop="country">
+														<Select v-model="formValidateProfile.country" style="width:100%;text-align:left" @on-change="countryChange">
+															<Option  v-for="item in this.allCountry" :value="item.id" :key="item.name">{{ item.name }}</Option>
+														</Select>
+													</FormItem>
+													<FormItem label="State" prop="state" class="state1" style="display:none">
+														<Select v-model="formValidateProfile.state" style="width:100%;text-align:left" name ="state" id ="state" @on-change="stateChange">
+															<Option  v-for="item in this.allState" :value="item.id" :key="item.name">{{ item.name }}</Option>
+														</Select>
+													</FormItem>
+													<FormItem label="City" prop="city" class="city1" style="display:none">
+														<Select v-model="formValidateProfile.city" style="width:100%;text-align:left" name ="city" id ="city">
+															<Option  v-for="item in this.allCity" :value="item.id" :key="item.name">{{ item.name }}</Option>
+														</Select>
+													</FormItem>
+													<FormItem label="Postal code" prop="PostalCode">
+														<Input v-model="formValidateProfile.PostalCode" placeholder="Enter PostalCode"></Input>
+													</FormItem>
+													<FormItem label="Mobile" prop="mobile">
+														<Input v-model="formValidateProfile.mobile" placeholder="Enter your Mobile No"></Input>
+													</FormItem>
+													<FormItem label="Upload Logo" prop="uploadLogo">
+														<Upload id="fileUpload" v-model="formValidateProfile.logo" :before-upload="handleUpload" :show-upload-list="uploadlist" action=''> 
+															<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
+														</Upload>
+														<div v-if="file !== ''">Uploaded file: {{ file.name }} 
+															<Button @click="removefile()" type="ghost" shape="circle" icon="android-close" style="margin-left: 10px;"></Button>
+														</div>
+													</FormItem>
+													<div style="text-align:center;">
+														<Button type="primary" @click="handleSubmitProfile('formValidateProfile')" :loading="loading">Submit</Button>
+														<Button type="ghost" @click="handleResetProfile('formValidateProfile')" style="margin-left: 8px;">Reset</Button>
+													</div>
+													<div style="color:blue;font-size: smaller;">**You will see this address in your bill</div>
+												</Form>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div v-if="this.data2.length>0" class="payment_table" style="margin-top: 20px; float:left;">
 								</div>
 								<div class="clearfix"></div>
 							</div>
@@ -337,7 +417,7 @@
         <Modal
             v-model="modal1"
             width="59%"
-			:closable=false
+			:closable=false			
             ok-text= "Download PDF"
             @on-ok="download"
             @on-cancel="cancel">
@@ -345,20 +425,20 @@
 		</Modal>
 		
 		<Modal
-			v-show="invoiceModel"
-			v-model="invoiceModel"
-			title="Purchase Order Bill"
-			width="59%"
-			ok-text= "Download PDF"
-			@on-ok="downloadBillInvoice"
-			@on-cancel="cancelBillInvoice">
-			<downloadPoBillList id="invoiceBillList" :row="invoiceBillObject"></downloadPoBillList>
-		</Modal>
+		v-show="invoiceModel"
+		v-model="invoiceModel"
+		title="Purchase Order Bill"
+		width="59%"
+		ok-text= "Download PDF"
+		@on-ok="downloadBillInvoice"
+		@on-cancel="cancelBillInvoice">
+		<downloadPoBillList id="invoiceBillList" :row="invoiceBillObject"></downloadPoBillList>
+	</Modal>
 	</div>
 </template>
 
 <script>
-	import Vue from 'vue'
+	import Vue from 'vue'	
 	import axios from 'axios'
 	import psl from 'psl';
 	import config from '../config/customConfig'
@@ -371,12 +451,22 @@
 
 	import downloadPoBillList from './download-po-bill.vue';
 	const accounting = require('accounting-js');
+	import countryStateCity from 'country-state-city'	
 	let _ = require('lodash');
 
 	export default {
 		name: 'purchase-order',
 		components: {errorpage,downloadOrderList,downloadPoBillList,downloadOrderNew},
 		data () {
+			const validateNum = async(rule, value, callback) => {
+				let patt = /^[0-9]{1,6}$/
+				let _res = patt.test(value)
+				if (!_res) {
+				callback(new Error('Not Allowed Special Character'))
+				} else {
+				callback();
+				}
+			};
 			return {
 				columns1: [
 					{
@@ -451,6 +541,11 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+				allCountry: [],
+				uploadlist : false,
+				allState: [],
+				allCity: [],
+				file:'',
 				data2: [], 
 				showError: false,               
 				data1: {},
@@ -470,7 +565,7 @@
 				invoiceModel:false,
 				invoiceBillObject:{},
 				invoiceBillGenerated:false,
-				formValidate: {
+				formValidatePayment: {
 					Account_Name: '',
 					gateway:'',
 					Secret_Key: '',
@@ -478,6 +573,17 @@
 					Signature_Key: '',
 					Client_Id: '',
 					Secret: ''
+				},
+				formValidateProfile : {
+					name: '',
+					mobile : '',
+					AddressLine1: '',
+					AddressLine2 : '',
+					city: '',
+					state: '',
+					country: '',
+					PostalCode: '',
+					logo: [],
 				},
 				ruleValidate: {
 					Account_Name: [
@@ -500,12 +606,52 @@
 					],
 					Secret: [
 						{ required: true, message: 'The Secret cannot be empty', trigger: 'blur' }
+					],
+					name:[
+						{ required: true, message: 'The name cannot be empty', trigger: 'blur' }
+					],
+					AddressLine1:[
+						{ required: true, message: 'The addressline1 cannot be empty', trigger: 'blur' }
+					],
+					AddressLine2:[
+						{ required: true, message: 'The addressline2 cannot be empty', trigger: 'blur' }
+					],
+					city:[
+						{ required: true, message: 'The city cannot be empty', trigger: 'blur' }
+					],
+					state: [
+						{ required: true, message: 'Please select state', trigger: 'blur' }
+					],
+					country:[
+						{ required: true, message: 'Please select Country', trigger: 'blur' }
+					],
+					PostalCode:[
+						{ required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
+						{ validator: validateNum, trigger: 'blur' }
 					]
 				},
 				invoiceGenerated:false
 			}
 		},
 		methods: {
+			removefile(){
+				this.file = ''
+			},
+			async handleUpload (file) {
+				var self = this
+				console.log('file',file)
+				if(file.size >= 1e+8){
+					this.$Notice.error({
+						title: 'File Limit',
+						desc: 'File size should be less than or equal to 50Kb. ',
+						duration: 4.5
+					});
+					self.removefile()
+					return true
+				}
+				self.file = file
+				return false;
+			},
 			dummyData(){
 				return {"PO_id":"PO_36e76_7a053_457c0_1","shippingCharges":"50","shippingMethod":"UPS","specialInstruction":"Special Instruction for shipping methods and facility","createdAt":"Wed May 23 2018 11:22:48 GMT+00:00","distributorId":"5a8592331b23f5001257a039","distributor_email":"dweepp@officebrain.com","dueDate":"2018-05-14T18:30:00.000Z","id":"09f7f6be-10cb-42ac-8576-5e86b7ba7e6e","invoiceId":"INV_PO_36e76_18-14","orderId":"Hir-2018-14","paymentInfo":{"stripe":{"Account_Name":"One","Secret_Key":"sk_test_V8ZICJodc73pjyGVBBzA0Dkb","isDefault":true,"isDeleted":false}},"products":[{"charges":{"setup_charge":"45"},"color":{"Translucent Clear":"200"},"color_quantity":{"Translucent Clear":"200"},"createdAt":"2018-05-02T07:06:05.178Z","id":"fe50b196-a226-4e63-9449-98f7efcf592a","imprint":[{"artwork":{"artwork_instruction":"test","artwork_text":["test"]},"artwork_type":"typeset","imprint_method_name":"4 Color Process","imprint_position_name":"Side 1"}],"order_type":"decorative","product_description":{"activeSummary":"Translucent Clear,Translucent Red,Translucent Blue,Translucent Green,Translucent Purple,2,Pricing Includes,Full color printing using four-color process colors (cyan, magenta, yellow and black) on one side. Images and type should be in CMYK. Additional art charges will apply to convert colors. Exact PMS matches are not possible. Neon and metallics are not available.,Setup Charge,Add $45.00 (G) for new orders. No initial set-up charge on exact reorders.,Change Copy,$35.00 (G) per change. Must be at least 1/2 of the lowest quantity offered.,Multi Color,Full color digital printing included in price.,Less Than Minimum,Not available.,Proof,E-Proof $10.00 (G) each, Fax Proof $12.50 (G) each, Product Proof $35.00 (G) each (suggested when color matching is critical). Artwork charges are additional if required.,Additional Artwork,The first 1/2 hour is FREE! Additional time will be charged $35.00 (G) per hour.,Second Side Print,Not Available,Variable Data,Add $.05(G)per item, per location.,Imprint Colors,Full Color Digital printing using four-color process colors (CMYK). On colored products, there may be a slight variation in the imprint.,FOB,NY,Imprint Area,5-1/2\" Diameter,Shipping Weight,Approx. 18 lbs. per 100 pcs.,Packaging,250 per box.,Flyer Inserts,Full Color Digital Flyer Inserts (that fit in back of flyers) are available with custom or stock designs. See item #45950.,Size,9\" Diameter","attr_imprint_color":"","attr_shape":"","attributes":{"colors":["Translucent Clear","Translucent Red","Translucent Blue","Translucent Green","Translucent Purple"],"decimal":["2"]},"available_currencies":["USD","CAD","AUD"],"available_regions":["US","AU"],"categories":["FLYERS","COASTERS"],"company":"","country":"US","currency":"USD","default_color":"Translucent Clear","default_image":"5/80-45905-translucent-clear.jpg","default_image_color_code":"","description":"<ul class=\"productFeature\" style=\"border: 0px; list-style: none; text-decoration: none; margin: 6px 0px 0px 6px; padding: 0px; color: #2c302f; font-size: 12px; font-family: Arial, Helvetica, sans-serif; font-style: normal; font-variant: normal; font-weight: bold; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff;\">\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">9\" Translucent Flyer, Full Color Digital</li>\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">9\" Diameter</li>\n<li style=\"border: 0px; list-style: disc inside; text-decoration: none; margin: 0px; padding: 0px 0px 3px 3px;\">High quality translucent plastic</li>\n</ul>","distributor_central_url":"http://www.distributorcentral.com/resources/templates/freight_estimate.cfm?SupplierItemGUID=22DDF7E0-A059-4E0E-BB17-51F3EE91D097","features":[{"key":"Pricing Includes","value":"Full color printing using four-color process colors (cyan, magenta, yellow and black) on one side. Images and type should be in CMYK. Additional art charges will apply to convert colors. Exact PMS matches are not possible. Neon and metallics are not available."},{"key":"Setup Charge","value":"Add $45.00 (G) for new orders. No initial set-up charge on exact reorders."},{"key":"Change Copy","value":"$35.00 (G) per change. Must be at least 1/2 of the lowest quantity offered."},{"key":"Multi Color","value":"Full color digital printing included in price."},{"key":"Less Than Minimum","value":"Not available."},{"key":"Proof","value":"E-Proof $10.00 (G) each, Fax Proof $12.50 (G) each, Product Proof $35.00 (G) each (suggested when color matching is critical). Artwork charges are additional if required."},{"key":"Additional Artwork","value":"The first 1/2 hour is FREE! Additional time will be charged $35.00 (G) per hour."},{"key":"Second Side Print","value":"Not Available"},{"key":"Variable Data","value":"Add $.05(G)per item, per location."},{"key":"Imprint Colors","value":"Full Color Digital printing using four-color process colors (CMYK). On colored products, there may be a slight variation in the imprint."},{"key":"FOB","value":"NY"},{"key":"Imprint Area","value":"5-1/2\" Diameter"},{"key":"Shipping Weight","value":"Approx. 18 lbs. per 100 pcs."},{"key":"Packaging","value":"250 per box."},{"key":"Flyer Inserts","value":"Full Color Digital Flyer Inserts (that fit in back of flyers) are available with custom or stock designs. See item #45950."},{"key":"Size","value":"9\" Diameter"}],"images":[{"Web_image_3":"","_id":"934a7ce2-17d7-11e8-bc23-2ddb89254a62","images":[{"color":"Translucent Clear","image_color_code":"","web_image":"80-45905-translucent-clear_1.jpg"},{"color":"Translucent Red","image_color_code":"","web_image":"80-45905-translucent-red.jpg"},{"color":"Translucent Green","image_color_code":"","web_image":"80-45905-translucent-green.jpg"},{"color":"Translucent Purple","image_color_code":"","web_image":"80-45905-translucent-purple.jpg"}],"import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","product_id":"418","sku":"80-45905"}],"import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","imprint_data":[{"_id":"6e347821-17d7-11e8-bc23-2ddb89254a62","additional_color_charge":"","additional_location_charge":"","full_color":"1","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","imprint_area":"","imprint_data_range":[],"imprint_method":"4 Color Process","imprint_position":"Side 1","is_pms_color_allow":"1","location_price_included":1,"ltm_charge":"","matrix":"","max_imprint_color_allowed":0,"max_location_allowed":0,"pms_charge":"","price_included":0,"product_id":"418","production_days":"0","production_unit":"days","rush_charge":"","setup_charge":"45(G)","sku":"80-45905","type_of_charge":""}],"language":"en","linename":"AAkron Line","matrix_frieght":"","matrix_price":"","max_price":2.95,"min_price":3.35,"non-available_regions":[],"nonavailable_regions":"CA","packaging_charges":"","packaging_code":"","packaging_type":"","price_1":18.39,"pricing":[{"_id":"0e82f0f1-17d7-11e8-bc23-2ddb89254a62","currency":"USD","global_price_type":"above_catalog","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","price_range":[{"code":"C","price":2.833,"qty":{"gte":5000,"lte":9999}},{"code":"C","price":2.75,"qty":{"gte":10000}}],"price_type":"regular","price_unit":"each","product_id":"418","sku":"80-45905","type":"decorative"},{"_id":"0e82f0f2-17d7-11e8-bc23-2ddb89254a62","currency":"USD","global_price_type":"global","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","price_range":[{"code":"C","price":3.35,"qty":{"gte":200,"lte":499}},{"code":"C","price":3.15,"qty":{"gte":500,"lte":999}},{"code":"C","price":3.05,"qty":{"gte":1000,"lte":2499}},{"code":"C","price":2.95,"qty":{"gte":2500}}],"price_type":"regular","price_unit":"each","product_id":"418","sku":"80-45905","type":"decorative"}],"private":"","product_id":"418","product_name":"9\" Translucent Flyer, Full Color Digital","search_keyword":["9\"","Translucent","Flyer","Full","Color","Digital","Full Color Digital","Fun","9\" Translucent Flyer","Fitness & Safety","Flyers","8045905"],"shipping":[{"_id":"f9833db0-17d9-11e8-911f-3f76566caa00","carton_height":"","carton_length":"","carton_size_unit":"inches","carton_weight":"18","carton_weight_unit":"LBS","carton_width":"","fob_city":"Akron","fob_country_code":"US","fob_state_code":"NY","fob_zip_code":"14001","free_on_board":"NY 14001 US","import-tracker_id":"cbbd94f8-48df-4561-837b-e41ff53385b4","product_height":"","product_id":"","product_length":"9","product_size_unit":"inches","product_weight":"0.21","product_weight_unit":"LBS","product_width":"","shipping_qty_per_carton":250,"shipping_range":[{"qty":{"gte":1000,"lte":2000}}],"sku":"80-45905"}],"sku":"80-45905","special_price_valid_up_to":"2019-11-30","supplier":"","supplier_id":"5a8eaf141b23f5001257a053","supplier_info":{"company":"","email":"aakron@flowz.com","supplier_name":"Aakron","username":"5a8eaf141b23f5001257a053"},"username":"aakron@flowz.com","valid_up_to":"2019-11-30","vat":"","vat_unit":"","vid":["sup5a8eaf141b23f5001257a053-1","sup5a8eaf141b23f5001257a053-2","distad94a6fd-2014-4f9c-a1e8-673e8cc8cdb6-1","distad94a6fd-2014-4f9c-a1e8-673e8cc8cdb6-1","dist054364d4-3a0b-436a-8144-04cbffb0587d-1","dist054364d4-3a0b-436a-8144-04cbffb0587d-1","dist6f2157f7-52bd-4949-945e-19c35e1ddfd4-1","dist6f2157f7-52bd-4949-945e-19c35e1ddfd4-1",null,null,null,null,null,null,null,"distd8d7221c-7797-4abc-bdd3-4eadf5f17ae8-1","distec9363f2-4b81-4559-b27d-f125991d4c69-1","dist5bb39293-0ab0-40ff-9ee6-e06a702ad044-1",null,"dist1b4335fd-9478-468e-a733-f18c2821ccf2-1","distd7148887-74e9-4216-ac69-8c8c2c7bd298-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","distb7c68ae2-d0fa-4867-9623-14255c7aef9c-1","diste0825e50-bd9b-41d8-9da3-e649d1783400-1","distfade9061-6c43-4918-8a34-edbdfbe46e30-1","dist2fdb391a-9cd5-4d40-b647-3cf4d3ddc3b2-1","dist27a283f9-9140-434c-8b75-820a6bcfead0-1","distdd2e1dd3-9aa6-4f05-96d3-1970f8f9589f-1","dist5e2460e5-95ef-4ff2-9ae4-fbd3a9399032-1","dist9177e799-64a0-444d-919e-a5bf186dad1a-1","distbca1661d-087e-4050-ba69-b5137ab3a195-1","dista69b4724-a670-4ffe-869e-ab5aa3b16471-1","dist0acc50ae-91f0-4467-b72b-a9344768aede-1","dist4c97ee2d-6e42-4299-b8a6-d362d6e9ca58-1","dist4607f7df-0f77-4493-97f3-595a1a85cb95-1","dist02823715-2401-44a5-866c-1550394bec33-1","distd68bac81-7bd2-4dfa-9a4f-f02239524501-1","dist0c503695-437b-4052-b744-a86faaef863f-1","dist10c3c3ac-c5fb-45b2-84d6-13c7ae94be12-1","dist6f383830-1e25-48f0-b99b-8b48c65d695a-1"],"video_url":""},"product_id":"9f57a230-17da-11e8-a1bc-f349bccc39a5","shipping_method":{"shipping_detail":[{"color_quantity":{"Translucent Clear":"200"},"selected_address_id":"cf44202e-0bba-405a-9684-fce988251f4a","shipping_address":{"address_type":["shipping","billing"],"city":"Zavalla","country":"United States","culture":"en_us","email":"neelpatel@officebrain.com","name":"Neel Patel","phone":"545-655-9898","postalcode":"75980","state":"Texas","street1":"ABC"},"shipping_detail":{"on_hand_date":"05/08/2018","ship_date":"","ship_transittime":"4","shipping_carrier":"ups","shipping_charge":"42.17","shipping_method":"Ground"},"shipping_from":"shipping_book"}],"shipping_type":"standard"},"special_instruction":"test","total_qty":"200","type":"2","unit_price":"3.35","user_id":"59a9427ce4900900285ac278","website_id":"93219617816448cb812e0170fcab089a"}],"status":"pending","supplierId":"5a8eaf141b23f5001257a053","supplier_email":"aakron@flowz.com","total_amount":"757.17","websiteId":"93219617816448cb812e0170fcab089a","websiteName":"Hiral"}
 			},
@@ -548,7 +694,7 @@
                 this.exData = this.data2[0].online_payment[tabname][rowinx];
 				let oldData = _.cloneDeep(this.data2[0].online_payment[tabname][rowinx])
                 oldData = _.omit(oldData, ['_index', '_rowKey'])
-				console.log('exData...',  this.exData )
+                console.log('exData...',  this.exData )
 				console.log('.oldData..',  oldData )
 				this.$Modal.confirm({
                     title: 'Edit',
@@ -649,7 +795,7 @@
                         ])
 					},
                     onOk() {
-						console.log("edited data", oldData);
+                        console.log("edited data", oldData);
 						self.exData=oldData
 						console.log("edited  exData data", self.exData);
                         let rowIndex = rowinx;
@@ -764,8 +910,8 @@
                             },'This Payment Configuration Will Be Deleted.'),
                         ])
                     }
-                })
-
+				})
+				
             },
 			setTabValue (value) {
 				this.tabIndex = value;
@@ -790,7 +936,7 @@
 							self.poBillAddress  =  self.splitProductAddress(poDetail);
 							self.supplierPayment()
 							self.data1 = poDetail
-							// self.total = accounting.formatMoney(parseFloat(poDetail.total));
+							// self.total = accounting.formatMoney(parseFloat(poDetail.total));							
 							self.total = parseFloat(poDetail.total).toFixed(2)
 						}else{
 								self.showError = true
@@ -873,37 +1019,76 @@
 			accounting(item){
 				return accounting.formatMoney(item)
 			},
-			handleReset (name) {
+			handleResetPayment (name) {
 				this.loading = false;
-				this.formValidate.gateway = '',
-				this.formValidate.Secret_Key = '',
-				this.formValidate.Transaction_Key = '',
-				this.formValidate.Signature_Key = '',
-				this.formValidate.Client_Id = '',
-				this.formValidate.Secret = '',
-				this.formValidate.Account_Name = ''
-				// this.formValidate.x_api_login = '',
-				// this.formValidate.x_api_token = ''
-				// this.$refs[name].resetFields();
+				this.formValidatePayment.gateway = '',
+				this.formValidatePayment.Secret_Key = '',
+				this.formValidatePayment.Transaction_Key = '',
+				this.formValidatePayment.Signature_Key = '',
+				this.formValidatePayment.Client_Id = '',
+				this.formValidatePayment.Secret = '',
+				this.formValidatePayment.Account_Name = ''
 			},
-			handleSubmit (name) {
+			handleResetProfile (valid) {
+				this.loading = false;
+				this.formValidateProfile.name = '',
+				this.formValidateProfile.mobile = '',
+				this.formValidateProfile.AddressLine1 = '',
+				this.formValidateProfile.AddressLine2 = '',
+				this.formValidateProfile.city = '',
+				this.formValidateProfile.state = '',
+				this.formValidateProfile.country = '',
+				this.formValidateProfile.PostalCode = '',
+				this.formValidateProfile.logo = '',
+				this.file = ''																
+			},
+			handleSubmitProfile (name) {
+				var self = this;
+				var file = this.file
+				console.log("HandleSubmitProfile call")
+				this.$refs[name].validate((valid) => {
+					if (valid) {
+						console.log("Inside Valid If")
+						if(file != ''){
+							console.log("inside file If")
+							var reader = new FileReader();
+							console.log('uuuuuu',file)
+							reader.readAsDataURL(file);
+						  	reader.addEventListener("load", function () {
+								console.log('uuuuuu',file.name)
+								var fileupObj = {
+									"filename":file.name,
+									"url":reader.result
+								}
+								console.log('fileupObj fileupObj',fileupObj)								
+								self.formValidateProfile.logo.push(fileupObj);
+							})
+						}
+						console.log("address", this.formValidateProfile)
+					} 
+					else {
+						this.$Message.error('Please fill up all the fields correctly');
+					}
+				})
+			},
+			handleSubmitPayment (name) {
 				var self = this;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
-						console.log('formValidate----------------------------->',this.formValidate, this.poBillAddress)
-						let patchData = _.cloneDeep(this.formValidate)
-						if (this.formValidate.gateway == 'stripe') {
+						console.log('formValidate----------------------------->',this.formValidatePayment, this.poBillAddress)
+						let patchData = _.cloneDeep(this.formValidatePayment)
+						if (this.formValidatePayment.gateway == 'stripe') {
 							delete patchData.Transaction_Key
 							delete patchData.Signature_Key
 							delete patchData.Client_Id
 							delete patchData.Secret
 						}
-						if (this.formValidate.gateway == 'auth') {
+						if (this.formValidatePayment.gateway == 'auth') {
 							delete patchData.Secret_Key
 							delete patchData.Client_Id
 							delete patchData.Secret
 						}
-						if (this.formValidate.gateway == 'paypal') {
+						if (this.formValidatePayment.gateway == 'paypal') {
 							delete patchData.Secret_Key
 							delete patchData.Transaction_Key
 							delete patchData.Signature_Key
@@ -913,7 +1098,7 @@
 						patchData['isDefault'] = true;
 						patchData['isDeleted'] = false;
 						console.log('patchData----------------------------->',patchData)						
-						params.online_payment[this.formValidate.gateway] = [patchData];
+						params.online_payment[this.formValidatePayment.gateway] = [patchData];
 						console.log("---------------------params online payment",params);
 
 						axios({
@@ -927,7 +1112,7 @@
 								duration: 4.5
 							})
 							self.init()
-							self.handleReset();
+							self.handleResetPayment();
 							$('.online_payment').slideToggle(700);
 							console.log('??????????????', response)
 						}).catch(function (error){
@@ -948,6 +1133,10 @@
 			clicked () {
                 console.log("Clickeddddd...............");
                 $('.online_payment').slideToggle(700);
+			},
+			clickedProfile () {
+				console.log("Clickeddddd...............");
+                $('.profileConfig').slideToggle(700);
 			},
 			supplierPayment () {
 				var self = this
@@ -991,9 +1180,9 @@
 				// this.modal1=true;
 			},
 			generateBillPDF(){
-
+				
 				this.print(this.invoiceBillObject.id,$('#invoiceBillList').html());
-				// this.invoiceModel=true;	
+				// this.invoiceModel=true;
 			},
 			generateInvoice () {
 				let self = this;
@@ -1065,65 +1254,72 @@
 			async cancel() {
                 self.modal1 = false
             },
+			countryChange (val) {
+				this.allState = countryStateCity.getStatesOfCountry(val)
+				console.log("countryChange countryChange", this.allState)
+				$('.state1').css("display","block")
+			},
+			stateChange (val) {
+				this.allCity = countryStateCity.getCitiesOfState(val)
+				console.log("countryChange countryChange", this.allCity)
+				$('.city1').css("display","block")
+			},
             async download() {
                 var self = this
-				self.$Loading.start()
-				
-				
-				
-                // await axios({
-                //     method: 'post',
-                //     url: config.default.serviceUrl + 'exporttopdf',
-                //     data: {
-                //         "html" : ''+$('#orderList').html()+'</body></html>'
-                //     },  
-                // }).then(function (response) {
-                //     console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                //     self.$Loading.finish()
-                //     var arrayBufferView = new Uint8Array( response.data.data );
-                //     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
-                //     var link=document.createElement('a');
-                //     link.href=window.URL.createObjectURL(blob);
-                //     link.download=self.data1.id == undefined ? "custom_po" : self.data1.id;
-                //     link.click();
-                // }).catch(function (error){
-                //     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                //         let location = psl.parse(window.location.hostname)
-                //         location = location.domain === null ? location.input : location.domain
-
-                //         Cookies.remove('auth_token' ,{domain: location}) 
-                //         Cookies.remove('subscriptionId' ,{domain: location}) 
-                //         self.$store.commit('logout', self);
-
-                //         self.$router.push({
-                //             name: 'login'
-                //         });
-                //         self.$Notice.error({
-                //             title: error.response.data.name,
-                //             desc: error.response.data.message,
-                //             duration: 10
-                //         })
-                //     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                //         self.$Notice.error({
-                //             title: error.response.statusText,
-                //             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                //             duration: 0
-                //         })
-                //     }else {
-                //         self.$Notice.error({
-                //             title: error.response.data.name,
-                //             desc: error.response.data.message,
-                //             duration: 10
-                //         })
-                //     }
-                // })    
+		        self.$Loading.start()
+                await axios({
+                    method: 'post',
+                    url: config.default.serviceUrl + 'exporttopdf',
+                    data: {
+                        "html" : $('#orderList').html()
+                    },  
+                }).then(function (response) {
+                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    self.$Loading.finish()
+                    var arrayBufferView = new Uint8Array( response.data.data );
+                    var blob=new Blob([arrayBufferView], {type:"application/pdf"});
+                    var link=document.createElement('a');
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=self.data1.id == undefined ? "custom_po" : self.data1.id;
+                    link.click();
+                }).catch(function (error){
+                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        Cookies.remove('subscriptionId' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                        self.$Notice.error({
+                            title: error.response.statusText,
+                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                            duration: 0
+                        })
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                })    
             },
 			async cancelBillInvoice() {
                 this.invoiceModel = false
             },
             async downloadBillInvoice() {
                 var self = this
-		        self.$Loading.start()
+				self.$Loading.start()
 				
                 await axios({
                     method: 'post',
@@ -1206,11 +1402,13 @@
             
 		},
 		mounted() {
-			console.log("this.$route.params.id", this.$route.query.PO_id)
-			this.init()	
+			// console.log("this.$route.params.id", this.$route.query.PO_id)
+			this.init()
 			this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
+			this.allCountry = countryStateCity.getAllCountries()
+			// console.log("allCountry allCountry", this.allCountry)			
 		}
-
+		
 	}
 </script>
 
@@ -1243,4 +1441,18 @@
 	.ivu-table-cell {
 		word-break: break-word;
 	}
+	#state{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
+   }
+   #country{
+    width: 100%;
+    background: white;
+    height: 32px;
+    border-color: #e2e2e2;
+    border-radius: 4px;
+   }
 </style>

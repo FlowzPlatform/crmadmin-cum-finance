@@ -560,43 +560,63 @@ export default {
     makepayment(data){
       console.log("data---------------------------->",data)
       this.$router.push({
-        name :"POCheckout",
+        name :"PO Checkout",
         params: {
           data:data.row
         }
       })
     },
     markAsPaid(value,params){
+      let paymentNote = '';
       this.$Modal.confirm({
-        title: "Payment confirmation Alert!",
+        title: "Payment Detail!",
         content: `Is payment of invoice <b>${params.row.invoiceId}</b> completed?`,
-        okText:"YES",
+        okText:"Done",
+        render: (h) => {
+            return h('Input', {
+                props: {
+                    type: 'textarea',
+                    value: paymentNote,
+                    autofocus: true,
+                    placeholder: 'Please enter Payment Detail...'
+                },
+                on: {
+                    input: (val) => {
+                        paymentNote= val;
+                    }
+                }
+            })
+        },
         onOk: () => {
-          let self = this
-          if (value) {
+          let self = this;
+          if (value && paymentNote != '') {
+            console.log('-----------paymentNote',paymentNote)
             axios({
               method: 'patch',
               url: config.default.serviceUrl + 'po-invoice/' + params.row.id,
               data: {
-                "status": "paid"
+                "status": "paid",
+                "offlinePaymentNote" : paymentNote
               }
             })
-              .then(async function (res) {
-                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@", res)
-                self.data[params.index] = res.data
-                self.list = await self.mockTableData1(1, self.pageSize)
-                this.$Message.info(`Payment status changed for ${params.row.invoiceId}`);
-              })
-              .catch(function (error) {
-                console.log("$$$$$$$$$$$$$$$$$", error)
-              })
+            .then(async function (res) {
+              console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@", res)
+              self.data[params.index] = res.data
+              self.list = await self.mockTableData1(1, self.pageSize)
+              self.$Message.info(`Payment status changed for ${params.row.invoiceId}`);
+            })
+            .catch(function (error) {
+              console.log("$$$$$$$$$$$$$$$$$", error)
+            })
+          } else {
+            self.$Modal.remove();
+            self.$message.error("Enter payment detail");
           }
         },
         onCancel: () => {
-          this.$Message.info('Cancel');
+          // this.$Message.info('Cancel');
         }
       });
-      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRR",value,params)
     },
     listData (val) {
       let self = this

@@ -232,7 +232,7 @@ export default {
     }, 
     async getData (settingID) {
       let self = this;
-      console.log(settingID)
+      console.log('getdata call-----------------',settingID)
       console.log(settingID.query.domain)
       let getInvoiceUrl ;
       if(settingID.query.domain == undefined){
@@ -241,24 +241,24 @@ export default {
         getInvoiceUrl = 'custominvoice/'
       }
       
-        if(settingID.params.id != undefined){
+      if(settingID.params.id != undefined){
         this.$Spin.show({
-                    render: (h) => {
-                        return h('div', [
-                            h('Icon', {
-                                'class': 'demo-spin-icon-load',
-                                props: {
-                                    type: 'load-c',
-                                    size: 18
-                                }
-                            }),
-                            h('div', 'Loading Payment Information...')
-                        ])
-                    }
-                });
-                setTimeout(() => {
-                    this.$Spin.hide();
-                }, 10000);
+            render: (h) => {
+                return h('div', [
+                    h('Icon', {
+                        'class': 'demo-spin-icon-load',
+                        props: {
+                            type: 'load-c',
+                            size: 18
+                        }
+                    }),
+                    h('div', 'Loading Payment Information...')
+                ])
+            }
+        });
+        setTimeout(() => {
+            this.$Spin.hide();
+        }, 10000);
         axios({
             method: 'get',
             url: config.default.serviceUrl + getInvoiceUrl +settingID.params.id,
@@ -268,121 +268,121 @@ export default {
             headers:{
                 Authorization : Cookies.get('auth_token')
             },
-            }).then(function (response) {
-                console.log(">>>>>>>>>>>>>> response ", response)
-                if(Array.isArray(response.data)){
+        }).then(function (response) {
+            console.log(">>>>>>>>>>>>>> response ", response)
+            if(Array.isArray(response.data)){
 
-                  responseData = response.data[0];
-                  if(Array.isArray(responseData.data)) {
-                    responseData = responseData.data[0]
-                    console.log("!!!!!!!!!!!",responseData)
+              responseData = response.data[0];
+              if(Array.isArray(responseData.data)) {
+                responseData = responseData.data[0]
+                console.log("!!!!!!!!!!!",responseData)
 
-                    self.responseDataForPayment = responseData;
-                    self.payDetail.amount = responseData.Balance;
-                    self.invoiceid = responseData.Id
-                    self.name = responseData.CustomerRef.name
-                    self.amountpaid = (responseData.TotalAmt - responseData.Balance)
-                    self.amountDue = responseData.Balance
-                    self.total = responseData.TotalAmt
-                    self.settingId = settingID
-                    self.$Spin.hide();
-                  }
-                  else {
-                    responseData = responseData.data;
-                    console.log("response data!!!!!!!!!!",responseData);
-                    self.responseDataForPayment = responseData;
-                    self.payDetail.amount = responseData.AmountDue;
-                    self.invoiceid = responseData.InvoiceID;
-                    self.name = responseData.Contact.Name
-                    self.amountpaid = responseData.AmountPaid
-                    self.amountDue = responseData.AmountDue
-                    self.total = responseData.Total
-                    self.settingId = settingID
-                    self.$Spin.hide();
-                  }
-                  // if(responseData.TotalAmt != undefined){
-                  //   console.log("@@@@@@@@",responseData.TotalAmt)
-                  //   paymentAmount = responseData.TotalAmt;
-                  //   self.payDetail.amount = paymentAmount
-                  // }
-                  // else{
-                  //   paymentAmount = responseData.data.Total
-                  //   self.payDetail.amount = paymentAmount
-                  // }
-                  // let paymentInvoiceId;
-                  // if(responseData.Id != undefined){
-                  //   paymentInvoiceId = responseData.Id
-                  // }else {
-                  //   paymentInvoiceId = responseData.InvoiceID
-                  // }
-                  // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",responseData)
-                  // console.log("^^^^^^^^^^^^^^^^^^^",responseData.AmountDue,paymentInvoiceId,responseData.Contact.Name,responseData.AmountPaid,responseData.AmountDue,paymentAmount)
-                  // responseData = responseData.data;
-                  // self.responseDataForPayment = responseData;
-                  // self.payDetail.amount = responseData.AmountDue;
-                  // self.invoiceid = paymentInvoiceId
-                  // self.name = responseData.Contact.Name
-                  // self.amountpaid = responseData.AmountPaid
-                  // self.amountDue = responseData.AmountDue
-                  // self.total = paymentAmount
-                  // self.settingId = settingID
-                  // self.$Spin.hide();
-
-                }else{
-                  responseData = response.data;
-                  self.responseDataForPayment = responseData;
-                  self.payDetail.amount = responseData.Due;
-                  self.invoiceid = responseData.Invoice_No
-                  self.name = responseData.Name
-                  self.amountpaid = responseData.Paid
-                  self.amountDue = responseData.Due
-                  self.total = responseData.Total
-                  self.settingId = responseData.settingId
-                  self.$Spin.hide();
-                }
-                
-                
-                
-            })
-            .catch(function (error) {
-              self.$Spin.hide();
-              console.log(error);
-              if(error.message == 'Network Error'){
-                  self.$Notice.error({
-                      title: "Error",
-                      desc: 'API service unavailable',
-                      duration: 10
-                  })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                  let location = psl.parse(window.location.hostname)
-                  location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
-                  self.$store.commit('logout', self);
-                  
-                  self.$router.push({
-                      name: 'login'
-                  });
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
-              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                      title: error.response.statusText,
-                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                      duration: 4.5
-                  })
-              }else {
-                  self.$Notice.error({
-                      title: error.response.data.name,
-                      desc: error.response.data.message,
-                      duration: 10
-                  })
+                self.responseDataForPayment = responseData;
+                self.payDetail.amount = responseData.Balance;
+                self.invoiceid = responseData.Id
+                self.name = responseData.CustomerRef.name
+                self.amountpaid = (responseData.TotalAmt - responseData.Balance)
+                self.amountDue = responseData.Balance
+                self.total = responseData.TotalAmt
+                self.settingId = settingID
+                self.$Spin.hide();
               }
-            });
+              else {
+                responseData = responseData.data;
+                console.log("response data!!!!!!!!!!",responseData);
+                self.responseDataForPayment = responseData;
+                self.payDetail.amount = responseData.AmountDue;
+                self.invoiceid = responseData.InvoiceID;
+                self.name = responseData.Contact.Name
+                self.amountpaid = responseData.AmountPaid
+                self.amountDue = responseData.AmountDue
+                self.total = responseData.Total
+                self.settingId = settingID
+                self.$Spin.hide();
+              }
+              // if(responseData.TotalAmt != undefined){
+              //   console.log("@@@@@@@@",responseData.TotalAmt)
+              //   paymentAmount = responseData.TotalAmt;
+              //   self.payDetail.amount = paymentAmount
+              // }
+              // else{
+              //   paymentAmount = responseData.data.Total
+              //   self.payDetail.amount = paymentAmount
+              // }
+              // let paymentInvoiceId;
+              // if(responseData.Id != undefined){
+              //   paymentInvoiceId = responseData.Id
+              // }else {
+              //   paymentInvoiceId = responseData.InvoiceID
+              // }
+              // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",responseData)
+              // console.log("^^^^^^^^^^^^^^^^^^^",responseData.AmountDue,paymentInvoiceId,responseData.Contact.Name,responseData.AmountPaid,responseData.AmountDue,paymentAmount)
+              // responseData = responseData.data;
+              // self.responseDataForPayment = responseData;
+              // self.payDetail.amount = responseData.AmountDue;
+              // self.invoiceid = paymentInvoiceId
+              // self.name = responseData.Contact.Name
+              // self.amountpaid = responseData.AmountPaid
+              // self.amountDue = responseData.AmountDue
+              // self.total = paymentAmount
+              // self.settingId = settingID
+              // self.$Spin.hide();
+
+            }else{
+              responseData = response.data;
+              self.responseDataForPayment = responseData;
+              self.payDetail.amount = responseData.Due;
+              self.invoiceid = responseData.Invoice_No
+              self.name = responseData.Name
+              self.amountpaid = responseData.Paid
+              self.amountDue = responseData.Due
+              self.total = responseData.Total
+              self.settingId = responseData.settingId
+              self.$Spin.hide();
+            }
+            
+            
+            
+        })
+        .catch(function (error) {
+          self.$Spin.hide();
+          console.log(error);
+          if(error.message == 'Network Error'){
+              self.$Notice.error({
+                  title: "Error",
+                  desc: 'API service unavailable',
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 4.5
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
+        });
       }
       
       

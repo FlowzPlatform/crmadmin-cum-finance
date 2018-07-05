@@ -333,7 +333,7 @@
                                 }
                             }).then(async function (response) {
                                 console.log(response);
-                                self.$message.success("Email Send Successfully");
+                                self.$message.success("Email Sent Successfully");
                                 self.$Loading.finish()
                                 await axios({
                                     method: 'patch',
@@ -355,7 +355,7 @@
                                     self.$Modal.remove();
                                     console.log(error);
                                     self.$Loading.error()
-                                    self.$Message.warning("Email Send Failed, Please try again later");
+                                    self.$Message.warning("Email Sent Failed, Please try again later");
                                     if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
                                         let location = psl.parse(window.location.hostname)
                                         location = location.domain === null ? location.input : location.domain
