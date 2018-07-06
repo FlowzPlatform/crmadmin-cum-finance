@@ -1034,7 +1034,7 @@
                         //    arr.push(arr.splice(arr.indexOf(6), 1)[0]);
                             self.mData = response.data.data;
                             self.config = self.mData[0].id;
-                            // self.getContacts(self.config)
+                            self.getContacts(self.config)
                             console.log("self.mData[0].id------------",self.mData[0].id,self.mData[0].configName)
                             self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
                             self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),

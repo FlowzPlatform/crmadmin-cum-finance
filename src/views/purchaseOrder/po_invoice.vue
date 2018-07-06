@@ -239,8 +239,11 @@ export default {
           width: 100,
           align: 'center',
           render: (h, params) => {
-            console.log("params-------------------------------------->",params.row.status)
-            if(params.row.status == 'pending'){
+            console.log("params-------------------------------------->",params.row.status, params.row.paymentInfo)
+            // if (Object.keys(params.row.paymentInfo).length === 0 && params.row.status == 'pending') {
+
+            // } else 
+            if(params.row.status == 'pending' && Object.keys(params.row.paymentInfo).length != 0){
               return h('div', [
                 h('Tooltip', {
                   props: {
@@ -310,7 +313,52 @@ export default {
                       // },'')
                     ])          
               ]);
-            }else{
+            } else if (params.row.status == 'pending' && Object.keys(params.row.paymentInfo).length === 0) {
+              return h('div', [  
+                h('Tooltip', {
+                    props: {
+                      placement: 'top',
+                      content: 'Mark as paid'
+                    },
+                    style:{
+                      cursor:'pointer'
+                    }
+                  },[
+                      h('Button', {
+                          props: {
+                            type: 'text',
+                            size: 'large',
+                            icon: 'ios-circle-outline'
+                          },
+                          style: {
+                            marginRight: '3px',
+                            padding: '0px',
+                            fontSize: '20px',
+                            color: 'green'
+                          },
+                          on: {
+                            click: () => {
+                              this.markAsPaid(true,params);
+                            }
+                          }
+                      }, '')
+                      // h('Checkbox', {
+                      //   props: {
+                      //     value: false
+                      //   },
+                      //   style: {
+                      //     margin: '5px'
+                      //   },
+                      //   on: {
+                      //     input: (val) => {
+                      //       console.log("val",val)
+                      //       this.markAsPaid(val,params);
+                      //     }
+                      //   }
+                      // },'')
+                    ])
+              ])
+            } else {
                return h('div', [
                 h('Tooltip', {
                   props: {
