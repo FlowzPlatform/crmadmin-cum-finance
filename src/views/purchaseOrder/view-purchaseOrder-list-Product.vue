@@ -56,32 +56,32 @@
                                                                             </div>
                                                                         </div>
                                                                         <div v-else></div>
-                                                                        <div v-if="item.hasOwnProperty('artwork_type') && item.hasOwnProperty('artwork')">
-                                                                            <div v-if="item.artwork_type == 'upload_artwork_typeset'">
-                                                                                <div v-if="item.artwork.hasOwnProperty('artwork_text_email')">
+                                                                        <div v-if="element.hasOwnProperty('artwork_type') && element.hasOwnProperty('artwork')">
+                                                                            <div v-if="element.artwork_type == 'upload_artwork_typeset'">
+                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_text_email')">
                                                                                     Art Work Via Email: <span>artwork@flowz.com</span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div v-else-if="item.artwork_type == 'upload_artwork'">
-                                                                                <div v-if="item.artwork.hasOwnProperty('artwork_email')">
+                                                                            <div v-else-if="element.artwork_type == 'upload_artwork'">
+                                                                                <div v-if="element.artwork.hasOwnProperty('artwork_email')">
                                                                                     Art Work Via Email: <span>artwork@flowz.com</span>
                                                                                 </div>
                                                                             </div>
                                                                             <div v-else></div>
-                                                                            <div v-if="item.artwork.hasOwnProperty('artwork_thumb')">
-                                                                                <div v-for="(i,j) in item.artwork.artwork_thumb">
+                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_thumb')">
+                                                                                <div v-for="(i,j) in element.artwork.artwork_thumb">
                                                                                     Uploaded Artwork {{j+1}} : <img :src="i" style="max-width:50px;max-height:50px;"/>
                                                                                 </div>
                                                                             </div>
                                                                             <div v-else></div>
-                                                                            <div v-if="item.artwork.hasOwnProperty('artwork_text')">
-                                                                                <div v-for="(i,j) in item.artwork.artwork_text">
+                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_text')">
+                                                                                <div v-for="(i,j) in element.artwork.artwork_text">
                                                                                     Text {{j+1}} : <span> {{i}}</span><br>
                                                                                 </div>
                                                                             </div>
                                                                             <div v-else></div>
-                                                                            <div v-if="item.artwork.hasOwnProperty('artwork_instruction')">
-                                                                                    Instructions : <span> {{item.artwork.artwork_instruction}} </span><br>                                                                                           </div>
+                                                                            <div v-if="element.artwork.hasOwnProperty('artwork_instruction')">
+                                                                                    Instructions : <span> {{element.artwork.artwork_instruction}} </span><br>                                                                                           </div>
                                                                             <div v-else></div>
                                                                         </div>
                                                                     </div> 

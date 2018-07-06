@@ -166,6 +166,11 @@
         <div v-if="spinShow" class="demo-spin-container">
             <Spin fix></Spin>
         </div>
+        <div v-else-if="ErrorShow" class="demo-spin-container">
+            <div style="text-align:center;color:red">
+                <h5> Configure Account Credential is Expired. </h5>
+            </div>
+        </div>
         <div v-else>
             <Card>
 
@@ -530,6 +535,7 @@
         data() {
             return {
                 spinShow : true,
+                ErrorShow: false,
                 isShow:false,
                 value1: '1',
                 modal1: false,
@@ -557,9 +563,17 @@
                     }, 
                     }).then(function (response) {
                         // self.$Loading.finish()
-                        self.spinShow = false;
                         console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
+                        if(response.data[0].data.data) {
+                            self.ErrorShow = true;
+                            // self.$Notice.error({
+                            //     title: 'Error',
+                            //     desc: 'Configure Account Credential is Expired.',
+                            //     duration: 10
+                            // })
+                        }
                         self.invoice = response.data[0].data
+                        self.spinShow = false;
                     }).catch(function (error){
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
