@@ -237,6 +237,7 @@
 				})
 				.then(async function(response) {
 					self.domainConfig=response.data.domain
+					let configName = response.data.configName;
 					// console.log(response)
 					if(response.data.domain == 'custom'){
 
@@ -305,23 +306,34 @@
 							console.log("contact response",response);
 							// resp = response.data
 							// self.customerData = _.sortBy(resp[0].data,['Name']);
-							let cnt;
-							let contacts = response.data[0];
-							for (let i=0; i<contacts.data.length; i++) {
-                                if (contacts.data[i].DisplayName) {
-                                    cnt = {
-                                        id : contacts.data[i].Id,
-                                        Name : contacts.data[i].DisplayName
-                                    }
-                                }
-                                else {
-                                    cnt = {
-                                        id : contacts.data[i].ContactID,
-                                        Name : contacts.data[i].Name
-                                    }
-                                }
-                                self.customerData.push(cnt)
-                            }
+							if (response.data[0].data.hasOwnProperty('data')) {
+								if (response.data[0].data.data.oauth_problem) {
+									self.$Notice.error({
+										title: 'Xero: Account Credential Incorrect',
+										desc: 'Invalid key for <b>'+configName+'</b>',
+										duration: 10
+									})
+								}
+							}
+							else {
+								let cnt;
+								let contacts = response.data[0];
+								for (let i=0; i<contacts.data.length; i++) {
+									if (contacts.data[i].DisplayName) {
+										cnt = {
+											id : contacts.data[i].Id,
+											Name : contacts.data[i].DisplayName
+										}
+									}
+									else {
+										cnt = {
+											id : contacts.data[i].ContactID,
+											Name : contacts.data[i].Name
+										}
+									}
+									self.customerData.push(cnt)
+								}
+							}
 								
 						})
 						.catch(function (error) {

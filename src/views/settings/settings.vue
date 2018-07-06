@@ -171,7 +171,7 @@
                                                             <div class="ivu-table ivu-table-border">
                                                                 <div v-if="v.length > 0" class="ivu-table-body">
                                                                     <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-                                                                        <thead>
+                                                                        <thead :id='k'>
                                                                             <tr>
                                                                                 <th class="" v-for="(value, key) in v[0]" v-if="key !== 'isDeleted'">
                                                                                     <div class="ivu-table-cell">
@@ -227,12 +227,12 @@
                                                         </div>
                                                     </TabPane>
                                                     <TabPane v-else style="text-align:center;color:#fd5e5e" :label="keyName(k)" :name="setname(k, inx)" :key="k">
-                                                        {{keyName(k)}} Payment Information is deleted. <a @click="addNewPaymentSettings">Create New One</a>
+                                                        {{keyName(k)}} Payment Information is deleted. <a @click="addNewPaymentSettingsAfterDelete(k,item.configName)">Create New One</a>
                                                     </TabPane>
                                                 </Tabs>
                                             </p>
                                             <p slot="content" v-else style="text-align:center;color:#fd5e5e">
-                                                Payment Information is not Available. <a @click="addNewPaymentSettings">Add new payment configuration.</a>
+                                                Payment Information is not Available. <a @click="addNewPaymentSettingsConfig(item.configName)">Add new payment configuration.</a>
                                             </p>
                                         </Panel>
                                     </Collapse>
@@ -596,6 +596,7 @@
                 let self = this;
                 console.log('Delete :: ', card, tabname, rowinx, '--data--', this.data6[card].online_payment[tabname][rowinx])
                 let configId = self.data6[card].id;
+                let isDeleatedArray = [];
                 this.$Modal.confirm({ 
                     title: 'Confirm Delete',
                     okText : "Delete",
@@ -605,6 +606,18 @@
                         self.exData = self.data6[card].online_payment[tabname][rowinx];
                         console.log("self.exData",self.exData);
                         self.exData.isDeleted = true;
+                        console.log("outside",self.data6[card].online_payment[tabname])
+                        for (let i=0; i<self.data6[card].online_payment[tabname].length; i++) {
+                                console.log("inside if self.data6[card].online_payment[tabname][i]",self.data6[card].online_payment[tabname][i])
+                            if(self.data6[card].online_payment[tabname][i].isDeleted == false) {
+                                isDeleatedArray.push(self.data6[card].online_payment[tabname][i])
+                                console.log("isDeleatedArray.length",isDeleatedArray.length)
+                            }
+                        }
+                        if(isDeleatedArray.length == 0) {
+                            self.data6[card].online_payment[tabname].alldeleted = true
+                            document.getElementById(tabname).style.display = "none";
+                        }
                         let patchData = {
                             id : configId,
                             rowIndex : rowinx,
@@ -697,6 +710,29 @@
                 this.$store.state.settingData = ""
                 this.$router.push({
                     name: 'Profile Settings'
+                });
+            },
+            addNewPaymentSettingsAfterDelete (key,config) {
+                console.log("here")
+                this.$store.state.settingData = ""
+                this.$router.push({
+                    name: 'Payment Settings',
+                    params: {
+                        paymentgateway : key,
+                        paymentconfig: config,
+                        message : 'AfterDelete'
+                    }
+                });
+            },
+            addNewPaymentSettingsConfig (key) {
+                console.log("here")
+                this.$store.state.settingData = ""
+                this.$router.push({
+                    name: 'Payment Settings',
+                    params: {
+                        paymentconfig : key,
+                        message : 'FromAccount'
+                    }
                 });
             },
             addNewPaymentSettings() {

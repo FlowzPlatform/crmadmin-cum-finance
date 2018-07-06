@@ -3,6 +3,9 @@
     <Card v-if="dataEditIn == 'Profile'">
         <Form :model="editGeneralData" :label-width="110" ref="editGeneralData" :rules="ruleValidate">
             <div v-if="editGeneralData">
+                <FormItem label="Name" prop="name">
+                    <Input v-model="editGeneralData.name" placeholder="Name"></Input>
+                </FormItem>
                 <FormItem label="AddressLine1" prop="AddressLine1">
                     <Input v-model="editGeneralData.AddressLine1" placeholder="AddressLine1"></Input>
                 </FormItem>
@@ -176,23 +179,26 @@ export default {
                 'secret': ''
             },
             ruleValidate: {
+                name: [
+                    { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+                ],
                 AddressLine1:[
-                { required: true, message: 'The AddressLine1 cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'The AddressLine1 cannot be empty', trigger: 'blur' }
                 ],
                 AddressLine2:[
-                { required: true, message: 'The AddressLine2 cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'The AddressLine2 cannot be empty', trigger: 'blur' }
                 ],
                 city:[
-                { required: true, message: 'The City cannot be empty', trigger: 'blur' }
+                    { required: true, message: 'The City cannot be empty', trigger: 'blur' }
                 ],
                 state: [
-                { required: true, message: 'The State can not be empty', trigger: 'blur' }
+                    { required: true, message: 'The State can not be empty', trigger: 'blur' }
                 ],
                 country:[
-                { required: true, message: 'The Country can not be empty', trigger: 'blur' }
+                    { required: true, message: 'The Country can not be empty', trigger: 'blur' }
                 ],
                 PostalCode:[
-                { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
+                    { required: true, message: 'The PostalCode cannot be empty', trigger: 'blur' },
                 // { validator: validateNum, trigger: 'blur' }
                 ],
                 Secret_Key: [
@@ -280,7 +286,7 @@ export default {
             this.editFormItem['isDeleted'] = value
         },
         async formData (name) {
-            console.log(name)
+            // console.log(name)
             var self = this
             self.loading3 = true
             self.$refs[name].validate((valid) => {

@@ -696,22 +696,22 @@
             accounting(item){
               return accounting.formatMoney(item)
             },
-            clicked (inx) {
-                console.log("Clickeddddd...............", inx);
-                $('#description'+inx).slideToggle(700);
-                $(document).ready(function(){
-                    $('.owl-carousel').owlCarousel({
-                        stopOnHover : true,
-                        navigation:true,
-                        items : 4,
-                        itemsDesktop: [1199, 4],
-                        itemsDesktopSmall: [979, 4],
-                        itemsTablet: [767, 2],
-                        itemsMobile: [479, 2]
-                    });
-                });
-                // $(".description").css("display", "table-row");
-            },
+            // clicked (inx) {
+            //     console.log("Clickeddddd...............", inx);
+            //     $('#description'+inx).slideToggle(700);
+            //     $(document).ready(function(){
+            //         $('.owl-carousel').owlCarousel({
+            //             stopOnHover : true,
+            //             navigation:true,
+            //             items : 4,
+            //             itemsDesktop: [1199, 4],
+            //             itemsDesktopSmall: [979, 4],
+            //             itemsTablet: [767, 2],
+            //             itemsMobile: [479, 2]
+            //         });
+            //     });
+            //     // $(".description").css("display", "table-row");
+            // },
             downloadBill () {
                 this.billinfo = true
             },
@@ -722,8 +722,8 @@
                 // if(this.tableHeight >= 450){
                 //     this.tableHeight = 450
                 // }
-                // if (!status) return 
-                // $('.ivu-table-cell-expand-expanded').click()
+                if (!status) return 
+                $('.ivu-table-cell-expand-expanded').click()
 
                 // if(status){
                 //     this.tableHeight = 530

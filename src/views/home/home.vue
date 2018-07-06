@@ -312,7 +312,14 @@
                             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                             duration: 4.5
                         })
-                    }else {
+                    } else if (error.response.data.name === 'GeneralError') {
+                        self.$Notice.error({
+                            title: 'Credential Error',
+                            desc: 'Account credential incorrect for <b>'+settingName+'</b>',
+                            duration: 10
+                        })
+
+                    } else {
                         self.$Notice.error({
                             title: error.response.data.name,
                             desc: error.response.data.message,
@@ -429,6 +436,13 @@
                             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                             duration: 4.5
                         })
+                    } else if (error.response.data.name === 'GeneralError') {
+                        self.$Notice.error({
+                            title: 'Credential Error',
+                            desc: 'Account credential incorrect for <b>'+settingName+'</b>',
+                            duration: 10
+                        })
+
                     }else {
                         self.$Notice.error({
                             title: error.response.data.name,
@@ -580,6 +594,13 @@
                             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                             duration: 4.5
                         })
+                    } else if (error.response.data.name === 'GeneralError') {
+                        self.$Notice.error({
+                            title: 'Credential Error',
+                            desc: 'Account credential incorrect for <b>'+settingName+'</b>',
+                            duration: 10
+                        })
+
                     }else {
                         self.$Notice.error({
                             title: error.response.data.name,
@@ -767,6 +788,13 @@
                             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                             duration: 4.5
                         })
+                    } else if (error.response.data.name === 'GeneralError') {
+                        self.$Notice.error({
+                            title: 'Credential Error',
+                            desc: 'Account credential incorrect for <b>'+settingName+'</b>',
+                            duration: 10
+                        })
+
                     }else {
                         self.$Notice.error({
                             title: error.response.data.name,
@@ -1006,7 +1034,7 @@
                         //    arr.push(arr.splice(arr.indexOf(6), 1)[0]);
                             self.mData = response.data.data;
                             self.config = self.mData[0].id;
-                            // self.getContacts(self.config)
+                            self.getContacts(self.config)
                             console.log("self.mData[0].id------------",self.mData[0].id,self.mData[0].configName)
                             self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
                             self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),

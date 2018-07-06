@@ -315,64 +315,64 @@
                 setTimeout(function(){ self.userName = Cookies.get('user'); }, 1000);
                 
             },
-            async usersubscriptionUrl () {
-                var self = this
-                let response = await axios({
-                    method: 'get',
-                    url: usersubscriptionUrl + '?id=' + Cookies.get('subscriptionId'),
-                    headers: {
-                    'authorization': Cookies.get('auth_token')
-                    }
-                })
-                .then(response => {
-                    console.log("response response", response.data.data[0].userId)
-                    let userId = response.data.data[0].userId
+            // async usersubscriptionUrl () {
+            //     var self = this
+            //     let response = await axios({
+            //         method: 'get',
+            //         url: usersubscriptionUrl + '?id=' + Cookies.get('subscriptionId'),
+            //         headers: {
+            //         'authorization': Cookies.get('auth_token')
+            //         }
+            //     })
+            //     .then(response => {
+            //         console.log("response response", response.data.data[0].userId)
+            //         let userId = response.data.data[0].userId
 
-                    return userId
-                })
-                .catch(error => {
-                    console.log("errr...",error)
-                    if(error.message == 'Network Error'){
-                        self.$Notice.error({
-                            title : 'Error',
-                            desc: "API service unavailable",
-                            duration: 10
-                        })
-                    }else if(error.response.status == 401){
-                        let location = psl.parse(window.location.hostname)
-                        location = location.domain === null ? location.input : location.domain
+            //         return userId
+            //     })
+            //     .catch(error => {
+            //         console.log("errr...",error)
+            //         if(error.message == 'Network Error'){
+            //             self.$Notice.error({
+            //                 title : 'Error',
+            //                 desc: "API service unavailable",
+            //                 duration: 10
+            //             })
+            //         }else if(error.response.status == 401){
+            //             let location = psl.parse(window.location.hostname)
+            //             location = location.domain === null ? location.input : location.domain
                         
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        self.$store.commit('logout', self);
+            //             Cookies.remove('auth_token' ,{domain: location}) 
+            //             self.$store.commit('logout', self);
                         
-                        self.$router.push({
-                            name: 'login'
-                        });
-                        // self.$Notice.error({
-                        //     title: error.response.data.name,
-                        //     desc: error.response.data.message,
-                        //     duration: 10
-                        // })
-                    }
-                    else if(error.response.status == 403){
-                        self.$Notice.error({
-                            duration:0, 
-                            title: error.response.statusText,
-                            desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                        });
-                    }else {
-                        self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                    }
-                })
-                this.userDetail()
-                // if(response.data.data.length != 0){
-                //     list1.push({"value":state.subscription_list[key].value,"label":response.data.data[0].userId})
-                // }
-            },
+            //             self.$router.push({
+            //                 name: 'login'
+            //             });
+            //             // self.$Notice.error({
+            //             //     title: error.response.data.name,
+            //             //     desc: error.response.data.message,
+            //             //     duration: 10
+            //             // })
+            //         }
+            //         else if(error.response.status == 403){
+            //             self.$Notice.error({
+            //                 duration:0, 
+            //                 title: error.response.statusText,
+            //                 desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+            //             });
+            //         }else {
+            //             self.$Notice.error({
+            //                 title: error.response.data.name,
+            //                 desc: error.response.data.message,
+            //                 duration: 10
+            //             })
+            //         }
+            //     })
+            //     this.userDetail()
+            //     // if(response.data.data.length != 0){
+            //     //     list1.push({"value":state.subscription_list[key].value,"label":response.data.data[0].userId})
+            //     // }
+            // },
             async userDetail () {
                 var self = this
                 await axios({
@@ -518,7 +518,7 @@
         mounted () {
             this.getDataOfSubscriptionUser();
             this.init();
-            this.usersubscriptionUrl();
+            this.userDetail();
             if(Cookies.get("subscriptionId") && Cookies.get("subscriptionId") != undefined){
                 this.value2 = Cookies.get("subscriptionId")
             }

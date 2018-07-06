@@ -330,7 +330,10 @@ export default {
     async customerData (settingId) {
       let resp
       let self = this
-
+      let ConfigName = _.filter(this.configs , function(o){
+          return o.id == settingId
+      });
+      let configName = ConfigName[0].configName;
       await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
@@ -379,10 +382,22 @@ export default {
                   },
               })
               .then(function (response) {
-                  resp = response.data
-                  console.log("resp",resp[0].data)
-                  self.data2 = _.sortBy(resp[0].data, ['Name']);
-                  console.log("self.data2---------------->after",self.data2)
+                  console.log('contacts get response',response);
+                  if (response.data[0].data.hasOwnProperty('data')) {
+                    if (response.data[0].data.data.oauth_problem) {
+                      self.$Notice.error({
+                        title: 'Xero: Account Credential Incorrect',
+                        desc: 'Invalid key for <b>'+configName+'</b>. Not able to get contact name',
+                        duration: 10
+                      })
+                    }
+                  }
+                  else {
+                    resp = response.data
+                    console.log("resp",resp[0].data)
+                    self.data2 = _.sortBy(resp[0].data, ['Name']);
+                    console.log("self.data2---------------->after",self.data2)
+                  }
               })
               .catch(function (error) {
                   console.log(error);
@@ -531,13 +546,15 @@ export default {
             })
             .then(function (res) {
                 console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
-                if (res.data.data.Elements) {
-                  self.loading = false;
-                  self.$Notice.error({
-                      title: 'Validation Error',
-                      desc: res.data.data.Elements[0].ValidationErrors[0].Message,
-                      duration: 10
-                  });
+                if (res.data.data) {
+                  if (res.data.data.Elements) {
+                    self.loading = false;
+                    self.$Notice.error({
+                        title: 'Validation Error',
+                        desc: res.data.data.Elements[0].ValidationErrors[0].Message,
+                        duration: 10
+                    });
+                  }
                 }else {
                   self.$Message.success('invoice created successfully');
                   self.loading = false;

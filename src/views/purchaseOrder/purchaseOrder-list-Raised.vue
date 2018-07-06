@@ -277,110 +277,127 @@
         },
         methods: {
             resendEmail (data) {
+                let emailAddress=data.products[0].product_description.supplier_info.email
                 this.$Modal.confirm({
                     title: 'Email would be sent to',
                     okText: 'OK',
                     cancelText: 'Cancel',
+                    loading:true,
                     render: (h) => {
                         return h('Input', {
                             props: {
-                                value: data.products[0].product_description.supplier_info.email,
+                                value:emailAddress ,
                                 autofocus: true,
                                 placeholder: 'Please enter email Id...'
                             },
                             on: {
                                 input: (val) => {
-                                    data.products[0].product_description.supplier_info.email = val;
+                                    emailAddress= val;
                                 }
                             }
                         })
                     },
                     onOk: ()=>{
                         console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
-                        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
-                        this.$Loading.start()
-                        var self = this;
-                        let supplierName = data.products[0].product_description.supplier_info.supplier_name;
-                        let toMail = data.products[0].product_description.supplier_info.email;
-                        let websiteName = data.websiteName;
-                        let websiteId = data.websiteId;
-                        let distributorEmail = data.distributor_email;
-                        let emailBody = `<div ref="email">
+                        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",emailAddress)
+
+                        if (this.checkEmail(emailAddress)) {
+                            this.$Loading.start()
+                            var self = this;
+                            let supplierName = data.products[0].product_description.supplier_info.supplier_name;
+                            let toMail = emailAddress;
+                            let websiteName = data.websiteName;
+                            let websiteId = data.websiteId;
+                            let distributorEmail = data.distributor_email;
+                            let emailBody = `<div ref="email">
                             <h3>Dear ${(supplierName && supplierName.length > 0) ? supplierName : toMail}</h3>
                             <p style="font-size:16px">You have received purchase order for website <b>${(websiteName && websiteName.length > 0) ? websiteName : websiteId}</b> for distributor <b>${distributorEmail}</b></p>
                             <p style="font-size:16px">To view the Purchase order detail:</p>
                             <a href=" https://crm.${process.env.domainkey}/#/purchase-order-received?PO_id=${data.PO_id}" style="background-color:#EB7035;border:1px solid #EB7035;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:14px;line-height:30px;text-align:center;text-decoration:none;width:90px;-webkit-text-size-adjust:none;mso-hide:all;">View Order</a>    
                             <p style="font-size:16px">Regards</p>
                             </div>`;
-                        let myData = {
-                            "to":  toMail,
-                            "from": Cookies.get('user'),
-                            "subject": "Purchase order for website " + data.websiteName,
-                            "body": emailBody
-                        };
-                        myData = JSON.stringify(myData)
-                        console.log("=============----------------mail data",myData);
-                        axios({
-                            method: 'post',
-                            url: config.default.emailUrl,
-                            data: myData,
-                            headers: {
-                                'authorization':  Cookies.get('auth_token'),
-                            }
-                        }).then(async function (response) {
-                            console.log(response);
-                            self.$message.success("Email Send Successfully");
-                            self.$Loading.finish()
-                            await axios({
-                                method: 'patch',
-                                url: config.default.serviceUrl + 'purchase-order/' + data.id,
-                                data: {
-                                    "EmailStatus":"Sent"
-                                },
+                            let myData = {
+                                "to": toMail,
+                                "from": Cookies.get('user'),
+                                "subject": "Purchase order for website " + data.websiteName,
+                                "body": emailBody
+                            };
+                            myData = JSON.stringify(myData)
+                            console.log("=============----------------mail data", myData);
+                            axios({
+                                method: 'post',
+                                url: config.default.emailUrl,
+                                data: myData,
                                 headers: {
-                                    'Authorization': Cookies.get('auth_token'),
-                                    'subscriptionId': Cookies.get('subscriptionId')
-                                } 
-                            }).then(async function (response){
-                                console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
+                                    'authorization': Cookies.get('auth_token'),
+                                }
+                            }).then(async function (response) {
+                                console.log(response);
+                                self.$message.success("Email Sent Successfully");
+                                self.$Loading.finish()
+                                await axios({
+                                    method: 'patch',
+                                    url: config.default.serviceUrl + 'purchase-order/' + data.id,
+                                    data: {
+                                        "EmailStatus": "Sent"
+                                    },
+                                    headers: {
+                                        'Authorization': Cookies.get('auth_token'),
+                                        'subscriptionId': Cookies.get('subscriptionId')
+                                    }
+                                }).then(async function (response) {
+                                    self.$Modal.remove();
+
+                                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", response)
+                                })
                             })
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                            self.$Loading.error()
-                            self.$Message.warning("Email Send Failed, Please try again later");
-                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                                let location = psl.parse(window.location.hostname)
-                                location = location.domain === null ? location.input : location.domain
-                                
-                                Cookies.remove('auth_token' ,{domain: location}) 
-                                Cookies.remove('subscriptionId' ,{domain: location}) 
-                                self.$store.commit('logout', self);
-                                
-                                self.$router.push({
-                                    name: 'login'
+                                .catch(function (error) {
+                                    self.$Modal.remove();
+                                    console.log(error);
+                                    self.$Loading.error()
+                                    self.$Message.warning("Email Sent Failed, Please try again later");
+                                    if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401) {
+                                        let location = psl.parse(window.location.hostname)
+                                        location = location.domain === null ? location.input : location.domain
+
+                                        Cookies.remove('auth_token', { domain: location })
+                                        Cookies.remove('subscriptionId', { domain: location })
+                                        self.$store.commit('logout', self);
+
+                                        self.$router.push({
+                                            name: 'login'
+                                        });
+                                        self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
+                                    } else if (error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403) {
+                                        self.$Notice.error({
+                                            title: error.response.statusText,
+                                            desc: error.response.data.message + '. Please <a href="' + config.default.flowzDashboardUrl + '/subscription-list" target="_blank">Subscribe</a>',
+                                            duration: 4.5
+                                        })
+                                    } else {
+                                        self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
+                                    }
                                 });
-                                self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
-                                    duration: 10
-                                })
-                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                                self.$Notice.error({
-                                    title: error.response.statusText,
-                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                                    duration: 4.5
-                                })
-                            }else {
-                                self.$Notice.error({
-                                    title: error.response.data.name,
-                                    desc: error.response.data.message,
-                                    duration: 10
-                                })
-                            }
-                        });
+                                
+                        }else{
+                            this.$Modal.remove();
+                            this.$message.error("Invalid Email Id");
+                        }
                     }
                 })
+            },
+            checkEmail(emailValue) {
+                
+                var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return filter.test(emailValue)
             },
             reset() {
                 this.ponum = ''

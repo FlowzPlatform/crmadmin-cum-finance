@@ -82,9 +82,13 @@
                     <div class="estimate-tag-block border-bottom">
                       <div class="row">
                         <div class="col-sm-12">
-                          <div class="inquiry-color-block">
-                            <ul class="ulList" v-for="i in item.attributes.colors">
-                              <li class="color2" data-original-title="i" :style="{ backgroundColor: i }"></li>
+                          <div class="inquiry-color-block" v-for="i in item.attributes.colors" style="display:inline-block">
+                            <ul class="ulList">                              
+                              <li class="color2">
+                                <i class="white-color-box" :style="{ backgroundColor: i }"  :title="i">
+                                    <img src="">
+                                  </i>
+                              </li>
                             </ul>
                           </div>
                         </div>
@@ -146,7 +150,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageDataDisplay" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid && item.created_by == requestUser">
+                    <div class="message"  v-if="item.created_by != userid || item.created_by == requestUser">
                       <Row>
                         <Col span="24" >
                           <div >

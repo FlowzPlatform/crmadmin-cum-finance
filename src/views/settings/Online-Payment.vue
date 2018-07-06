@@ -66,6 +66,11 @@
 		components : {
 			settingMenu
 		},
+		props: {
+			paymentgateway: String,
+			message: String,
+			paymentconfig: String
+		},
 		data () {
 			const validateBlank = (rule, value, callback) => {
 				if (value.trim() === '') {
@@ -515,8 +520,21 @@
 		},
 		computed: {
 		},
-		mounted() {
-			this.settingData();
+		async mounted() {
+			console.log("Mounted call Online Payment",this.paymentconfig, this.paymentgateway ) 
+			await this.settingData(); 
+			console.log('this.configs',this.configs) 
+			if(this.message === 'AfterDelete') 
+			{ 
+				this.configs = _.filter(this.configs, {'configName': this.paymentconfig }) 
+				console.log('this.formValidate.configuration',this.configs) 
+				this.formValidate.configuration = this.configs[0].id	
+				this.formValidate.gateway = this.paymentgateway 
+			} else if(this.message === 'FromAccount') { 
+				this.configs = _.filter(this.configs, {'configName': this.paymentconfig }) 
+				console.log('this.formValidate.configuration',this.configs) 
+				this.formValidate.configuration = this.configs[0].id	
+			} 
 		}
 }
 </script>

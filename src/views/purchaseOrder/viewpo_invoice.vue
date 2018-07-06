@@ -83,10 +83,10 @@ export default {
                     title: 'Total Amount',
                     align:  'center',
                     render : (h , {row}) => {
-                        let total = accounting.formatMoney(row.total_qty * row.unit_price);
+                        // let total = accounting.formatMoney(row.total_qty * row.unit_price);
                         return h('div', [
                             
-                            h('span',  total)
+                            h('span',  this.row.total_amount)
                         ]);
                     }
                 }
