@@ -399,6 +399,7 @@
             }
             else {
               self.finaldata = res.data
+              self.finaldata.cname = res.data.cname
               self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
               self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
               if(self.finaldata.fileupload != undefined){

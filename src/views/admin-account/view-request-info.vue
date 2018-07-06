@@ -119,23 +119,12 @@
               MY INFORMATION
                 <p slot="content">
                   <label class="container">
-                  <h4 style="padding-right:15px;padding-left:15px">{{row.productInfo[0].username}}</h4>
                     <div class="col-md-6">
-                          <span style="font-weight:500">
-                          NA
-                          </span>
+                      <h4 style="margin-top:0px;padding-right:15px;padding-left:15px;text-transform: capitalize;">{{this.userDetailObject.fullname}}</h4>    
                     </div>
                     <div class="col-md-6">
-                      <ul class="ulList">
-                        <li style="width:max-content">
-                          <Icon type="ios-telephone" size="15"></Icon>
-                          <span style="font-weight:500;">&nbsp;&nbsp;&nbsp;NA</span>
-                        </li>
-                        <li style="width:max-content">
-                          <Icon type="ios-email" size="15"></Icon>
-                          <span style="font-weight:500;">{{row.productInfo[0].username}}</span>
-                        </li>
-                      </ul>
+                      <Icon type="ios-email" size="15"></Icon>
+                      <span style="font-weight:500;">{{this.userDetailObject.email}}</span>
                     </div>
                   </label>
                 </p>
@@ -150,7 +139,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageDataDisplay" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid || item.created_by == requestUser">
+                    <div class="message"  v-if="item.created_by != userid">
                       <Row>
                         <Col span="24" >
                           <div >
@@ -160,7 +149,7 @@
                               <!-- <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
-                              <span>{{item.created_by}}</span>
+                              <span><strong>{{item.created_by}}</strong></span>
                             </span>
                           </div>
                         </Col>
@@ -179,7 +168,7 @@
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
-                              <span>{{item.created_by}}</span>
+                              <span><strong>{{item.created_by}}</strong></span>
                             </span>
                           </div>
                         </Col>
@@ -243,7 +232,8 @@ export default {
       userid: '',
       messageDataDisplay: [],
       requestUser: '',
-      colors:[]
+      colors:[],
+      userDetailObject: ''
     }
   },
   methods: {
@@ -335,6 +325,20 @@ export default {
         },1000)
       })
     this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
+
+    axios({
+        method: 'get',
+        url: 'https://api.flowzcluster.tk/user/getuserdetails/' + this.row.userId,
+        headers: {
+          'Authorization': Cookies.get('auth_token')
+        }
+    }).then(function (response) {
+      console.log("response response", response.data.data[0])
+      self.userDetailObject = response.data.data[0]
+      console.log("userDetailObject", self.userDetailObject)
+    })
+
+
     axios({
        method: 'get',
        url: config.default.commentrequestapi,
@@ -663,7 +667,6 @@ html input[type=button] {
   }
   .chat .message.me div p {
     float: right;
-    margin-right: 15px;
   }
   .chat .message.me div:before {
     position: relative;
@@ -863,7 +866,7 @@ html input[type=button] {
   .sentDate{
     display: inline-block;
     /*float: right;*/
-    width: 65%;
+    width: 70%;
     text-align: right;
     margin-left: 30%;
     font-size: 11px;
@@ -873,7 +876,6 @@ html input[type=button] {
   }
   .receivedDate{
     display: block;
-    margin-left: 5%;
     font-size: 11px;
   }
   .modalCloseButton{
