@@ -406,6 +406,7 @@
                 self.data1 = self.finaldata.fileupload;
               }
               CKEDITOR.instances.editor1.setData(self.finaldata.description)
+              self.calldata()
             }
            // return res.data
           }).catch(error => {
