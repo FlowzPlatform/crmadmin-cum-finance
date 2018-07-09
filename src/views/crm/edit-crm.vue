@@ -399,7 +399,7 @@
             }
             else {
               self.finaldata = res.data
-              self.finaldata.cname = res.data.cname
+              // self.finaldata.cname = ''
               self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
               self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
               if(self.finaldata.fileupload != undefined){
@@ -453,12 +453,10 @@
         
       },
       configChange (data) {
-				// this.finaldata.cname = ''
         this.customerData = []
         this.calldata(data);
       },
       async calldata(id) {
-        alert(1)
         let resp
         let self = this
         if(id){
