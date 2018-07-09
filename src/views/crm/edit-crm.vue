@@ -52,7 +52,6 @@
                   <label id="c22339">Customer Config</label>
                 </div>
                 <div class="col-xs-8">
-                  {{ domainConfig }}
                   <Select v-model="finaldata.config" placeholder="Select Config" @on-change="configChange">
                     <Option v-for="item in mData" :value="item.id" :key="item.id" >{{ item.configName }}</Option>
                   </Select>
@@ -67,7 +66,6 @@
 									<label id="c22339">Customer</label>
 								</div>
 								<div class="col-xs-8">
-                  {{customerData}}
                   <Select v-model="finaldata.cname" class="customer">
 										<!-- <div v-if="domainConfig=='Xero'"> -->
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
@@ -455,6 +453,8 @@
         
       },
       configChange (data) {
+				// this.finaldata.cname = ''
+        this.customerData = []
         this.calldata(data);
       },
       async calldata(id) {
