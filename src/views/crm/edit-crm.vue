@@ -70,13 +70,13 @@
                   {{customerData}}
                   <Select v-model="finaldata.cname" class="customer">
 										<div v-if="domainConfig=='Xero'">
-											<Option v-for="item in customerData" :value="item.Name" :key="item.ContactID">{{ item.Name }}</Option>
+											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='custom'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.id">{{ item.DisplayName }}</Option>											
 										</div>
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
@@ -454,13 +454,18 @@
         console.log('RESULT ..................', self.finaldata)
         
       },
-      configChange () {
-        this.calldata();
+      configChange (data) {
+        this.calldata(data);
       },
-      async calldata() {
+      async calldata(id) {
+        alert(1)
         let resp
         let self = this
-        var settingId = self.finaldata.config
+        if(id){
+          var settingId = id
+        } else {
+          var settingId = self.finaldata.config
+        }
         await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
@@ -481,8 +486,7 @@
               url: self.customCustomerUrl,
               params : {settingId : response.data.id},
               headers:{
-                Authorization : Cookies.get('auth_token'),
-                subscriptionId : Cookies.get('subscriptionId')
+                Authorization : Cookies.get('auth_token')
               }
             })
             .then(function (response) {
@@ -534,12 +538,42 @@
               },
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
               },
             })
             .then(function (response) {
-              resp = response.data
-              self.customerData = resp[0].data
+              console.log("contact response",response);
+							// resp = response.data
+							// self.customerData = _.sortBy(resp[0].data,['Name']);
+							if (response.data[0].data.hasOwnProperty('data')) {
+								if (response.data[0].data.data.oauth_problem) {
+									self.$Notice.error({
+										title: 'Xero: Account Credential Incorrect',
+										desc: 'Invalid key for <b>'+configName+'</b>',
+										duration: 10
+									})
+								}
+							}
+							else {
+								let cnt;
+								let contacts = response.data[0];
+								for (let i=0; i<contacts.data.length; i++) {
+									if (contacts.data[i].DisplayName) {
+										cnt = {
+											id : contacts.data[i].Id,
+											Name : contacts.data[i].DisplayName
+										}
+									}
+									else {
+										cnt = {
+											id : contacts.data[i].ContactID,
+											Name : contacts.data[i].Name
+										}
+									}
+									self.customerData.push(cnt)
+								}
+							}
+              // resp = response.data
+              // self.customerData = resp[0].data
               console.log('---------self.customerData',self.customerData)
             })
             .catch(function (error) {
@@ -608,7 +642,7 @@
                 })
             }   
         });
-        console.log("response------>iuy",resp);
+        console.log("response------>iuy",self.customerData);
       },
       async dbdata() {
         var self = this
