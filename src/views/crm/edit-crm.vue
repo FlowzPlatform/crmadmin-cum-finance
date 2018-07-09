@@ -69,15 +69,15 @@
 								<div class="col-xs-8">
                   {{customerData}}
                   <Select v-model="finaldata.cname" class="customer">
-										<div v-if="domainConfig=='Xero'">
+										<!-- <div v-if="domainConfig=='Xero'"> -->
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='custom'">
+										<!-- </div> -->
+										<!-- <div v-if="domainConfig=='custom'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
 											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.id">{{ item.DisplayName }}</Option>											
-										</div>
+										</div> -->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
 									 <select class="form-control" id="customer"><option>Select</option></select> -->
