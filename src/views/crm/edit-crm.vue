@@ -66,6 +66,8 @@
 									<label id="c22339">Customer</label>
 								</div>
 								<div class="col-xs-8">
+                    {{ domainConfig }}
+                      {{customerData}}
                   <Select v-model="finaldata.cname" class="customer">
 										<div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
@@ -538,6 +540,7 @@
             .then(function (response) {
               resp = response.data
               self.customerData = resp[0].data
+              console.log('---------self.customerData',self.customerData)
             })
             .catch(function (error) {
               console.log(error);
@@ -557,19 +560,19 @@
                     desc: error.response.data.message,
                     duration: 10
                 })
-            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                self.$Notice.error({
-                    title: error.response.statusText,
-                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                    duration: 0
-                })
-            }else {
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-            }
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 0
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
             });
           }
         })
