@@ -1,112 +1,110 @@
 <template>
     <div>
-        <div class="mainBody">
-            <div class="po">
-                <Card>
-                    <h2 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h2>
-                    <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
-                        <!--<ButtonGroup slot="extra">
-                            <Tooltip placement="top" content="Delete" style="padding-left:3px;">
-                                <Button class="ButtonGroup" @click="deleteSupplierProduct(item)"   type="ghost" icon="trash-b"></Button>
-                            </Tooltip>
-                        </ButtonGroup>-->
-                        <div class="dweep" style="padding: 40px 10px 10px 10px;">
-                            <div class="row well">
-                                <table class="invoice-head col-md-8">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>VENDOR :</strong></td>                                            
-                                            <td>{{item.product[0].product_description.supplier_info.supplier_name}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td><Icon type="ios-email" size="15"></Icon>   {{item.product[0].product_description.supplier_info.email}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <!-- <table class="invoice-head col-md-4">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>SHIP TO :</strong></td>
-                                            <td>{{item.shipping_address.name}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                <span>{{item.shipping_address.street1}}</span>
-                                                <span v-if="item.shipping_address.street2">,{{item.shipping_address.street2}}</span>
-                                                <span v-else></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{{item.shipping_address.city}},{{item.shipping_address.state}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
-                                        </tr>
-                                        <!-- <tr>
-                                            <td></td>
-                                            <td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
-                                        </tr> 
-                                    </tbody>
-                                </table> -->
-                            </div>
-                            <!-- <div class="row">
-                                <table class="col-md-12 table table-bordered" style="text-align:center">
-                                    <thead>
-                                        <tr>
-                                            <td> <strong> METHOD </strong></td>
-                                            <td> <strong>SHIPPING CARRIER </strong></td>
-                                            <td> <strong>DELIVERY DATE </strong></td>
-                                            <td> <strong>SHIPPING CHARGE </strong></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{item.shipping_detail.shipping_method}}</td>
-                                            <td>{{item.shipping_detail.shipping_carrier}}</td>
-                                            <td>{{item.shipping_detail.on_hand_date}}</td>
-                                            <td>{{accounting(item.shipping_detail.shipping_charge)}}</td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div> -->
-                            <div class="row">
-                                <div class="span8 well invoice-body" style="padding: 0px;border: none;">
-                                    <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
-                                    <!-- <modal v-model="modal2" width="40%">
-                                        <p slot="header">
-                                                <span>Change Quantity</span>
-                                            </p>
-                                        <div style="text-align:center">
-                                            <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
-                                            <form-item label="Quantity" prop="value">
-                                                <i-input v-model="formValidate.value" placeholder="Enter Quantity"></i-input>
-                                            </form-item>
-                                            </i-form>
-                                        </div>
-                                        <div slot="footer">
-                                            <i-button @click="cancel">Cancel</i-button>
-                                            <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
-                                        </div>
-                                    </modal> -->
-                                </div>
+        <div class="po">
+            <Card>
+                <h2 style="margin-top: 0px;text-align:center;"> PURCHASE ORDER </h2>
+                <Card :id="inx" class="mainClass" v-for="(item, inx) in this.poBillAddress" style="margin-bottom:20px">
+                    <!--<ButtonGroup slot="extra">
+                        <Tooltip placement="top" content="Delete" style="padding-left:3px;">
+                            <Button class="ButtonGroup" @click="deleteSupplierProduct(item)"   type="ghost" icon="trash-b"></Button>
+                        </Tooltip>
+                    </ButtonGroup>-->
+                    <div class="dweep" style="padding: 40px 10px 10px 10px;">
+                        <div class="row well">
+                            <table class="invoice-head col-md-8">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>VENDOR :</strong></td>                                            
+                                        <td>{{item.product[0].product_description.supplier_info.supplier_name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><Icon type="ios-email" size="15"></Icon>   {{item.product[0].product_description.supplier_info.email}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- <table class="invoice-head col-md-4">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>SHIP TO :</strong></td>
+                                        <td>{{item.shipping_address.name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <span>{{item.shipping_address.street1}}</span>
+                                            <span v-if="item.shipping_address.street2">,{{item.shipping_address.street2}}</span>
+                                            <span v-else></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>{{item.shipping_address.city}},{{item.shipping_address.state}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>{{item.shipping_address.country}} {{item.shipping_address.postalcode}}</td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td></td>
+                                        <td><Icon type="ios-telephone" size="15"></Icon>  {{i.shipping_address.phone}} </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><Icon type="ios-email" size="15"></Icon>  <span>{{i.shipping_address.email}} </span></td>
+                                    </tr> 
+                                </tbody>
+                            </table> -->
+                        </div>
+                        <!-- <div class="row">
+                            <table class="col-md-12 table table-bordered" style="text-align:center">
+                                <thead>
+                                    <tr>
+                                        <td> <strong> METHOD </strong></td>
+                                        <td> <strong>SHIPPING CARRIER </strong></td>
+                                        <td> <strong>DELIVERY DATE </strong></td>
+                                        <td> <strong>SHIPPING CHARGE </strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{item.shipping_detail.shipping_method}}</td>
+                                        <td>{{item.shipping_detail.shipping_carrier}}</td>
+                                        <td>{{item.shipping_detail.on_hand_date}}</td>
+                                        <td>{{accounting(item.shipping_detail.shipping_charge)}}</td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> -->
+                        <div class="row">
+                            <div class="span8 well invoice-body" style="padding: 0px;border: none;">
+                                <Table stripe border :columns="columns1" :data="item.product" class="js_shipping"></Table>
+                                <!-- <modal v-model="modal2" width="40%">
+                                    <p slot="header">
+                                            <span>Change Quantity</span>
+                                        </p>
+                                    <div style="text-align:center">
+                                        <i-form ref="formValidate" :model="formValidate" :rules="ruleInline">
+                                        <form-item label="Quantity" prop="value">
+                                            <i-input v-model="formValidate.value" placeholder="Enter Quantity"></i-input>
+                                        </form-item>
+                                        </i-form>
+                                    </div>
+                                    <div slot="footer">
+                                        <i-button @click="cancel">Cancel</i-button>
+                                        <i-button type="primary" @click="onOk(productData,formValidate.value)">OK</i-button>
+                                    </div>
+                                </modal> -->
                             </div>
                         </div>
-                    </Card>
-                    <div style="padding: 35px;padding-top:10px;" v-if="!poRefreshed">
-                    <Button type="primary" style="float:right;" :loading="loading" @click="generatePO">
-                        Generate Purchase Order
-                    </Button>
                     </div>
                 </Card>
-            </div>
+                <div style="padding: 35px;padding-top:10px;" v-if="!poRefreshed">
+                <Button type="primary" style="float:right;" :loading="loading" @click="generatePO">
+                    Generate Purchase Order
+                </Button>
+                </div>
+            </Card>
         </div>
     </div>
 </template>

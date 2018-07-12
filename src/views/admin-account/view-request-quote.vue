@@ -249,7 +249,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageData" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid && (item.created_by == requestUser || item.created_by == requestUserEmail)">
+                    <div class="message"  v-if="item.created_by != userid">
                       <Row>
                         <Col span="24" >
                           <div >
@@ -378,7 +378,6 @@ export default {
       // console.log("this.commentMessage---------->",msg)
       if(msg != ''){
         this.resetData = this.commentMessage
-        self.commentMessage = '';
         axios({
          method: 'post',
          url: config.default.commentrequestapi,
@@ -395,6 +394,7 @@ export default {
          }).then(function (response) {
           // self.messageData.push(response.data.message)
           // self.messageData.push({message: self.resetData, created_at: date, created_by: self.userid})
+          self.commentMessage = '';
           let height
           setTimeout(function(){
             height = document.getElementsByClassName("chat")[0].scrollHeight;

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="!showError" class="mainBody">
+		<div v-if="!showError" class="mainBody1">
 			<!-- <vue-particles color="#dedede"></vue-particles> -->
 			<div class="po">
 				
@@ -244,7 +244,7 @@
 						</div>        
 					</div>
 					<!-- Profile config-->
-					<div class="row">
+					<!--<div class="row">
 						<div class=" col-md-12">
 							<div class="well" style="background-color:#fff">
 								<label> Profile Configuration : </label>
@@ -322,7 +322,7 @@
 							</div>
 							
 						</div>        
-					</div>
+					</div>-->
 					<!-- Generate Invoice -->
 					<div style="padding-left:15px;padding-right:15px;">
 						<div class="row well" style="background-color:#fff">
@@ -1414,7 +1414,7 @@
 
 
 <style lang="less">
-	.mainBody {
+	.mainBody1 {
 		margin: 0;
 		height: 100%;
 		width: 100%;

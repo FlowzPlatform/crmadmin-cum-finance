@@ -201,7 +201,7 @@
                         width: 110,
                         align:  'center',
                         render : (h , {row}) => {
-                            var date = moment(row.products[0].createdAt).format('DD-MMM-YYYY')
+                            var date = moment(row.created_at).format('DD-MMM-YYYY')
                             return h('div', [
                                 
                                 h('span', date)

@@ -122,7 +122,8 @@
     props: {
       options: {
         type: Object
-      }
+      },
+      profileconfig: String
     },
     components : {
       settingMenu
@@ -518,7 +519,10 @@
             })
             self.configs = _.sortBy(newConf, ['configName']);
             console.log("self.configs---------------->after",self.configs)
-
+            if (self.profileconfig !== undefined) {
+              self.configs = _.filter(self.configs, {'configName': self.profileconfig })
+              self.formValidate.configuration = self.configs[0].id
+            }
 
           }
           else
@@ -587,6 +591,8 @@
 
     async mounted () {
       this.settingData ();
+      console.log('params.query',this.profileconfig)
+      this.formValidate.configuration = this.profileconfig
       populateCountries("country", "state");
       $("#country").on("change",function() {
         $('.state1').css("display","block")
@@ -602,14 +608,6 @@
             }
         });
 
-        $("#toggleUploadLogo").click(function() {
-            $("#toggleUploadLogoContent").slideToggle("slow");
-            if ($("#toggleUploadLogo").text() == "Upload Logo") {
-                $("#toggleUploadLogo").html("Upload Logo")
-            } else {
-                $("#toggleUploadLogo").text("Upload Logo")
-            }
-        });
       });
     },
     watch: {

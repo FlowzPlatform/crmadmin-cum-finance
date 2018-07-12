@@ -160,6 +160,7 @@ export const otherRouter = {
         path: 'General-settings',
         title: 'Profile Settings',
         name: 'Profile Settings',
+        props: true,
         component: resolve => {
             require(['@/views/settings/General-setting.vue'], resolve);
         }

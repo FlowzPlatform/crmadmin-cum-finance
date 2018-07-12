@@ -193,7 +193,7 @@
                                 Order ID : {{row.order_id}}
                                 </div>
                                 <div class="col-md-4 col-sm-4">
-                                    Created Date : {{moment(row.products[0].createdAt).format('DD-MMM-YYYY')}} 
+                                    Created Date : {{moment(row.created_at).format('DD-MMM-YYYY')}} 
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     Total Items : {{row.products.length}}
@@ -542,7 +542,7 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
+                imgurl: 'http://pdmapi.officebrain.com/migration-api-hidden-new/web/images/',
                 invoice: {}
             }
         },
