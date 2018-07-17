@@ -311,7 +311,7 @@
           <Row>
             <Col span="24" >
               <div  >
-                <img :src="src" />
+                <img src="http://mangalayatan.in/wp-content/uploads/2016/01/member1.jpg" />
                 <p class="emailText" v-html="item.comment"></p>
                 <span class="sentDate">
                   <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
@@ -370,7 +370,6 @@
         // isEdit:false,
         index: '',
         itemId: '',
-        src : '',
         commentData: [],
         formValidate: {
                 	value: ''
@@ -783,7 +782,6 @@
       }
     },
     mounted() {
-      this.src= gravatar.url('dweepp@officebrain.com', {s: '200', r: 'pg', d: '404'})
       this.getData()
     }
   }

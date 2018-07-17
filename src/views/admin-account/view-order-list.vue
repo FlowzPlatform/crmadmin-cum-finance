@@ -117,7 +117,7 @@
 
     .description .quantity-table-disc > ul > li {
         display: inline-block;
-        float: left;;
+        float: left;
     }
     .product-quantity-list {
         width: 100%;
@@ -193,7 +193,7 @@
                                 Order ID : {{row.order_id}}
                                 </div>
                                 <div class="col-md-4 col-sm-4">
-                                    Created Date : {{moment(row.products[0].createdAt).format('DD-MMM-YYYY')}} 
+                                    Created Date : {{moment(row.created_at).format('DD-MMM-YYYY')}} 
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     Total Items : {{row.products.length}}
@@ -234,7 +234,7 @@
                                         <tbody>
                                             <tr>
                                                 <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                                                <td><img :src="getImgUrl(item.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                                                <td><img :src="getImgUrl(item.product_description)" style="max-width:75px;max-height:75px"/></td>
                                                 <td> {{item.product_description.sku}}</td>
                                                 <td> {{item.product_description.product_name}}</td>
                                                 <td> {{item.total_qty}}</td>
@@ -542,7 +542,6 @@
                 orderDate: '',
                 moment: moment,
                 billData: {},
-                imgurl: 'http://image.promoworld.ca/migration-api-hidden-new/web/images/',
                 invoice: {}
             }
         },
@@ -621,8 +620,12 @@
                 }
                 return accounting.formatMoney(sum)
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (product) {
+                let ProductImage = config.default.productImageUrl;
+                if (product.images != undefined) {
+                    ProductImage = product.images[0].images[0].secure_url;
+                }
+                return ProductImage;
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;

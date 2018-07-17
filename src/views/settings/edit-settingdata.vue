@@ -131,11 +131,6 @@
                             <Checkbox v-model="editFormItem.isDefault" @on-change="paymentIsDefaultChange"></Checkbox>
                         </FormItem>
                     </div>
-                    <div v-else-if="i == 'isDeleted'">
-                        <FormItem label="isDeleted">
-                            <Checkbox v-model="editFormItem.isDeleted" @on-change="paymentIsDefaultChange"></Checkbox>
-                        </FormItem>
-                    </div>
                 </div>
                 <div style="text-align:center;">
                     <Button type="primary" @click="formData('editFormItem')" :loading="loading3">Submit</Button>
@@ -239,9 +234,9 @@ export default {
             console.log('file',file)
             if(file.size >= 1e+8){
                 this.$Notice.error({
-                title: 'File Limit',
-                desc: 'File size should be less than or equal to 100mb. ',
-                duration: 4.5
+                    title: 'File Limit',
+                    desc: 'File size should be less than or equal to 100mb. ',
+                    duration: 4.5
                 });
                 self.file = ''
                 return true
@@ -277,13 +272,9 @@ export default {
                 return false;
             }
         },
-        paymentIsDefaultChange (value){
+        paymentIsDefaultChange (value) {
             console.log("getchangecall",value)
             this.editFormItem['isDefault'] = value
-        },
-        paymentIsDeletedChange (value) {
-            console.log("getchangecall",value)
-            this.editFormItem['isDeleted'] = value
         },
         async formData (name) {
             // console.log(name)

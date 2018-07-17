@@ -67,15 +67,15 @@
 								</div>
 								<div class="col-xs-8">
                   <Select v-model="finaldata.cname" class="customer">
-										<div v-if="domainConfig=='Xero'">
+										<!-- <div v-if="domainConfig=='Xero'"> -->
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
-										</div>
-										<div v-if="domainConfig=='custom'">
+										<!-- </div> -->
+										<!-- <div v-if="domainConfig=='custom'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
-										</div>
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.id">{{ item.DisplayName }}</Option>											
+										</div> -->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
 									 <select class="form-control" id="customer"><option>Select</option></select> -->
@@ -399,12 +399,14 @@
             }
             else {
               self.finaldata = res.data
+              self.finaldata.cname = res.data.cname
               self.finaldata.contractdate = moment(self.finaldata.contractdate).format('YYYY-MM-DD')
               self.finaldata.nextdate = moment(self.finaldata.nextdate).format('YYYY-MM-DD')
               if(self.finaldata.fileupload != undefined){
                 self.data1 = self.finaldata.fileupload;
               }
               CKEDITOR.instances.editor1.setData(self.finaldata.description)
+              self.calldata()
             }
            // return res.data
           }).catch(error => {
@@ -450,13 +452,18 @@
         console.log('RESULT ..................', self.finaldata)
         
       },
-      configChange () {
-        this.calldata();
+      configChange (data) {
+        this.customerData = []
+        this.calldata(data);
       },
-      async calldata() {
+      async calldata(id) {
         let resp
         let self = this
-        var settingId = self.finaldata.config
+        if(id){
+          var settingId = id
+        } else {
+          var settingId = self.finaldata.config
+        }
         await axios({
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
@@ -477,8 +484,7 @@
               url: self.customCustomerUrl,
               params : {settingId : response.data.id},
               headers:{
-                Authorization : Cookies.get('auth_token'),
-                subscriptionId : Cookies.get('subscriptionId')
+                Authorization : Cookies.get('auth_token')
               }
             })
             .then(function (response) {
@@ -530,12 +536,43 @@
               },
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
               },
             })
             .then(function (response) {
-              resp = response.data
-              self.customerData = resp[0].data
+              console.log("contact response",response);
+							// resp = response.data
+							// self.customerData = _.sortBy(resp[0].data,['Name']);
+							if (response.data[0].data.hasOwnProperty('data')) {
+								if (response.data[0].data.data.oauth_problem) {
+									self.$Notice.error({
+										title: 'Xero: Account Credential Incorrect',
+										desc: 'Invalid key for <b>'+configName+'</b>',
+										duration: 10
+									})
+								}
+							}
+							else {
+								let cnt;
+								let contacts = response.data[0];
+								for (let i=0; i<contacts.data.length; i++) {
+									if (contacts.data[i].DisplayName) {
+										cnt = {
+											id : contacts.data[i].Id,
+											Name : contacts.data[i].DisplayName
+										}
+									}
+									else {
+										cnt = {
+											id : contacts.data[i].ContactID,
+											Name : contacts.data[i].Name
+										}
+									}
+									self.customerData.push(cnt)
+								}
+							}
+              // resp = response.data
+              // self.customerData = resp[0].data
+              console.log('---------self.customerData',self.customerData)
             })
             .catch(function (error) {
               console.log(error);
@@ -555,19 +592,19 @@
                     desc: error.response.data.message,
                     duration: 10
                 })
-            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                self.$Notice.error({
-                    title: error.response.statusText,
-                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                    duration: 0
-                })
-            }else {
-                self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                })
-            }
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 0
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
             });
           }
         })
@@ -603,7 +640,7 @@
                 })
             }   
         });
-        console.log("response------>iuy",resp);
+        console.log("response------>iuy",self.customerData);
       },
       async dbdata() {
         var self = this

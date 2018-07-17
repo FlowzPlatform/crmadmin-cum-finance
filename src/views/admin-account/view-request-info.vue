@@ -29,7 +29,7 @@
                 <div class="row">
                   <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
                     <div class="detail-image">
-                      <img alt="" :src="getImgUrl(row.product_image_url , item.default_image)" id="order_product_image_0" class="img-responsive">
+                      <img alt="" :src="getImgUrl(item)" id="order_product_image_0" class="img-responsive">
                       </div>
                     </div>
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
@@ -119,23 +119,12 @@
               MY INFORMATION
                 <p slot="content">
                   <label class="container">
-                  <h4 style="padding-right:15px;padding-left:15px">{{row.productInfo[0].username}}</h4>
                     <div class="col-md-6">
-                          <span style="font-weight:500">
-                          NA
-                          </span>
+                      <h4 style="margin-top:0px;padding-right:15px;padding-left:15px;text-transform: capitalize;">{{this.userDetailObject.fullname}}</h4>    
                     </div>
                     <div class="col-md-6">
-                      <ul class="ulList">
-                        <li style="width:max-content">
-                          <Icon type="ios-telephone" size="15"></Icon>
-                          <span style="font-weight:500;">&nbsp;&nbsp;&nbsp;NA</span>
-                        </li>
-                        <li style="width:max-content">
-                          <Icon type="ios-email" size="15"></Icon>
-                          <span style="font-weight:500;">{{row.productInfo[0].username}}</span>
-                        </li>
-                      </ul>
+                      <Icon type="ios-email" size="15"></Icon>
+                      <span style="font-weight:500;">{{this.userDetailObject.email}}</span>
                     </div>
                   </label>
                 </p>
@@ -150,7 +139,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageDataDisplay" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid || item.created_by == requestUser">
+                    <div class="message"  v-if="item.created_by != userid">
                       <Row>
                         <Col span="24" >
                           <div >
@@ -160,7 +149,7 @@
                               <!-- <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
-                              <span>{{item.created_by}}</span>
+                              <span><strong>{{item.created_by}}</strong></span>
                             </span>
                           </div>
                         </Col>
@@ -179,7 +168,7 @@
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
-                              <span>{{item.created_by}}</span>
+                              <span><strong>{{item.created_by}}</strong></span>
                             </span>
                           </div>
                         </Col>
@@ -236,23 +225,23 @@ export default {
   name: 'list-billing',
   data () {
     return {
-      imgurl: this.row.product_image_url,
       data: '',
       created_date: '',
       commentMessage: '',
       userid: '',
       messageDataDisplay: [],
       requestUser: '',
-      colors:[]
+      colors:[],
+      userDetailObject: ''
     }
   },
   methods: {
-    getImgUrl (url , img) {
-      // if(this.imgurl == undefined) {
-      //   return config.default.productImageUrl + url        
-      // }
-      console.log(url+img)
-      return url + img
+    getImgUrl (product) {
+      let ProductImage = config.default.productImageUrl;
+      if (product.images != undefined) {
+          ProductImage = product.images[0].images[0].secure_url;
+      }
+      return ProductImage;
     },
     accounting(item) {
       return accounting.formatMoney(item)
@@ -335,6 +324,20 @@ export default {
         },1000)
       })
     this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
+
+    axios({
+        method: 'get',
+        url: 'https://api.flowzcluster.tk/user/getuserdetails/' + this.row.userId,
+        headers: {
+          'Authorization': Cookies.get('auth_token')
+        }
+    }).then(function (response) {
+      console.log("response response", response.data.data[0])
+      self.userDetailObject = response.data.data[0]
+      console.log("userDetailObject", self.userDetailObject)
+    })
+
+
     axios({
        method: 'get',
        url: config.default.commentrequestapi,
@@ -663,7 +666,6 @@ html input[type=button] {
   }
   .chat .message.me div p {
     float: right;
-    margin-right: 15px;
   }
   .chat .message.me div:before {
     position: relative;
@@ -863,7 +865,7 @@ html input[type=button] {
   .sentDate{
     display: inline-block;
     /*float: right;*/
-    width: 65%;
+    width: 70%;
     text-align: right;
     margin-left: 30%;
     font-size: 11px;
@@ -873,7 +875,6 @@ html input[type=button] {
   }
   .receivedDate{
     display: block;
-    margin-left: 5%;
     font-size: 11px;
   }
   .modalCloseButton{

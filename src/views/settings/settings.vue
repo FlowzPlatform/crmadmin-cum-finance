@@ -159,7 +159,7 @@
                                                 </span>
                                             </p>
                                             <p slot="content" v-else style="text-align:center;color:#fd5e5e">
-                                                Profile Information is not Available. <a @click="addNewGeneralSettings">Add new profile configuration.</a>
+                                                Profile Information is not Available. <a @click="addNewGeneralSettings(item.configName)">Add new profile configuration.</a>
                                             </p>
                                         </Panel>
                                         <Panel :name="item.configName + '3'">
@@ -513,36 +513,6 @@
             }
         },
         methods: {
-            treeNodeClick(data) {
-                console.log("--------treedata",data)
-                if (data[0].title === 'ACCOUNT') {
-                    this.accountTab = true;
-                    // this.$store.state.settingData = ""
-                    // this.$router.push({
-                    //     name: 'Settings'
-                    // });
-                }
-                else if (data[0].title === 'Add New Account') {
-                    this.addNewConfig();
-                }
-                else if (data[0].title === 'Add New Profile Configuration') {
-                    this.addNewGeneralSettings();
-                }
-                else if (data[0].title === 'Add New Payment Configuration') {
-                    this.addNewPaymentSettings();
-                }
-                else if (data[0].title === "PURCHASE ORDER") {
-                    this.accountTab = false;
-                    $('.slide').addClass('opens');
-                }
-                else if (data[0].title === 'Add New PO Config') {
-                    this.$store.state.settingData = ""
-                    this.$router.push({
-                        name: 'PurchaseOrder Settings'
-                    });
-                }
-                
-            },
             slide(toggle1) {
                 let self = this;
                 if (toggle1) {
@@ -706,14 +676,16 @@
                         name: 'Account Settings'
                     });
             },
-            addNewGeneralSettings() {
+            addNewGeneralSettings(config) {
                 this.$store.state.settingData = ""
                 this.$router.push({
-                    name: 'Profile Settings'
+                    name: 'Profile Settings',
+                    params: {
+                        profileconfig: config
+                    }
                 });
             },
             addNewPaymentSettingsAfterDelete (key,config) {
-                console.log("here")
                 this.$store.state.settingData = ""
                 this.$router.push({
                     name: 'Payment Settings',

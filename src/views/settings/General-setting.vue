@@ -122,7 +122,8 @@
     props: {
       options: {
         type: Object
-      }
+      },
+      profileconfig: String
     },
     components : {
       settingMenu
@@ -269,57 +270,57 @@
                   console.log('formValidate----------------------------->',this.formValidate)
                   console.log('logoContent----------------',logoContent)
                   var params = {'address':this.formValidate, 'logo':logoContent}
-                  // this.configs.forEach(item => {
-                  //     console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
-                  //     axios({
-                  //       method: 'PATCH',
-                  //       url: feathersUrl +'settings/'+item.id,
-                  //       headers:{
-                  //           Authorization : Cookies.get('auth_token'),
-                  //           subscriptionId : Cookies.get('subscriptionId')
-                  //       },
-                  //       data: params
-                  //     })  
-                  //     .then(function (response) {
-                  //       console.log('response------------------------>',response)
-                  //       self.loading = false;
-                  //       self.$router.push({
-                  //         name: 'Settings'
-                  //       });
-                  //     })
-                  //     .catch(function (error) {
-                  //       console.log('error',error)
-                  //       self.loading = false;
-                  //       if(error.response.status == 401){
-                  //             let location = psl.parse(window.location.hostname)
-                  //             location = location.domain === null ? location.input : location.domain
+                  this.configs.forEach(item => {
+                      console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                      axios({
+                        method: 'PATCH',
+                        url: feathersUrl +'settings/'+item.id,
+                        headers:{
+                            Authorization : Cookies.get('auth_token'),
+                            subscriptionId : Cookies.get('subscriptionId')
+                        },
+                        data: params
+                      })  
+                      .then(function (response) {
+                        console.log('response------------------------>',response)
+                        self.loading = false;
+                        self.$router.push({
+                          name: 'Settings'
+                        });
+                      })
+                      .catch(function (error) {
+                        console.log('error',error)
+                        self.loading = false;
+                        if(error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
                               
-                  //             Cookies.remove('auth_token' ,{domain: location}) 
-                  //             self.$store.commit('logout', self);
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              self.$store.commit('logout', self);
                               
-                  //             self.$router.push({
-                  //                 name: 'login'
-                  //             });
-                  //             self.$Notice.error({
-                  //                 title: error.response.data.name,
-                  //                 desc: error.response.data.message,
-                  //                 duration: 10
-                  //             })
-                  //           }else if(error.response.status == 403){
-                  //             self.$Notice.error({
-                  //               duration:0, 
-                  //               title: error.response.statusText,
-                  //               desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-                  //               });
-                  //           }else {
-                  //               self.$Notice.error({
-                  //                   title: error.response.data.name,
-                  //                   desc: error.response.data.message,
-                  //                   duration: 10
-                  //               })
-                  //           }
-                  //     })
-                  // })
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                            }else if(error.response.status == 403){
+                              self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
+                      })
+                  })
                 },
                 onCancel: () => {
                   self.loading = false;
@@ -518,7 +519,10 @@
             })
             self.configs = _.sortBy(newConf, ['configName']);
             console.log("self.configs---------------->after",self.configs)
-
+            if (self.profileconfig !== undefined) {
+              self.configs = _.filter(self.configs, {'configName': self.profileconfig })
+              self.formValidate.configuration = self.configs[0].id
+            }
 
           }
           else
@@ -587,6 +591,8 @@
 
     async mounted () {
       this.settingData ();
+      console.log('params.query',this.profileconfig)
+      this.formValidate.configuration = this.profileconfig
       populateCountries("country", "state");
       $("#country").on("change",function() {
         $('.state1').css("display","block")
@@ -602,14 +608,6 @@
             }
         });
 
-        $("#toggleUploadLogo").click(function() {
-            $("#toggleUploadLogoContent").slideToggle("slow");
-            if ($("#toggleUploadLogo").text() == "Upload Logo") {
-                $("#toggleUploadLogo").html("Upload Logo")
-            } else {
-                $("#toggleUploadLogo").text("Upload Logo")
-            }
-        });
       });
     },
     watch: {

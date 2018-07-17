@@ -29,7 +29,7 @@
                 <div class="row">
                   <div class="col-lg-2 col-md-3 col-sm-12 col-xs-12 padding-right-0">
                     <div class="detail-image">
-                      <img alt="" :src="getImgUrl(row.product_image_url , row.product_description.default_image)" id="order_product_image_0" class="img-responsive">
+                      <img alt="" :src="getImgUrl(row.product_description)" id="order_product_image_0" class="img-responsive">
                       </div>
                     </div>
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12" style="text-align: -webkit-center;">
@@ -249,7 +249,7 @@
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageData" style="margin-bottom: 10px;margin-right: 10px;">
-                    <div class="message"  v-if="item.created_by != userid && (item.created_by == requestUser || item.created_by == requestUserEmail)">
+                    <div class="message"  v-if="item.created_by != userid">
                       <Row>
                         <Col span="24" >
                           <div >
@@ -350,12 +350,12 @@ export default {
     }
   },
   methods: {
-    getImgUrl (url, img) {
-      // if(this.imgurl == undefined) {
-      //   return config.default.productImageUrl + url        
-      // }
-      console.log(url+img)
-      return url + img
+    getImgUrl (product) {
+      let ProductImage = config.default.productImageUrl;
+      if (product.images != undefined) {
+          ProductImage = product.images[0].images[0].secure_url;
+      }
+      return ProductImage;
     },
     accounting(item) {
       return accounting.formatMoney(item)
@@ -378,7 +378,6 @@ export default {
       // console.log("this.commentMessage---------->",msg)
       if(msg != ''){
         this.resetData = this.commentMessage
-        self.commentMessage = '';
         axios({
          method: 'post',
          url: config.default.commentrequestapi,
@@ -395,6 +394,7 @@ export default {
          }).then(function (response) {
           // self.messageData.push(response.data.message)
           // self.messageData.push({message: self.resetData, created_at: date, created_by: self.userid})
+          self.commentMessage = '';
           let height
           setTimeout(function(){
             height = document.getElementsByClassName("chat")[0].scrollHeight;
