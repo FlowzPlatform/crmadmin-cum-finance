@@ -26,8 +26,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <!-- <td> {{"http://image.promoworld.ca/migration-api-hidden-new/web/images/" + row.products[0].product_description.default_image}}</td> -->
-                        <td><img :src="getImgUrl(row.product_description.default_image)" style="max-width:75px;max-height:75px"/></td>
+                        <!-- <td> {{row.products[0].product_description.default_image}}</td> -->
+                        <td><img :src="getImgUrl(row.product_description)" style="max-width:75px;max-height:75px"/></td>
                         <td> {{row.product_description.sku}}</td>
                         <td> {{row.product_description.product_name}}</td>
                         <td> {{row.total_qty}}</td>
@@ -309,8 +309,12 @@
 
                 // return {} 
             },
-            getImgUrl (url) {
-                return this.imgurl + url
+            getImgUrl (product) {
+                let ProductImage = config.default.productImageUrl;
+                if (product.images != undefined) {
+                    ProductImage = product.images[0].images[0].secure_url;
+                }
+                return ProductImage;
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
@@ -319,9 +323,6 @@
                 var sum = 0;
                 sum = sum + item;
                 return accounting.formatMoney(sum)
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;

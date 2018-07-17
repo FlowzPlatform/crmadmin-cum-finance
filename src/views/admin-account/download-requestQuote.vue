@@ -139,7 +139,7 @@
                             <tbody>
                               <tr>
                                 <td style="border-left: solid 1px #e8e8e8;">
-                                  <img alt="" :src="getImgUrl(row.product_image_url , row.product_description.default_image)" style="height: 70px;width: 105px;margin-left: 15%;">
+                                  <img alt="" :src="getImgUrl(row.product_description)" style="height: 70px;width: 105px;margin-left: 15%;">
                                 </td>
                                 <td style="word-wrap:break-word;font-size:0;" align="left">
                                   <div style="cursor:auto;color:#000;font-family:Ubuntu,Helvetica,Arial,sans-serif;font-size:13px;line-height:22px;text-align:left">{{row.product_description.product_name}}</div>
@@ -397,12 +397,12 @@
             }
         },
         methods: {
-          getImgUrl (url, img) {
-            // if(this.imgurl == undefined) {
-            //   return config.default.productImageUrl + url        
-            // }
-            console.log(url+img)
-                return url + img
+          getImgUrl (product) {
+            let ProductImage = config.default.productImageUrl;
+            if (product.images != undefined) {
+                ProductImage = product.images[0].images[0].secure_url;
+            }
+            return ProductImage;
           },
         },
         mounted() {
