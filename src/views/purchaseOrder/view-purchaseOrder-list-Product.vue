@@ -195,9 +195,6 @@
             }
         },
         methods: {
-            getImgUrl (url) {
-                return this.imgurl + url
-            },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
             },
@@ -205,9 +202,6 @@
                 var sum = 0;
                 sum = sum + item;
                 return accounting.formatMoney(sum)
-            },
-            getImgUrl (url) {
-                return this.imgurl + url
             },
             getSubTotal (a, b, c, d) {
                 var sum = 0;

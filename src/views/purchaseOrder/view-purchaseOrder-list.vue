@@ -88,7 +88,7 @@ export default {
                         return h('div', [
                             h('img', {
                                 attrs: {
-                                    src: this.getImgUrl(params.row.product_description.default_image)
+                                    src: this.getImgUrl(params.row.product_description)
                                 },
                                 style: {
                                     width:'75px',
@@ -322,9 +322,13 @@ export default {
         //         }
 		// 	})
         // },
-        getImgUrl (url) {
-                return this.imgurl + url
+        getImgUrl (product) {
+            let ProductImage = config.default.productImageUrl;
+            if (product.images != undefined) {
+                ProductImage = product.images[0].images[0].secure_url;
             }
+            return ProductImage;
+        }
     },
     mounted(){
         console.log("@@@@@@@@@@@@@@@@@@@@@-------->",this.row)

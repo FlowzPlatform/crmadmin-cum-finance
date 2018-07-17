@@ -77,7 +77,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td align="center" valign="" style="height: 70px;width: 105px">
-                                                                    <img :src="getImgUrl(row.product_image_url , item.product_description.default_image)" style="max-width:75px;max-height:75px"/>
+                                                                    <img :src="getImgUrl(item.product_description)" style="max-width:75px;max-height:75px"/>
                                                                 </td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.sku}}</td>
                                                                 <td align="center" valign="" style="font-size:10px">{{item.product_description.product_name}}</td>
@@ -394,12 +394,12 @@
             getMulti(a, b) {
                 return accounting.formatMoney(a * b) ;
             },
-            getImgUrl (url, img) {
-                // if(this.imgurl == undefined) {
-                //     return config.default.productImageUrl + url        
-                // }
-                console.log(url+img)
-                return url + img
+            getImgUrl (product) {
+                let ProductImage = config.default.productImageUrl;
+                if (product.images != undefined) {
+                    ProductImage = product.images[0].images[0].secure_url;
+                }
+                return ProductImage;
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;
