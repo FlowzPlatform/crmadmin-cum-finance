@@ -3290,9 +3290,10 @@
             $('.preload').css("display","none")
             let settingId = self.tabPanes[self.tabIndex].id;
             let settingDomain = self.tabPanes[self.tabIndex].domain;
+            let settingName = self.tabPanes[self.tabIndex].configName;
             self.settingIdForPayment = self.tabPanes[self.tabIndex].id;
-            self.getInvoiceBySettingId(settingId , settingDomain , 0)
-            self.getCustomerBySettingId(settingId , settingDomain , 0)
+            self.getInvoiceBySettingId(settingId , settingDomain , 0,settingName)
+            self.getCustomerBySettingId(settingId , settingDomain , 0,settingName)
           }else {
               self.$Modal.warning({
               title: 'No Configuration available',

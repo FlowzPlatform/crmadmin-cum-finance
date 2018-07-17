@@ -254,7 +254,6 @@ export default {
         //                 </div>`;
         //             let myData = {
         //                 "to":  toMail,
-        //                 // "to":"hdheniya@officebrain.com",
         //                 "from": Cookies.get('user'),
         //                 "subject": "Purchase order for website " + this.row.websiteName,
         //                 "body": emailBody
