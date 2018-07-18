@@ -185,7 +185,8 @@
                      
                     {
                         title: 'Subscription Name',
-                        key: 'name'
+                        key: 'name',
+                        width: 150
                     },
                     {
                         title: 'Subscription Id',
@@ -194,6 +195,7 @@
                     {
                         title: 'Role',
                         key: 'role',
+                        width: 100,
                         render: (h, params) => {
                             return h('div', [
                                 //console.log(params)
@@ -293,9 +295,41 @@
                          this.data4 = response.data.data;
                         
                         
+                    }).catch(function (error){
+                        if(error.response.status == 401){
+                           
+                           let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                        else if(error.response.status == 403){
+                            self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                            });
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                     })
             },
             async getDataOfSubscriptionUser() {
+                var self = this
                 this.$Loading.start();
                 let sub_id = [];
                 let Role_id = [];
@@ -323,6 +357,43 @@
                         //console.log("Role_id..........", Role_id)
                         
                         this.options = Role_id
+                    }).catch(function (error) {
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title : 'Error',
+                            desc: "API service unavailable",
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
+                           
+                           let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                        else if(error.response.status == 403){
+                            self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                            });
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                     })
                     axios.get(config.default.userDetail, {
                         headers: {
@@ -358,34 +429,74 @@
                         this.options2 = sub_id;
                         
                         this.$Loading.finish();
+                    }).catch(function (error){
+                        if(error.response.status == 401){
+                           
+                           let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                        else if(error.response.status == 403){
+                            self.$Notice.error({
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                            });
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                     })
+            },
+            checkEmail(emailValue) {
+                
+                var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return filter.test(emailValue)
             },
             async inviteNow() {
                 
                 if(this.value2 == undefined || this.value2 == '' || this.value1 == ''){
                     this.$message.warning("Please select both subscription & role for invitation");
                 }else{
+                     if(!this.input || !this.checkEmail(this.input) ){
+                        this.$message.warning("Invite email invalid ");
+                        return
+                    }
                     this.loading = true;
                     let new_data;
-                let self = this;
+                    let self = this;
+                    
+                    let obj =_.find(this.options2, {value2:this.value2});
                 
-                let obj =_.find(this.options2, {value2:this.value2});
-               
-                
-                // console.log(this.input)
-                // console.log(this.value1)
-                // console.log(this.value2)
-                let userId;
-                let previous_packages;
-                let params = {
-                    "toEmail": this.input,
-                    "subscriptionId": this.value2,
-                    "name" : obj.label2,  
-                    "role": {
-                        "crm": this.value1
-                    },
-                    "fromEmail" : Cookies.get('user')
-                }
+                    
+                    // console.log(this.input)
+                    // console.log(this.value1)
+                    // console.log(this.value2)
+                    let userId;
+                    let previous_packages;
+                    let params = {
+                        "toEmail": this.input,
+                        "subscriptionId": this.value2,
+                        "name" : obj.label2,  
+                        "role": {
+                            "crm": this.value1
+                        },
+                        "fromEmail" : Cookies.get('user')
+                    }
 
                 await axios({
                         method: 'POST',
@@ -424,16 +535,26 @@
                             self.$router.push({
                                 name: 'login'
                             });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
                         }else if(error.response.status == 403){
-                            self.$Notice.error(
-                                {duration:0, 
+                            self.$Notice.error({
+                                duration:0, 
                                 title: error.response.statusText,
-                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                                );
-                        
-                    }
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                            });
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
                     })
-                }
+            }
                 
 
             }

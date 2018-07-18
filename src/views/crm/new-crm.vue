@@ -55,7 +55,8 @@
 									<label class="col-xs-3 autoCompleteDropdown" id="c16988" style="display:none;">Customer</label>
 							        <!-- <div id="CustomerName"> -->
 									<Select v-model="finaldata.cname" class="customer" style="width:100px;display:none">
-										<div v-if="domainConfig=='Xero'">
+										<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
+										<!-- <div v-if="domainConfig=='Xero'">
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='custom'">
@@ -63,7 +64,7 @@
 										</div>
 										<div v-if="domainConfig=='QB'">
 											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
-										</div>
+										</div>-->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
 									 </div> -->
@@ -209,10 +210,10 @@
 			async handleUpload (file) {
 				var self = this
 				console.log('file',file)
-				if(file.size >= 51200){
+				if(file.size >= 1e+8){
 					this.$Notice.error({
 						title: 'File Limit',
-						desc: 'File size should be less than or equal to 50Kb. ',
+						desc: 'File size should be less than or equal to 100mb. ',
 						duration: 4.5
 					});
 					self.removefile()
@@ -221,11 +222,11 @@
 				self.file = file
 				return false;
 			},
-			async calldata() {
+			async calldata(id) {
 				let resp
 				let self = this
 
-				var settingId = self.finaldata.config
+				var settingId = id
 				await axios({
 					method:'get',
 					url: config.default.serviceUrl + 'settings/'+settingId,
@@ -235,8 +236,9 @@
 					},
 				})
 				.then(async function(response) {
-						self.domainConfig=response.data.domain
-					console.log(response)
+					self.domainConfig=response.data.domain
+					let configName = response.data.configName;
+					// console.log(response)
 					if(response.data.domain == 'custom'){
 
 							self.customCustomerUrl = response.data.customer_url;
@@ -249,42 +251,128 @@
 							headers:{
 								Authorization : Cookies.get('auth_token')
 							}
-							})
-							.then(function (response) {
-							console.log(response)
+						})
+						.then(function (response) {
+							// console.log("customcustomer get response",response)
 							resp = response.data.data
 							self.customerData = resp
 							console.log("self.customerData", self.customerData)
-							})
-							.catch(function (error) {
+						})
+						.catch(function (error) {
 							console.log(error.response)
-							self.$Message.error(error.response.data.data[0].message)
-							});
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+						// self.$Message.error(error.response.data.data[0].message)
+						});
 
 					}else{
-							await axios({
-									method: 'get',
-									url: config.default.serviceUrl + 'contacts',
-									params: {
-									settingId : settingId
-									},
-									headers:{
-										Authorization : Cookies.get('auth_token')
-									},
-								}).then(function (response) {
+						await axios({
+							method: 'get',
+							url: config.default.serviceUrl + 'contacts',
+							params: {
+								settingId : settingId
+							},
+							headers:{
+								Authorization : Cookies.get('auth_token')
+							},
+						}).then(function (response) {
+							console.log("contact response",response);
+							// resp = response.data
+							// self.customerData = _.sortBy(resp[0].data,['Name']);
+							if (response.data[0].data.hasOwnProperty('data')) {
+								if (response.data[0].data.data.oauth_problem) {
+									self.$Notice.error({
+										title: 'Xero: Account Credential Incorrect',
+										desc: 'Invalid key for <b>'+configName+'</b>',
+										duration: 10
+									})
+								}
+							}
+							else {
+								let cnt;
+								let contacts = response.data[0];
+								for (let i=0; i<contacts.data.length; i++) {
+									if (contacts.data[i].DisplayName) {
+										cnt = {
+											id : contacts.data[i].Id,
+											Name : contacts.data[i].DisplayName
+										}
+									}
+									else {
+										cnt = {
+											id : contacts.data[i].ContactID,
+											Name : contacts.data[i].Name
+										}
+									}
+									self.customerData.push(cnt)
+								}
+							}
 								
-									resp = response.data
-									self.customerData = _.sortBy(resp[0].data,['Name']);
-									 
-								})
-								.catch(function (error) {
-									console.log(error);
+						})
+						.catch(function (error) {
+							console.log(error);
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
 								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
+						});
 					}
 				});
 				
 				
-				console.log("response------>iuy",resp);
+				console.log("response------>iuy",self.customerData);
 				$('.customer').css("display","inline-block")				
 				// resp.forEach(obj =>{
 				//   console.log(obj[0].data)
@@ -343,7 +431,13 @@
 					// self.calldata()    
 				}).catch(error => {
                     console.log("-------",error);
-                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+					if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         
@@ -353,7 +447,12 @@
                         
                         self.$router.push({
                             name: 'login'
-                        });
+						});
+						self.$Notice.error({
+							title: error.response.data.name,
+							desc: error.response.data.message,
+							duration: 10
+						})
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
                         self.$Notice.error({
                             title: error.response.statusText,
@@ -362,16 +461,18 @@
                         })
                     }else {
                         self.$Notice.error({
-                            title: 'Error',
-                            desc: error,
-                            duration: 4.5
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
                         })
                     }
                 });
 			},
 			configChange(data){
-				console.log(data)
+				console.log("dweep",data)
 				$('.autoCompleteDropdown').css("display","inline-block")
+				this.finaldata.cname = ''
+				this.customerData = []
 				this.calldata(data);
 			},
 			async dbdata() {
@@ -385,8 +486,37 @@
 						self.crmdata = result1
 						var newarr = self.crmdata.crmStatus;
 						self.crmdata.crmStatus = _.sortBy(newarr,['name']);
-					},error: function(err){
-						console.log("error",err);
+					},error: function(error){
+						console.log("error",error);
+						if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
 					}
 					});
 			},
@@ -438,9 +568,38 @@
 											duration: 4.5
 										});
 										self.$router.push( "list-relationship")
-									},error: function(err){
+									},error: function(error){
 										self.loading = false,
-									console.log("error",err);
+										console.log("error",error);
+										if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+											let location = psl.parse(window.location.hostname)
+											location = location.domain === null ? location.input : location.domain
+											
+											Cookies.remove('auth_token' ,{domain: location}) 
+											Cookies.remove('subscriptionId' ,{domain: location}) 
+											self.$store.commit('logout', self);
+											
+											self.$router.push({
+												name: 'login'
+											});
+											self.$Notice.error({
+												title: error.response.data.name,
+												desc: error.response.data.message,
+												duration: 10
+											})
+										}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+											self.$Notice.error({
+												title: error.response.statusText,
+												desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+												duration: 4.5
+											})
+										}else {
+											self.$Notice.error({
+												title: error.response.data.name,
+												desc: error.response.data.message,
+												duration: 10
+											})
+										}
 									}
 								});
 							});
@@ -463,9 +622,38 @@
 										duration: 4.5
 									});
 									self.$router.push( "list-relationship")
-								},error: function(err){
+								},error: function(error){
 									self.loading = false,
-								console.log("error",err);
+									console.log("error",error);
+									if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+										let location = psl.parse(window.location.hostname)
+										location = location.domain === null ? location.input : location.domain
+										
+										Cookies.remove('auth_token' ,{domain: location}) 
+										Cookies.remove('subscriptionId' ,{domain: location}) 
+										self.$store.commit('logout', self);
+										
+										self.$router.push({
+											name: 'login'
+										});
+										self.$Notice.error({
+											title: error.response.data.name,
+											desc: error.response.data.message,
+											duration: 10
+										})
+									}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+										self.$Notice.error({
+											title: error.response.statusText,
+											desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+											duration: 4.5
+										})
+									}else {
+										self.$Notice.error({
+											title: error.response.data.name,
+											desc: error.response.data.message,
+											duration: 10
+										})
+									}
 								}
 							});
 						}
@@ -490,9 +678,6 @@
 						});
 				}			
 			},
-			filterMethod (value, option) {
-				return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-			},
 			async projectlist() {
 				var self = this
 				await $.ajax({
@@ -506,8 +691,37 @@
 								return {label: d.project_name, value: d.project_name}
 							})
 							self.momdata = _.sortBy(proArr, ['value']);
-						},error: function(err){
-						console.log("error",err);
+						},error: function(error){
+							console.log("error",error);
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
 						}
 					});
 			},
@@ -540,8 +754,37 @@
 							self.assigneedata = _.sortBy(myarr,['value']);
 							self.$Loading.finish()
 							console.log('self.assigneedata', self.assigneedata)
-						},error: function(err){
-						console.log("error",err);
+						},error: function(error){
+							console.log("error",error);
+							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+								let location = psl.parse(window.location.hostname)
+								location = location.domain === null ? location.input : location.domain
+								
+								Cookies.remove('auth_token' ,{domain: location}) 
+								Cookies.remove('subscriptionId' ,{domain: location}) 
+								self.$store.commit('logout', self);
+								
+								self.$router.push({
+									name: 'login'
+								});
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+								self.$Notice.error({
+									title: error.response.statusText,
+									desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+									duration: 4.5
+								})
+							}else {
+								self.$Notice.error({
+									title: error.response.data.name,
+									desc: error.response.data.message,
+									duration: 10
+								})
+							}
 						}
 					});
 			}

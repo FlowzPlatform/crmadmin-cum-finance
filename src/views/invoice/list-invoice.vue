@@ -2,7 +2,8 @@
   <div>
     <div style="padding: 10px; margin: 5px; display: block;" >
       <div style="text-align:left;">
-          <h1>Invoice List </h1>
+          <!-- <h1>Invoice List </h1> -->
+
           <div class="panel panel-default panel-group" id="accordion">
               <div class="panel-heading">
                   <h4 class="panel-title" style="text-align:-webkit-right;"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
@@ -93,7 +94,7 @@
     <div v-if="spinShow">
                   <Spin size="large"></Spin>
     </div>
-    <div v-else>
+    <div v-else class="table-box">
             
        <Tabs  @on-click="tabClicked" :value="tabIndex">
           <TabPane  v-for="tabPane in tabPanes" :label="tabPane.configName">
@@ -103,7 +104,7 @@
 
             <div style="margin: 10px;overflow: hidden">
                     <div style="float: right;">
-                    <Page :total="len" :current="1" @on-change="changePage"></Page>
+                    <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                 </div>
             </div>
              <!-- <Button type="primary" size="large" @click="exportData(1)"><Icon type="ios-download-outline"></Icon> Export source data</Button>
@@ -134,7 +135,8 @@
 
    <div v-if="emailData != ''" ref="email1" style="display:none">
 
-    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px">
+    <div style="position: relative;color: #555555;background: #FFFFFF; 'Roboto Condensed', sans-serif;font-size:10px;size: 7in 9.25in;">
+      
       <header  style="padding: 10px 0;margin-bottom: 20px;border-bottom: 1px solid #AAAAAA;display: inline-block;width: 100%;">
           <div id="logo" style="float: left;margin-top: 8px;">
               <img :src="emailDataCompany.logo" style="height: 70px;">
@@ -173,67 +175,79 @@
                   <div  style="font-size: 12px;color: #777777;">Due Date: {{dueDate}}</div>
               </div>
           </div>
-          <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
+          <table border="0" cellspacing="0" cellpadding="0" style="width:100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
-                      ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                      <th  style="background: rgb(248, 248, 248);white-space: nowrap;font-weight: normal;padding: 10px;width:10%;text-align: center;border: 1px solid #000000;">#</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: rgb(251, 251, 251);border: 1px solid #000000;border-collapse: collapse;width:35%;">PRODUCT NAME</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;width:10%;">SKU</th>
+                      <th  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;width:15%;">UNIT PRICE</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;width:15%;">QUANTITY</th>
+                      <th  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;width:15%;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
+                      
                       <div v-if="item.Description">
-                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>
-                        
-                        <span v-html="text(item.Description)"></span>
+                      <td  style="background: rgb(248, 248, 248);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: rgb(251, 251, 251);border: 1px solid #000000;border-collapse: collapse;">
+                          <div class="uldesc" v-html="text(item.Description)"></div>
+                      </td>
+                      <td  style="text-align: left;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;">
+                          <div class="uldesc" v-html="text1(item.Description)"></div>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;" v-if="item.UnitAmount != undefined">{{ accounting(item.UnitAmount)}}</td>
 
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
-                      <!-- <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: right;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;"v-else>Not available</td> -->
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;color: #555555;"v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice) }}</td>
+                      <!-- <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: right;border: 1px solid #000000;color: #555555;"v-else>Not available</td> -->
 
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
-                       <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
-                       <!-- <td  style="text-align: right;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;"v-else></td> -->
+                      <td  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;" v-if="item.Quantity != undefined">{{item.Quantity}}</td>
+                       <td  style="text-align: center;font-weight: normal;padding: 10px;background: rgb(248, 248, 248);border: 1px solid #000000;border-collapse: collapse;"v-else-if="item.SalesItemLineDetail">{{ item.SalesItemLineDetail.Qty }}</td>
+                       <!-- <td  style="text-align: right;font-weight: normal;padding: 10px;background: #EEEEEE;border: 1px solid #000000;border-collapse: collapse;"v-else></td> -->
 
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
-                     <!--  <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;" v-else></td> -->
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-if="item.LineAmount != undefined">{{ accounting(item.LineAmount) }}</td>
+                      <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-else-if="item.SalesItemLineDetail">{{ accounting(item.SalesItemLineDetail.UnitPrice * item.SalesItemLineDetail.Qty)}}</td>
+                     <!--  <td  style="background: rgb(251, 251, 251);white-space: nowrap;font-weight: normal;padding: 10px;text-align: center;border: 1px solid #000000;" v-else></td> -->
                   </tr>
               </tbody>
               <tfoot>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{ accounting(emailData.row.SubTotal) }}</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{accounting(emailData.TotalAmt-emailData.TxnTaxDetail.TotalTax)}}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">ADITIONAL CHARGES</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(additional_charges) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SHIPPING CHARGES</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(shipping_charges) }}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="3"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{ accounting(emailData.row.SubTotal) }}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{accounting(emailData.TotalAmt-emailData.TxnTaxDetail.TotalTax)}}</td>
+                  </tr>
+                  <tr>
+                      <td colspan="3"></td>
+                      <td colspan="2" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-if="emailData.row != undefined">{{accounting(emailData.row.TotalTax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;" v-else>{{ accounting(emailData.TxnTaxDetail.TotalTax) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3" style="border: none;"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row">{{accounting(emailData.row.Total)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row">{{accounting(emailData.row.Total)}}</td>
 
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.TotalAmt)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.TotalAmt)}}</td>
 
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row != undefined">{{accounting(emailData.row.AmountDue)}}</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.Balance)}}</td>
+                      <td colspan="2" style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-if="emailData.row != undefined">{{accounting(emailData.row.AmountDue)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;" v-else>{{accounting(emailData.Balance)}}</td>
                   </tr>
               </tfoot>
           </table>
@@ -241,9 +255,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
 
@@ -280,50 +294,50 @@
           <table border="0" cellspacing="0" cellpadding="0" style="width: 100%;border-collapse: collapse;border-spacing: 0;font-size:12px;font-family: Verdana;margin-bottom:20px;">
               <thead>
                   <tr>
-                      <th  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;
                       ">#</th>
-                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">DESCRIPTION</th>
-                      <th  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;">UNIT PRICE</th>
-                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">QUANTITY</th>
-                      <th  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">TOTAL</th>
+                      <th  style="text-align: center;white-space: nowrap;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">DESCRIPTION</th>
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;color: #555555;">UNIT PRICE</th>
+                      <th  style="text-align: center;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">QUANTITY</th>
+                      <th  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">TOTAL</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(item,inx) in DescriptionPdf">
                       <div v-if="item.description">
-                      <td  style="color: #FFFFFF;font-size: 1.6em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{inx+1}}</td>
-                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;">
-                        <h3 style="color: #57B223;font-size: 1.2em;font-weight: normal;margin: 0 0 0.2em 0;"></h3>                       
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">{{inx+1}}</td>
+                      <td  style="text-align: left;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">
+                        <h3 style="color: #57B223;font-weight: normal;margin: 0 0 0.2em 0;">{{item.product_name}}</h3>                       
                         <span>{{item.description}}</span>
                       </td>
                       </div>
-                      <td  style="background: #DDDDDD;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;color: #555555;font-size: 1em;">{{ accounting(item.amount)}}</td>
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;color: #555555;">{{ accounting(item.amount)}}</td>
   
-                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: #EEEEEE;border-bottom: 1px solid #FFFFFF;border-collapse: collapse;font-size: 1em;">{{item.qty}}</td>
+                      <td  style="text-align: center;font-weight: normal;padding: 15px;background: rgb(251,251,251);border: 1px solid #000000;border-collapse: collapse;">{{item.qty}}</td>
                      
-                      <td  style="color: #FFFFFF;font-size: 1em;background: #57B223;white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border-bottom: 1px solid #FFFFFF;">{{ accounting(item.amount * item.qty) }}</td>
+                      <td  style="background: rgb(248,248,248);white-space: nowrap;font-weight: normal;padding: 15px;text-align: center;border: 1px solid #000000;">{{ accounting(item.amount * item.qty) }}</td>
                   </tr>
               </tbody>
               <tfoot>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">SUBTOTAL</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{ accounting(emailDataCustom.Total - customTotaltax) }}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
-                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;font-size: 1.2em;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">TAX</td>
+                      <td style="border-collapse: collapse;text-align: right;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;border-top: 1px solid #AAAAAA;">{{accounting(customTotaltax)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3" style="border: none;"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">GRAND TOTAL</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Total)}}</td>
                   </tr>
                   <tr>
                       <td colspan="3"></td>
-                      <td colspan="1" style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
-                      <td style="color: #57B223;font-size: 1.4em;border-top: 1px solid #57B223;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;text-align: right;white-space: nowrap;">TOTAL DUE</td>
+                      <td style="border-top: 1px solid #AAAAAA;padding: 10px 20px;background: #FFFFFF;border-bottom: none;white-space: nowrap;text-align: right;">{{accounting(emailDataCustom.Due)}}</td>
                   </tr>
               </tfoot>
           </table>
@@ -331,9 +345,9 @@
       </main>
       <footer style="font-size:12px;font-family: Verdana;">
           Invoice was created on a computer and is valid without the signature and seal.
-          <div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
+          <!--<div id="myfooter" style="text-align:center;bottom:0px;width: 100%;">
               Powered by : FLOWZ DIGITAL, LLC © 2018. All Rights Reserved.
-          </div>
+          </div>-->
       </footer>
     </div>
  
@@ -358,7 +372,7 @@
 <script>
   import config from '@/config/customConfig.js'
   import axios from 'axios'
-  import jsPDF from 'jspdf'
+  // import jsPDF from 'jspdf'
   import money from '../../images/Payment.png'
   import eye from '../../images/Eye.png'
   import mail from '../../images/Mail.png'
@@ -374,6 +388,7 @@
   const accounting = require('accounting-js');  
   var pageSize = 10
   var settingID
+  let subscriptionId = Cookies.get('subscriptionId')
   export default {
     name: 'hello',
     data () {
@@ -384,6 +399,7 @@
         invoiceno:'',
         newList:[],
         previous: 'false',
+        optionsPage:[10,20,30,50],
         //message:"hello",
         newTabIndex : '',
         viewDetailModal : false,
@@ -992,8 +1008,8 @@
             }
 
         ],
-
-
+        additional_charges: '',
+        shipping_charges: '',
         settingIdForPayment : '',
         data6: [],
         data7: [],
@@ -1020,14 +1036,28 @@
     },
     components: { listtransaction },
     methods: {
+      changepagesize(pageSize){
+        console.log("####################################",pageSize)
+        this.pageSize = pageSize
+        this.changePage(1)
+      },
       filterMethod (value, option) {
           return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       },
       text(item) {
+        try{
+          return JSON.parse(item).title
+        } catch(e) {
+          return item
+        }
+          // return (typeof item === 'object')? JSON.parse(item).description : item
+          // return $(item).text();
+      },
+      text1(item) {
          try{
-           return JSON.parse(item).description
+           return JSON.parse(item).sku
          } catch(e) {
-           return item
+           return ''
          }
           // return (typeof item === 'object')? JSON.parse(item).description : item
           // return $(item).text();
@@ -1065,7 +1095,13 @@
         this.duegt = '';
         this.duelt = '';
         this.invoiceno = '';
-        this.getAllSettings();
+        let settingId = this.tabPanes[this.tabIndex].id;
+        let settingDomain = this.tabPanes[this.tabIndex].domain;
+        let settingName = this.tabPanes[this.tabIndex].configName;
+        this.settingIdForPayment = this.tabPanes[this.tabIndex].id;
+        this.getInvoiceBySettingId(settingId , settingDomain , this.tabIndex, settingName)
+        this.getCustomerBySettingId(settingId , settingDomain , this.tabIndex, settingName)
+        // this.getAllSettings();
       },
 
       async changeData() {
@@ -1079,12 +1115,14 @@
             console.log("item",item)
             if(item.InvoiceNumber != undefined){
               return item.InvoiceNumber === self.invoiceno;
-            }else {
+            }else if(item.Id != undefined) {
               return item.Id === self.invoiceno;
+            }else {
+              return item.Invoice_No === self.invoiceno;
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.cname != ''){
@@ -1100,11 +1138,11 @@
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,pageSize)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.status != ''){
@@ -1127,11 +1165,11 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+          //  this.list = await this.mockTableData2(1,pageSize)
         }else{
           console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.dategt != ''){
@@ -1155,7 +1193,7 @@
             }
           });
           console.log("myarr",this.filterArray)
-          this.list = await this.mockTableData2(1,pageSize)
+          // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.datelt != ''){
@@ -1177,7 +1215,7 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+          //  this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.totalgt != ''){
@@ -1191,7 +1229,7 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+          //  this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.totallt != ''){
@@ -1205,9 +1243,9 @@
             }
           });
            console.log("myarr",this.filterArray)
-           this.list = await this.mockTableData2(1,pageSize)
+          //  this.list = await this.mockTableData2(1,pageSize)
         }
-
+          this.list = await this.mockTableData2(1,pageSize)      
       },
 
       async getCustomerBySettingId(settingId , settingDomain , data){
@@ -1236,6 +1274,35 @@
             })
             .catch(function (error) {
               console.log(error);
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
             });
         }else{
           if (settingId != '') {
@@ -1253,6 +1320,35 @@
             })
             .catch(function (error) {
                 console.log("Error in customer by settingId",error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
             });
           }
         }
@@ -1315,15 +1411,15 @@
           }
       },
       async createPDFXero (params) {
-        this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
-        this.emailData = params;
-        var self = this
-        var date = new Date(params.row.Date);
-        this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-        var date1 = new Date(params.row.DueDate);
-        this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-        await axios({
+          this.$Loading.start();
+          console.log("paramsssssssssssssssss " , params)
+          this.emailData = params;
+          var self = this
+          var date = new Date(params.row.Date);
+          this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+          var date1 = new Date(params.row.DueDate);
+          this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+          await axios({
               method: 'get',
               url: config.default.serviceUrl + 'contacts',
               params: {
@@ -1331,20 +1427,48 @@
                 Name : params.row.Contact.Name
               },
               headers:{
-              Authorization : Cookies.get('auth_token')
-          },
-              }).then(function (response) {
-                self.emailDataCustomer = response.data[0].data[0]
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-        await axios({
+                  Authorization : Cookies.get('auth_token')
+              },
+          }).then(function (response) {
+            self.emailDataCustomer = response.data[0].data[0]
+          }).catch(function (error) {
+              console.log(error);
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
+            });
+          await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -1352,6 +1476,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               });
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1366,24 +1519,64 @@
         })
         .then(async function (response) {
           console.log('response>>>>>>>>>>>>>>', response)
-          self.DescriptionPdf = response.data[0].data.LineItems;
+          self.DescriptionPdf = _.filter(response.data[0].data.LineItems, function(desc) {
+            if(desc.Description == 'additional_charges') {
+              self.additional_charges = (desc.Quantity * desc.UnitAmount)
+            }
+            if(desc.Description == 'shipping_charges') {
+              self.shipping_charges = desc.Quantity * desc.UnitAmount
+            }
+            return desc.Description != 'additional_charges' && desc.Description != 'shipping_charges';
+          });
+
+          // self.DescriptionPdf = response.data[0].data.LineItems;
 
         })
         .catch(function (error) {
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 4.5
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
         });
 
         console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
           console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email1.innerHTML,
             width: 1000,
+            closable: true,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
                 method: 'post',
                 url: config.default.serviceUrl + 'exporttopdf',
@@ -1395,7 +1588,7 @@
               })
               .then(function (response) {
                   console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                  document.querySelector('#myfooter').style.position = 'initial' 
+                  // document.querySelector('#myfooter').style.position = 'initial' 
                   var arrayBufferView = new Uint8Array( response.data.data );
                   var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                   var link=document.createElement('a');
@@ -1405,6 +1598,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               });
 
               // saveAs(blob, filename);
@@ -1458,13 +1680,42 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               });
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooosetting response",response);
@@ -1472,6 +1723,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               });
 
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1491,6 +1771,35 @@
 
         })
         .catch(function (error) {
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 4.5
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
         });
 
         // console.log('self.emailDataCustomer',self.emailDataCustomer)
@@ -1503,7 +1812,7 @@
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-            document.querySelector('#myfooter').style.position = 'fixed'
+            // document.querySelector('#myfooter').style.position = 'fixed'
             axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -1514,7 +1823,7 @@
 
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial' 
+                // document.querySelector('#myfooter').style.position = 'initial' 
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
@@ -1524,6 +1833,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               });
 
               // saveAs(blob, filename);
@@ -1588,20 +1926,78 @@
         })
         .catch(function (error) {
           console.log(error);
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 4.5
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
         });
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
 		}).then(function (response) {
 			// console.log("ooooooooooooooooo",response);
 			self.emailDataCompany = response.data
 		})
 		.catch(function (error) {
-			console.log(error);
+      console.log(error);
+      if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+          let location = psl.parse(window.location.hostname)
+          location = location.domain === null ? location.input : location.domain
+          
+          Cookies.remove('auth_token' ,{domain: location}) 
+          Cookies.remove('subscriptionId' ,{domain: location}) 
+          self.$store.commit('logout', self);
+          
+          self.$router.push({
+              name: 'login'
+          });
+          self.$Notice.error({
+              title: error.response.data.name,
+              desc: error.response.data.message,
+              duration: 10
+          })
+      }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+          self.$Notice.error({
+              title: error.response.statusText,
+              desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+              duration: 4.5
+          })
+      }else {
+          self.$Notice.error({
+              title: error.response.data.name,
+              desc: error.response.data.message,
+              duration: 10
+          })
+      }
 		});
 
               // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
@@ -1620,6 +2016,35 @@
 
         })
         .catch(function (error) {
+          if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+              let location = psl.parse(window.location.hostname)
+              location = location.domain === null ? location.input : location.domain
+              
+              Cookies.remove('auth_token' ,{domain: location}) 
+              Cookies.remove('subscriptionId' ,{domain: location}) 
+              self.$store.commit('logout', self);
+              
+              self.$router.push({
+                  name: 'login'
+              });
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+              self.$Notice.error({
+                  title: error.response.statusText,
+                  desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                  duration: 4.5
+              })
+          }else {
+              self.$Notice.error({
+                  title: error.response.data.name,
+                  desc: error.response.data.message,
+                  duration: 10
+              })
+          }
         });
 
         this.$Modal.confirm({
@@ -1650,7 +2075,7 @@
                         myData = JSON.stringify(myData)
                         axios({
                           method: 'post',
-                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          url: config.default.emailUrl,
                           data: myData,
                           headers: {
                             'authorization':  Cookies.get('auth_token'),
@@ -1659,14 +2084,43 @@
                           }).then(function (response) {
                             console.log(response);
                             // self.$message.success(response.data.success);
-                            self.$message.success("Email Sent Successfully");
+                            self.$Message.success("Email Sent Successfully");
                             // self.list[params.index].loading1 = false
                             self.$Loading.finish();
                           })
                           .catch(function (error) {
-                            self.$Message.warning("Email Send Failed, Please try again later");
+                            self.$Message.warning("Email Sent Failed, Please try again later");
                             self.$Loading.finish();
                             console.log(error);
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                              let location = psl.parse(window.location.hostname)
+                              location = location.domain === null ? location.input : location.domain
+                              
+                              Cookies.remove('auth_token' ,{domain: location}) 
+                              Cookies.remove('subscriptionId' ,{domain: location}) 
+                              self.$store.commit('logout', self);
+                              
+                              self.$router.push({
+                                  name: 'login'
+                              });
+                              self.$Notice.error({
+                                  title: error.response.data.name,
+                                  desc: error.response.data.message,
+                                  duration: 10
+                              })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                           });
                       }
                   })
@@ -1674,129 +2128,245 @@
       },
       async sendemailQB(params){
 
-			this.$Loading.start();
-			console.log("paramsssssssssssssssss " , params)
-			this.emailData = params;
-			var self = this
-			var date = new Date(params.TxnDate);
-			this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
-			var date1 = new Date(params.DueDate);
-			this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
-			await axios({
-				method: 'get',
-				url: config.default.serviceUrl + 'contacts',
-				params: {
-					settingId : settingID,
-					Name : params.CustomerRef.name
-				},
-				headers:{
-					Authorization : Cookies.get('auth_token')
-				},
-			}).then(function (response) {
-				console.log("contact response",response);
-				self.emailDataCustomer = response.data[0].data[0]
-				// console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-			await axios({
-				method: 'get',
-				url: config.default.serviceUrl + 'Settings/' + settingID,
-				headers:{
-					Authorization : Cookies.get('auth_token'),
-					subscriptionId : Cookies.get('subscriptionId')
-				},
-			}).then(function (response) {
-				console.log("ooooooooooooooooosetting response",response);
-				self.emailDataCompany = response.data
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+          this.$Loading.start();
+          console.log("paramsssssssssssssssss " , params)
+          this.emailData = params;
+          var self = this
+          var date = new Date(params.TxnDate);
+          this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
+          var date1 = new Date(params.DueDate);
+          this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
+          await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'contacts',
+            params: {
+              settingId : settingID,
+              Name : params.CustomerRef.name
+            },
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
+          }).then(function (response) {
+            console.log("contact response",response);
+            self.emailDataCustomer = response.data[0].data[0]
+            // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+          })
+          .catch(function (error) {
+            console.log(error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
+          await axios({
+            method: 'get',
+            url: config.default.serviceUrl + 'settings/' + settingID,
+            headers:{
+              Authorization : Cookies.get('auth_token'),
+              subscriptionId : subscriptionId
+            },
+          }).then(function (response) {
+            console.log("ooooooooooooooooosetting response",response);
+            self.emailDataCompany = response.data
+          })
+          .catch(function (error) {
+            console.log(error);
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
 
-				//   console.log('self.emailDataCompany--------------->',self.emailDataCompany)
-			axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
-				headers:{
-					Authorization : Cookies.get('auth_token')
-				},
-				params : {
-					settingId : settingID
-				}
-			}).then(async function (response) {
-				console.log('response>>>>>>>>>>>>>>', response)
-				self.DescriptionPdf = response.data[0].data[0].Line;
-				//   console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
-			})
-			.catch(function (error) {
-			});
-			
-			console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
-			this.$Modal.confirm({
-				title: 'Email would be sent to',
-				okText: 'OK',
-				cancelText: 'Cancel',
-				render: (h) => {
-					return h('Input', {
-						props: {
-							value: self.emailDataCustomer.EmailAddress,
-							autofocus: true,
-							placeholder: 'Please enter email Id...'
-						},
-						on: {
-							input: (val) => {
-								self.emailIdTobeSent = val;
-							}
-						}
-					})
-				},
-				onOk: ()=>{                   
-					let myData = {
-						"to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
-						"from": "obsoftcare@gmail.com",
-						"subject": "email invoice",
-						"body": self.$refs.email1.innerHTML
-					};
-					myData = JSON.stringify(myData)
-					axios({
-						method: 'post',
-						url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
-						data: myData,
-						headers: {
-							'authorization':  Cookies.get('auth_token'),
-						}
-					}).then(function (response) {
-						console.log(response);
-						// self.$Message.success(response.data.success);
-						self.$message.success("Email Send Successfully");
-						self.$Loading.finish();
-						// self.list[params.index].loading1 = false
-					})
-					.catch(function (error) {
-						console.log(error);
-						self.$Message.warning("Email Send Failed, Please try again later");
-						self.$Loading.finish();
-					});
-				}
-			})
+            //   console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+          axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
+            params : {
+              settingId : settingID
+            }
+          }).then(async function (response) {
+            console.log('response>>>>>>>>>>>>>>', response)
+            self.DescriptionPdf = response.data[0].data[0].Line;
+            //   console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+          })
+          .catch(function (error) {
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+          });
+          
+          console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
+          this.$Modal.confirm({
+            title: 'Email would be sent to',
+            okText: 'OK',
+            cancelText: 'Cancel',
+            render: (h) => {
+              return h('Input', {
+                props: {
+                  value: self.emailDataCustomer.EmailAddress,
+                  autofocus: true,
+                  placeholder: 'Please enter email Id...'
+                },
+                on: {
+                  input: (val) => {
+                    self.emailIdTobeSent = val;
+                  }
+                }
+              })
+            },
+            onOk: ()=>{                   
+              let myData = {
+                "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
+                "from": "obsoftcare@gmail.com",
+                "subject": "email invoice",
+                "body": self.$refs.email1.innerHTML
+              };
+              myData = JSON.stringify(myData)
+              axios({
+                method: 'post',
+                url:  config.default.emailUrl,
+                data: myData,
+                headers: {
+                  'authorization':  Cookies.get('auth_token'),
+                }
+              }).then(function (response) {
+                console.log(response);
+                // self.$Message.success(response.data.success);
+                self.$message.success("Email Sent Successfully");
+                self.$Loading.finish();
+                // self.list[params.index].loading1 = false
+              })
+              .catch(function (error) {
+                console.log(error);
+                self.$Message.warning("Email Sent Failed, Please try again later");
+                self.$Loading.finish();
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    Cookies.remove('subscriptionId' ,{domain: location}) 
+                    self.$store.commit('logout', self);
+                    
+                    self.$router.push({
+                        name: 'login'
+                    });
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                  }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                      self.$Notice.error({
+                          title: error.response.statusText,
+                          desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                          duration: 4.5
+                      })
+                  }else {
+                      self.$Notice.error({
+                          title: error.response.data.name,
+                          desc: error.response.data.message,
+                          duration: 10
+                      })
+                  }
+              });
+            }
+          })
 
       },
       async tabClicked(data){
         // console.log(data)
-        this.reset();
         this.tabIndex = data;
-        this.newList = [];
-        this.newTabIndex = '';
-        let settingName = this.tabPanes[data].configName;
-        let settingId = this.tabPanes[data].id;
-        let settingDomain = this.tabPanes[data].domain;
-        this.settingIdForPayment = settingId;
+        this.reset();
+        // this.newList = [];
+        // this.newTabIndex = '';
+        // let settingName = this.tabPanes[data].configName;
+        // let settingId = this.tabPanes[data].id;
+        // let settingDomain = this.tabPanes[data].domain;
+        // this.settingIdForPayment = settingId;
 
-        this.getInvoiceBySettingId(settingId ,settingDomain , data, settingName)
-        this.getCustomerBySettingId(settingId , settingDomain , data)
+        // this.getInvoiceBySettingId(settingId ,settingDomain , data, settingName)
+        // this.getCustomerBySettingId(settingId , settingDomain , data)
       },
       async getInvoiceBySettingId(settingId , settingDomain , data, settingName){
-        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId)
+        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId,settingDomain)
         settingID = settingId
         this.$Loading.start();
         this.data6 = [];
@@ -1821,6 +2391,9 @@
             console.log("iiiiiiiii------------------>",response);
             self.data6 = response.data.data;
             self.invnoFilter = []
+            response.data.data.forEach(item => {
+              self.invnoFilter.push(item.Invoice_No)
+            })
             let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
@@ -1870,7 +2443,7 @@
                 width: 210,
                 align: 'center',
                 render: (h, params) => {
-                  console.log("============params",params);
+                  // console.log("============params",params);
                   if (params.row.Due != 0) {
                     return h('div', [
                       h('Tooltip', {
@@ -2029,6 +2602,35 @@
           .catch(function (error) {
             console.log("error",error);
             self.$Loading.error();
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
           });
         }
         else{
@@ -2042,22 +2644,30 @@
           })
           .then(async function (response) {
               console.log("response------>iuy",response);
-
-              self.data6 = response.data[0].data.reverse();
               self.invnoFilter = []
-              if(response.data[0].data[0].InvoiceNumber != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.InvoiceNumber)
-                })
-              }else if(response.data[0].data[0].Id != undefined){
-                response.data[0].data.forEach(item => {
-                  self.invnoFilter.push(item.Id)
-                })
+              if (response.data[0].data.data) {
+                self.$Loading.finish();
+                self.$Notice.error({
+                  duration:4.5, 
+                  title: "Xero : Account Credential Incorrect",
+                  desc: "Invalid key for <b>"+settingName+"</b>"
+                });
+              } else {
+                self.data6 = response.data[0].data.reverse();
+                if(response.data[0].data[0].InvoiceNumber != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.InvoiceNumber)
+                  })
+                }else if(response.data[0].data[0].Id != undefined){
+                  response.data[0].data.forEach(item => {
+                    self.invnoFilter.push(item.Id)
+                  })
+                }
+                self.$Loading.finish();
+                $('.preload').css("display","none")
+                self.filterArray = []
+                self.list = await self.mockTableData1(1,pageSize)
               }
-              self.$Loading.finish();
-              $('.preload').css("display","none")
-              self.filterArray = []
-              self.list = await self.mockTableData1(1,pageSize)
           })
           .catch(function (error) {
             console.log("error",error);
@@ -2067,7 +2677,35 @@
                 title: "QB : Credential Expired",
                 desc: "Token is expired for "+settingName
               });
-            }
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
             self.$Loading.error();
           });
         }
@@ -2128,6 +2766,35 @@
           .catch(function (error) {
               console.log("error",error);
               self.$Loading.error();
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
           });
       },
 
@@ -2144,44 +2811,73 @@
           $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
         },1000)
         let self = this;
-        console.log(self.tabPanes[self.tabIndex].domain)
+        // console.log(self.tabPanes[self.tabIndex].domain)
         console.log('id..........',params.Id)
-        let id
+        let id;
         if(self.tabPanes[self.tabIndex].domain == "QB"){
           id = params.Id
         } else if(self.tabPanes[self.tabIndex].domain == "Xero"){
           id = params.InvoiceID
         }
         await axios.get(config.default.serviceUrl + 'transaction', {
-              params : {
-                  settingId : self.tabPanes[self.tabIndex].id,
-                  InvoiceID : id
-              }
-          })
-          .then(function (response) {
-            console.log('rrrrrrrrrrrrrrrrrr',response)
-              self.newTabIndex = self.tabIndex
-              console.log(response.data.data)
-              if(response.data.data.length == 0){
-                // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
-                console.log("self.newList>>>>>>>>>>>>>", self.newList)
-                // self.newList = [{key : "No transaction has been made for this Invoice"}]
-                self.newList = []
-              } else {
-                  var deep = _.cloneDeep(response.data.data);
-                  _(deep).each(function(item , index){
-                      var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
-                      item.paymentAccounting.Invoice.Date = dt._d
-                  })
-                  var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
-                    // self.data = desc;
-                  self.newList = desc;
-              }
-          })
-          .catch(function (error) {
-              console.log("error",error);
-              self.$Loading.error();
-          });
+            params : {
+              settingId : self.tabPanes[self.tabIndex].id,
+              InvoiceID : id
+            }
+        })
+        .then(function (response) {
+          console.log('rrrrrrrrrrrrrrrrrr',response)
+            self.newTabIndex = self.tabIndex
+            console.log(response.data.data)
+            if(response.data.data.length == 0){
+              // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
+              console.log("self.newList>>>>>>>>>>>>>", self.newList)
+              // self.newList = [{key : "No transaction has been made for this Invoice"}]
+              self.newList = []
+            } else {
+                var deep = _.cloneDeep(response.data.data);
+                _(deep).each(function(item , index){
+                    var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
+                    item.paymentAccounting.Invoice.Date = dt._d
+                })
+                var desc =  _.orderBy(deep, 'paymentAccounting.Invoice.Date',  'desc');                         
+                  // self.data = desc;
+                self.newList = desc;
+            }
+        })
+        .catch(function (error) {
+            console.log("error",error);
+            self.$Loading.error();
+            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                let location = psl.parse(window.location.hostname)
+                location = location.domain === null ? location.input : location.domain
+                
+                Cookies.remove('auth_token' ,{domain: location}) 
+                Cookies.remove('subscriptionId' ,{domain: location}) 
+                self.$store.commit('logout', self);
+                
+                self.$router.push({
+                    name: 'login'
+                });
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                self.$Notice.error({
+                    title: error.response.statusText,
+                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                    duration: 4.5
+                })
+            }else {
+                self.$Notice.error({
+                    title: error.response.data.name,
+                    desc: error.response.data.message,
+                    duration: 10
+                })
+            }
+        });
       },
 
 
@@ -2213,15 +2909,44 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
               });
                 console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -2229,6 +2954,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
               });
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
               self.DescriptionPdf = this.emailDataCustom.products;
@@ -2254,14 +3008,14 @@
                 // });
         setTimeout(function(){
           self.$Loading.finish();
-          document.querySelector('#myfooter').style.position = 'initial'
+          // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
             title: '',
             content: self.$refs.email2.innerHTML,
             width: 1000,
             okText: 'Download PDF',
             onOk: () => {
-              document.querySelector('#myfooter').style.position = 'fixed'
+              // document.querySelector('#myfooter').style.position = 'fixed'
               axios({
               method: 'post',
               url: config.default.serviceUrl + 'exporttopdf',
@@ -2270,13 +3024,43 @@
               },
               }).then(function (response) {
                 console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                document.querySelector('#myfooter').style.position = 'initial'
+                // document.querySelector('#myfooter').style.position = 'initial'
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                 var link=document.createElement('a');
                 link.href=window.URL.createObjectURL(blob);
                 link.download=params.row.Invoice_No == undefined ? "custom_Invoice" : params.row.Invoice_No;
                 link.click();
+              }).catch(function (error){
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                        title: error.response.statusText,
+                        desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                        duration: 4.5
+                    })
+                }else {
+                    self.$Notice.error({
+                        title: error.response.data.name,
+                        desc: error.response.data.message,
+                        duration: 10
+                    })
+                }
               })
             },
             onCancel: () => {
@@ -2312,15 +3096,44 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
               });
                 console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
-              url: config.default.serviceUrl + 'Settings/' + settingID,
+              url: config.default.serviceUrl + 'settings/' + settingID,
               headers:{
                   Authorization : Cookies.get('auth_token'),
-                  subscriptionId : Cookies.get('subscriptionId')
+                  subscriptionId : subscriptionId
               },
               }).then(function (response) {
                 console.log("ooooooooooooooooo",response);
@@ -2328,6 +3141,35 @@
               })
               .catch(function (error) {
                 console.log(error);
+                if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
               });
               console.log('self.emailDataCompany--------------->',self.emailDataCompany)
               self.DescriptionPdf = this.emailDataCustom.products;
@@ -2342,6 +3184,7 @@
                       title: 'Email would be sent to',
                       okText: 'OK',
                       cancelText: 'Cancel',
+                      loading:true,
                       render: (h) => {
                           return h('Input', {
                               props: {
@@ -2356,8 +3199,9 @@
                               }
                           })
                       },
-                    onOk: ()=>{                   
-                      let myData = {
+                    onOk: ()=>{  
+                      if(self.checkEmail(self.emailIdTobeSent)){                 
+                        let myData = {
                           "to": self.emailIdTobeSent == "" ? self.emailDataCustomer.EmailAddress : self.emailIdTobeSent ,
                           "from": "obsoftcare@gmail.com",
                           "subject": "email invoice",
@@ -2366,26 +3210,66 @@
                         myData = JSON.stringify(myData)
                         axios({
                           method: 'post',
-                          url:  'https://api.'+process.env.domainkey+'/vmailmicro/sendEmail',
+                          url:  config.default.emailUrl,
                           data: myData,
                           headers: {
                             'authorization':  Cookies.get('auth_token'),
                             
                           }
                           }).then(function (response) {
+                            self.$Modal.remove();
                             console.log(response);
                             self.$Message.success(response.data.success);
                             self.$Loading.finish();
                             // self.list[params.index].loading1 = false
                           })
                           .catch(function (error) {
-                            self.$Message.warning("email send failed , Please try again later");
+                            self.$Modal.remove();
+                            self.$Message.warning("email sent failed , Please try again later");
                             self.$Loading.finish();
                             console.log(error);
+                            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                                let location = psl.parse(window.location.hostname)
+                                location = location.domain === null ? location.input : location.domain
+                                
+                                Cookies.remove('auth_token' ,{domain: location}) 
+                                Cookies.remove('subscriptionId' ,{domain: location}) 
+                                self.$store.commit('logout', self);
+                                
+                                self.$router.push({
+                                    name: 'login'
+                                });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                                self.$Notice.error({
+                                    title: error.response.statusText,
+                                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                    duration: 4.5
+                                })
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
+                            }
                           });
+                         }else{
+                            this.$Modal.remove();
+                            this.$message.error("Invalid Email Id");
+                        }
                       }
                   })
         
+      },
+      checkEmail(emailValue) {
+                
+          var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return filter.test(emailValue)
       },
 
       async getAllSettings(){
@@ -2393,7 +3277,7 @@
         axios.get(config.default.serviceUrl + 'settings?isActive=true', {
           headers:{
               Authorization : Cookies.get('auth_token'),
-              subscriptionId : Cookies.get('subscriptionId')
+              subscriptionId : subscriptionId
           },
         })
         .then(function (response) {
@@ -2406,11 +3290,11 @@
             $('.preload').css("display","none")
             let settingId = self.tabPanes[self.tabIndex].id;
             let settingDomain = self.tabPanes[self.tabIndex].domain;
+            let settingName = self.tabPanes[self.tabIndex].configName;
             self.settingIdForPayment = self.tabPanes[self.tabIndex].id;
-            self.getInvoiceBySettingId(settingId , settingDomain , 0)
-            self.getCustomerBySettingId(settingId , settingDomain , 0)
-          }else
-          {
+            self.getInvoiceBySettingId(settingId , settingDomain , 0,settingName)
+            self.getCustomerBySettingId(settingId , settingDomain , 0,settingName)
+          }else {
               self.$Modal.warning({
               title: 'No Configuration available',
               okText : "Go to Settings",
@@ -2427,6 +3311,41 @@
 
           console.log("error",error);
           self.spinShow = false;
+          if(error.message == 'Network Error'){
+              self.$Notice.error({
+                  title: "Error",
+                  desc: 'API service unavailable',
+                  duration: 10
+              })
+          }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                  let location = psl.parse(window.location.hostname)
+                  location = location.domain === null ? location.input : location.domain
+                  
+                  Cookies.remove('auth_token' ,{domain: location}) 
+                  Cookies.remove('subscriptionId' ,{domain: location}) 
+                  self.$store.commit('logout', self);
+                  
+                  self.$router.push({
+                      name: 'login'
+                  });
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                  self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                  })
+              }else {
+                  self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                  })
+              }
         });
       }
 
@@ -2483,4 +3402,5 @@
   .ivu-auto-complete.ivu-select-dropdown {
     max-height: 200px !important;
   }
+  .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

@@ -58,6 +58,8 @@
           </div>
         </div>
 
+        <div class="table-box">
+
         <div v-if="spinShow">
                 <Spin size="large"></Spin>
         </div>
@@ -91,12 +93,13 @@
                     </div>
                     <div style="margin: 10px;overflow: hidden">
                         <div style="float: right;">
-                            <Page :total="len" :current="1" @on-change="changePage"></Page>
+                            <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
                         </div>
                     </div>
 
             </TabPane>
             </Tabs>
+        </div>
         </div>
 
   </div>
@@ -110,7 +113,6 @@
     import _ from 'lodash'
     const accounting = require('accounting-js');
 
-    var pageSize = 10
     export default {
         name: '',
         props: {
@@ -123,6 +125,9 @@
         },
         data() {
             return {
+                tableHeight: 450,
+                pageSize: 10,
+                optionsPage:[10,20,30,50],
                 flag: true,
                 invnoFilter : [],
                 nodataMsg: 'No Data',
@@ -370,6 +375,17 @@
             }
         },
         methods: {
+            changepagesize(pageSize){
+                console.log("####################################",pageSize)
+                this.pageSize = pageSize
+                this.pageSize = pageSize
+                if(this.pageSize > 10){
+                    this.tableHeight = 530
+                }else{
+                    this.tableHeight = 450
+                }
+                this.changePage(1)
+            },
             filterMethod (value, option) {
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
@@ -384,12 +400,13 @@
             //             this.message = event.target.value;
             //             this.$emit('messageChanged', this.message);
             // },
-            reset() {
+            reset(settingId) {
                 this.cname = '';
                 this.invoiceId = '';
                 this.dategt = '';
                 this.datelt = '';
-                this.getAllSettings();
+                // this.getAllSettings();
+                this.getTransaction(settingId);
             },
             async changeData() {
                 console.log("this.data", this.data)
@@ -404,10 +421,10 @@
 
                 });
                 console.log("myarr",this.filterArray)
-                this.list = await this.mockTableData2(1,pageSize)
+                // this.list = await this.mockTableData2(1,self.pageSize)
                 }else{
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.invoiceId != ''){
@@ -422,7 +439,7 @@
                         }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 //  if(this.dategt != ''){
@@ -463,7 +480,7 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
 
                 }
 
@@ -475,8 +492,10 @@
                     }
                     });
                     console.log("myarr",this.filterArray)
-                    this.list = await this.mockTableData2(1,pageSize)
+                    // this.list = await this.mockTableData2(1,self.pageSize)
                 }
+
+                this.list = await this.mockTableData2(1,self.pageSize)
 
             },
             async mockTableData2 (p,size) {
@@ -484,6 +503,15 @@
                 console.log("p-------------->",size)
                 console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.filterArray.slice((p - 1) * size, p * size);
             },
             async getAllSettings(){
@@ -510,7 +538,6 @@
                         console.log('this.tabIndex', self.tabIndex)
                         let settingId = self.tabPanes[self.tabIndex].id;
                         // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
-
                         self.getTransaction(settingId)
                     }
                     else {
@@ -529,29 +556,74 @@
                 .catch(function (error) {
                     console.log("error",error);
                     self.spinShow = false;
+                    if(error.message == 'Network Error'){
+                        self.$Notice.error({
+                            title: "Error",
+                            desc: 'API service unavailable',
+                            duration: 10
+                        })
+                    }else if(error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                    else if(error.response.status == 403){
+                        self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                        });
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
                 });
             },
             async tabClicked(data){
                 console.log(this.tabPanes)
                 console.log(">>>>>>>>>>>>>>>>>> " , data)
-                this.reset();
                 this.tabIndex = data;
                 let settingId = this.tabPanes[data].id
-                this.getTransaction(settingId);
+                this.reset(settingId);
+                // this.getTransaction(settingId);
             },
 
             async mockTableData1 (p,size) {
                 this.len = this.data.length
+                if(this.len == 0){
+                    console.log("data length 0--------------->",this.tableHeight)
+                    this.tableHeight = 100
+                }else if(this.len < 10){
+                    console.log("data length 10--------------->",this.tableHeight)
+                     this.tableHeight = (this.len * 40) + 35
+                }else{
+                    this.tableHeight = 450
+                }
                 return this.data.slice((p - 1) * size, p * size);
             },
             async changePage (p) {
-                this.page = p
+                // this.page = p
+                var self =this
                 console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
                     console.log("inside",this.filterArray)
-                    this.list = await this.mockTableData1(p,pageSize);
+                    this.list = await this.mockTableData1(p,self.pageSize);
                 }else{
-                    this.list = await this.mockTableData2(p,pageSize);
+                    this.list = await this.mockTableData2(p,self.pageSize);
                 }
             },
             async getTransaction(settingId) {
@@ -581,7 +653,7 @@
                     self.flag = false
                     $('.preload').css("display","none")
                     if(self.list.length == 0){
-                        self.list = await self.mockTableData1(1,pageSize)
+                        self.list = await self.mockTableData1(1,self.pageSize)
                     } else {
                     // if(self.list[0].key){
                     //   self.list = []
@@ -595,6 +667,35 @@
                     console.log("error",error);
                     self.$Loading.error();
                     self.flag = false
+                    if(error.response.status == 401){
+                        let location = psl.parse(window.location.hostname)
+                        location = location.domain === null ? location.input : location.domain
+                        
+                        Cookies.remove('auth_token' ,{domain: location}) 
+                        self.$store.commit('logout', self);
+                        
+                        self.$router.push({
+                            name: 'login'
+                        });
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
+                    else if(error.response.status == 403){
+                        self.$Notice.error({
+                            duration:0, 
+                            title: error.response.statusText,
+                            desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                        });
+                    }else {
+                        self.$Notice.error({
+                            title: error.response.data.name,
+                            desc: error.response.data.message,
+                            duration: 10
+                        })
+                    }
                 });
 
                 var NameArr = [];
@@ -640,4 +741,5 @@
     .ivu-auto-complete.ivu-select-dropdown {
         max-height: 200px !important;
     }
+    .table-box .ivu-tabs {padding-bottom: 150px;}
 </style>

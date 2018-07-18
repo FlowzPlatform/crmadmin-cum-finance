@@ -21,36 +21,31 @@
 
 // }
 
+// console.log("???????????????????????? ",process.env.domainkey);
 
-console.log("???????????????????????? ", process.env.domainkey)
-
-//let frontEndUrl = 'http://localhost:8081/#/login';
+// let frontEndUrl = 'http://localhost:8081/#/login';
 let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';
+let socketPort = process.env.socket_port ? process.env.socket_port : '4032';
 
 module.exports = {
     default: {
 
-
-
-        loginUrl: "https://api." + process.env.domainkey + "/auth/api/login",
-        ldapLoginUrl: "https://api." + process.env.domainkey + "/auth/api/ldapauth",
-        registrationUrl: "https://api." + process.env.domainkey + "/auth/serverapi/register",
-        signupUrl: "https://api." + process.env.domainkey + "/auth/api/setup",
-        userDetail: "https://api." + process.env.domainkey + "/auth/api/userdetails",
-        forgotPasswordUrl: "https://api." + process.env.domainkey + "/auth/api/forgetpassword",
+        loginUrl: 'https://api.' + process.env.domainkey + '/auth/api/login',
+        ldapLoginUrl: 'https://api.' + process.env.domainkey + '/auth/api/ldapauth',
+        registrationUrl: 'https://api.' + process.env.domainkey + '/auth/serverapi/register',
+        signupUrl: 'https://api.' + process.env.domainkey + '/auth/api/setup',
+        userDetail: 'https://api.' + process.env.domainkey + '/auth/api/userdetails',
+        forgotPasswordUrl: 'https://api.' + process.env.domainkey + '/auth/api/forgetpassword',
 
         // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
-        resetPasswordRedirectUrl :          "https://crm."+process.env.domainkey+"/#/reset-password",
-        resetPasswordUrl :                  "https://api."+process.env.domainkey+"/auth/api/resetpassword",
-        changepassword: "https://api." + process.env.domainkey + "/auth/api/changepassword",
-        feathersServiceBaseUrl: "https://api." + process.env.domainkey + "/auth/serverapi/",
-        varifyEmailUrl: "https://api." + process.env.domainkey + "/auth/api/verifyemail",
+        resetPasswordRedirectUrl: 'https://crm."+process.env.domainkey+"/#/reset-password',
+        resetPasswordUrl: 'https://api.' + process.env.domainkey + '/auth/api/resetpassword',
+        changepassword: 'https://api.' + process.env.domainkey + '/auth/api/changepassword',
+        feathersServiceBaseUrl: 'https://api.' + process.env.domainkey + '/auth/serverapi/',
+        varifyEmailUrl: 'https://api.' + process.env.domainkey + '/auth/api/verifyemail',
 
-        filterColorUrl: "https://api."+process.env.domainkey+"/pdmnew/filters/colors",
-        colorTableUrl: "https://api."+process.env.domainkey+"/serverapi/color-table",
-
-
-
+        filterColorUrl: 'https://api.' + process.env.domainkey + '/pdmnew/filters/colors',
+        colorTableUrl: 'https://api.' + process.env.domainkey + '/serverapi/color-table',
 
         facebookSuccessCallbackUrl: frontEndUrl,
         googleSuccessCallbackUrl: frontEndUrl,
@@ -58,19 +53,17 @@ module.exports = {
         githubSuccessCallbackUrl: frontEndUrl,
         linkedInSuccessCallbackUrl: frontEndUrl,
 
-
-
         flowzDashboardUrl: 'https://www.dashboard.' + process.env.domainkey,
         flowzBuilderUrl: 'https://www.webbuilder.' + process.env.domainkey,
         flowzVmailUrl: 'https://www.vmail.' + process.env.domainkey,
         flowzUploaderUrl: 'https://www.uploader.' + process.env.domainkey,
         flowzDbetlUrl: 'https://www.dbetl.' + process.env.domainkey,
 
-        loginWithFacebookUrl : 'https://auth.'+process.env.domainkey+'/auth/facebook',
-        loginWithGoogleUrl : 'https://auth.'+process.env.domainkey+'/auth/google',
-        loginWithTwitterUrl : 'https://auth.'+process.env.domainkey+'/auth/twitter',
-        loginWithGithubUrl : 'https://auth.'+process.env.domainkey+'/auth/github',
-        loginWithLinkedInUrl : 'https://auth.'+process.env.domainkey+'/auth/linkedin',
+        loginWithFacebookUrl: 'https://auth.' + process.env.domainkey + '/auth/facebook',
+        loginWithGoogleUrl: 'https://auth.' + process.env.domainkey + '/auth/google',
+        loginWithTwitterUrl: 'https://auth.' + process.env.domainkey + '/auth/twitter',
+        loginWithGithubUrl: 'https://auth.' + process.env.domainkey + '/auth/github',
+        loginWithLinkedInUrl: 'https://auth.' + process.env.domainkey + '/auth/linkedin',
         // loginWithFacebookUrl : 'http://social.'+process.env.domainkey+'/auth/facebook',
         // loginWithGoogleUrl : 'http://social.'+process.env.domainkey+'/auth/google',
         // loginWithTwitterUrl : 'http://social.'+process.env.domainkey+'/auth/twitter',
@@ -84,7 +77,7 @@ module.exports = {
         // loginWithLinkedInUrl: 'https://auth.flowzcluster.tk/auth/linkedin',
 
         serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
-        // serviceUrl :            'http://localhost:3037/',
+        // serviceUrl: 'http://localhost:3037/',
         baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
         usersubscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/user-subscription',
@@ -94,8 +87,12 @@ module.exports = {
         
         requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
-        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',        
-        productImageUrl : 'http://image.promoworld.ca/migration-api-hidden-new/web/images/'
-    }
+        subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',
+        commentrequestapi: 'https://api.' + process.env.domainkey + '/serverapi/comment-request',
+        socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort,
 
-}
+        emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendemaildata',
+        productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png'
+        // emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendEmail'
+    }
+};

@@ -87,6 +87,7 @@
                 </Form>
             </TabPane> -->
         </Tabs>
+        <settingMenu></settingMenu>
     </div>
 </template>
 
@@ -100,12 +101,23 @@
     import axios from "axios"
     const reader  = new FileReader();
     import Cookies from 'js-cookie';
+    import settingMenu from './settingMenu.vue';
 
     Vue.use(VueWidgets);
 
 
     export default {
+        components : {
+            settingMenu
+        },
         data () {
+            const validateBlank = (rule, value, callback) => {
+                if (value.trim() === '') {
+                    callback(new Error('Space is not allowed'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 uploadlist: false,
                tabs: 1 ,
@@ -124,16 +136,16 @@
                 },
                 XeroruleValidate: {
                     useragent: [
-                        { required: true, message: 'User agent cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'User agent cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     consumerKey: [
-                        { required: true, message: 'Consumer Key cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Consumer Key cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     consumerSecret: [
-                        { required: true, message: "Consumer Secret cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Consumer Secret cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     configName: [
-                        { required: true, message: "Cconfiguration name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Cconfiguration name Key cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ]
                 },
                 QBformValidate: {
@@ -145,19 +157,19 @@
                 },
                 QBruleValidate: {
                     configName: [
-                        { required: true, message: "Configuration name Key cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Configuration name Key cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     refresh_token: [
-                        { required: true, message: 'Refresh token cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Refresh token cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     client_id: [
-                        { required: true, message: 'Client_id cannot be empty', trigger: 'blur' }
+                        { required: true, message: 'Client_id cannot be empty', validator: validateBlank, trigger: 'blur' }
                     ],
                     client_secret: [
-                        { required: true, message: "Client_Secret cannot be empty", trigger: 'blur' }
+                        { required: true, message: "Client_Secret cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ],
                     realmId: [
-                        { required: true, message: "RealmId cannot be empty", trigger: 'blur' }
+                        { required: true, message: "RealmId cannot be empty", validator: validateBlank, trigger: 'blur' }
                     ]
                 },
                 customformValidate : {
@@ -223,9 +235,9 @@
                                 let  data = {
                                     "configName": self.XeroformValidate.configName.trim(),
                                     "certificate" : reader.result.substring( reader.result.indexOf(",")+1)  ,
-                                    "useragent" :  self.XeroformValidate.useragent,
-                                    "consumerKey" : self.XeroformValidate.consumerKey,
-                                    "consumerSecret" : self.XeroformValidate.consumerSecret,
+                                    "useragent" :  self.XeroformValidate.useragent.trim(),
+                                    "consumerKey" : self.XeroformValidate.consumerKey.trim(),
+                                    "consumerSecret" : self.XeroformValidate.consumerSecret.trim(),
                                     "domain" :  'Xero' ,
                                     "pem" : lastModified,
                                     "isActive" : self.isActive,
@@ -253,23 +265,40 @@
                                 })
                                 .catch(function (error) {
                                     self.loading = false;
-                                    if(error.response.status == 401){
+                                    if(error.message == 'Network Error'){
+                                        self.$Notice.error({
+                                            title: "Error",
+                                            desc: 'API service unavailable',
+                                            duration: 10
+                                        })
+                                    }else if(error.response.status == 401){
                                         let location = psl.parse(window.location.hostname)
                                         location = location.domain === null ? location.input : location.domain
                                         
                                         Cookies.remove('auth_token' ,{domain: location}) 
-                                        this.$store.commit('logout', this);
+                                        self.$store.commit('logout', self);
                                         
-                                        this.$router.push({
+                                        self.$router.push({
                                             name: 'login'
                                         });
+                                        self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
                                     }else if(error.response.status == 403){
-                                                self.$Notice.error(
-                                                {duration:0, 
-                                                title: error.response.statusText,
-                                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'}
-                                                );
-                                            }
+                                        self.$Notice.error({
+                                        duration:0, 
+                                        title: error.response.statusText,
+                                        desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                        });
+                                    }else {
+                                        self.$Notice.error({
+                                            title: error.response.data.name,
+                                            desc: error.response.data.message,
+                                            duration: 10
+                                        })
+                                    }
                                 
                                 });
                             }, false);
@@ -294,11 +323,11 @@
 
                         let  data = {
                             "configName": self.QBformValidate.configName.trim(),
-                            "refresh_token" :  self.QBformValidate.refresh_token,
-                            "client_id" : self.QBformValidate.client_id,
-                            "client_secret" : self.QBformValidate.client_secret,
+                            "refresh_token" :  self.QBformValidate.refresh_token.trim(),
+                            "client_id" : self.QBformValidate.client_id.trim(),
+                            "client_secret" : self.QBformValidate.client_secret.trim(),
                             "domain" : 'QB',
-                            "realmId" : self.QBformValidate.realmId,
+                            "realmId" : self.QBformValidate.realmId.trim(),
                             "isActive" : self.isActiveQb,
                             "isDeleated" : false,
                             "subscriptionId" : Cookies.get('subscriptionId')
@@ -323,22 +352,39 @@
                         })
                         .catch(function (error) {
                             self.loading = false;
-                            if(error.response.status == 401){
+                            if(error.message == 'Network Error'){
+                                self.$Notice.error({
+                                    title: "Error",
+                                    desc: 'API service unavailable',
+                                    duration: 10
+                                })
+                            }else if(error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
                                 
                                 Cookies.remove('auth_token' ,{domain: location}) 
-                                this.$store.commit('logout', this);
+                                self.$store.commit('logout', self);
                                 
-                                this.$router.push({
+                                self.$router.push({
                                     name: 'login'
                                 });
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
                             }else if(error.response.status == 403){
                                 self.$Notice.error({
-                                    duration:0, 
-                                    title: error.response.statusText,
-                                    desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
+                                duration:0, 
+                                title: error.response.statusText,
+                                desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
                                 });
+                            }else {
+                                self.$Notice.error({
+                                    title: error.response.data.name,
+                                    desc: error.response.data.message,
+                                    duration: 10
+                                })
                             }  
                         });
                         

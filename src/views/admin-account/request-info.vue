@@ -1,11 +1,13 @@
 <template>
   <div style="text-align: -webkit-center;font-size:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;">
-    <div class="drpdwn" style="display: inline;">
+    <!-- <div class="drpdwn" style="display: inline;">
       <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 85%;text-align: -webkit-left;" @on-change="listData">
           <Option v-for="item in row" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
-      </Select>
-    </div>
-              <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion11" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+      </Select> 
+    </div> -->
+    <div style=" text-align: -webkit-right;">
+      <h4 class="panel-title" style="text-align:-webkit-right;display: -webkit-inline-box;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion11" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
+    </div>          
         <div class="panel panel-default panel-group" id="accordion11" style="border: none;margin-top:1%;text-align: -webkit-left;">
               <!-- <div class="panel-heading">
               </div> -->
@@ -42,7 +44,14 @@
                   </div>
               </div>
           </div>
-    <Table :columns="columns1" :data="list" size="small" ref="table" stripe></Table>
+  <div>
+    <Table :columns="columns1" :data="list" @on-expand="viewDetails" size="small" ref="table" stripe></Table>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right;">
+          <Page :total="len" :current="1" @on-change="changePage" show-sizer @on-page-size-change="changepagesize" :page-size-opts="optionsPage"></Page>
+      </div>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -66,6 +75,11 @@ export default {
     pname: '',
     website: '',
     userid:'',
+    filterArray: '',
+    len:1,
+    pageSize:10,
+    optionsPage:[10,20,30,50],
+    tableHeight:450,
     columns1:[
       {
         type: 'expand',
@@ -87,6 +101,7 @@ export default {
           "title": "Name",
           "key": "username",
           render: (h,params) => {
+            console.log("req info-------------------->",params)
             // return params.row.productInfo[0].username
              return h('div', [
                 h('span', params.row.productInfo[0].username)
@@ -127,15 +142,71 @@ export default {
               }
       }
     ],
+    data: [],
     list: []
     }
   },
   methods: {
+    changepagesize(pageSize){
+      console.log("####################################",pageSize)
+      this.pageSize = pageSize
+      if(this.pageSize > 10){
+          this.tableHeight = 530
+      }else{
+          this.tableHeight = 450
+      }
+      this.changePage(1)
+    },
+    async changePage (p) {
+        // this.page = p
+        var self = this
+        console.log("not inside",self.filterArray.length)
+        if(self.filterArray.length == 0){
+            console.log("inside",self.filterArray)
+            self.list1 = await self.mockTableData1(p,self.pageSize);
+        }else{
+            self.list1 = await self.mockTableData2(p,self.pageSize);
+        }
+    },
+    async mockTableData1 (p,size) {
+        console.log("mocktable call---------------")
+        this.len = this.list.length
+        if(this.len == 0){
+            console.log("data length 0--------------->",this.tableHeight)
+            this.tableHeight = 100
+        }else if(this.len < 10){
+            console.log("data length 10--------------->",this.tableHeight)
+              this.tableHeight = (this.len * 40) + 35
+        }else{
+            this.tableHeight = 450
+        }
 
+        return this.list.slice((p - 1) * size, p * size);
+    },
+    async mockTableData2 (p,size) {
+        console.log("p-------------->",p)
+        console.log("p-------------->",size)
+        console.log("console.log------------>",this.filterArray)
+        this.len = this.filterArray.length
+        if(this.len == 0){
+            console.log("data length 0--------------->",this.tableHeight)
+            this.tableHeight = 100
+        }else if(this.len < 10){
+            console.log("data length 10--------------->",this.tableHeight)
+              this.tableHeight = (this.len * 40) + 35
+        }else{
+            this.tableHeight = 450
+            }
+        return this.filterArray.slice((p - 1) * size, p * size);
+    },
     reset() {
       this.cname = '';
       this.pname = '';
       this.listData(this.website);
+    },
+    async viewDetails(params,status){
+        if (!status) return
+        $('.ivu-table-cell-expand-expanded').click()
     },
     async changeData() {
       console.log("Before this.filterArray------->",this.filterArray)
@@ -151,12 +222,14 @@ export default {
         });
         console.log("myarr",this.filterArray)
         console.log(" Filter this.filterArray------->",this.filterArray)
-        this.list = this.filterArray
+        // this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = this.filterArray
         console.log("After Filter this.filterArray------->",this.filterArray)
       }else{
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
         console.log("myarr",this.filterArray)
-        this.list = this.filterArray
+        // this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = this.filterArray
       }
 
       if(this.pname != ''){
@@ -168,19 +241,22 @@ export default {
         });
         console.log("myarr",this.filterArray)
         console.log(" Filter this.filterArray------->",this.filterArray)
-        this.list = this.filterArray
+        // this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = this.filterArray
         console.log("After Filter this.filterArray------->",this.filterArray)
       }else{
         console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.pname)
         console.log("myarr",this.filterArray)
-        this.list = this.filterArray
+        // this.list = await this.mockTableData2(1,self.pageSize)
+        // this.list = this.filterArray
       }
+      this.list = await this.mockTableData2(1,self.pageSize)
 
     },
     listData (val) {
       var self = this
       var len
-      console.log("val", val)
+      console.log("val----------->", val)
       axios({
           method: 'get',
           url: config.default.requestinfoapi,
@@ -192,15 +268,16 @@ export default {
             // 'subscriptionId': Cookies.get('subscriptionId')    
           }
       })
-      .then(function (response){
+      .then(async function (response){
           console.log("response val", response.data)
           let Namearr = [];
           let Productarr = [];
           $('#selectCustomer').children('option:not(:first)').remove();
           $('#selectProduct').children('option:not(:first)').remove();
           self.list = _.orderBy(response.data.data, ['created_at'],['desc'])
-          self.data = self.list
-          self.data.forEach(obj => {
+          self.data = await self.mockTableData1(1,self.pageSize)
+          // self.data = self.list
+          self.list.forEach(obj => {
             Namearr.push(obj.productInfo[0].username)
             Productarr.push(obj.productInfo[0].product_name)
           })
@@ -221,13 +298,48 @@ export default {
               x.add(option);
           })
 
+      }).catch(function (error){
+        console.log("Error response ----", error, error.response)
+        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+			let location = psl.parse(window.location.hostname)
+			location = location.domain === null ? location.input : location.domain
+			
+			Cookies.remove('auth_token' ,{domain: location}) 
+			Cookies.remove('subscriptionId' ,{domain: location}) 
+			self.$store.commit('logout', self);
+			
+			self.$router.push({
+				name: 'login'
+			});
+			self.$Notice.error({
+				title: error.response.data.name,
+				desc: error.response.data.message,
+				duration: 10
+			})
+		}else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+			self.$Notice.error({
+				title: error.response.statusText,
+				desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+				duration: 0
+			})
+		}else if(error.hasOwnProperty('response')){
+			self.$Notice.error({
+				title: error.response.data.name,
+				desc: error.response.data.message,
+				duration: 10
+			})
+		}
       })
     },
   },
+  mounted () {
+    console.log("mounted of request info")
+  },
    watch: {
-          'row': async function(id) {
-            console.log("row---------------->",this.row)
+     'row': async function(id) {
+       console.log("row---------------->",this.row)
             this.website = this.row[0].websiteId
+            this.listData(this.website)
           }
    }
 }
