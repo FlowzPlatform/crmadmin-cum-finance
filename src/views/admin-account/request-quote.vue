@@ -18,8 +18,9 @@
                       <form>
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#uname"></span>
-                                      <label>Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#uname">
+                                      <label style="padding-left:  7px;">Name</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="uname">
                                       <select class="form-control"  v-model="cname" id="selectCustom">
@@ -28,8 +29,9 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#prname"></span>
-                                      <label>Product Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#prname">
+                                      <label style="padding-left:  7px;">Product Name</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="prname">
                                       <select class="form-control"  v-model="pname" id="selectPro">
@@ -576,8 +578,16 @@ export default {
             }
       })
     },
+    toggleIcon: function (e) {
+            $(e.target)
+                .prev('.panel-heading')
+                .find(".more-less")
+                .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+    }
   },
   async mounted(){
+    $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+    $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
     // var self = this
     // await axios({
     //   method: 'get',

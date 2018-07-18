@@ -9,8 +9,9 @@
           <form>
               <div class="collapse-maindiv maindiv" style="text-align: left;">
                   <div class="panel panel-default">
-                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
-                          <label>Customer Name</label>
+                      <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"  data-target="#Customer">
+                          <label style="padding-left:  7px;">Customer Name</label>
+                      </span>
                       </div>
                       <div class="panel-collapse collapse" id="Customer">
                           <select class="form-control"  v-model="cname" id="selectCustomer">
@@ -19,8 +20,9 @@
                       </div>
                   </div>
                   <div class="panel panel-default">
-                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Email"></span>
-                          <label>Email Address</label>
+                      <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#Email">
+                          <label style="padding-left:  7px;">Email Address</label>
+                          </span>
                       </div>
                       <div class="panel-collapse collapse" id="Email">
                           <select class="form-control"  v-model="email" id="selectEmail">
@@ -29,9 +31,10 @@
                       </div>
                   </div>
                   <div class="panel panel-default">
-                      <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                          data-target="#status"></span>
-                          <label>Status</label>
+                      <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                          data-target="#status">
+                          <label style="padding-left:  7px;">Status</label>
+                          </span>
                       </div>
                       <div class="panel-collapse collapse" id="status">
                           <select class="form-control mb-2 mb-sm-0" v-model="status" id="selectStatus">
@@ -867,9 +870,17 @@
                 original: false
               });
             }
-      }
+      },
+      toggleIcon: function (e) {
+            $(e.target)
+                .prev('.panel-heading')
+                .find(".more-less")
+                .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+    }
     },
     mounted(){
+      $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+    $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
       this.getAllSettings();
     }
   }

@@ -10,8 +10,9 @@
                   <form>
                       <div class="collapse-maindiv maindiv" >
                           <div class="panel panel-default">
-                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
-                                  <label>Customer Name</label>
+                              <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#Customer">
+                                  <label style="padding-left:  7px;">Customer Name</label>
+                                  </span>
                               </div>
                               <div class="panel-collapse collapse" id="Customer">
                                   <select class="form-control"  v-model="cname" id="selectCustomer">
@@ -20,9 +21,10 @@
                               </div>
                           </div>
                           <div class="panel panel-default">
-                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                  data-target="#invoiceId"></span>
-                                  <label>Invoice No.</label>
+                              <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                  data-target="#invoiceId">
+                                  <label style="padding-left:  7px;">Invoice No.</label>
+                                  </span>
                               </div>
                               <!--<div class="panel-collapse collapse" id="invoiceId">
                                  <input class="form-control" type="text" v-model="invoiceId"/>
@@ -33,9 +35,10 @@
                               </div>
                           </div>
                           <div class="panel panel-default">
-                              <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                  data-target="#date"></span>
-                                  <label>Date</label>
+                              <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                  data-target="#date">
+                                  <label style="padding-left:  7px;">Date</label>
+                                  </span>
                               </div>
                               <div class="form-group row panel-collapse collapse" id="date">
                                   <div class="col-xs-3">
@@ -375,6 +378,12 @@
             }
         },
         methods: {
+            toggleIcon: function (e) {
+                $(e.target)
+                    .prev('.panel-heading')
+                    .find(".more-less")
+                    .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+            },
             changepagesize(pageSize){
                 console.log("####################################",pageSize)
                 this.pageSize = pageSize
@@ -722,7 +731,8 @@
         },
         mounted() {
             this.getAllSettings()
-
+            $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
         },
         watch: {
             '$route': function (id) {

@@ -18,8 +18,10 @@
                       <form>
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
-                                      <label>Order Id</label>
+                                  <div class="panel-heading"> 
+                                    <span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" data-target="#order" style="width: 100%;">
+                                      <label style="padding-left:  7px;">Order Id</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="order">
                                       <AutoComplete v-model="orderid" :data="orderidFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -27,8 +29,10 @@
                                   </div>
                               </div>
                                <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#send"></span>
-                                      <label>po_Sent</label>
+                                  <div class="panel-heading">
+                                        <span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#send" >
+                                      <label style="padding-left:  7px;">po_Sent</label>
+                                        </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="send">
                                       <select class="form-control"  v-model="po_sent" id="selectPOSend">
@@ -39,8 +43,10 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#sku"></span>
-                                      <label>Item Number</label>
+                                  <div class="panel-heading">
+                                      <span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#sku">
+                                      <label style="padding-left:  7px;">Item Number</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="sku">
                                       <AutoComplete v-model="itemno" :data="itemnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -48,8 +54,9 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
-                                      <label>Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#Customer">
+                                      <label style="padding-left:  7px;">Name</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="Customer">
                                       <select class="form-control"  v-model="cname" id="selectCustomer">
@@ -58,8 +65,9 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#email"></span>
-                                      <label>Email</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"  data-target="#email">
+                                      <label style="padding-left:  7px;">Email</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="email">
                                       <select class="form-control"  v-model="email" id="selectEmail">
@@ -729,8 +737,15 @@
                 //     this.tableHeight = 530
                 //     console.log("###############################",this.tableHeight)
                 // }
+            },
+            toggleIcon: function (e) {
+                $(e.target)
+                    .prev('.panel-heading')
+                    .find(".more-less")
+                    .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
             }
         },
+        
         async mounted() {
             var self = this
             // await axios({
@@ -745,6 +760,8 @@
             //         console.log("-------",error);
             //         self.$Message.error(error)
             // });
+            $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
             this.init()
         },
         filters: {

@@ -12,8 +12,9 @@
                     <form>
                         <div class="collapse-maindiv maindiv" >
                             <div class="panel panel-default">
-                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#poid"></span>
-                                    <label>P.O.#</label>
+                                <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#poid">
+                                    <label style="padding-left:  7px;">P.O.#</label>
+                                    </span>
                                 </div>
                                 <div class="panel-collapse collapse" id="poid">
                                     <AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -21,12 +22,13 @@
                                 </div>
                             </div>
                             <div class="panel panel-default">
-                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#podate"></span>
-                                    <label>P.O.Generate Date</label>
+                                <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#podate">
+                                    <label style="padding-left:  7px;">P.O.Generate Date</label>
+                                    </span>
                                 </div>
                                 <div class="form-group row panel-collapse collapse" id="podate">
                                     <div class="col-xs-3">
-                                    <label>From</label>
+                                    <label style="padding-left:  7px;">From</label>
                                         <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
                                     </div>
                                     <div class="col-xs-3">
@@ -36,8 +38,9 @@
                                 </div>
                             </div>
                             <div class="panel panel-default">
-                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#orderid"></span>
-                                    <label>Order Id</label>
+                                <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#orderid">
+                                    <label style="padding-left:  7px;">Order Id</label>
+                                    </span>
                                 </div>
                                 <div class="panel-collapse collapse" id="orderid">
                                     <AutoComplete v-model="order_id" :data="orderFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -45,8 +48,9 @@
                                 </div>
                             </div>
                             <div class="panel panel-default">
-                                <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#mode"></span>
-                                    <label>Mode</label>
+                                <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#mode">
+                                    <label style="padding-left:  7px;">Mode</label>
+                                    </span>
                                 </div>
                                 <div class="panel-collapse collapse" id="mode">
                                     <select class="form-control"  v-model="mode" id="selectmode">
@@ -229,6 +233,12 @@
             }
         },
         methods: {
+            toggleIcon: function (e) {
+                $(e.target)
+                    .prev('.panel-heading')
+                    .find(".more-less")
+                    .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+            },
             // init() {
             //     let self = this;
             //     axios({
@@ -495,6 +505,8 @@
         mounted() {
             //  this.init();
              this.listData();
+             $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
         }
     }
 </script>
