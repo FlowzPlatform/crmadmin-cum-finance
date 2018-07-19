@@ -2659,20 +2659,22 @@
                   desc: "Invalid key for <b>"+settingName+"</b>"
                 });
               } else {
-                self.data6 = response.data[0].data.reverse();
-                if(response.data[0].data[0].InvoiceNumber != undefined){
-                  response.data[0].data.forEach(item => {
-                    self.invnoFilter.push(item.InvoiceNumber)
-                  })
-                }else if(response.data[0].data[0].Id != undefined){
-                  response.data[0].data.forEach(item => {
-                    self.invnoFilter.push(item.Id)
-                  })
-                }
                 self.$Loading.finish();
-                $('.preload').css("display","none")
-                self.filterArray = []
-                self.list = await self.mockTableData1(1,pageSize)
+                if (response.data[0].data.length != 0) {
+                  self.data6 = response.data[0].data.reverse();
+                  if(response.data[0].data[0].InvoiceNumber != undefined){
+                    response.data[0].data.forEach(item => {
+                      self.invnoFilter.push(item.InvoiceNumber)
+                    })
+                  }else if(response.data[0].data[0].Id != undefined){
+                    response.data[0].data.forEach(item => {
+                      self.invnoFilter.push(item.Id)
+                    })
+                  }
+                  $('.preload').css("display","none")
+                  self.filterArray = []
+                  self.list = await self.mockTableData1(1,pageSize)
+                }
               }
           })
           .catch(function (error) {

@@ -582,71 +582,71 @@
 
 
         if(settingDomain == 'custom'){
-        // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
-        let customerUrl = this.tabPanes[data].customer_url;
-        await axios({
-          method: 'get',
-          url: customerUrl,
-          params : {
-            settingId : this.tabPanes[data].id
-          },
-          headers:{
-            Authorization : Cookies.get('auth_token')
-          },
-        })
-        .then(async function (response) {
-          self.$Loading.finish();
-          // console.log("custom customer get response",response)
-          self.data6 = response.data.data.reverse();
-
-          let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
-          let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
-          let arr = [];
-          let len = columnArray.length;
-          for (let i = 0; i < len; i++) {
-            arr.push({
-              title: columnArray[i],
-              key : columnArray[i],
-              sortable: true
-
-                });
-            }
-            self.list = await self.mockTableData1(1,self.pageSize)
-            // self.column3 = arr;
+          // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
+          let customerUrl = this.tabPanes[data].customer_url;
+          await axios({
+            method: 'get',
+            url: customerUrl,
+            params : {
+              settingId : this.tabPanes[data].id
+            },
+            headers:{
+              Authorization : Cookies.get('auth_token')
+            },
           })
-          .catch(function (error) {
-            self.$Loading.error();
-            console.log("error in get customer",error);
-            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                  let location = psl.parse(window.location.hostname)
-                  location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
-                  self.$store.commit('logout', self);
-                  
-                  self.$router.push({
-                    name: 'login'
+          .then(async function (response) {
+            self.$Loading.finish();
+            // console.log("custom customer get response",response)
+            self.data6 = response.data.data.reverse();
+
+            let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
+            let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action" , "settingId" );
+            let arr = [];
+            let len = columnArray.length;
+            for (let i = 0; i < len; i++) {
+              arr.push({
+                title: columnArray[i],
+                key : columnArray[i],
+                sortable: true
+
                   });
-                  self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                  })
-                }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                  self.$Notice.error({
-                    title: error.response.statusText,
-                    desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                    duration: 4.5
-                  })
-                }else {
-                  self.$Notice.error({
-                    title: error.response.data.name,
-                    desc: error.response.data.message,
-                    duration: 10
-                  })
-                }
-          });
+              }
+              self.list = await self.mockTableData1(1,self.pageSize)
+              // self.column3 = arr;
+            })
+            .catch(function (error) {
+              self.$Loading.error();
+              console.log("error in get customer",error);
+              if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                    let location = psl.parse(window.location.hostname)
+                    location = location.domain === null ? location.input : location.domain
+                    
+                    Cookies.remove('auth_token' ,{domain: location}) 
+                    Cookies.remove('subscriptionId' ,{domain: location}) 
+                    self.$store.commit('logout', self);
+                    
+                    self.$router.push({
+                      name: 'login'
+                    });
+                    self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                    })
+                  }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                    self.$Notice.error({
+                      title: error.response.statusText,
+                      desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                      duration: 4.5
+                    })
+                  }else {
+                    self.$Notice.error({
+                      title: error.response.data.name,
+                      desc: error.response.data.message,
+                      duration: 10
+                    })
+                  }
+            });
         }
         else{
           await axios.get(feathersUrl +'contacts', {
@@ -669,10 +669,12 @@
               });
             }
             else {
-              self.data6 = response.data[0].data.reverse();
               self.$Loading.finish();
-              $('.preload').css("display","none")
-              self.list = await self.mockTableData1(1,self.pageSize)
+              if (response.data[0].data.length != 0) {
+                self.data6 = response.data[0].data.reverse();
+                $('.preload').css("display","none")
+                self.list = await self.mockTableData1(1,self.pageSize)
+              }
             }
           })
           .catch(function (error) {

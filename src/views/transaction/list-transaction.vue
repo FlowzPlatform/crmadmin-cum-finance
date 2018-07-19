@@ -415,6 +415,10 @@
                 this.dategt = '';
                 this.datelt = '';
                 // this.getAllSettings();
+                console.log('settingId',settingId);
+                if (settingId === undefined) {
+                    settingId = this.tabPanes[this.tabIndex].id;
+                }
                 this.getTransaction(settingId);
             },
             async changeData() {

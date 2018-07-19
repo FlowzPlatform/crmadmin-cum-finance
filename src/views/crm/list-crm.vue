@@ -265,7 +265,7 @@
 					// },100)
 				response.data.data.forEach(function(item,index){
 					// console.log("item index",item )
-					if (item.isDeleted == "false" && item.subscriptionId == subscriptionId1){
+					if (item.isDeleted == false && item.subscriptionId == subscriptionId1){
 						self.data5.push(item);
 					}
 				})

@@ -687,39 +687,36 @@ export default {
         method:'get',
         url: crmpostapiurl + 'po-invoice',
         params: params1,
-        headers:{
-        }
       })
       .then(async function(response) {
-      console.log('response-------------->',response)
-      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
-      self.list = await self.mockTableData1(1,self.pageSize)
-      var Emailarr = [];
-      $('#selectEmail').children('option:not(:first)').remove();
-      self.data.forEach(item => {
-        self.ponumFilter.push(item.PO_id)
-        self.invoicenumFilter.push(item.invoiceId)
-        Emailarr.push(item.supplier_email);
-        self.orderidfilter.push(item.orderId)
-      })
-      Emailarr = _.chain(Emailarr).sort().uniq().value();
-      self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
-      self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
-      self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
-      console.log("##########################",self.orderidfilter)
-      Emailarr.forEach(item => {
-        var x = document.getElementById("selectEmail");
-        var option = document.createElement("option");
-        option.text = item;
-        console.log()
-        x.add(option);
-      })
+          console.log('response-------------->',response)
+          self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
+          self.list = await self.mockTableData1(1,self.pageSize)
+          var Emailarr = [];
+          $('#selectEmail').children('option:not(:first)').remove();
+          self.data.forEach(item => {
+            self.ponumFilter.push(item.PO_id)
+            self.invoicenumFilter.push(item.invoiceId)
+            Emailarr.push(item.supplier_email);
+            self.orderidfilter.push(item.orderId)
+          })
+          Emailarr = _.chain(Emailarr).sort().uniq().value();
+          self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
+          self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
+          self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
+          console.log("##########################",self.orderidfilter)
+          Emailarr.forEach(item => {
+            var x = document.getElementById("selectEmail");
+            var option = document.createElement("option");
+            option.text = item;
+            console.log()
+            x.add(option);
+          })
           console.log('response-------------->list',self.list)
-          
-        }).catch(function (error){
-          console.log("error------------------->",error)
-        })
-      params: params1
+              
+      }).catch(function (error){
+        console.log("error------------------->",error)
+      })
     },
     async viewDetails(params,status){
       // this.tableHeight = 250
