@@ -13,8 +13,9 @@
                       <form>
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#invoice"></span>
-                                      <label>Invoice No.</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#invoice">
+                                      <label style="padding-left:  7px;">Invoice No.</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="invoice">
                                       <AutoComplete v-model="invoiceno" :data="invnoFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -22,8 +23,9 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#Customer"></span>
-                                      <label>Customer Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#Customer">
+                                      <label style="padding-left:  7px;">Customer Name</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="Customer">
                                       <select class="form-control"  v-model="cname" id="selectCustomer">
@@ -32,9 +34,10 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#status"></span>
-                                      <label>Status</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                      data-target="#status">
+                                      <label style="padding-left:  7px;">Status</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="status">
                                       <select class="form-control mb-2 mb-sm-0" v-model="status" name="status">
@@ -46,13 +49,14 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#date"></span>
-                                      <label>Date</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                      data-target="#date">
+                                      <label style="padding-left:  7px;">Date</label>
+                                      </span>
                                   </div>
                                   <div class="form-group row panel-collapse collapse" id="date">
                                       <div class="col-xs-3">
-                                        <label>From Date</label>
+                                        <label style="padding-left:  7px;">From Date</label>
                                           <DatePicker format="dd-MMM-yyyy" type="date" placeholder="Select date" v-model="dategt" style="width: 100%;"></DatePicker>
                                       </div>
                                       <div class="col-xs-3">
@@ -62,9 +66,10 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#amount"></span>
-                                      <label>Total Amount</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                      data-target="#amount">
+                                      <label style="padding-left:  7px;">Total Amount</label>
+                                      </span>
                                   </div>
                                   <div class="form-group row panel-collapse collapse" id="amount">
                                       <div class="col-xs-3">
@@ -1036,6 +1041,7 @@
     },
     components: { listtransaction },
     methods: {
+      
       changepagesize(pageSize){
         console.log("####################################",pageSize)
         this.pageSize = pageSize
@@ -2653,20 +2659,22 @@
                   desc: "Invalid key for <b>"+settingName+"</b>"
                 });
               } else {
-                self.data6 = response.data[0].data.reverse();
-                if(response.data[0].data[0].InvoiceNumber != undefined){
-                  response.data[0].data.forEach(item => {
-                    self.invnoFilter.push(item.InvoiceNumber)
-                  })
-                }else if(response.data[0].data[0].Id != undefined){
-                  response.data[0].data.forEach(item => {
-                    self.invnoFilter.push(item.Id)
-                  })
-                }
                 self.$Loading.finish();
-                $('.preload').css("display","none")
-                self.filterArray = []
-                self.list = await self.mockTableData1(1,pageSize)
+                if (response.data[0].data.length != 0) {
+                  self.data6 = response.data[0].data.reverse();
+                  if(response.data[0].data[0].InvoiceNumber != undefined){
+                    response.data[0].data.forEach(item => {
+                      self.invnoFilter.push(item.InvoiceNumber)
+                    })
+                  }else if(response.data[0].data[0].Id != undefined){
+                    response.data[0].data.forEach(item => {
+                      self.invnoFilter.push(item.Id)
+                    })
+                  }
+                  $('.preload').css("display","none")
+                  self.filterArray = []
+                  self.list = await self.mockTableData1(1,pageSize)
+                }
               }
           })
           .catch(function (error) {
@@ -3347,7 +3355,13 @@
                   })
               }
         });
-      }
+      },
+      toggleIcon: function (e) {
+            $(e.target)
+                .prev('.panel-heading')
+                .find(".more-less")
+                .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+    }
 
     },
     mounted() {
@@ -3359,6 +3373,8 @@
       // this.searchdata();
       // this.getAllInvoice()
       this.getAllSettings()
+      $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+    $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
 
     }
   }

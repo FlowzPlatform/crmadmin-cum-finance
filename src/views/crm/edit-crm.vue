@@ -349,8 +349,13 @@
         mData: [],
         description:'',
         assigneedata: [],
-        question: ''
+        question: '',
+        mSubcriptionID:''
       }
+    },
+    beforeMount() {
+      this.mSubcriptionID=Cookies.get('subscriptionId')
+      this.mAuthToken=Cookies.get('auth_token')
     },
     methods: {
       DownloadFile(url) {
@@ -393,8 +398,8 @@
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
             console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
-            console.log("==========-----------subscriptionId",res.data.subscriptionId,Cookies.get('subscriptionId'))
-            if (res.data.subscriptionId !== Cookies.get('subscriptionId')) {
+            console.log("==========-----------subscriptionId",res.data.subscriptionId,self.mSubcriptionID)
+            if (res.data.subscriptionId !== self.mSubcriptionID) {
                 self.$router.push("/relationship/list-relationship")
             }
             else {
@@ -468,8 +473,8 @@
           method:'get',
           url: config.default.serviceUrl + 'settings/'+settingId,
           headers:{
-            Authorization : Cookies.get('auth_token'),
-            subscriptionId : Cookies.get('subscriptionId')
+            Authorization : self.mAuthToken,
+            subscriptionId : self.mSubcriptionID
           }
         })
         .then(async function(response) {
@@ -535,7 +540,7 @@
                 settingId : settingId
               },
               headers:{
-                  Authorization : Cookies.get('auth_token'),
+                  Authorization : self.mAuthToken,
               },
             })
             .then(function (response) {
@@ -732,7 +737,7 @@
         var self = this
         await $.ajax({
           headers: {
-            'Authorization': Cookies.get('auth_token')
+            'Authorization': self.mAuthToken
           },
           url: assigneeapi,
           success: function (data) {
@@ -829,7 +834,7 @@
                       type: 'PATCH',
                       url: databasepost + self.$route.params.id,
                       headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : self.mAuthToken
                       },
                       data: self.finaldata,
                       success: function (data1) {
@@ -891,7 +896,7 @@
                       type: 'PATCH',
                       url: databasepost + self.$route.params.id,
                       headers:{
-                        Authorization : Cookies.get('auth_token')
+                        Authorization : self.mAuthToken
                       },
                       data: self.finaldata,
                       success: function (data1) {
@@ -963,8 +968,8 @@
           //   // user : Cookies.get('user')
           // },
           headers: {
-            Authorization : Cookies.get('auth_token'),
-            subscriptionId : Cookies.get('subscriptionId')
+            Authorization : self.mAuthToken,
+            subscriptionId : self.mSubcriptionID
           }
         })
         .then(function (response) {
@@ -1022,7 +1027,7 @@
               type: 'patch',
               url: databasepost+id,
               headers: {
-                Authorization : Cookies.get('auth_token')
+                Authorization : self.mAuthToken
               },
               data: params.row,
               success: function (data11) {
