@@ -20,8 +20,9 @@
 						<form>
 							<div class="collapse-maindiv maindiv" >
 								<div class="panel panel-default">
-									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#po"></span>
-										<label>PO #</label>
+									<div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#po">
+                    <label style="padding-left:  7px;">PO #</label>
+                    </span>
 									</div>
 									<div class="panel-collapse collapse" id="po">
 										<AutoComplete v-model="ponum" :data="ponumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -29,8 +30,9 @@
 									</div>
 								</div>
 								<div class="panel panel-default">
-									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#invoice"></span>
-										<label>Invoice #</label>
+									<div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#invoice">
+                    <label style="padding-left:  7px;">Invoice #</label>
+                    </span>
 									</div>
 									<div class="panel-collapse collapse" id="invoice">
 										<AutoComplete v-model="invoicenum" :data="invoicenumFilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -38,8 +40,9 @@
 									</div>
 								</div>
                 <div class="panel panel-default">
-									<div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#order"></span>
-										<label>Order Id</label>
+									<div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#order">
+                    <label style="padding-left:  7px;">Order Id</label>
+                    </span>
 									</div>
 									<div class="panel-collapse collapse" id="order">
 										<AutoComplete v-model="orderid" :data="orderidfilter" :filter-method="filterMethod" placeholder="input here" clearable>
@@ -47,9 +50,10 @@
 									</div>
 								</div>
 								<div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#date"></span>
-                                      <label>Date</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                      data-target="#date">
+                                      <label style="padding-left:  7px;">Date</label>
+                                      </span>
                                   </div>
                                   <div class="form-group row panel-collapse collapse" id="date">
                                       <div class="col-xs-3">
@@ -63,9 +67,10 @@
                                   </div>
                               </div>
 							  <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse"
-                                      data-target="#duedate"></span>
-                                      <label>Due Date</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"
+                                      data-target="#duedate">
+                                      <label style="padding-left:  7px;">Due Date</label>
+                                      </span>
                                   </div>
                                   <div class="form-group row panel-collapse collapse" id="duedate">
                                       <div class="col-xs-3">
@@ -79,8 +84,9 @@
                                   </div>
                               </div>
 							  <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#supplier"></span>
-                                      <label>Supplier</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#supplier">
+                                      <label style="padding-left:  7px;">Supplier</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="supplier">
                                       <select class="form-control"  v-model="email" id="selectEmail">
@@ -400,6 +406,12 @@ export default {
     }
   },
   methods:{
+    toggleIcon: function (e) {
+        $(e.target)
+          .prev('.panel-heading')
+          .find(".more-less")
+          .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+   },
     async reset(){
       this.ponum = '';
       this.dategt = '';
@@ -675,39 +687,36 @@ export default {
         method:'get',
         url: crmpostapiurl + 'po-invoice',
         params: params1,
-        headers:{
-        }
       })
       .then(async function(response) {
-      console.log('response-------------->',response)
-      self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
-      self.list = await self.mockTableData1(1,self.pageSize)
-      var Emailarr = [];
-      $('#selectEmail').children('option:not(:first)').remove();
-      self.data.forEach(item => {
-        self.ponumFilter.push(item.PO_id)
-        self.invoicenumFilter.push(item.invoiceId)
-        Emailarr.push(item.supplier_email);
-        self.orderidfilter.push(item.orderId)
-      })
-      Emailarr = _.chain(Emailarr).sort().uniq().value();
-      self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
-      self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
-      self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
-      console.log("##########################",self.orderidfilter)
-      Emailarr.forEach(item => {
-        var x = document.getElementById("selectEmail");
-        var option = document.createElement("option");
-        option.text = item;
-        console.log()
-        x.add(option);
-      })
+          console.log('response-------------->',response)
+          self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
+          self.list = await self.mockTableData1(1,self.pageSize)
+          var Emailarr = [];
+          $('#selectEmail').children('option:not(:first)').remove();
+          self.data.forEach(item => {
+            self.ponumFilter.push(item.PO_id)
+            self.invoicenumFilter.push(item.invoiceId)
+            Emailarr.push(item.supplier_email);
+            self.orderidfilter.push(item.orderId)
+          })
+          Emailarr = _.chain(Emailarr).sort().uniq().value();
+          self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
+          self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
+          self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
+          console.log("##########################",self.orderidfilter)
+          Emailarr.forEach(item => {
+            var x = document.getElementById("selectEmail");
+            var option = document.createElement("option");
+            option.text = item;
+            console.log()
+            x.add(option);
+          })
           console.log('response-------------->list',self.list)
-          
-        }).catch(function (error){
-          console.log("error------------------->",error)
-        })
-      params: params1
+              
+      }).catch(function (error){
+        console.log("error------------------->",error)
+      })
     },
     async viewDetails(params,status){
       // this.tableHeight = 250
@@ -724,9 +733,11 @@ export default {
       //     console.log("###############################",this.tableHeight)
       // }
     }
-  },
+},
   mounted(){
     this.init();
+    $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
   }
 }
 </script>

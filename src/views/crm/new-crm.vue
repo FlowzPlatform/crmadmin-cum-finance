@@ -530,7 +530,7 @@
 				var phone = phone_re.test(self.finaldata.phone);
 				var mail = re.test(self.finaldata.email);
 				self.finaldata.subscriptionId = Cookies.get('subscriptionId')
-				self.finaldata.isDeleted = "false"
+				self.finaldata.isDeleted = false
 				if(self.finaldata.assignee != "" && self.finaldata.cname != ""){
 					if (mail != false && phone != false) {
 						this.loading = true

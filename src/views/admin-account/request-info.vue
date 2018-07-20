@@ -16,9 +16,11 @@
                       <form>
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#username"></span>
-                                      <label>Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;"  data-target="#username">
+                                      <label style="padding-left:  7px;">Name</label>
+                                      </span>
                                   </div>
+
                                   <div class="panel-collapse collapse" id="username">
                                       <select class="form-control"  v-model="cname" id="selectCustomer">
                                         <option value="">All</option>
@@ -26,8 +28,9 @@
                                   </div>
                               </div>
                               <div class="panel panel-default">
-                                  <div class="panel-heading"><span class="glyphicon glyphicon-play collapsed" data-toggle="collapse" data-target="#productname"></span>
-                                      <label>Product Name</label>
+                                  <div class="panel-heading"><span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" style="width: 100%;" data-target="#productname">
+                                      <label style="padding-left:  7px;">Product Name</label>
+                                      </span>
                                   </div>
                                   <div class="panel-collapse collapse" id="productname">
                                       <select class="form-control"  v-model="pname" id="selectProduct">
@@ -331,8 +334,17 @@ export default {
 		}
       })
     },
+    toggleIcon: function (e) {
+                $(e.target)
+                    .prev('.panel-heading')
+                    .find(".more-less")
+                    .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+            }
+			
   },
   mounted () {
+    $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
+            $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
     console.log("mounted of request info")
   },
    watch: {
