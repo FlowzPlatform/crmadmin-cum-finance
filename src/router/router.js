@@ -231,6 +231,16 @@ export const otherRouter = {
         component: resolve => {
             require(['@/views/purchaseOrder/checkout.vue'], resolve);
         }
+    },
+    {
+        path: 'edit-faq',
+        title: 'edit-faq',
+        icon: 'ios-edit-outline',
+        name: 'Edit-FAQ',
+        props: true,
+        component: resolve => {
+            require(['@/views/FAQ/edit-faq.vue'], resolve);
+        }
     }
         // { path: 'address-book/:id',title: 'Edit Address Book', name: 'Edit Addressbook',component: resolve => { require(['@/views/my-account/edit-address-book.vue'], resolve)}}
     ]
@@ -503,7 +513,34 @@ export const appRouter = [
                 require(['@/views/purchaseOrder/received_po_list.vue'], resolve);
             }
         }]
-    }
+    },
+    {
+        path: '/FAQ',
+        icon: 'ios-paper',
+        title: 'FAQ',
+        name: 'FAQ',
+        component: Main,
+        children: [
+            {
+                path: 'newFAQ',
+                title: 'New FAQ',
+                icon: 'compose',
+                name: 'New FAQ',
+                component: resolve => {
+                    require(['@/views/FAQ/new-faq.vue'], resolve);
+                }
+            },
+            {
+                path: '/listFAQ',
+                title: 'List FAQ',
+                icon: 'ios-list-outline',
+                name: 'List FAQ',
+                component: resolve => {
+                    require(['@/views/FAQ/list-faq.vue'], resolve);
+                }
+            }
+        ]
+    },
     // {
     //     path: '/crm',
     //     icon: 'person-stalker',

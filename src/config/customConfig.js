@@ -76,8 +76,8 @@ module.exports = {
         // loginWithGithubUrl: 'https://auth.flowzcluster.tk/auth/github',
         // loginWithLinkedInUrl: 'https://auth.flowzcluster.tk/auth/linkedin',
 
-       serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
-        //  serviceUrl: 'http://localhost:3037/',
+    //    serviceUrl: 'https://api.' + process.env.domainkey + '/crm/',
+         serviceUrl: 'http://localhost:3037/',
         baseUrl: 'https://api.' + process.env.domainkey,
         subscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/',
         usersubscriptionUrl: 'https://api.' + process.env.domainkey + '/subscription/user-subscription',
@@ -92,7 +92,9 @@ module.exports = {
         socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort,
 
         emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendemaildata',
-        productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png'
+        productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png',
+
+        projectConfigurationUrl: 'https://api.' + process.env.domainkey + '/serverapi/project-configuration'
         // emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendEmail'
     }
 };
