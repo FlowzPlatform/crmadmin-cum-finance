@@ -1,29 +1,44 @@
 <template>
 	<div>
         <Row>
-            <Col span="12" offset="6">
+            <Col span="16" offset="4">
                 <Card style="padding:10px;">
                     <p slot="title">Add New FAQ</p>
-                    <Form class="form" :model="formItem" label-position="left" :label-width="140"  :rules="rulesValidation" ref="formItem1">
-                        <FormItem label="Website">
-                            <Select v-model="formItem.website" clearable filterable placeholder="Select Website" style="width: 100%;text-align: left;">
-                                <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
-                            </Select>
-                        </FormItem>
-                        <FormItem label="Question" prop="que">
-                            <Input v-model="formItem.que" placeholder="Enter your question..."/>
-                        </FormItem>
-                        <FormItem label="Answer" prop="ans">
-                            <span style="color:red;">*</span>
-                            <textarea v-model="formItem.ans" placeholder="Write answer" id="editor1" name="editor1"></textarea>
-                        </FormItem>
-                        <FormItem>
-                            <div style="text-align:center;">
-                                <Button type="primary" @click="testSubmit('formItem1')" :loading="loading">Submit</Button>
-                                <Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem1')">Reset</Button>
+                    <div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Website</label>
                             </div>
-                        </FormItem>
-                    </Form>
+                            <div class="col-sm-10">
+                                <Select v-model="website" clearable filterable placeholder="Select Website" style="width: 100%;text-align: left;">
+                                    <Option v-for="item in websiteList" :value="item.websiteId" :key="item.websiteId">{{ item.websiteName }}</Option>
+                                </Select>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Question</label> 
+                            </div>
+                            <div class="col-sm-10">
+                                <Input v-model="que" placeholder="Enter your question..."/>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Answer</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <textarea v-model="ans" placeholder="Write answer" id="editor1" name="editor1"></textarea>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <Button type="primary" @click="FAQSubmit()" :loading="loading">Submit</Button>
+                            <Button type="ghost" style="margin-left: 8px" @click="Cancel()">Reset</Button>
+                        </div>
+                    </div>
                 </Card>
             </Col>
         </Row>
@@ -42,16 +57,9 @@
             return {
                 loading: false,
                 websiteList: [],
-                formItem: {
-                    website:'',
-                    que: '',
-                    ans: ''
-                },
-                rulesValidation: {
-                    que : [
-                        { required: true, message: 'Question cannot be empty', trigger: 'blur'}
-                    ]
-                }
+                website:'',
+                que: '',
+                ans: '',
             }
         },
         methods: {
@@ -67,7 +75,6 @@
                 })
                 .then(function(response) {
                     if(response.data.data.length == 0){
-                      console.log("in if condition")
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
                         title: 'Error',
@@ -75,10 +82,10 @@
                       })
                     }else{    
                       var result = _.uniqBy(response.data.data,'websiteId')
-                      console.log("result", result)
+                    //   console.log("result", result)
                       self.websiteList = result
-                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
-                      self.formItem.website = self.websiteList[0].websiteId
+                    //   console.log("website", self.websiteList[0].websiteId)                    
+                      self.website = self.websiteList[0].websiteId
                     }
                 })
                 .catch(function(error) {
@@ -113,78 +120,73 @@
                     }
                 })
             },
-            async testSubmit() {
-                let que = this.formItem.que;
-                let ans = CKEDITOR.instances.editor1.getData();
+            async FAQSubmit() {
+                let que = this.que.trim();
+                let ans = CKEDITOR.instances.editor1.document.getBody().getChild(0).getText().trim();
                 if((que != '') && (ans != '')) {
-                    console.log('inside if')
-                }
-                else {
-                    console.log('inside else')
-                }
-            },
-            async FAQSubmit(name) {
-                // console.log('name',name)
-                // console.log('this.$refs[name]',this.$refs[name])
-                // await this.$refs[name].validate((valid) => {
-                //     console.log('valid',valid)
-                //     if (valid) {
-                
-                        let self = this;
+                    let self = this;
                         let faqData = {};
                         axios({
                             method: 'get',
                             url: config.default.serviceUrl + 'faq',
                             params: {
-                                websiteId: this.formItem.website
+                                websiteId: this.website
                             }
                         })
                         .then((response)=> {
-                            console.log(response);
+                            // console.log(response);
                             if (response.data.data.length != 0) {
                                 let faq = response.data.data[0].faq;
-                                console.log('faq',faq);
-                                let maxQueId = Math.max.apply(Math,faq.map(function(o){return o.queId;}))
-                                console.log('maxQueId',maxQueId)
+                                // console.log('faq',faq);
+                                let maxQueId = 0;
+                                if (faq.length != 0) {
+                                    maxQueId = Math.max.apply(Math,faq.map(function(o){return o.queId;}))
+                                }
+                                // console.log('maxQueId',maxQueId)
                                 faq.push({
-                                    'que': this.formItem.que,
+                                    'que': this.que,
                                     'ans': CKEDITOR.instances.editor1.getData(),
                                     'createdAt': new Date().toISOString(),
                                     'isActive': true,
                                     'queId': maxQueId + 1
                                 });
-                                console.log('after push',faq)
                                 axios({
                                     method: 'patch',
                                     url: config.default.serviceUrl + 'faq/' + response.data.data[0].id,
                                     data: {'faq': faq},
                                 })
-                                .then(function(response) {
-                                    console.log(response);
+                                .then((response) => {
+                                    // console.log(response);
+                                    this.$router.push({
+                                        name: 'List FAQ'
+                                    });
                                 })
                                 .catch(function(error) {
                                     console.log(error);
                                 })
                             }
                             else {
-                                faqData['websiteId'] = this.formItem.website;
+                                faqData['websiteId'] = this.website;
                                 faqData['subscriptionId'] = Cookies.get('subscriptionId');
                                 faqData['user'] = Cookies.get('user');
                                 faqData['faq'] = [{
-                                    'que': this.formItem.que,
+                                    'que': this.que,
                                     'ans': CKEDITOR.instances.editor1.getData(),
                                     'createdAt': new Date().toISOString(),
                                     'isActive': true,
                                     'queId': 1
                                 }];
-                                console.log('faqData',faqData);
+                                // console.log('faqData',faqData);
                                 axios({
                                     method: 'post',
                                     url: config.default.serviceUrl + 'faq',
                                     data: faqData,
                                 })
-                                .then(function(response) {
-                                    console.log(response);
+                                .then((response) => {
+                                    // console.log(response);
+                                    this.$router.push({
+                                        name: 'List FAQ'
+                                    });
                                 })
                                 .catch(function(error) {
                                     console.log(error);
@@ -195,15 +197,15 @@
                         .catch(function(error) {
                             console.log(error);
                         })
-                //     } else {
-                //         this.$Message.error('Please fill up all the fields correctly');
-                //     }
-                // })
+                }
+                else {
+                    this.$Message.error('Please fill up all the fields correctly');
+                }
             },
             Cancel() {
-                // this.$refs['formItem'].resetFields();
-                this.formItem.website = this.websiteList[0].websiteId
-                this.formItem.que = '';
+                // this.$refs['].resetFields();
+                this.website = this.websiteList[0].websiteId
+                this.que = '';
                 CKEDITOR.instances.editor1.setData('');
             }
         },

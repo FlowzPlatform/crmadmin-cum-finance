@@ -1,26 +1,42 @@
 <template>
     <div>
         <Row>
-            <Col span="12" offset="6">
+            <Col span="16" offset="4">
                 <Card style="padding:10px;">
                     <p slot="title">Edit FAQ</p>
-                    <Form :model="formItem" label-position="left" :label-width="140" ref="formItem">
-                        <FormItem label="Website">
-                            <Input v-model="formItem.website" readonly/>
-                        </FormItem>
-                        <FormItem label="Question">
-                            <Input v-model="formItem.que" placeholder="Enter your question..."/>
-                        </FormItem>
-                        <FormItem label="Answer">
-                            <textarea v-model="formItem.ans" placeholder="Write answer" name="editor1"></textarea>
-                        </FormItem>
-                        <FormItem>
-                            <div style="text-align:center;">
-                                <Button type="primary" @click="FAQSubmit('formItem')" :loading="loading">Submit</Button>
-                                <Button type="ghost" style="margin-left: 8px" @click="Cancel('formItem')">Reset</Button>
+                    <div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Website</label>
                             </div>
-                        </FormItem>
-                    </Form>
+                            <div class="col-sm-10">
+                                <label style="font-weight:normal;">{{website}}</label>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Question</label> 
+                            </div>
+                            <div class="col-sm-10">
+                                <Input v-model="que" placeholder="Enter your question..."/>
+                            </div>
+                        </div>
+                        <div class="row" style="padding:10px;">
+                            <div class="col-sm-2">
+                                <span style="color:red">*</span>
+                                <label>Answer</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <textarea v-model="ans" placeholder="Write answer" id="editor1" name="editor1"></textarea>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <Button type="primary" @click="FAQSubmit()" :loading="loading">Submit</Button>
+                            <Button type="ghost" style="margin-left: 8px" @click="back()">Back</Button>
+                        </div>
+                    </div>
                 </Card>
             </Col>
         </Row>
@@ -39,11 +55,9 @@
         data() {
             return {
                 loading: false,
-                formItem: {
-                    website: '',
-                    que: '',
-                    ans: ''
-                }
+                website: '',
+                que: '',
+                ans: ''
             }
         },
         methods: {
@@ -54,34 +68,53 @@
                 })
                 .then((response) => {
                     console.log(response)
-                    this.formItem.website = response.data.websiteName
+                    this.website = response.data.websiteName
                 })
                 .catch(function(error) {
                     console.log(error);
                 })
                 CKEDITOR.instances.editor1.setData(this.row.ans)
-                this.formItem.que = this.row.que
+                this.que = this.row.que
             },
             FAQSubmit() {
-                let faqData = {
-                    websiteId : this.websiteId,
-                    patchFaq: this.row
+                let que = this.que.trim();
+                let ans = CKEDITOR.instances.editor1.document.getBody().getChild(0).getText().trim();
+                // let ans = CKEDITOR.instances.editor1.getData();
+                console.log('ans',ans)
+                if((que != '') && (ans != '')) {
+                    delete this.row._index;
+                    delete this.row._rowKey;
+                    let faqData = {
+                        websiteId : this.websiteId,
+                        patchFaq: this.row
+                    }
+                    console.log('faqdata',faqData);
+                    faqData.patchFaq.que = this.que;
+                    faqData.patchFaq.ans = CKEDITOR.instances.editor1.getData();
+                    // faqData['updatedAt'] = new Date().toISOString();
+                    console.log('after edit',faqData);
+                    axios({
+                        method: 'patch',
+                        url: config.default.serviceUrl + 'faq/' + this.listId,
+                        data: faqData,
+                    })
+                    .then(function(response) {
+                        console.log(response);
+                        this.$router.push({
+                            name: 'List FAQ'
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
                 }
-                console.log('faqdata',faqData);
-                faqData.patchFaq.que = this.formItem.que;
-                faqData.patchFaq.ans = CKEDITOR.instances.editor1.getData();
-                // faqData['updatedAt'] = new Date().toISOString();
-                console.log('after edit',faqData);
-                axios({
-                    method: 'patch',
-                    url: config.default.serviceUrl + 'faq/' + this.listId,
-                    data: faqData,
-                })
-                .then(function(response) {
-                    console.log(response);
-                })
-                .catch(function(error) {
-                    console.log(error);
+                else {
+                    this.$Message.error('Please fill up all the fields correctly');
+                }
+            },
+            back() {
+                this.$router.push({
+                    name: 'List FAQ'
                 })
             }
         },
