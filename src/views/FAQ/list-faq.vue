@@ -202,7 +202,7 @@
                       'subscriptionId': Cookies.get('subscriptionId')
                     } 
                 })
-                .then(function(response) {
+                .then((response) => {
                     if(response.data.data.length == 0){
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
@@ -210,10 +210,11 @@
                         duration: 4.5
                       })
                     }else{    
-                      var result = _.uniqBy(response.data.data,'websiteId')
+                      let result = _.uniqBy(response.data.data,'websiteId')
                       console.log("result", result)
                       self.websiteList = result
-                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                      console.log("self.websiteList", self.websiteList[0].websiteId) 
+                      self.website = '';                   
                       self.website = self.websiteList[0].websiteId
                     //   self.websiteChange();
                     }
@@ -251,67 +252,77 @@
                 })
             },
             async websiteChange() {
-                this.$Loading.start();
-                await axios({
-                    method: 'get',
-                    url: config.default.serviceUrl + 'faq',
-                    params: {
-                        websiteId: this.website
-                    }
-                })
-                .then((response)=> {
-                    console.log(response);
-                    this.$Loading.finish();
-                    if (response.data.data.length != 0) {
-                        this.listId = response.data.data[0].id;
-                        this.allFAQ = response.data.data[0].faq
-                        this.list = this.allFAQ;
-                        this.queList = [];
-                        response.data.data[0].faq.forEach(item => {
-                            this.queList.push(item.que)
-                        })
-                    }
-                    else {
-                        this.$Notice.error({
-                            desc: 'FAQ not available for this website',
-                            title: 'Error',
-                            duration: 4.5
-                        })
-                    }
-                })
-                .catch((error) => {
-                    this.$Loading.error();
-                    console.log('errrooorrr',error.response);
-                    if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                        let location = psl.parse(window.location.hostname)
-                        location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
-                        self.$store.commit('logout', self);
-                        
-                        self.$router.push({
-                            name: 'login'
-                        });
-                        self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                    }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                        self.$Notice.error({
-                            title: error.response.statusText,
-                            desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
-                            duration: 4.5
-                        })
-                    }else {
-                        self.$Notice.error({
-                            title: error.response.data.name,
-                            desc: error.response.data.message,
-                            duration: 10
-                        })
-                    }
-                })
+                console.log('this.websiteId',this.website)
+                this.queList = [];
+                this.list = [];
+                if (this.website != '') {
+                    this.$Loading.start();
+                    await axios({
+                        method: 'get',
+                        url: config.default.serviceUrl + 'faq',
+                        params: {
+                            websiteId: this.website
+                        }
+                    })
+                    .then((response)=> {
+                        console.log(response);
+                        this.$Loading.finish();
+                        if (response.data.data.length != 0) {
+                            this.listId = response.data.data[0].id;
+                            this.allFAQ = response.data.data[0].faq
+                            this.list = this.allFAQ;
+                            response.data.data[0].faq.forEach(item => {
+                                this.queList.push(item.que)
+                            })
+                        }
+                        else {
+
+                            this.$Notice.error({
+                                desc: 'FAQ not available for this website',
+                                title: 'Error',
+                                duration: 4.5
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        this.$Loading.error();
+                        console.log('errrooorrr',error.response);
+                        if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
+                            let location = psl.parse(window.location.hostname)
+                            location = location.domain === null ? location.input : location.domain
+                            
+                            Cookies.remove('auth_token' ,{domain: location}) 
+                            Cookies.remove('subscriptionId' ,{domain: location}) 
+                            self.$store.commit('logout', self);
+                            
+                            self.$router.push({
+                                name: 'login'
+                            });
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
+                            self.$Notice.error({
+                                title: error.response.statusText,
+                                desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
+                                duration: 4.5
+                            })
+                        }else {
+                            self.$Notice.error({
+                                title: error.response.data.name,
+                                desc: error.response.data.message,
+                                duration: 10
+                            })
+                        }
+                    })
+                }
+                else {
+                    this.list = [];
+                    this.queList = [];
+                    this.$Message.error('Please select website');
+                }
             },
             editFAQ(row) {
                 this.$router.push({
