@@ -193,7 +193,7 @@
         },
         methods: {
             init() {
-                let self = this;
+                this.website = '';                   
                 axios({
                     method: 'get',
                     url: config.default.subscriptionWebsitesapi,
@@ -204,7 +204,7 @@
                 })
                 .then((response) => {
                     if(response.data.data.length == 0){
-                      self.$Notice.error({
+                      this.$Notice.error({
                         desc: 'Websites not available for this subscription',
                         title: 'Error',
                         duration: 4.5
@@ -212,38 +212,37 @@
                     }else{    
                       let result = _.uniqBy(response.data.data,'websiteId')
                       console.log("result", result)
-                      self.websiteList = result
-                      console.log("self.websiteList", self.websiteList[0].websiteId) 
-                      self.website = '';                   
-                      self.website = self.websiteList[0].websiteId
-                    //   self.websiteChange();
+                      this.websiteList = result
+                      console.log("this.websiteList", this.websiteList[0].websiteId) 
+                      this.website = this.websiteList[0].websiteId
+                    //   this.websiteChange();
                     }
                 })
-                .catch(function(error) {
+                .catch((error) => {
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         
                         Cookies.remove('auth_token' ,{domain: location}) 
                         Cookies.remove('subscriptionId' ,{domain: location}) 
-                        self.$store.commit('logout', self);
+                        this.$store.commit('logout', this);
                         
-                        self.$router.push({
+                        this.$router.push({
                             name: 'login'
                         });
-                        self.$Notice.error({
+                        this.$Notice.error({
                             title: error.response.data.name,
                             desc: error.response.data.message,
                             duration: 10
                         })
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                        self.$Notice.error({
+                        this.$Notice.error({
                             title: error.response.statusText,
                             desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                             duration: 0
                         })
                     }else {
-                        self.$Notice.error({
+                        this.$Notice.error({
                             title: error.response.data.name,
                             desc: error.response.data.message,
                             duration: 10
@@ -255,7 +254,7 @@
                 console.log('this.websiteId',this.website)
                 this.queList = [];
                 this.list = [];
-                if (this.website != '') {
+                if (this.website != '' && this.website != undefined) {
                     this.$Loading.start();
                     await axios({
                         method: 'get',
@@ -293,24 +292,24 @@
                             
                             Cookies.remove('auth_token' ,{domain: location}) 
                             Cookies.remove('subscriptionId' ,{domain: location}) 
-                            self.$store.commit('logout', self);
+                            this.$store.commit('logout', this);
                             
-                            self.$router.push({
+                            this.$router.push({
                                 name: 'login'
                             });
-                            self.$Notice.error({
+                            this.$Notice.error({
                                 title: error.response.data.name,
                                 desc: error.response.data.message,
                                 duration: 10
                             })
                         }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 403){
-                            self.$Notice.error({
+                            this.$Notice.error({
                                 title: error.response.statusText,
                                 desc: error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>',
                                 duration: 4.5
                             })
                         }else {
-                            self.$Notice.error({
+                            this.$Notice.error({
                                 title: error.response.data.name,
                                 desc: error.response.data.message,
                                 duration: 10
@@ -392,12 +391,11 @@
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
             },
             changeData () {
-                let self = this;
                 this.filterArray = this.allFAQ;
 
                 if(this.que != ''){
-                    this.filterArray = _.filter(this.filterArray,  function(item){
-                        return item.que === self.que;
+                    this.filterArray = _.filter(this.filterArray,  (item) => {
+                        return item.que === this.que;
                     });
                 }
                 this.list = this.filterArray;
