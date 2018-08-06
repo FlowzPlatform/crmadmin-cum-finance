@@ -199,54 +199,6 @@ export default {
     filterMethod (value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
     },
-    // async projectData () {
-    //   let resp
-    //   let self = this
-    //   await axios.get(config.default.projecturl + 'project', {
-    //     params: {
-    //     }
-    //   })
-    //   .then(function (response) {
-    //     console.log("response",response)
-    //     resp = response.data
-    //   })
-    //   .catch(function (error) {
-    //     console.log("error",error);
-    //     if(error.response.status == 401){
-              
-    //           let location = psl.parse(window.location.hostname)
-    //           location = location.domain === null ? location.input : location.domain
-              
-    //           Cookies.remove('auth_token' ,{domain: location}) 
-    //           self.$store.commit('logout', self);
-              
-    //           self.$router.push({
-    //               name: 'login'
-    //           });
-    //           self.$Notice.error({
-    //               title: error.response.data.name,
-    //               desc: error.response.data.message,
-    //               duration: 10
-    //           })
-    //       }else if(error.response.status == 403){
-    //         self.$Notice.error({
-    //           duration:0, 
-    //           title: error.response.statusText,
-    //           desc:error.response.data.message+'. Please <a href="'+config.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
-    //           });
-    //       }else {
-    //           self.$Notice.error({
-    //               title: error.response.data.name,
-    //               desc: error.response.data.message,
-    //               duration: 10
-    //           })
-    //       }
-    //   });
-    //   resp.forEach(obj =>{
-    //     self.data3.push(obj.project_name)
-    //     self.data3.sort();
-    //   })
-    // },
     configChange(data){
       console.log("-------------------configChange data",data)
       $('#CustomerName').css("display","block")

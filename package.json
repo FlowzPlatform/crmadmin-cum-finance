@@ -41,6 +41,7 @@
     "owl.carousel": "^2.2.0",
     "prettier": "1.8.2",
     "psl": "^1.1.21",
+    "randomstring": "^1.1.5",
     "rasterizehtml": "^1.2.4",
     "simplemde": "^1.11.2",
     "socket.io-client": "^2.1.0",

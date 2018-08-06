@@ -92,7 +92,9 @@ module.exports = {
         socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort,
 
         emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendemaildata',
-        productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png'
+        productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png',
+
+        projectConfigurationUrl: 'https://api.' + process.env.domainkey + '/serverapi/project-configuration'
         // emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendEmail'
     }
 };
