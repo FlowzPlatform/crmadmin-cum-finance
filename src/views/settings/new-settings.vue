@@ -253,15 +253,20 @@
                                         subscriptionId : Cookies.get('subscriptionId')
                                     },
                                     data: data
-                                })  
+                                })
                                 .then(function (response) {
                                     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
                                     self.loading = false;
-                                    self.$Message.success('Configuration Added Successfully');
-                                    self.handleReset('XeroformValidate')
-                                    self.$router.push({
-                                        name: 'Settings'
-                                    });
+                                    if (response.data.status != 403) {
+                                        self.$Message.success('Configuration Added Successfully');
+                                        self.handleReset('XeroformValidate')
+                                        self.$router.push({
+                                            name: 'Settings'
+                                        });
+                                    }
+                                    else {
+                                        self.$Message.error('Something went wrong , please try again later!');
+                                    }
                                 })
                                 .catch(function (error) {
                                     self.loading = false;
