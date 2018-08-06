@@ -73,7 +73,7 @@
                                                                 <td align="center" valign="" style="font-size:12px">PRODUCT NAME</td>
                                                                 <td align="center" valign="" style="font-size:12px">QUANTITY</td>
                                                                 <td align="center" valign="" style="font-size:12px">UNIT PRICE</td>
-                                                                <td align="center" valign="" style="font-size:12px">TOTAL</td>
+                                                                <td align="center" valign="" style="font-size:12px">SUB TOTAL</td>
                                                             </tr>
                                                             <tr>
                                                                 <td align="center" valign="" style="height: 70px;width: 105px">
@@ -294,7 +294,7 @@
                                                     <table width="100%">
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">TOTAL : {{ getMulti(item.total_qty, item.unit_price) }}</td>
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SUB TOTAL : {{ getMulti(item.total_qty, item.unit_price) }}</td>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                 <span v-else> $00.00 </span> 
@@ -304,7 +304,10 @@
                                                                 <span v-else> $00.00 </span>
                                                             </td>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX : $00.00</td>
+                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX : 
+                                                                <span v-if="item.taxcloud"> {{ getTaxAmount(item.taxcloud.tax_amount)}}</span> 
+                                                                <span v-else> $00.00 </span>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -318,8 +321,8 @@
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top"></td>
-                                                            <td align="right" valign="top" style="font-size:15px">SUB TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
-                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item) }} </span></td>
+                                                            <td align="right" valign="top" style="font-size:15px">TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
                                                         <tr>
@@ -403,22 +406,29 @@
             },
             getSubTotal (a, b, c, d) {
                 let sum = 0;
-                if (d) {
+                let finalAmount = 0;
+                let chargeAmount = 0;
+                let taxAmount = 0;
+                let res;
+                console.log('d',d)
+                if (d != 0) {
                     for (let i of d) {
                         let Charge = i.shipping_detail.shipping_charge
                         if (typeof Charge === 'string') {
                             Charge = parseFloat(Charge)
                         }
-                        sum += Charge
+                        sum = sum + Charge
                     }
                 }
-                let res = c.hasOwnProperty('charges')
-                if ( res == false) {
-                    return accounting.formatMoney((a*b) + parseFloat(sum))
+                res = c.hasOwnProperty('charges')
+                if ( res == true ) {
+                    chargeAmount = parseFloat(c.charges.setup_charge);
                 }
-                else {
-                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
+                res = c.hasOwnProperty('taxcloud');
+                if ( res == true ) {
+                    taxAmount = c.taxcloud.tax_amount
                 }
+                return accounting.formatMoney((a*b) + parseFloat(sum) + chargeAmount + taxAmount)
             },
             accounting(item){
               return accounting.formatMoney(item)
@@ -434,6 +444,9 @@
                 }
                 return accounting.formatMoney(sum)
             },
+            getTaxAmount(taxAmount) {
+                return accounting.formatMoney(taxAmount)
+            }
         },
         filters: {
             upper(item) {
@@ -441,6 +454,7 @@
             }
         },
         mounted() {
+            console.log('row',this.row)
         }
     };
 </script>

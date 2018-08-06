@@ -207,133 +207,124 @@
               }
               else
               {
-                // return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
-                return h('div', [                
-                    h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
-                ]);
-              }
-
-                  if((row.Addresses[0] == undefined) || (row.Addresses[0] == ''))
-                  {
-                    // return "Not available"
-                    return h('div', [            
-                      h('span',  "Not available")
-                    ]);
+                  if ((row.Addresses[0].AddressLine1 == undefined) || (row.Addresses[0].AddressLine1 == '')) {
+                      return h('div', [            
+                        h('span',  "Not available")
+                      ]);
                   }
                   else {
-                    // return row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode;
                     return h('div', [                
                       h('span', row.Addresses[0].AddressLine1 +", "+row.Addresses[0].AddressLine2+", " +row.Addresses[0].City+", "+row.Addresses[0].Country+", "+row.Addresses[0].PostalCode)
                     ]);
                   }
-                }
+              }
+            }
+          },
+          {
+            "title": "Status",
+            "key": "ContactStatus",
+            "sortable": true,
+            "width":120,
+            filters: [
+              {
+                label: 'ACTIVE',
+                value: 1
               },
               {
-                "title": "Status",
-                "key": "ContactStatus",
-                "sortable": true,
-                "width":120,
-                filters: [
-                  {
-                    label: 'ACTIVE',
-                    value: 1
-                  },
-                  {
-                    label: 'INACTIVE',
-                    value: 2
-                  }
-                ],
-                filterMultiple: false,
-                filterMethod (value, row) {
-                  if (value === 1) {
-                    return row.ContactStatus ==  'ACTIVE';
-                  } else if (value === 2) {
-                    return row.ContactStatus == 'INACTIVE';
-                  }
-                }
+                label: 'INACTIVE',
+                value: 2
               }
             ],
-            columns2: [
-              {
-              "title": "Customer Name",
-              "key": "DisplayName"
-              },
-              {
-              "title": "Email",
-              "key": "PrimaryEmailAddr",
-              "sortable": true,
-              render:(h,{row})=>{
-                // return row.PrimaryEmailAddr.Address
-                return h('div', [
-                  h('span', row.PrimaryEmailAddr.Address)
-                ]);
+            filterMultiple: false,
+            filterMethod (value, row) {
+              if (value === 1) {
+                return row.ContactStatus ==  'ACTIVE';
+              } else if (value === 2) {
+                return row.ContactStatus == 'INACTIVE';
               }
-              },
+            }
+          }
+        ],
+        columns2: [
+          {
+            "title": "Customer Name",
+            "key": "DisplayName"
+          },
+          {
+            "title": "Email",
+            "key": "PrimaryEmailAddr",
+            "sortable": true,
+            render:(h,{row})=>{
+              // return row.PrimaryEmailAddr.Address
+              return h('div', [
+                h('span', row.PrimaryEmailAddr.Address)
+              ]);
+            }
+          },
+          {
+            "title": "Mobile No.",
+            "key": "Mobile",
+            "sortable": true,
+            "align":"center",
+            render:(h,{row})=>{
+                // return "Not available"
+              return h('div', [
+                h('span', "Not available")
+              ]);
+            }
+          },
+          {
+            "title": "Phone No.",
+            "key": "PrimaryPhone",
+            "sortable": true,
+            "align":"center",
+            render:(h,{row})=>{
+              if(row.PrimaryPhone.FreeFormNumber == "'")
               {
-              "title": "Mobile No.",
-              "key": "Mobile",
-              "sortable": true,
-              "align":"center",
-              render:(h,{row})=>{
-                  // return "Not available"
+                // return "Not available"
                 return h('div', [
                   h('span', "Not available")
                 ]);
-                }
-              },
-              {
-              "title": "Phone No.",
-              "key": "PrimaryPhone",
-              "sortable": true,
-              "align":"center",
-              render:(h,{row})=>{
-                if(row.PrimaryPhone.FreeFormNumber == "'")
-                {
-                  // return "Not available"
-                  return h('div', [
-                    h('span', "Not available")
-                  ]);
-                }
-                else {
-                  // return row.PrimaryPhone.FreeFormNumber
-                  return h('div', [
-                    h('span', row.PrimaryPhone.FreeFormNumber)
-                  ]);
-                }
-                }
-              },
-              {
-              "title": "Fax No.",
-              "key": "active",
-              "sortable": true,
-              "align":"center",
-              render:(h,{row})=>{
-                  // return "Not available"
-                  return h('div', [
-                    h('span', "Not available")
-                  ]);
-                }
-              },
-              {
-              "title": "Address",
-              "key": "BillAddr",
-              "sortable": false,
-              render:(h,{row})=>{
+              }
+              else {
+                // return row.PrimaryPhone.FreeFormNumber
+                return h('div', [
+                  h('span', row.PrimaryPhone.FreeFormNumber)
+                ]);
+              }
+            }
+          },
+          {
+            "title": "Fax No.",
+            "key": "active",
+            "sortable": true,
+            "align":"center",
+            render:(h,{row})=>{
+                // return "Not available"
+                return h('div', [
+                  h('span', "Not available")
+                ]);
+            }
+          },
+          {
+            "title": "Address",
+            "key": "BillAddr",
+            "sortable": false,
+            render:(h,{row})=>{
 
-                if(row.BillAddr == "'")
-                {
-                  // return "Not available"
-                  return h('div', [
-                    h('span', "Not available")
-                  ]);
-                }
-                else {
-                  // return row.BillAddr.Line1 +", "+row.BillAddr.City
-                  return h('div', [
-                    h('span', row.BillAddr.Line1 +", "+row.BillAddr.City)
-                  ]);
-                }
-
+              if(row.BillAddr == "'")
+              {
+                // return "Not available"
+                return h('div', [
+                  h('span', "Not available")
+                ]);
+              }
+              else {
+                // return row.BillAddr.Line1 +", "+row.BillAddr.City
+                return h('div', [
+                  h('span', row.BillAddr.Line1 +", "+row.BillAddr.City)
+                ]);
+              }
             }
           },
           {

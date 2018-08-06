@@ -1157,7 +1157,9 @@
                     })
                     .then(function (response) {
                         console.log("-----------settings response",response)
-                        self.data6.push(response.data);
+                        if (response.data.status != 403) {
+                            self.data6.push(response.data);
+                        }
                         // self.data6.push(response.data);
                         // self.$Message.success('Success!');
                     })
