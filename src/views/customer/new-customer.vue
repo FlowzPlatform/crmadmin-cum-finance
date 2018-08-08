@@ -201,6 +201,7 @@
     },
     methods: {
         handleSubmit (name) {
+            // console.log('this.$refs[name]',this.$refs[name].validate())
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     //this.$Message.success('Success!');

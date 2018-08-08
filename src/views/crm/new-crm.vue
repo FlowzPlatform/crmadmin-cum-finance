@@ -16,7 +16,7 @@
 								<Input v-model="finaldata.name" placeholder="Enter Name..." style="width: 100%"></Input>
 								<!-- <input class="form-control" type="text" id="name" placeholder="Name" /> -->
 							</p>
-							<textarea v-model="description" placeholder="Wright description" name="editor1"></textarea>
+							<textarea v-model="description" placeholder="Write description" name="editor1"></textarea>
 							<!-- <p id="c16943"> -->
 							<!--<upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="padding-top:15px">
 								<div style="padding: 20px 0">

@@ -228,7 +228,7 @@
                                                 <th> PRODUCT NAME </th>
                                                 <th> QUANTITY </th>
                                                 <th> UNIT PRICE </th>
-                                                <th> TOTAL </th>
+                                                <th> SUB TOTAL </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -410,7 +410,7 @@
                                                 </td>
                                             </tr>
                                             <tr class="item_total" >
-                                                <th>Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
+                                                <th>Sub Total:  {{ getMulti(item.total_qty, item.unit_price) }}</th>
                                                 <th>Additional Charges:  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
                                                                                     <span v-else> $00.00 </span> 
                                                 </th>
@@ -420,11 +420,14 @@
                                                         <span v-else> $00.00 </span> 
                                                     <!-- </span> -->
                                                 </th>
-                                                <th>Tax : $00.00 </th>
-                                                <th colspan="2">Sub Total:
+                                                <th>Tax : 
+                                                    <span v-if="item.taxcloud"> {{ getTaxAmount(item.taxcloud.tax_amount)}}</span> 
+                                                    <span v-else> $00.00 </span>
+                                                </th>
+                                                <th colspan="2">Total:
                                                     <!-- <span v-for="(i, j) in item.shipping_method.shipping_detail"> -->
-                                                        <span style="color:#C11E19" v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
-                                                        <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span> 
+                                                        <span style="color:#C11E19" v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                        <span v-else> {{ getTotal(item.total_qty, item.unit_price, item, 0) }} </span> 
                                                     <!-- </span> -->
                                                 </th>
                                             </tr>
@@ -620,6 +623,9 @@
                 }
                 return accounting.formatMoney(sum)
             },
+            getTaxAmount(taxAmount) {
+                return accounting.formatMoney(taxAmount)
+            },
             getImgUrl (product) {
                 let ProductImage = config.default.productImageUrl;
                 if (product.images != undefined) {
@@ -627,8 +633,16 @@
                 }
                 return ProductImage;
             },
-            getSubTotal (a, b, c, d) {
+            getTotal (a, b, c, d) {
+                // console.log('total qty',a);
+                // console.log('unit price',b);
+                // console.log('product',c);
+                // console.log('shipping charge',d);
                 let sum = 0;
+                let finalAmount = 0;
+                let chargeAmount = 0;
+                let taxAmount = 0;
+                let res;
                 if (d != 0) {
                     for (let i of d) {
                         let Charge = i.shipping_detail.shipping_charge
@@ -638,13 +652,15 @@
                         sum = sum + Charge
                     }
                 }
-                let res = c.hasOwnProperty('charges')
-                if ( res == false) {
-                    return accounting.formatMoney((a*b) + parseFloat(sum))
+                res = c.hasOwnProperty('charges')
+                if ( res == true ) {
+                    chargeAmount = parseFloat(c.charges.setup_charge);
                 }
-                else {
-                    return accounting.formatMoney((a*b + parseFloat(c.charges.setup_charge) + parseFloat(sum)))
+                res = c.hasOwnProperty('taxcloud');
+                if ( res == true ) {
+                    taxAmount = c.taxcloud.tax_amount
                 }
+                return accounting.formatMoney((a*b) + parseFloat(sum) + chargeAmount + taxAmount)
             },
             accounting(item){
               return accounting.formatMoney(item)
