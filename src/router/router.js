@@ -98,12 +98,13 @@ export const otherRouter = {
     name: 'otherRouter',
     redirect: '/home',
     component: Main,
+    props: true,
     children: [{
         path: 'home',
         title: 'Dashboard',
         name: 'Dashboard',
         component: resolve => {
-            require(['@/views/home/home.vue'], resolve);
+            require(['@/views/home/home1.vue'], resolve);
         }
     },
     {
