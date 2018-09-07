@@ -4,12 +4,12 @@
 </style>
 <template>
     <div class="home-main">
-         
+
         <Row :gutter="10">
             <Col :md="24" :lg="24" :sm="12">
                 <Row :style="{border: '1px solid #ddd', borderRadius: '5px', backgroundColor: 'whitesmoke'}">
                     <Col :xs="24" :sm="2" :md="2" :style="{marginBottom: '10px', marginTop: '10px'}">
-                        
+
                     </col>
                     <Col :xs="24" :sm="6" :md="6" :style="{marginBottom: '10px', marginTop: '10px'}">
                         <Select v-model="config" style="width:200px;" placeholder="Select Config" @on-change="getContacts">
@@ -83,11 +83,11 @@
         <Row :gutter="10" class="margin-top-10">
             <Col :md="24" :lg="12">
                 <draggable :options="{group:'chart'}">
-                            
+
                     <!-- BEGIN PORTLET-->
                     <Widget>
                     <WidgetHeading :id="4" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true" :Collapse="true"></WidgetHeading>
-                    <WidgetBody>                                    
+                    <WidgetBody>
                         <div class="portlet-body">
                             <div id="chart1_content" style="height: 300px;">
                                 <div id="barChart" style="height:300px;"></div>
@@ -96,7 +96,7 @@
                     </WidgetBody>
                     </Widget>
                     <!-- END PORTLET-->
-                            
+
                 </draggable>
             </Col>
             <Col :md="24" :lg="12">
@@ -104,7 +104,7 @@
                         <!-- BEGIN PORTLET-->
                         <Widget>
                         <WidgetHeading :id="2" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
-                        <WidgetBody>                                    
+                        <WidgetBody>
                             <div class="portlet-body">
                                 <div id="chart2_content" style="height: 300px;">
                                     <div id="pieChart" style="height:300px;"></div>
@@ -122,7 +122,7 @@
                         <!-- BEGIN PORTLET-->
                         <Widget>
                         <WidgetHeading :id="3" :Title="'Invoice Amount'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
-                        <WidgetBody>                                    
+                        <WidgetBody>
                             <div class="portlet-body">
                                 <div id="chart3_content" style="height: 300px;">
                                     <div id="lineChart" style="height: 300px;"> </div>
@@ -138,7 +138,7 @@
                     <!-- BEGIN PORTLET-->
                     <Widget>
                     <WidgetHeading :id="6" :Title="'Paid Amount Cashflow'" :HeaderEditable="false" :TextColor="true" :ColorBox="true"x :Collapse="true"></WidgetHeading>
-                    <WidgetBody>                                    
+                    <WidgetBody>
                         <div class="portlet-body">
                             <div id="chart4_content" style="height: 300px;">
                                 <div id="waterfall" style="height: 300px;"> </div>
@@ -150,7 +150,7 @@
                 </draggable>
             </Col>
         </Row>
-        
+
     </div>
 </template>
 
@@ -178,7 +178,7 @@
 
     export default {
         name: 'home',
-        
+
         components: {
             homeMap,
             dataSourcePie,
@@ -193,7 +193,7 @@
         },
         data () {
             return {
-                
+
                 name : '',
                 daterange1 : '',
                 config : '',
@@ -293,11 +293,11 @@
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -326,10 +326,10 @@
                             duration: 10
                         })
                     }
-                        
-                    //     Cookies.remove('auth_token') 
+
+                    //     Cookies.remove('auth_token')
                     //     self.$Message.error('Auth Error!');
-                    //     self.$store.commit('logout', self); 
+                    //     self.$store.commit('logout', self);
                     //     self.$router.push({
                     //     name: 'login'
                     // })
@@ -410,18 +410,18 @@
                     console.log("error",error);
                     if (error.response.data.message === 'invalid_grant') {
                         self.$Notice.error({
-                            duration:0, 
+                            duration:0,
                             title: "QB : Credential Expired",
                             desc: "Token is expired for " + settingName
                         });
                     } else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -455,7 +455,7 @@
             },
             async pieChartFun(date1,date2,settingId,settingName,contact) {
                 // based on prepared DOM, initialize echarts instance
-                // document.getElementById('chart2_loading').style = "display:block"            
+                // document.getElementById('chart2_loading').style = "display:block"
                 let piechart = echarts.init(document.getElementById('pieChart'));
                 piechart.showLoading();
                 let chart_data = await this.PieChartFun(date1,date2,settingId,settingName,contact);
@@ -575,11 +575,11 @@
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -743,7 +743,7 @@
                 // console.log("data1",data1);
                 // console.log("data2",data2);
                 // console.log("data3",data3);
-                waterfallChart.hideLoading(); 
+                waterfallChart.hideLoading();
                 waterfallChart.setOption(option);
             },
 
@@ -769,11 +769,11 @@
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -829,7 +829,7 @@
                     if(response.data.domain == 'custom'){
 
                         let customCustomerUrl = response.data.customer_url;
-                        
+
                         axios({
                             method: 'get',
                             url: customCustomerUrl,
@@ -849,7 +849,7 @@
                                 Name : 'All'
                             };
                             self.contactData.push(cnt)
-                            for (let i=0; i<contacts.data.length; i++) { 
+                            for (let i=0; i<contacts.data.length; i++) {
                                 cnt = {
                                     Id : contacts.data[i].Name,
                                     Name : contacts.data[i].Name
@@ -865,11 +865,11 @@
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
-                                
-                                Cookies.remove('auth_token' ,{domain: location}) 
-                                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                                Cookies.remove('auth_token' ,{domain: location})
+                                Cookies.remove('subscriptionId' ,{domain: location})
                                 self.$store.commit('logout', self);
-                                
+
                                 self.$router.push({
                                     name: 'login'
                                 });
@@ -896,7 +896,7 @@
                     }else{
                         axios.get(serviceUrl+"contacts", {
                         params: {
-                            settingId : self.config    
+                            settingId : self.config
                         }
                         })
                         .then(function(response) {
@@ -930,11 +930,11 @@
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
-                                
-                                Cookies.remove('auth_token' ,{domain: location}) 
-                                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                                Cookies.remove('auth_token' ,{domain: location})
+                                Cookies.remove('subscriptionId' ,{domain: location})
                                 self.$store.commit('logout', self);
-                                
+
                                 self.$router.push({
                                     name: 'login'
                                 });
@@ -973,16 +973,16 @@
                         console.log(">>>>>>>>>>>>>>>> " , result)
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        Cookies.set('user',  result.data.data.email  , {domain: location}); 
+                        Cookies.set('user',  result.data.data.email  , {domain: location});
                     }).catch(function (error){
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                            Cookies.remove('auth_token' ,{domain: location})
+                            Cookies.remove('subscriptionId' ,{domain: location})
                             self.$store.commit('logout', self);
-                            
+
                             self.$router.push({
                                 name: 'login'
                             });
@@ -1006,7 +1006,7 @@
                         }
                     })
                 }
-                
+
                 this.name = await Cookies.get('user');
                 //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 let resp;
@@ -1021,15 +1021,15 @@
                     }
                 })
                 .then(function (response) {
-                    
+
                     if (response.data.data.length != 0){
-                        
+
                         let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
                         if(arrIndex != -1){
                             response.data.data.push(response.data.data.splice(arrIndex, 1)[0]);
                         }
-                        
-                        
+
+
                         //     let arr = response.data.data;
                         //    arr.push(arr.splice(arr.indexOf(6), 1)[0]);
                             self.mData = response.data.data;
@@ -1042,7 +1042,7 @@
                             self.waterfallFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
                             self.totalAmt(moment(self.daterange1[0]).format('YYYY-MM-DD'),moment(self.daterange1[1]).format('YYYY-MM-DD'),self.config,self.mData[0].configName)
                     }else{
-                        setTimeout(function(){ 
+                        setTimeout(function(){
                                 self.$Modal.warning({
                                     title: 'No Configuration available',
                                     okText : "Go to Settings",
@@ -1053,9 +1053,9 @@
                                         })
                                     }
                                 });
-                        },1000)
+                        },2000)
                     }
-                    
+
                 })
                 .catch(function (error) {
                     self.disabled = false;
@@ -1068,10 +1068,10 @@
                     }else if(error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -1083,7 +1083,7 @@
                     }
                     else if(error.response.status == 403){
                         self.$Notice.error({
-                            duration:0, 
+                            duration:0,
                             title: error.response.statusText,
                             desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
                         });
@@ -1094,7 +1094,7 @@
                             duration: 10
                         })
                     }
-                    
+
                 });
             },
 
@@ -1124,7 +1124,7 @@
                     this.totalAmt(moment(this.daterange1[0]).format('YYYY-MM-DD'),moment(this.daterange1[1]).format('YYYY-MM-DD'),this.config,configName,this.contacts)
                 }
                 // this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[1]).format('YYYY,MM,DD'))
-            }, 
+            },
 
             async getDate(days) {
                 const end = new Date();
@@ -1136,7 +1136,7 @@
 
         },
         async mounted() {
-            
+
             let self = this
             this.daterange1 = await this.getDate(91);
             console.log("daterange1",this.daterange1)
@@ -1145,7 +1145,7 @@
             // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
             setTimeout(function() {
                 self.init()
-            }, 2000);    
+            }, 2000);
         }
 
     };
