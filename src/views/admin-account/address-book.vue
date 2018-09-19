@@ -110,8 +110,8 @@
             color: #c51327;
     }
     .row {
-        margin-right: 0px !important; 
-        margin-left: 0px !important; 
+        margin-right: 0px !important;
+        margin-left: 0px !important;
     }
     .address-edit-del-block {
         margin-top:10px;
@@ -124,7 +124,7 @@
 		color: #404040;
 	}
 	.address-contact-info-block a:hover {
-		color: #c10d22;	
+		color: #c10d22;
 		text-decoration: none;
 	}
 	.account-address-block .address-shipping-block a:hover {
@@ -144,7 +144,7 @@
 					<h1 class="main-title">
 						<i class="fa fa-edit"></i>
 						Address Book
-					
+
 					</h1>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -180,22 +180,22 @@
 								<div class="scrollbar" id="style-1">
 									<i class="address-icon"></i>
 									<p>
-										<span>{{item.name}} </span><br><br> 
-										<span>{{item.street1}} </span><br> 
+										<span>{{item.name}} </span><br><br>
+										<span>{{item.street1}} </span><br>
 										<span v-if="item.street2">{{ item.street2 }}</span>
 										<span v-else></span><br>
 										<span> {{ typedata[index].type3 }} , {{item.postalcode}} </span><br>
-										<span> {{ typedata[index].type2 }} </span><br><br> 
+										<span> {{ typedata[index].type2 }} </span><br><br>
 										<span> {{ typedata[index].type1 }}  </span>
-											
+
 									</p>
 								</div>
 							</div>
 							<div class="address-contact-info-block">
 								<ul>
 									<li class="phone">
-										<i class="fa fa-phone"></i>     {{item.phone}}    
-									
+										<i class="fa fa-phone"></i>     {{item.phone}}
+
 									</li>
 									<li class="email">
 										<i class="fa fa-envelope"></i>
@@ -206,8 +206,8 @@
 							<div class="address-shipping-block">
 								<div class="checkbox">
 									<a href="javascript:void(0)" class=" is-default  checked_2" data-id="22" data-url="/en_ca/my-account/address-book/is-default">
-										<i class="fa fa-check-circle"></i>        {{item.address_type}}    
-				
+										<i class="fa fa-check-circle"></i>        {{item.address_type}}
+
 									</a>
 								</div>
 							</div>
@@ -221,14 +221,14 @@
 <script>
 	import config from '../../config/customConfig.js'
     import Cookies from 'js-cookie';
-	let axios = require('axios'); 
+	let axios = require('axios');
     let _ = require('lodash');
     var api = "http://172.16.61.160:3032/address-book";
 	var apiurl = "http://172.16.61.160:3032/change-city-state-country";
     export default {
         name: 'addressbook',
         data() {
-            return { 
+            return {
 				addressbook: [],
 				typedata: [],
 				userid: ''
@@ -244,7 +244,7 @@
                 })
                 .then(function (response){
                     // console.log("response", response.data.data)
-                    return response.data.data                  
+                    return response.data.data
                 }).catch(err => {
 					return []
 				})
@@ -285,16 +285,16 @@
 							return abc
 						})
 						mObj['type' + type] = resp
-						console.log('mObj.......', mObj)	
+						// console.log('mObj.......', mObj)
 					}
 					self.typedata.push(mObj)
 				}
 
-				console.log('typedata', self.typedata)
+				// console.log('typedata', self.typedata)
 				self.addressbook = abc
             },
 			saveTheThing (id) {
-				console.log("124ahjhdkjs", id)
+				// console.log("124ahjhdkjs", id)
 				// this.$router.push('/address-book/'+id)
 			},
 			addNewAddressBook () {
@@ -308,11 +308,11 @@
                 url: config.default.userDetail,
                 headers: {'Authorization': Cookies.get('auth_token')}
                 }).then(async function (response) {
-                    self.userid = response.data.data._id               
-                    console.log('user detail response------>',self.userid)
+                    self.userid = response.data.data._id
+                    // console.log('user detail response------>',self.userid)
                 })
                 .catch(function (error) {
-                    console.log("-------",error);
+                    // console.log("-------",error);
                     self.$Message.error(error)
             });
             this.init()

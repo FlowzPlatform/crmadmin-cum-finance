@@ -33,13 +33,13 @@
 							if(Array.isArray(row.assignee)){
 								return h('div', [
                                 	h('span', row.assignee.join())
-                            	]);	
-							} 
+                            	]);
+							}
 							else {
 								return h('div', [
                                 	h('span', row.assignee)
                             	]);
-							}	
+							}
 						}
 					},
 					{
@@ -163,7 +163,7 @@
 									}
 								})
 								])
-                                
+
                             ]);
 						}
 					}
@@ -187,7 +187,7 @@
 					content: '<p>Are you sure you want to delete this relation ? <p>',
 					onOk: () => {
 						var userid = Cookies.get('user')
-            			self.$Message.success('Relationship Deleted Successfully');						
+            			self.$Message.success('Relationship Deleted Successfully');
 						var data1= {
 							"isDeleted": true,
 							"deletedBy": userid,
@@ -213,11 +213,11 @@
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
@@ -260,12 +260,13 @@
 			.then(function (response) {
 				console.log("crm-case response",response.data.data)
 				var subscriptionId1 = Cookies.get('subscriptionId')
+				console.log('subscriptionId1',subscriptionId1)
 				 // setTimeout(function(){
 					// 	$('table colgroup col:last-child, table thead tr th:last-child ,table colgroup col:last-child, table tbody tr td:last-child').hide();
 					// },100)
 				response.data.data.forEach(function(item,index){
-					// console.log("item index",item )
-					if (item.isDeleted == false && item.subscriptionId == subscriptionId1){
+					console.log("item----------",item.isDeleted, typeof item.isDeleted )
+					if (item.isDeleted == "false" && item.subscriptionId == subscriptionId1){
 						self.data5.push(item);
 					}
 				})
@@ -283,11 +284,11 @@
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
 						});

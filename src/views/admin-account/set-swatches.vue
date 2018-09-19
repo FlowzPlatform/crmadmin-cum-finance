@@ -461,7 +461,6 @@ export default {
           self.list1 = await self.mockTableData1(1,pageSize)
           self.$Loading.finish();
         }).catch(function (error) {
-          console.log("-------",error);
           self.$Loading.error();
             self.$Message.error(error)
         });
@@ -495,7 +494,6 @@ export default {
           // self.list2 = await self.mockTableData2(1,pageSize)
           self.$Loading.finish();
         }).catch(function (error) {
-          console.log("-------",error);
           self.$Loading.error();
             self.$Message.error(error)
         });
@@ -533,7 +531,6 @@ export default {
             this.$Message.error('Please enter valid hexcode');
             return false;
           } else {
-            console.log('this.websiteid...........',this.websiteName)
             param1 = {
               // colorname :this.list1[(this.page - 1) * 10 + (index)].key,
               colorname :this.list1[index].key,
@@ -547,7 +544,7 @@ export default {
                    await self.getColorTableData()
                   var data = _.find(self.data, function(o) {
                       return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-                      
+
                         if(data != null){
                                axios({
                                       method: 'patch',
@@ -562,7 +559,6 @@ export default {
                                       self.$Message.success("update successfully")
 
                                }).catch(function (error) {
-                                      console.log("-------",error);
                                    self.$Message.error(error)
                                });
                         } else {
@@ -578,7 +574,6 @@ export default {
                                     self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
                                }).catch(function (error) {
-                                    console.log("-------",error);
                                    self.$Message.error(error)
                                });
 
@@ -601,7 +596,6 @@ export default {
                    await self.getColorTableData()
                   var data = _.find(self.data, function(o) {
                       return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-                      console.log('this.list1[index].checkvalue',this.list1[index].checkvalue)
                       var reader = new FileReader();
                       reader.readAsDataURL(this.list1[index].imgurl1);
                       reader.addEventListener("load", function () {
@@ -621,7 +615,6 @@ export default {
                                       self.$Message.success("update successfully")
 
                                }).catch(function (error) {
-                                      console.log("-------",error);
                                    self.$Message.error(error)
                                });
                         } else {
@@ -637,7 +630,6 @@ export default {
                                     self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
                                     self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
                                }).catch(function (error) {
-                                    console.log("-------",error);
                                    self.$Message.error(error)
                                });
 
@@ -729,7 +721,6 @@ export default {
                                  self.$Message.success("update successfully")
 
                           }).catch(function (error) {
-                                 console.log("-------",error);
                               self.$Message.error(error)
                           });
                    } else {
@@ -742,7 +733,6 @@ export default {
                                self.$Message.success("saved successfully")
                                self.data2[index].colorBox2 = self.data2[index].hexcode2
                           }).catch(function (error) {
-                               console.log("-------",error);
                               self.$Message.error(error)
                           });
                    }
@@ -763,7 +753,7 @@ export default {
         })
       })
       .catch(function (error) {
-        console.log("-------",error);
+        // console.log("-------",error);
           self.$Message.error(error)
       });
   }

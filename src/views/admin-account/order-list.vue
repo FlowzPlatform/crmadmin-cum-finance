@@ -7,7 +7,7 @@
             </Select>
 
             <h4 class="panel-title" style="text-align:right;display: inline-block;    margin-left: 2%;"><a data-toggle="collapse" data-parent="#accordion13" href="#collapseTwo"><button class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-filter"></span> Filter </button></a></h4>
-       
+
         </div>
 
            <div class="panel panel-default panel-group" id="accordion13" style="border: none;margin-top:1%;text-align: left;">
@@ -18,7 +18,7 @@
                       <form>
                           <div class="collapse-maindiv maindiv" >
                               <div class="panel panel-default">
-                                  <div class="panel-heading"> 
+                                  <div class="panel-heading">
                                     <span class="more-less glyphicon glyphicon-chevron-down collapsed" data-toggle="collapse" data-target="#order" style="width: 100%;">
                                       <label style="padding-left:  7px;">Order Id</label>
                                       </span>
@@ -113,7 +113,7 @@
     import psl from 'psl';
     import downloadOrderList from './download-orderlist.vue';
     import Cookies from 'js-cookie';
-    let axios = require('axios'); 
+    let axios = require('axios');
     let _ = require('lodash');
 
     const accounting = require('accounting-js');
@@ -189,7 +189,7 @@
                         align:  'center',
                         render : (h , {row}) => {
                             return h('div', [
-                                
+
                                 h('span', row.user_billing_info.name)
                             ]);
                         }
@@ -199,7 +199,7 @@
                         align:  'center',
                         render : (h , {row}) => {
                             return h('div', [
-                                
+
                                 h('span', row.user_billing_info.email)
                             ]);
                         }
@@ -211,7 +211,7 @@
                         render : (h , {row}) => {
                             var date = moment(row.created_at).format('DD-MMM-YYYY')
                             return h('div', [
-                                
+
                                 h('span', date)
                             ]);
                         }
@@ -228,7 +228,7 @@
                         align:  'center',
                         render : (h , {row}) => {
                             return h('div', [
-                                
+
                                 h('span', row.products.length)
                             ]);
                         }
@@ -237,9 +237,9 @@
                         title: 'Total Amount',
                         width: 115,
                         align:  'right',
-                        render : (h , {row}) => { 
+                        render : (h , {row}) => {
                             return h('div', [
-                                
+
                                 h('span', accounting.formatMoney(row.total))
                             ]);
                         }
@@ -286,7 +286,7 @@
                     },
                     {
                         title: 'Download',
-                        width: 100, 
+                        width: 100,
                         align:  'center',
                         render: (h, params) => {
 							return h('Button', {
@@ -318,7 +318,7 @@
         },
         methods: {
             changepagesize(pageSize){
-                console.log("####################################",pageSize)
+                // console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 if(this.pageSize > 10){
                     this.tableHeight = 530
@@ -330,16 +330,16 @@
             async changePage (p) {
                 // this.page = p
                 var self = this
-                console.log("not inside",self.filterArray.length)
+                // console.log("not inside",self.filterArray.length)
                 if(self.filterArray.length == 0){
-                    console.log("inside",self.filterArray)
+                    // console.log("inside",self.filterArray)
                     self.list1 = await self.mockTableData1(p,self.pageSize);
                 }else{
                     self.list1 = await self.mockTableData2(p,self.pageSize);
                 }
             },
             async mockTableData1 (p,size) {
-                console.log("mocktable call---------------")
+                // console.log("mocktable call---------------")
                 this.len = this.data1.length
                 // if(this.len == 0){
                 //     console.log("data length 0--------------->",this.tableHeight)
@@ -353,9 +353,9 @@
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
-                console.log("p-------------->",p)
-                console.log("p-------------->",size)
-                console.log("console.log------------>",this.filterArray)
+                // console.log("p-------------->",p)
+                // console.log("p-------------->",size)
+                // console.log("console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
                 // if(this.len == 0){
                 //     console.log("data length 0--------------->",this.tableHeight)
@@ -373,34 +373,30 @@
               this.cname = '';
               this.email = '';
               this.itemno = '';
-              this.po_sent = ''; 
+              this.po_sent = '';
               this.listData(this.website)
             },
             async changeData() {
-              console.log("Before this.filterArray------->",this.filterArray)
+              // console.log("Before this.filterArray------->",this.filterArray)
               this.filterArray = this.data1
-               console.log("After this.filterArray------->",this.filterArray)
+               // console.log("After this.filterArray------->",this.filterArray)
               var self = this
                 self.finalresult = [];
 
               if(this.orderid != ''){
-                console.log("this.orderid", this.orderid)
+                // console.log("this.orderid", this.orderid)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                  console.log("item",item)                  
+                  // console.log("item",item)
                     return item.order_id === self.orderid;
-                  
+
                 });
-                console.log("myarr",this.filterArray)
-                console.log(" Filter this.filterArray------->",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
-                console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
               if(this.po_sent != ''){
-                console.log("this.filterArray",this.filterArray)
+                // console.log("this.filterArray",this.filterArray)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                console.log("item",item)
-                  
+
                     if(self.po_sent == 'true'){
                         if(item.po_detail != undefined){
                         return item
@@ -410,65 +406,45 @@
                             return item
                         }
                     }
-                  
+
                 });
-                console.log("myarr",this.filterArray)
-                console.log(" Filter this.filterArray------->",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
-                console.log("After Filter this.filterArray------->",this.filterArray)
               }
 
 
               if(this.cname != ''){
-                console.log("this.cname", this.cname)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                  console.log("item",item)
-                  return item.user_billing_info.name === self.cname;                 
+                  return item.user_billing_info.name === self.cname;
                 });
-                console.log("myarr",this.filterArray)
                 //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-                console.log("myarr",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.email != ''){
-                console.log("this.cname", this.email)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                  console.log("item",item)
-                  return item.user_billing_info.email === self.email;                 
+                  return item.user_billing_info.email === self.email;
                 });
-                console.log("myarr",this.filterArray)
                 //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-                console.log("myarr",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
 
               if(this.itemno != ''){
-                console.log("this.itemno", this.itemno)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                  console.log("item",item)
                     item.products.forEach(obj => {
-                        console.log("*****************",obj)
                         if(obj.product_description.sku == self.itemno){
                             self.finalresult.push(item)
-                            console.log("matched",obj)
                         }
                       })
-                    //   return finalresult                
+                    //   return finalresult
                 });
-                console.log("myarr result",self.finalresult)
                 this.filterArray = self.finalresult
                 //  this.list1 = await this.mockTableData2(1,self.pageSize)
               }else{
-                console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-                console.log("myarr",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
               }
-                this.list1 = await this.mockTableData2(1,self.pageSize)            
+                this.list1 = await this.mockTableData2(1,self.pageSize)
 
             },
             filterMethod (value, option) {
@@ -477,7 +453,6 @@
 
             init () {
                 var self = this
-                console.log("config.default.orderapi", config.default.orderapi)
                 axios({
                     method: 'get',
                     url: config.default.subscriptionWebsitesapi,
@@ -488,36 +463,32 @@
                     headers: {
                       'Authorization': Cookies.get('auth_token'),
                       'subscriptionId': Cookies.get('subscriptionId')
-                    } 
+                    }
                 })
                 .then(function (response){
-                    console.log("------------------------response",response);
+                    // console.log("------------------------response",response);
                     if(response.data.data.length == 0){
-                      console.log("in if condition")
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
                         title: 'Error',
                         duration: 4.5
                       })
-                    }else{    
+                    }else{
                       var result = _.uniqBy(response.data.data,'websiteId')
-                      console.log("result", result)
                       self.websiteList = result
-                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
                       self.listData(self.website)
-                    }                       
+                    }
 
                 }).catch(error => {
-                    console.log("-------",error.response);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -543,10 +514,8 @@
 
             },
             listData (val) {
-	    	console.log("inside listdata");
                 var self = this
-                var len
-                console.log("val", val)
+                var len;
                 let Namearr = [];
                 let Emailarr = [];
                 $('#selectCustomer').children('option:not(:first)').remove();
@@ -560,7 +529,6 @@
                     //   // 'subscriptionId': Cookies.get('subscriptionId')
                     // }
                 }).then(async function (response){
-                    console.log("response val", response.data)
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
 
                     self.list1 = await self.mockTableData1(1,self.pageSize)
@@ -579,26 +547,23 @@
                         var x = document.getElementById("selectCustomer");
                         var option = document.createElement("option");
                         option.text = item;
-                        console.log()
                         x.add(option);
                     })
                      Emailarr.forEach(item => {
                         var x = document.getElementById("selectEmail");
                         var option = document.createElement("option");
                         option.text = item;
-                        console.log()
                         x.add(option);
                     })
                 }).catch(function (error) {
-                      console.log("-------",error);
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                            Cookies.remove('auth_token' ,{domain: location})
+                            Cookies.remove('subscriptionId' ,{domain: location})
                             self.$store.commit('logout', self);
-                            
+
                             self.$router.push({
                                 name: 'login'
                             });
@@ -625,7 +590,6 @@
             },
             show (params) {
                 var self = this
-                console.log("params", params.row) 
 
                 self.modal1 = true
                 self.orderList = params.row
@@ -646,10 +610,8 @@
                     url: config.default.serviceUrl + 'exporttopdf',
                     data: {
                         "html" : $('#orderList').html()
-                    },  
+                    },
                 }).then(function (response) {
-                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-                    console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
                     self.$Loading.finish()
                     var arrayBufferView = new Uint8Array( response.data.data );
                     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -661,11 +623,11 @@
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -687,7 +649,7 @@
                             duration: 10
                         })
                     }
-                })    
+                })
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
@@ -730,7 +692,7 @@
                 // if(this.tableHeight >= 450){
                 //     this.tableHeight = 450
                 // }
-                if (!status) return 
+                if (!status) return
                 $('.ivu-table-cell-expand-expanded').click()
 
                 // if(status){
@@ -745,7 +707,7 @@
                     .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
             }
         },
-        
+
         async mounted() {
             var self = this
             // await axios({
@@ -753,7 +715,7 @@
             //     url: config.default.userDetail,
             //     headers: {'Authorization': Cookies.get('auth_token')}
             //     }).then(async function (response) {
-            //         self.userid = response.data.data._id               
+            //         self.userid = response.data.data._id
             //         console.log('user detail response------>',self.userid)
             //     })
             //     .catch(function (error) {

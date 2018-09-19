@@ -26,15 +26,15 @@
 							</upload> -->
 							<!-- <input id="c16947" name="myFile" type="file" /> -->
 							<!-- </p> -->
-							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px"> 
+							<Upload id="fileUpload" v-model="finaldata.fileupload":before-upload="handleUpload" :show-upload-list="uploadlist" action='' style="padding:10px">
 								<Button type="ghost" icon="ios-cloud-upload-outline">Select the file </Button>
 							</Upload>
-							<div v-if="file !== ''" style="margin-left:20px">Selected file: {{ file.name }} 
+							<div v-if="file !== ''" style="margin-left:20px">Selected file: {{ file.name }}
 								<Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
 							</div>
 
 							<!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
-						
+
 						</div>
 					</div>
 				</div>
@@ -63,7 +63,7 @@
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>											
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.Id">{{ item.DisplayName }}</Option>
 										</div>-->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" style="display:none;" clearable></auto-complete>
@@ -82,7 +82,7 @@
 							</div>
 							<div id="c17019">
 								<p>
-									<label class="col-xs-3" id="c17027">Project</label> 
+									<label class="col-xs-3" id="c17027">Project</label>
 									<Select v-model="finaldata.project" style="width:100px" filterable>
 										<Option v-for="(t, inx) in momdata" :value="t.value" :key="inx">{{ t.label }}</Option>
 									</Select>
@@ -148,7 +148,7 @@
 	import config from '../../config/customConfig.js'
 	import Cookies from 'js-cookie';
 	import axios from 'axios';
-	import psl from 'psl';	
+	import psl from 'psl';
 	let _ = require('lodash')
 	var serviceUrl = config.default.serviceUrl;
 	var nextdate;
@@ -193,7 +193,7 @@
 					price: '',
 					email: '',
 					phone: '',
-					config: '', 
+					config: '',
 					subscriptionId: ''
 				},
 						momdata: [],
@@ -243,7 +243,7 @@
 
 							self.customCustomerUrl = response.data.customer_url;
 							self.customInvoiceUrl = response.data.invoice_url;
-							
+
 						await axios({
 							method: 'get',
 							url: self.customCustomerUrl,
@@ -263,11 +263,11 @@
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
@@ -334,18 +334,18 @@
 									self.customerData.push(cnt)
 								}
 							}
-								
+
 						})
 						.catch(function (error) {
 							console.log(error);
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
@@ -370,14 +370,14 @@
 						});
 					}
 				});
-				
-				
+
+
 				console.log("response------>iuy",self.customerData);
-				$('.customer').css("display","inline-block")				
+				$('.customer').css("display","inline-block")
 				// resp.forEach(obj =>{
 				//   console.log(obj[0].data)
 					// alert(self.formItem.configuration)
-					
+
 				//})
 				// 	let self=this;
 				// 	self.customerData = [];
@@ -385,7 +385,7 @@
 				// 		type: 'GET',
 				// 		url: serviceUrl +"contacts",
 				// 		data: {
-				//         settingId : self.finaldata.config,   
+				//         settingId : self.finaldata.config,
 				//     },
 				// 		success: function (data) {
 				// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
@@ -428,7 +428,7 @@
 					self.mData = _.sortBy(newConf, ['configName']);
 					console.log("self.configs---------------->after",self.mData)
 					// self.config1 = self.mData[0].id;
-					// self.calldata()    
+					// self.calldata()
 				}).catch(error => {
                     console.log("-------",error);
 					if(error.message == 'Network Error'){
@@ -440,11 +440,11 @@
                     }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
 						});
@@ -491,11 +491,11 @@
 						if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
@@ -523,7 +523,7 @@
 			async postdata() {
 				let desc = CKEDITOR.instances.editor1.getData()
 				this.finaldata.description = desc
-				
+
 				let self = this
 				var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 				var phone_re = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/
@@ -547,7 +547,7 @@
 									"url":reader.result
 								}
 								self.finaldata.fileupload.push(fileupObj);
-								
+
 								console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
 								console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
 								await $.ajax({
@@ -574,11 +574,11 @@
 										if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 											let location = psl.parse(window.location.hostname)
 											location = location.domain === null ? location.input : location.domain
-											
-											Cookies.remove('auth_token' ,{domain: location}) 
-											Cookies.remove('subscriptionId' ,{domain: location}) 
+
+											Cookies.remove('auth_token' ,{domain: location})
+											Cookies.remove('subscriptionId' ,{domain: location})
 											self.$store.commit('logout', self);
-											
+
 											self.$router.push({
 												name: 'login'
 											});
@@ -628,11 +628,11 @@
 									if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 										let location = psl.parse(window.location.hostname)
 										location = location.domain === null ? location.input : location.domain
-										
-										Cookies.remove('auth_token' ,{domain: location}) 
-										Cookies.remove('subscriptionId' ,{domain: location}) 
+
+										Cookies.remove('auth_token' ,{domain: location})
+										Cookies.remove('subscriptionId' ,{domain: location})
 										self.$store.commit('logout', self);
-										
+
 										self.$router.push({
 											name: 'login'
 										});
@@ -657,11 +657,11 @@
 								}
 							});
 						}
-						
+
 							// var params = self.finaldata
 							// console.log("json data******123this.finaldata",params);
 
-						
+
 					} else {
 						// alert("Enter Valid Email Address OR Phone Number")
 						this.$Notice.error({
@@ -676,7 +676,7 @@
 							desc: 'Please Select Customer OR Assignee. ',
 							duration: 4.5
 						});
-				}			
+				}
 			},
 			async projectlist() {
 				var self = this
@@ -696,11 +696,11 @@
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
@@ -759,11 +759,11 @@
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
-								
-								Cookies.remove('auth_token' ,{domain: location}) 
-								Cookies.remove('subscriptionId' ,{domain: location}) 
+
+								Cookies.remove('auth_token' ,{domain: location})
+								Cookies.remove('subscriptionId' ,{domain: location})
 								self.$store.commit('logout', self);
-								
+
 								self.$router.push({
 									name: 'login'
 								});
