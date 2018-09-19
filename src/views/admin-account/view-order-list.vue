@@ -565,7 +565,7 @@
                     },
                     }).then(function (response) {
                         // self.$Loading.finish()
-                        // console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
+                        // // console.log('response-Invoice---------------!!!!!!!!!!1',response.data[0].data)
                         if(response.data[0].data.data) {
                             self.ErrorShow = true;
                             // self.$Notice.error({
@@ -607,7 +607,7 @@
                             })
                         }
                     })
-                // console.log('invoice', self.invoice)
+                // // console.log('invoice', self.invoice)
             },
             getMulti(a, b) {
                 return accounting.formatMoney(a * b);
@@ -634,10 +634,10 @@
                 return ProductImage;
             },
             getTotal (a, b, c, d) {
-                // console.log('total qty',a);
-                // console.log('unit price',b);
-                // console.log('product',c);
-                // console.log('shipping charge',d);
+                // // console.log('total qty',a);
+                // // console.log('unit price',b);
+                // // console.log('product',c);
+                // // console.log('shipping charge',d);
                 let sum = 0;
                 let finalAmount = 0;
                 let chargeAmount = 0;
@@ -666,7 +666,7 @@
               return accounting.formatMoney(item)
             },
             clicked (inx) {
-                // console.log("row.products", this.row.products.length)
+                // // console.log("row.products", this.row.products.length)
                 if( this.row.products.length > 1 ) {
                     $('#description'+inx).slideToggle(700);
                 } else {

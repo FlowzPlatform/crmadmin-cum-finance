@@ -410,7 +410,7 @@
                 let chargeAmount = 0;
                 let taxAmount = 0;
                 let res;
-                // console.log('d',d)
+                // // console.log('d',d)
                 if (d != 0) {
                     for (let i of d) {
                         let Charge = i.shipping_detail.shipping_charge
@@ -454,7 +454,7 @@
             }
         },
         mounted() {
-            // console.log('row',this.row)
+            // // console.log('row',this.row)
         }
     };
 </script>

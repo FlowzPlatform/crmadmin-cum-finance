@@ -243,7 +243,7 @@
                     }
                 })
                 .then(function (response){
-                    // console.log("response", response.data.data)
+                    // // console.log("response", response.data.data)
                     return response.data.data
                 }).catch(err => {
 					return []
@@ -280,21 +280,21 @@
 								else if (type == 3)
 								abc = response.data.city_name;
 							}
-							// console.log("++++++++",abc)
+							// // console.log("++++++++",abc)
 							// return abc;
 							return abc
 						})
 						mObj['type' + type] = resp
-						// console.log('mObj.......', mObj)
+						// // console.log('mObj.......', mObj)
 					}
 					self.typedata.push(mObj)
 				}
 
-				// console.log('typedata', self.typedata)
+				// // console.log('typedata', self.typedata)
 				self.addressbook = abc
             },
 			saveTheThing (id) {
-				// console.log("124ahjhdkjs", id)
+				// // console.log("124ahjhdkjs", id)
 				// this.$router.push('/address-book/'+id)
 			},
 			addNewAddressBook () {
@@ -309,10 +309,10 @@
                 headers: {'Authorization': Cookies.get('auth_token')}
                 }).then(async function (response) {
                     self.userid = response.data.data._id
-                    // console.log('user detail response------>',self.userid)
+                    // // console.log('user detail response------>',self.userid)
                 })
                 .catch(function (error) {
-                    // console.log("-------",error);
+                    // // console.log("-------",error);
                     self.$Message.error(error)
             });
             this.init()

@@ -305,7 +305,7 @@
                             },
                             on: {
                               click: () => {
-                                // console.log(params)
+                                // // console.log(params)
                                 // window.location.href = params.row.url;
                                 this.DownloadFile(params.row.url);
                               }
@@ -601,7 +601,7 @@
           }
         })
         .catch(function (error) {
-          // console.log("error",error);
+          // // console.log("error",error);
           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -683,7 +683,7 @@
                   return {label: d.project_name, value: d.project_name}
                 })
             },error: function(error){
-              // console.log("error",error);
+              // // console.log("error",error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -796,7 +796,7 @@
                 if(noOfFiles < 5){
                   var reader = new FileReader();
                   reader.readAsDataURL(file);
-                  // console.log('reader',reader);
+                  // // console.log('reader',reader);
                   reader.addEventListener("load", async function () {
                     var fileupObj = {
                       "filename":file.name,
@@ -948,7 +948,7 @@
           // self.config1 = self.mData[0].id;
           // self.calldata()
         }).catch(error => {
-            // console.log("-------",error);
+            // // console.log("-------",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -982,9 +982,9 @@
       },
       async DeleteFile(params,id){
         let self = this
-        // console.log(this.data1)
+        // // console.log(this.data1)
         // let arr = _.filter(this.data1, function(num){ return num.filename = params.filename });
-        // console.log(arr)
+        // // console.log(arr)
         this.$Modal.confirm({
           okText: 'OK',
           cancelText: 'Cancel',

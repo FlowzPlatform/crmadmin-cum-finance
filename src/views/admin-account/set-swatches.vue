@@ -641,7 +641,7 @@ export default {
         //       await self.getColorTableData()
         //      var data = _.find(self.data, function(o) {
         //          return o.colorname==self.list1[index].key && o.attribute_name == 'color'; });
-        //          console.log('this.list1[index].checkvalue',this.list1[index].checkvalue)
+        //          // console.log('this.list1[index].checkvalue',this.list1[index].checkvalue)
         //          var reader = new FileReader();
         //          reader.readAsDataURL(this.list1[index].imgurl1);
         //          reader.addEventListener("load", function () {
@@ -661,7 +661,7 @@ export default {
         //                          self.$Message.success("update successfully")
         //
         //                   }).catch(function (error) {
-        //                          console.log("-------",error);
+        //                          // console.log("-------",error);
         //                       self.$Message.error(error)
         //                   });
         //            } else {
@@ -677,7 +677,7 @@ export default {
         //                        self.data1[(self.page - 1) * 10 + (index)].colorBox1 = self.list1[index].hexcode1
         //                        self.data1[(self.page - 1) * 10 + (index)].hexcode1 = self.list1[index].hexcode1
         //                   }).catch(function (error) {
-        //                        console.log("-------",error);
+        //                        // console.log("-------",error);
         //                       self.$Message.error(error)
         //                   });
         //
@@ -753,7 +753,7 @@ export default {
         })
       })
       .catch(function (error) {
-        // console.log("-------",error);
+        // // console.log("-------",error);
           self.$Message.error(error)
       });
   }

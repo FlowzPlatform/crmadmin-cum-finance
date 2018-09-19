@@ -118,9 +118,9 @@
       };
       // const validateBlank = async(rule, value, callback) => {
       //   let blankPatt = /^\S*$/g
-      //   console.log("------------value", typeof value)
+      //   // console.log("------------value", typeof value)
       //   let blankTest = value.match(blankPatt)
-      //   console.log("======================_res",blankTest);
+      //   // console.log("======================_res",blankTest);
       //   if (!blankTest) {
       //     callback(new Error('Password Does not Allow Spaces'))
       //   } else {
@@ -201,7 +201,7 @@
     },
     methods: {
         handleSubmit (name) {
-            // console.log('this.$refs[name]',this.$refs[name].validate())
+            // // console.log('this.$refs[name]',this.$refs[name].validate())
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     //this.$Message.success('Success!');
@@ -224,15 +224,15 @@
             }
           })
           .then(function (response) {
-            console.log("response >>>>>>>>>>>>>>>>",response)
+            // console.log("response >>>>>>>>>>>>>>>>",response)
             //resp = response.data
             
             if (response.data.data.length != 0)
             {
               var newConf = response.data.data
-              console.log("self.configs---------------->before",newConf)
+              // console.log("self.configs---------------->before",newConf)
               self.configs = _.sortBy(newConf, ['configName']);
-              console.log("self.configs---------------->after",self.configs)
+              // console.log("self.configs---------------->after",self.configs)
             }else
             {
                 self.$Modal.warning({
@@ -248,7 +248,7 @@
             }
           })
           .catch(function (error) {
-            console.log("error",error);
+            // console.log("error",error);
             if(error.message == 'Network Error'){
                 self.$Notice.error({
                     title: "Error",
@@ -299,7 +299,7 @@
               return o.id == settingId
           });
           let configName = ConfigName[0].configName;
-          console.log(">>>>>>>>>>> " , settingId)
+          // console.log(">>>>>>>>>>> " , settingId)
           await axios({
               method:'get',
               url: config.default.serviceUrl + 'settings/'+settingId,
@@ -309,7 +309,7 @@
               },
             })
             .then(async function(response) {
-                console.log(response)
+                // console.log(response)
                 if(response.data.domain == 'custom'){
                     var params = {
                       settingId : settingId,
@@ -319,7 +319,7 @@
                       Address: self.formValidate.AddressLine1.trim()+","+self.formValidate.AddressLine2.trim()+","+self.formValidate.city.trim()+","+self.formValidate.state+","+self.formValidate.PostalCode.trim()+","+self.formValidate.country,
                       PhoneNumber:self.formValidate.mobile.trim()
                     }
-                    console.log("contact post params",params);
+                    // console.log("contact post params",params);
 
                       self.customCustomerUrl = response.data.customer_url;
                       self.customInvoiceUrl = response.data.invoice_url;
@@ -342,7 +342,7 @@
                       })
                       .catch(function (error) {
                         self.loading = false;
-                        console.log("error",error);
+                        // console.log("error",error);
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -396,7 +396,7 @@
                         }
                       })
                       .then(function (response) {
-                        console.log('contact post response------------------',response)
+                        // console.log('contact post response------------------',response)
                         self.loading = false;
                         self.$Message.success('created customer successfully');
                         self.$router.push({
@@ -405,7 +405,7 @@
                         self.$refs['formValidate'].resetFields();
                       })
                       .catch(function (error) {
-                        console.log("error",error.response);
+                        // console.log("error",error.response);
                         self.loading = false;
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
@@ -447,7 +447,7 @@
                 }
             })
             .catch(function (error) {
-              console.log("error",error);
+              // console.log("error",error);
               self.loading = false;
               if(error.response.status == 403){
                 self.$Notice.error({

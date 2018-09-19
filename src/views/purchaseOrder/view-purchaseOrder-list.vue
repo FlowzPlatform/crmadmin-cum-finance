@@ -236,8 +236,8 @@ export default {
 		// 			})
 		// 		},
 		// 		onOk: ()=>{
-        //             console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
-        //             console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
+        //             // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data)
+        //             // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
         //             this.$Loading.start()
         //             var self = this;
         //             let supplierName = data.product_description.supplier_info.supplier_name;
@@ -259,7 +259,7 @@ export default {
         //                 "body": emailBody
         //             };
         //             myData = JSON.stringify(myData)
-        //             console.log("=============----------------mail data",myData);
+        //             // console.log("=============----------------mail data",myData);
         //             axios({
         //                 method: 'post',
         //                 url: config.default.emailUrl,
@@ -268,7 +268,7 @@ export default {
         //                     'authorization':  Cookies.get('auth_token'),
         //                 }
         //             }).then(async function (response) {
-        //                 console.log(response);
+        //                 // console.log(response);
         //                 self.$message.success("Email Send Successfully");
         //                 await axios({
         //                     method: 'patch',
@@ -281,12 +281,12 @@ export default {
         //                         'subscriptionId': Cookies.get('subscriptionId')
         //                     } 
         //                 }).then(async function (response){
-        //                     console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
+        //                     // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",response)
         //                 })
         //                 self.$Loading.finish()
         //             })
         //             .catch(function (error) {
-        //                 console.log(error);
+        //                 // console.log(error);
         //                 self.$Loading.error()
         //                 self.$Message.warning("Email Send Failed, Please try again later");
         //                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -331,7 +331,7 @@ export default {
         }
     },
     mounted(){
-        console.log("@@@@@@@@@@@@@@@@@@@@@-------->",this.row)
+        // console.log("@@@@@@@@@@@@@@@@@@@@@-------->",this.row)
         this.data1 = this.row.products
     } 
 }

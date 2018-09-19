@@ -372,9 +372,9 @@ export default {
     sendcomment() {
       var self = this
       let date = new Date()
-      // console.log("this.commentMessage----------> before",this.commentMessage)
+      // // console.log("this.commentMessage----------> before",this.commentMessage)
       let msg = this.commentMessage.trim();
-      // console.log("this.commentMessage---------->",msg)
+      // // console.log("this.commentMessage---------->",msg)
       if(msg != ''){
         this.resetData = this.commentMessage
         axios({

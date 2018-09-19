@@ -556,7 +556,7 @@
         //       },
         //       on: {
         //         input: (val) => {
-        //           console.log('val', val)
+        //           // console.log('val', val)
         //           comment1 = val;
         //           if(comment1 == ""){
         //             this.$Notice.error({
@@ -571,9 +571,9 @@
         //   onOk: () => {
         //     var self = this
         //     var userid = Cookies.get('user')
-        //     console.log("comment....",comment)
+        //     // console.log("comment....",comment)
         //     if(comment1 != ""){
-        //       console.log("inside if",comment1)
+        //       // console.log("inside if",comment1)
         //       self.commentData[index].comment = comment1
         //       self.commentData[index].created_at = new Date()
         //       data1 = {
@@ -595,7 +595,7 @@
         //         data: data1
         //       })
         //       .then(function(response) {
-        //         console.log("update response.....",response)
+        //         // console.log("update response.....",response)
         //         self.$Notice.success({
         //           title: 'Success',
         //           desc: 'Comment edited successfully',
@@ -609,7 +609,7 @@
         //         title: 'Error',
         //         desc: 'Please Enter Comment'
         //       });
-        //       // console.log("inside else",comment)
+        //       // // console.log("inside else",comment)
         //       // this.commentData[index].comment = comment
         //     }
         //   },
@@ -640,7 +640,7 @@
           crm_id = self.$route.params.id
           userid = Cookies.get('user')
           // this.commentData.forEach(function(element) {
-            // console.log(element);
+            // // console.log(element);
             data1 = {
               "comment": new_comment,
               "created_at": created_date,

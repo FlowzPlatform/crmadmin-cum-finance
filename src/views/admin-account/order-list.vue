@@ -147,7 +147,7 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                            // console.log('rowwwwwwwwwwwwww-------Expand', params.row)
+                            // // console.log('rowwwwwwwwwwwwww-------Expand', params.row)
                             // return h(expandRow, {
                             //     props: {
                             //         row: params.row
@@ -318,7 +318,7 @@
         },
         methods: {
             changepagesize(pageSize){
-                // console.log("####################################",pageSize)
+                // // console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 if(this.pageSize > 10){
                     this.tableHeight = 530
@@ -330,22 +330,22 @@
             async changePage (p) {
                 // this.page = p
                 var self = this
-                // console.log("not inside",self.filterArray.length)
+                // // console.log("not inside",self.filterArray.length)
                 if(self.filterArray.length == 0){
-                    // console.log("inside",self.filterArray)
+                    // // console.log("inside",self.filterArray)
                     self.list1 = await self.mockTableData1(p,self.pageSize);
                 }else{
                     self.list1 = await self.mockTableData2(p,self.pageSize);
                 }
             },
             async mockTableData1 (p,size) {
-                // console.log("mocktable call---------------")
+                // // console.log("mocktable call---------------")
                 this.len = this.data1.length
                 // if(this.len == 0){
-                //     console.log("data length 0--------------->",this.tableHeight)
+                //     // console.log("data length 0--------------->",this.tableHeight)
                 //     this.tableHeight = 100
                 // }else if(this.len < 10){
-                //     console.log("data length 10--------------->",this.tableHeight)
+                //     // console.log("data length 10--------------->",this.tableHeight)
                 //      this.tableHeight = (this.len * 40) + 35
                 // }else{
                 //     this.tableHeight = 450
@@ -353,15 +353,15 @@
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
-                // console.log("p-------------->",p)
-                // console.log("p-------------->",size)
-                // console.log("console.log------------>",this.filterArray)
+                // // console.log("p-------------->",p)
+                // // console.log("p-------------->",size)
+                // // console.log("// console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
                 // if(this.len == 0){
-                //     console.log("data length 0--------------->",this.tableHeight)
+                //     // console.log("data length 0--------------->",this.tableHeight)
                 //     this.tableHeight = 100
                 // }else if(this.len < 10){
-                //     console.log("data length 10--------------->",this.tableHeight)
+                //     // console.log("data length 10--------------->",this.tableHeight)
                 //      this.tableHeight = (this.len * 40) + 35
                 // }else{
                 //     this.tableHeight = 450
@@ -377,16 +377,16 @@
               this.listData(this.website)
             },
             async changeData() {
-              // console.log("Before this.filterArray------->",this.filterArray)
+              // // console.log("Before this.filterArray------->",this.filterArray)
               this.filterArray = this.data1
-               // console.log("After this.filterArray------->",this.filterArray)
+               // // console.log("After this.filterArray------->",this.filterArray)
               var self = this
                 self.finalresult = [];
 
               if(this.orderid != ''){
-                // console.log("this.orderid", this.orderid)
+                // // console.log("this.orderid", this.orderid)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                  // console.log("item",item)
+                  // // console.log("item",item)
                     return item.order_id === self.orderid;
 
                 });
@@ -394,7 +394,7 @@
               }
 
               if(this.po_sent != ''){
-                // console.log("this.filterArray",this.filterArray)
+                // // console.log("this.filterArray",this.filterArray)
                 this.filterArray = _.filter(this.filterArray,  function(item){
 
                     if(self.po_sent == 'true'){
@@ -466,7 +466,7 @@
                     }
                 })
                 .then(function (response){
-                    // console.log("------------------------response",response);
+                    // // console.log("------------------------response",response);
                     if(response.data.data.length == 0){
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
@@ -594,7 +594,7 @@
                 self.modal1 = true
                 self.orderList = params.row
                 self.orderDate = moment(self.orderList.products[0].createdAt).format('DD-MMM-YYYY')
-                // setTimeout(function(){console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
+                // setTimeout(function(){// console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
                 //     self.download()
                 // },100)
             },
@@ -667,7 +667,7 @@
               return accounting.formatMoney(item)
             },
             // clicked (inx) {
-            //     console.log("Clickeddddd...............", inx);
+            //     // console.log("Clickeddddd...............", inx);
             //     $('#description'+inx).slideToggle(700);
             //     $(document).ready(function(){
             //         $('.owl-carousel').owlCarousel({
@@ -687,7 +687,7 @@
             },
             async viewDetails(params,status){
                 // this.tableHeight = 250
-                // console.log("this.tableHeight------->",this.len)
+                // // console.log("this.tableHeight------->",this.len)
                 // this.tableHeight = (this.len * 40) + 35
                 // if(this.tableHeight >= 450){
                 //     this.tableHeight = 450
@@ -697,7 +697,7 @@
 
                 // if(status){
                 //     this.tableHeight = 530
-                //     console.log("###############################",this.tableHeight)
+                //     // console.log("###############################",this.tableHeight)
                 // }
             },
             toggleIcon: function (e) {
@@ -716,10 +716,10 @@
             //     headers: {'Authorization': Cookies.get('auth_token')}
             //     }).then(async function (response) {
             //         self.userid = response.data.data._id
-            //         console.log('user detail response------>',self.userid)
+            //         // console.log('user detail response------>',self.userid)
             //     })
             //     .catch(function (error) {
-            //         console.log("-------",error);
+            //         // console.log("-------",error);
             //         self.$Message.error(error)
             // });
             $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);

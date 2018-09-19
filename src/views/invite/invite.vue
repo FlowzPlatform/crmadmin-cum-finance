@@ -113,7 +113,7 @@
                     //     key: 'role',
                     //     render: (h, params) => {
                     //         return h('div', [
-                    //            // console.log(params)
+                    //            // // console.log(params)
                     //             h('p', this.capitalize(Object.keys(params.row.role)[0]))
                     //         ]);
                     //     }
@@ -123,7 +123,7 @@
                     //     key: 'role',
                     //     render: (h, params) => {
                     //         return h('div', [
-                    //             //console.log(params)
+                    //             //// console.log(params)
                     //             //let obj= Object.keys(params.row.role);
                     //             h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
                     //         ]);
@@ -169,10 +169,10 @@
                         key: 'role',
                          render: (h, params) => {
                             return h('div', [
-                                //console.log(params)
+                                //// console.log(params)
                                 //let obj= Object.keys(params.row.role);
-                                // console.log("Object.keys(params.row.role)",Object.keys(params.row.role))
-                                // console.log(">>>>>>>>>>>>>>>>>>>>> " , params.row.role)
+                                // // console.log("Object.keys(params.row.role)",Object.keys(params.row.role))
+                                // // console.log(">>>>>>>>>>>>>>>>>>>>> " , params.row.role)
                                 // h('strong',params)
                                 h('p', this.capitalize(params.row.role))
                                 //h('strong',this.capitalize(params.row.role[Object.keys(params.row.role)]))
@@ -198,7 +198,7 @@
                         width: 100,
                         render: (h, params) => {
                             return h('div', [
-                                //console.log(params)
+                                //// console.log(params)
                                 //let obj= Object.keys(params.row.role);
                                 h('strong', this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
@@ -210,7 +210,7 @@
                         key: 'role',
                         render: (h, params) => {
                             return h('div', [
-                               // console.log(params)
+                               // // console.log(params)
                                 h('p', this.capitalize(Object.keys(params.row.role)[0]))
                             ]);
                         }
@@ -249,14 +249,14 @@
                         title: 'Assign Period',
                         key: '',
                         render: (h, params) => {
-                                // console.log("params....", params)
+                                // // console.log("params....", params)
                                 // var date1 = moment(params.unassignDate).format('DD-MMM-YYYY')
                                 // return date1
                                 var now = moment(params.assignDate); 
                                 var end = moment(params.unassignDate); 
                                 var duration = moment.duration(now.diff(end));
                                 var days = duration.asDays();
-                                //console.log(days)
+                                //// console.log(days)
                                 return days + ' Days';    
                         }
                         
@@ -273,9 +273,9 @@
        
         methods: {
             capitalize (str) {
-                // console.log("str before",str)
+                // // console.log("str before",str)
                 str = str[0].toUpperCase() + str.slice(1)
-                // console.log("str after",str)                
+                // // console.log("str after",str)                
                 return str;
             },
             async getHistory(){
@@ -289,7 +289,7 @@
                        
                     })
                     .then(response => {
-                        console.log(response)
+                        // console.log(response)
                         
                         
                          this.data4 = response.data.data;
@@ -343,18 +343,18 @@
                         params : {module : 'crm'}
                     })
                     .then(response => {
-                        //console.log("res.................------>>>>", response)
+                        //// console.log("res.................------>>>>", response)
                         let new_data = response.data.data;
-                         //console.log(new_data.length)
+                         //// console.log(new_data.length)
                         for (let index = 0; index < new_data.length; index++) {
-                            console.log("data.........", new_data[index].role)
+                            // console.log("data.........", new_data[index].role)
                             
                             Role_id.push({
                                 "value1": new_data[index].role,
                                 "label1": new_data[index].role
                             })
                         }
-                        //console.log("Role_id..........", Role_id)
+                        //// console.log("Role_id..........", Role_id)
                         
                         this.options = Role_id
                     }).catch(function (error) {
@@ -401,7 +401,7 @@
                         }
                     })
                     .then(response => {
-                        console.log("res.................------>>>>", response)
+                        // console.log("res.................------>>>>", response)
                         let new_data = response.data.data.package;
                         for (var key in new_data) {
                             if (new_data.hasOwnProperty(key)) {
@@ -413,16 +413,16 @@
                                     })
                                     this.assigned_Arr3.push(new_data[key])
                                 }else{
-                                    console.log( "new_data[key].subscriptionId " ,  new_data[key]);
+                                    // console.log( "new_data[key].subscriptionId " ,  new_data[key]);
                                     this.assigned_Arr2.push(new_data[key])
                                     
-                                    console.log(this.assigned_Arr2) 
+                                    // console.log(this.assigned_Arr2) 
                                 }
                                 
                             }
                         }
-                        console.log("sub_id..........", sub_id)
-                                    console.log(this.assigned_Arr2) 
+                        // console.log("sub_id..........", sub_id)
+                                    // console.log(this.assigned_Arr2) 
                         
                         this.data2 = this.assigned_Arr2 ;
                         this.data3 = this.assigned_Arr3;
@@ -483,9 +483,9 @@
                     let obj =_.find(this.options2, {value2:this.value2});
                 
                     
-                    // console.log(this.input)
-                    // console.log(this.value1)
-                    // console.log(this.value2)
+                    // // console.log(this.input)
+                    // // console.log(this.value1)
+                    // // console.log(this.value2)
                     let userId;
                     let previous_packages;
                     let params = {
@@ -510,7 +510,7 @@
                     })
                     .then(function(response) {
                         self.loading = false
-                        console.log('response------------------------>', response)
+                        // console.log('response------------------------>', response)
                         if(response.data.status == 404 ){
                              //alert(response.data.data)
                             self.$message.warning(response.data.data);

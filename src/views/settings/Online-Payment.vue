@@ -137,7 +137,7 @@
 				this.$refs[name].validate((valid) => {
 					if (valid) {
 						self.loading = true;
-						console.log('formValidate----------------------------->',this.formValidate)
+						// console.log('formValidate----------------------------->',this.formValidate)
 						if(this.formValidate.configuration === 'all'){
 							this.$Modal.confirm({
 								title: '',
@@ -172,14 +172,14 @@
 									}
 									this.configs.forEach(item => {
 										let gateway = this.formValidate.gateway;
-										console.log("gateway",gateway);
+										// console.log("gateway",gateway);
 										var params = {'online_payment': {},'id' : item.id}
 										delete patchData.gateway;
 										patchData['isDefault'] = true;
 										patchData['isDeleted'] = false;
 										params.online_payment[gateway] = patchData;
-										console.log("---------------------params online payment",params);
-										// console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+										// console.log("---------------------params online payment",params);
+										// // console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
 										axios({
 											method: 'PATCH',
 											url: feathersUrl +'settings/'+item.id,
@@ -190,7 +190,7 @@
 											data: params
 										})  
 										.then(function (response) {
-											// console.log('response------------------------>',response)
+											// // console.log('response------------------------>',response)
 											self.handleReset();
 											self.loading = false;
 											self.$router.push({
@@ -199,7 +199,7 @@
 										})
 										.catch(function (error) {
 											self.loading = false;
-											console.log('error',error)
+											// console.log('error',error)
 											if(error.response.status == 401){
 												let location = psl.parse(window.location.hostname)
 												location = location.domain === null ? location.input : location.domain
@@ -237,10 +237,10 @@
 							})                        
 						}
 						else{
-							console.log('this.configs',this.configs)
-							console.log('this.formValidate.configuration',this.formValidate.configuration)
+							// console.log('this.configs',this.configs)
+							// console.log('this.formValidate.configuration',this.formValidate.configuration)
 							var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
-							console.log("data000----------------------------->",data000)
+							// console.log("data000----------------------------->",data000)
 							var checkConfig;
 							this.$Modal.confirm({
 								title: '',
@@ -274,7 +274,7 @@
 										on: {
 											input: (val) => {
 											checkConfig = val
-											console.log("val",checkConfig)
+											// console.log("val",checkConfig)
 
 											}
 										}
@@ -307,14 +307,14 @@
 										patchData.Secret = patchData.Secret.trim()
 									}
 									let gateway = this.formValidate.gateway;
-									console.log("gateway",gateway);
+									// console.log("gateway",gateway);
 									var params = {'online_payment': {},'id' : configId}
 									delete patchData.gateway;
 									patchData['isDefault'] = true;
 									patchData['isDeleted'] = false;
 									params.online_payment[gateway] = patchData;
-									console.log("---------------------params online payment",params);
-									// console.log("one configuration",this.formValidate)
+									// console.log("---------------------params online payment",params);
+									// // console.log("one configuration",this.formValidate)
 
 									if(checkConfig == true){
 										this.configs.forEach(item => {
@@ -328,7 +328,7 @@
 												data: params
 											})  
 											.then(function (response) {
-												console.log('response------------------------>',response)
+												// console.log('response------------------------>',response)
 												self.handleReset();
 												self.loading = false;
 												self.$router.push({
@@ -337,7 +337,7 @@
 											})
 											.catch(function (error) {
 												self.loading = false;
-												console.log('error',error)
+												// console.log('error',error)
 												if(error.response.status == 401){
 													let location = psl.parse(window.location.hostname)
 													location = location.domain === null ? location.input : location.domain
@@ -370,7 +370,7 @@
 										})
 									}
 									else{ 
-										console.log('this.formValidate',this.formValidate)        
+										// console.log('this.formValidate',this.formValidate)        
 										axios({
 											method: 'PATCH',
 											url: feathersUrl +'settings/'+configId,
@@ -381,7 +381,7 @@
 											data: params
 										})  
 										.then(function (response) {
-											console.log('response------------------------>',response)
+											// console.log('response------------------------>',response)
 											self.handleReset();
 											self.loading = false;
 											self.$router.push({
@@ -390,7 +390,7 @@
 										})
 										.catch(function (error) {
 											self.loading = false;
-											console.log('error',error)
+											// console.log('error',error)
 											if(error.response.status == 401){
 												let location = psl.parse(window.location.hostname)
 												location = location.domain === null ? location.input : location.domain
@@ -455,17 +455,17 @@
 					}
 				})
 				.then(function (response) {
-					console.log("response >>>>>>>>>>>>>>>>",response)
+					// console.log("response >>>>>>>>>>>>>>>>",response)
 					if (response.data.data.length != 0)
 					{
 						var newConf = [];
-						console.log("self.configs---------------->before",newConf)
+						// console.log("self.configs---------------->before",newConf)
 						response.data.data.forEach(item => {
 							newConf.push(item);
 						})
 						// self.configs.push()
 						self.configs = _.sortBy(newConf, ['configName']);
-						console.log("self.configs---------------->after",self.configs)
+						// console.log("self.configs---------------->after",self.configs)
 					}
 					else{
 
@@ -479,7 +479,7 @@
 					}
 				})
 				.catch(function (error) {
-					console.log("error",error.response);
+					// console.log("error",error.response);
 					if(error.message == 'Network Error'){
                         self.$Notice.error({
                             title: "Error",
@@ -521,18 +521,18 @@
 		computed: {
 		},
 		async mounted() {
-			console.log("Mounted call Online Payment",this.paymentconfig, this.paymentgateway ) 
+			// console.log("Mounted call Online Payment",this.paymentconfig, this.paymentgateway ) 
 			await this.settingData(); 
-			console.log('this.configs',this.configs) 
+			// console.log('this.configs',this.configs) 
 			if(this.message === 'AfterDelete') 
 			{ 
 				this.configs = _.filter(this.configs, {'configName': this.paymentconfig }) 
-				console.log('this.formValidate.configuration',this.configs) 
+				// console.log('this.formValidate.configuration',this.configs) 
 				this.formValidate.configuration = this.configs[0].id	
 				this.formValidate.gateway = this.paymentgateway 
 			} else if(this.message === 'FromAccount') { 
 				this.configs = _.filter(this.configs, {'configName': this.paymentconfig }) 
-				console.log('this.formValidate.configuration',this.configs) 
+				// console.log('this.formValidate.configuration',this.configs) 
 				this.formValidate.configuration = this.configs[0].id	
 			} 
 		}

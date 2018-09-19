@@ -209,7 +209,7 @@
 			},
 			async handleUpload (file) {
 				var self = this
-				console.log('file',file)
+				// console.log('file',file)
 				if(file.size >= 1e+8){
 					this.$Notice.error({
 						title: 'File Limit',
@@ -238,7 +238,7 @@
 				.then(async function(response) {
 					self.domainConfig=response.data.domain
 					let configName = response.data.configName;
-					// console.log(response)
+					// // console.log(response)
 					if(response.data.domain == 'custom'){
 
 							self.customCustomerUrl = response.data.customer_url;
@@ -253,13 +253,13 @@
 							}
 						})
 						.then(function (response) {
-							// console.log("customcustomer get response",response)
+							// // console.log("customcustomer get response",response)
 							resp = response.data.data
 							self.customerData = resp
-							console.log("self.customerData", self.customerData)
+							// console.log("self.customerData", self.customerData)
 						})
 						.catch(function (error) {
-							console.log(error.response)
+							// console.log(error.response)
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
@@ -303,7 +303,7 @@
 								Authorization : Cookies.get('auth_token')
 							},
 						}).then(function (response) {
-							console.log("contact response",response);
+							// console.log("contact response",response);
 							// resp = response.data
 							// self.customerData = _.sortBy(resp[0].data,['Name']);
 							if (response.data[0].data.hasOwnProperty('data')) {
@@ -337,7 +337,7 @@
 
 						})
 						.catch(function (error) {
-							console.log(error);
+							// console.log(error);
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
@@ -372,10 +372,10 @@
 				});
 
 
-				console.log("response------>iuy",self.customerData);
+				// console.log("response------>iuy",self.customerData);
 				$('.customer').css("display","inline-block")
 				// resp.forEach(obj =>{
-				//   console.log(obj[0].data)
+				//   // console.log(obj[0].data)
 					// alert(self.formItem.configuration)
 
 				//})
@@ -388,21 +388,21 @@
 				//         settingId : self.finaldata.config,
 				//     },
 				// 		success: function (data) {
-				// 			// console.log("data>>>>>>>>>>>>>> Contacts" , data)
+				// 			// // console.log("data>>>>>>>>>>>>>> Contacts" , data)
 				// 			data.forEach(function(contacts) {
 				// 				var cnt = contacts.data
 				// 				for (var i=0; i<cnt.length; i++) {
-				// 					console.log("%%%%%%%%%%",cnt[i].Name)
+				// 					// console.log("%%%%%%%%%%",cnt[i].Name)
 				// 					self.customerData.push(cnt[i].Name)
 				// 				}
 				// 			})
 
-				// 			// console.log(data)
+				// 			// // console.log(data)
 				// 		},error: function(err) {
-				// 			console.log("Error",err)
+				// 			// console.log("Error",err)
 				// 		}
 				// 	});
-				// console.log("resp data",result);
+				// // console.log("resp data",result);
 				//     result.forEach(item => {
 						// 	var customer = item.Name;
 						// 	this.data.push(customer)
@@ -421,16 +421,16 @@
 					}
 				})
 				.then(function (response) {
-					// console.log("config data list",response)
+					// // console.log("config data list",response)
 					// self.mData = response.data.data;
 					var newConf = response.data.data
-					console.log("self.configs---------------->before",newConf)
+					// console.log("self.configs---------------->before",newConf)
 					self.mData = _.sortBy(newConf, ['configName']);
-					console.log("self.configs---------------->after",self.mData)
+					// console.log("self.configs---------------->after",self.mData)
 					// self.config1 = self.mData[0].id;
 					// self.calldata()
 				}).catch(error => {
-                    console.log("-------",error);
+                    // console.log("-------",error);
 					if(error.message == 'Network Error'){
                         self.$Notice.error({
                             title: "Error",
@@ -469,7 +469,7 @@
                 });
 			},
 			configChange(data){
-				console.log("dweep",data)
+				// console.log("dweep",data)
 				$('.autoCompleteDropdown').css("display","inline-block")
 				this.finaldata.cname = ''
 				this.customerData = []
@@ -482,12 +482,12 @@
 					url: serviceUrl + "crm-service/",
 					success: function (data) {
 						result1 = data.data[0];
-						console.log("databaseurl data.............." ,data)
+						// console.log("databaseurl data.............." ,data)
 						self.crmdata = result1
 						var newarr = self.crmdata.crmStatus;
 						self.crmdata.crmStatus = _.sortBy(newarr,['name']);
 					},error: function(error){
-						console.log("error",error);
+						// console.log("error",error);
 						if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
@@ -535,21 +535,21 @@
 					if (mail != false && phone != false) {
 						this.loading = true
 						var file = this.file
-						console.log('file------->',file)
+						// console.log('file------->',file)
 						if(file != ''){
 							var reader = new FileReader();
-							console.log('uuuuuu',file)
+							// console.log('uuuuuu',file)
 							reader.readAsDataURL(file);
 						  	reader.addEventListener("load", async function () {
-								console.log('uuuuuu',file.name)
+								// console.log('uuuuuu',file.name)
 								var fileupObj = {
 									"filename":file.name,
 									"url":reader.result
 								}
 								self.finaldata.fileupload.push(fileupObj);
 
-								console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
-								console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
+								// console.log("Cookies.get('subscriptionId')",Cookies.get('subscriptionId'));
+								// console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
 								await $.ajax({
 									type: 'POST',
 									headers: {
@@ -560,7 +560,7 @@
 									data: self.finaldata,
 									success: function (data1) {
 										result = data1;
-										console.log("json data******123",result);
+										// console.log("json data******123",result);
 										self.loading = false,
 										self.$Notice.success({
 											title: 'Sucess',
@@ -570,7 +570,7 @@
 										self.$router.push( "list-relationship")
 									},error: function(error){
 										self.loading = false,
-										console.log("error",error);
+										// console.log("error",error);
 										if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 											let location = psl.parse(window.location.hostname)
 											location = location.domain === null ? location.input : location.domain
@@ -614,7 +614,7 @@
 								data: self.finaldata,
 								success: function (data1) {
 									result = data1;
-									console.log("json data******123",result);
+									// console.log("json data******123",result);
 									self.loading = false,
 									self.$Notice.success({
 										title: 'Sucess',
@@ -624,7 +624,7 @@
 									self.$router.push( "list-relationship")
 								},error: function(error){
 									self.loading = false,
-									console.log("error",error);
+									// console.log("error",error);
 									if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 										let location = psl.parse(window.location.hostname)
 										location = location.domain === null ? location.input : location.domain
@@ -659,7 +659,7 @@
 						}
 
 							// var params = self.finaldata
-							// console.log("json data******123this.finaldata",params);
+							// // console.log("json data******123this.finaldata",params);
 
 
 					} else {
@@ -684,7 +684,7 @@
 						type: 'GET',
 						url: momapi,
 						success: function (data) {
-							console.log(">>>>>>>>>>>>>>> " , data)
+							// console.log(">>>>>>>>>>>>>>> " , data)
 							result1 = data;
 							var proArr = [];
 							proArr = _.map(result1, (d) => {
@@ -692,7 +692,7 @@
 							})
 							self.momdata = _.sortBy(proArr, ['value']);
 						},error: function(error){
-							console.log("error",error);
+							// console.log("error",error);
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain
@@ -735,7 +735,7 @@
 						url: assigneeapi,
 						success: function (data) {
 							result1 = data.data;
-							console.log(data)
+							// console.log(data)
 							var myarr = []
 							_.forEach(result1, (d) => {
 										if (d.hasOwnProperty('fullname')) {
@@ -753,9 +753,9 @@
 							})
 							self.assigneedata = _.sortBy(myarr,['value']);
 							self.$Loading.finish()
-							console.log('self.assigneedata', self.assigneedata)
+							// console.log('self.assigneedata', self.assigneedata)
 						},error: function(error){
-							console.log("error",error);
+							// console.log("error",error);
 							if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 								let location = psl.parse(window.location.hostname)
 								location = location.domain === null ? location.input : location.domain

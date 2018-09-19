@@ -1,4 +1,4 @@
-// console.log(process.env.domainkey)
+// // console.log(process.env.domainkey)
 // module.exports =  {
 //     default : {
 //         loginUrl : "https://auth.flowz.com/api/login",
@@ -21,7 +21,7 @@
 
 // }
 
-// console.log("???????????????????????? ",process.env.domainkey);
+// // console.log("???????????????????????? ",process.env.domainkey);
 
 // let frontEndUrl = 'http://localhost:8081/#/login';
 let frontEndUrl = 'https://crm.' + process.env.domainkey + '/#/login';

@@ -164,11 +164,11 @@
                     },
                 })
                 .then(function (response) {
-                    // console.log("response------>iuy",response.data);
+                    // // console.log("response------>iuy",response.data);
                     self.emailDataCompany = response.data
                 })
                 .catch(function (error) {
-                    // console.log("error",error);
+                    // // console.log("error",error);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -212,7 +212,7 @@
         },
         watch: {
             'row': async function(id) {
-                // console.log("Row Data Invoice",this.row)
+                // // console.log("Row Data Invoice",this.row)
                   this.invoiceData()
             }
         }

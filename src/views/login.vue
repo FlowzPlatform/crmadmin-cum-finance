@@ -304,7 +304,7 @@ export default {
                     })
                     .then(function(response) {
                         self.emailLoading = false ;
-                        console.log(response)
+                        // console.log(response)
                         self.saveFileLoadingLogin = false;
                         
                         axios({
@@ -313,7 +313,7 @@ export default {
                             headers: {'Authorization': response.data.logintoken}
                         })
                         .then(function(result) {
-                            console.log(result)
+                            // console.log(result)
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                              Cookies.set('user',  result.data.data.email  , {domain: location});
@@ -363,7 +363,7 @@ export default {
                         })
                     }).catch(function(error){
                         self.emailLoading = false ;
-                       console.log(error.response)
+                       // console.log(error.response)
                        if(error.response.status == 409){
                             self.$message.error(error.response.data)
                         }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -402,7 +402,7 @@ export default {
         },
         forgotPassword(){
              let params = new URLSearchParams(document.location.href);
-        console.log(params)
+        // console.log(params)
         let name = params.get("ob_id"); // is the string "Jonathan"
         // alert(name)
             this.showForgotPassword = true;
@@ -456,7 +456,7 @@ export default {
         tabsClicked(val) {
             this.login.email = ''
             this.login.password = ''
-            console.log('value is:', val.index);
+            // console.log('value is:', val.index);
             this.selectedTabIndex = val.index;
         },
         handleLoginSubmit: function() {
@@ -469,7 +469,7 @@ export default {
         loginUser: async function() {
             let self = this;
             let emailValidator = await this.validateEmail(self.login.email);
-            console.log(emailValidator);
+            // console.log(emailValidator);
             if (self.login.email == "") {
                 $(".email").css("color", "red");
                 self.$message.warning("email field is required");
@@ -486,7 +486,7 @@ export default {
                         password: self.login.password.trim()
                     })
                     .then(function(response) {
-                        console.log(response);
+                        // console.log(response);
                         self.saveFileLoadingLogin = false;
                         axios({
                             method: 'get',
@@ -494,7 +494,7 @@ export default {
                             headers: {'Authorization': response.data.logintoken}
                         })
                         .then(function(result) {
-                            console.log('--------------->>>>',result)
+                            // console.log('--------------->>>>',result)
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                             Cookies.set('user',  result.data.data.email  , {domain: location});
@@ -509,7 +509,7 @@ export default {
                                 Cookies.set('access', 1);
                             }
                             let route = Cookies.get('route');
-                            console.log('route',route, typeof route);
+                            // console.log('route',route, typeof route);
                             if (route === undefined) {
                                 self.$router.push({
                                     name: 'Dashboard'
@@ -555,9 +555,9 @@ export default {
                        
                     })
                     .catch(function(error) {
-                        console.log("error-->", error)
+                        // console.log("error-->", error)
                         self.saveFileLoadingLogin = false;
-                        console.log(error.response)
+                        // console.log(error.response)
                         if (!error.response.status) {
                             
                             self.$message.error("The server encountered a temporary error and could not complete your request");
@@ -603,7 +603,7 @@ export default {
                 $signup = $('.signup'),
                 $frontbox = $('.frontbox');
            let emailValidator = await this.validateEmail(self.signup.email);
-           console.log(emailValidator)
+           // console.log(emailValidator)
           if(self.signup.fname == ""){
                self.$message.warning("First Name is required");
            }else if(self.signup.lname == ""){
@@ -623,7 +623,7 @@ export default {
                 lastname: self.signup.lname.trim()
             })
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 self.saveFileLoadingLogin = false;
                 if(response.data.code == 200){
                     
@@ -648,7 +648,7 @@ export default {
             })
             .catch(function (error) {
                 // this.login.password = ''
-                 console.log(error.response);
+                 // console.log(error.response);
                 //self.saveFileLoading = false;
                 //alert(error);
                 self.saveFileLoadingLogin = false;
@@ -693,7 +693,7 @@ export default {
         forgotPasswordSendEmail: async function() {
             let self = this;
             let emailValidator = await this.validateEmail(self.login.email);
-            console.log(emailValidator);
+            // console.log(emailValidator);
             if (self.login.email == "") {
                 self.$message.warning("email field is required");
             } else if (emailValidator == false) {
@@ -706,14 +706,14 @@ export default {
                     })
                     .then(function(response) {
                         self.saveFileLoadingLogin = false;
-                        console.log(response)
+                        // console.log(response)
                         if (response.data.code == 200) {
                             self.$message.success(response.data.message);
                             self.login.email = ""
                         }
                     })
                     .catch(function(error) {
-                        console.log("error-->", error)
+                        // console.log("error-->", error)
                         self.saveFileLoadingLogin = false;
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
@@ -761,7 +761,7 @@ export default {
                             headers: {'Authorization': Cookies.get('auth_token')}
                         })
                         .then(function(result) {
-                            console.log(">>>>>>>>>>>>>>>> " , result)
+                            // console.log(">>>>>>>>>>>>>>>> " , result)
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
                              Cookies.set('user',  result.data.data.email  , {domain: location});
@@ -812,7 +812,7 @@ export default {
     watch: {
         // // whenever question changes, this function will run
         // isSocialLogin: function (newQuestion) {
-        //     console.log("newQuestion ", newQuestion)
+        //     // console.log("newQuestion ", newQuestion)
         //     if(newQuestion){
                 
         //     }

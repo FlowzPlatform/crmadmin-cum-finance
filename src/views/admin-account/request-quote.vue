@@ -257,9 +257,9 @@ export default {
                 var result = _.uniqBy(response.data.data,'websiteId')
                 self.websiteList = result
                 // self.website = self.websiteList[0].websiteId
-                // console.log("websiteList websiteList", self.website)
+                // // console.log("websiteList websiteList", self.website)
             }
-            // console.log('response------>',response)
+            // // console.log('response------>',response)
             // self.list = response.data.data
             // var result = _.uniqBy(response.data.data,'websiteId')
             // self.websiteList = result
@@ -334,7 +334,7 @@ export default {
         self.modal1 = true
         self.requestQuote = params.row
         // self.orderDate = moment(self.orderList.products[0].createdAt).format('DD-MMM-YYYY')
-        // setTimeout(function(){console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
+        // setTimeout(function(){// console.log('.........self.$refs.email2.innerHTML......', $('#orderList').html())
         //     self.download()
         // },100)
     },
@@ -539,10 +539,10 @@ export default {
     //   headers: {'Authorization': Cookies.get('auth_token')}
     //   }).then(async function (response) {
     //     self.userid = response.data.data._id
-    //     console.log('user detail response------>',self.userid)
+    //     // console.log('user detail response------>',self.userid)
     //   })
     //   .catch(function (error) {
-    //     console.log("-------",error);
+    //     // console.log("-------",error);
     //       self.$Message.error(error)
     //   });
     this.getReuestQuoteData();

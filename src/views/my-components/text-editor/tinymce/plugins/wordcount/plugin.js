@@ -314,7 +314,7 @@ jsc */
           var nextNextType;
 
           if (index < 0 || (index > map.length - 1 && index !== 0)) {
-        // console.log('isWordBoundary: index out of bounds', 'warn', 'text-wordbreak');
+        // // console.log('isWordBoundary: index out of bounds', 'warn', 'text-wordbreak');
               return false;
           }
 

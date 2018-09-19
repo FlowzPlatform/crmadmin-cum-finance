@@ -179,7 +179,7 @@ export default {
             let body
             let header
             let status
-            console.log("self.payDetail ", self.payDetail);
+            // console.log("self.payDetail ", self.payDetail);
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
             if(self.payDetail.gateway === 'stripe'){
                 body = {
@@ -254,7 +254,7 @@ export default {
             }
 
 
-            console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",header)
+            // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",header)
 
             axios({
                 method: 'POST',
@@ -263,7 +263,7 @@ export default {
                 headers:header,
             }).then(async function (response) {
 
-                console.log(">>>>>>>>>>>>>> response ",response.data.status)
+                // console.log(">>>>>>>>>>>>>> response ",response.data.status)
 
                 if (response.status == 401) {
                     if(response.data.messages != undefined){
@@ -283,7 +283,7 @@ export default {
                     status = response.data.status || response.data.state || response.data.messages.resultCode
                     self.loading = false
                 }
-                console.log("================status",status);
+                // console.log("================status",status);
                 if (status == "Error") {
                     self.$Message.error({
                         duration: 5,
@@ -301,10 +301,10 @@ export default {
                         }
                     })
                     .then(async function(res){
-                        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
+                        // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",res)
                     })
                     .catch(function(error){
-                        console.log("$$$$$$$$$$$$$$$$$",error)
+                        // console.log("$$$$$$$$$$$$$$$$$",error)
                     })
                     self.$router.push({
                         name:'PO Bill'
@@ -313,7 +313,7 @@ export default {
             })
             .catch(function (error) {
                 self.loading = false
-                console.log(error);
+                // console.log(error);
                 if(error.message == 'Network Error'){
                     self.$Notice.error({
                         title: "Error",
@@ -360,12 +360,12 @@ export default {
     this.data = this.$route.params.data
     this.payDetail.amount = this.data.total_amount;
     let paymentInfo = Object.keys(this.data.paymentInfo)
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",paymentInfo)
+    // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",paymentInfo)
     paymentInfo.forEach(item => {
         var x = document.getElementById("selectGateway");
         var option = document.createElement("option");
         option.text = item;
-        console.log()
+        // console.log()
         x.add(option);
     })
   }
