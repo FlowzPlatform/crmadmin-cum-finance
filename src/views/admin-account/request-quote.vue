@@ -100,7 +100,6 @@ export default {
         type: 'expand',
         width: 50,
         render: (h, params) => {
-          console.log('params--------------->',params)
           return h(expandRow, {
             props: {
               row: params.row
@@ -120,7 +119,7 @@ export default {
             // return params.row.user_info.fullname
             return h('div', [
                 h('span', params.row.user_info.fullname)
-              ]); 
+              ]);
           }
       },
       {
@@ -183,7 +182,6 @@ export default {
   },
   methods: {
     changepagesize(pageSize){
-      console.log("####################################",pageSize)
       this.pageSize = pageSize
       if(this.pageSize > 10){
           this.tableHeight = 530
@@ -195,22 +193,17 @@ export default {
     async changePage (p) {
         // this.page = p
         var self = this
-        console.log("not inside",self.filterArray.length)
         if(self.filterArray.length == 0){
-            console.log("inside",self.filterArray)
             self.list = await self.mockTableData(p,self.pageSize);
         }else{
             self.list = await self.mockTableDataFilter(p,self.pageSize);
         }
     },
     async mockTableData (p,size) {
-        console.log("mocktable call---------------",this.data)
         this.len = this.data.length
         if(this.len == 0){
-            console.log("data length 0--------------->",this.tableHeight)
             this.tableHeight = 100
         }else if(this.len < 10){
-            console.log("data length 10--------------->",this.tableHeight)
               this.tableHeight = (this.len * 40) + 35
         }else{
             this.tableHeight = 450
@@ -219,15 +212,10 @@ export default {
         return this.data.slice((p - 1) * size, p * size);
     },
     async mockTableDataFilter (p,size) {
-        console.log("p-------------->",p)
-        console.log("p-------------->",size)
-        console.log("console.log------------>",this.filterArray)
         this.len = this.filterArray.length
         if(this.len == 0){
-            console.log("data length 0--------------->",this.tableHeight)
             this.tableHeight = 100
         }else if(this.len < 10){
-            console.log("data length 10--------------->",this.tableHeight)
               this.tableHeight = (this.len * 40) + 35
         }else{
             this.tableHeight = 450
@@ -240,26 +228,13 @@ export default {
     //     this.listData(this.website);
     // },
      click (index) {
-      console.log("Tab clicked", index)
       if(index == 1){
         this.getReuestInfoData()
       }else {
         this.getReuestQuoteData()
       }
     },
-    // async viewDetails(params,status){
-    //   console.log("params and status", status , params)
-    //     if (!status) {
-    //       console.log("if", status)
-    //       return
-    //     }
-    //     else{
-    //       console.log("else", status)
-    //     $('.ivu-table-cell-expand-expanded').click()
-    //     }  
-    // },
     async getReuestInfoData () {
-        console.log("getReuestInfoData getReuestInfoData getReuestInfoData")
         var self = this;
         await axios({
             method: 'get',
@@ -269,18 +244,16 @@ export default {
             // },
             headers:{
                 'Authorization': Cookies.get('auth_token'),
-                'subscriptionId': Cookies.get('subscriptionId')    
+                'subscriptionId': Cookies.get('subscriptionId')
             }
         }).then(async function (response) {
             if(response.data.data.length == 0){
-                console.log("in if condition")
                 self.$Notice.error({
                     desc: 'Websites not available for this subscription',
                     title: 'Error',
                     duration: 4.5
                 })
-            }else{    
-                console.log("in else condition")       
+            }else{
                 var result = _.uniqBy(response.data.data,'websiteId')
                 self.websiteList = result
                 // self.website = self.websiteList[0].websiteId
@@ -290,18 +263,16 @@ export default {
             // self.list = response.data.data
             // var result = _.uniqBy(response.data.data,'websiteId')
             // self.websiteList = result
-            console.log("self.websiteList self.websiteList self.websiteList", self.websiteList)
             // self.website = self.websiteList[0].websiteId
         }).catch(error => {
-            console.log("-------",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -331,43 +302,27 @@ export default {
       this.listData(this.website);
     },
      async changeData() {
-        console.log("Before this.filterArray------->",this.data)
         this.filterArray = this.data
-         console.log("After this.filterArray------->",this.filterArray)
         var self = this
 
         if(this.cname != ''){
-          console.log("this.cname", this.cname)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)                  
-              return item.user_info.fullname === self.cname;                  
+              return item.user_info.fullname === self.cname;
           });
-          console.log("myarr",this.filterArray)
-          console.log(" Filter this.filterArray------->",this.filterArray)
         //   this.list = await this.mockTableDataFilter(1,self.pageSize)
         //   this.list = this.filterArray
-          console.log("After Filter this.filterArray------->",this.filterArray)
         }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-          console.log("myarr",this.filterArray)
         //   this.list = await this.mockTableDataFilter(1,self.pageSize)
         //   this.list = this.filterArray
         }
 
         if(this.pname != ''){
-          console.log("this.pname", this.pname)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)                  
-              return item.product_description.product_name === self.pname;                  
+              return item.product_description.product_name === self.pname;
           });
-          console.log("myarr",this.filterArray)
-          console.log(" Filter this.filterArray------->",this.filterArray)
         //   this.list = await this.mockTableDataFilter(1,self.pageSize)
         //   this.list = this.filterArray
-          console.log("After Filter this.filterArray------->",this.filterArray)
         }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.pname)
-          console.log("myarr",this.filterArray)
         //   this.list = await this.mockTableDataFilter(1,self.pageSize)
         //   this.list = this.filterArray
         }
@@ -376,7 +331,6 @@ export default {
 
     show (params) {
         var self = this
-        console.log("params", params.row)
         self.modal1 = true
         self.requestQuote = params.row
         // self.orderDate = moment(self.orderList.products[0].createdAt).format('DD-MMM-YYYY')
@@ -400,8 +354,6 @@ export default {
 
              }).then(function (response) {
                self.$Loading.finish()
-               // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
-               // console.log("uuuuuuuuuuuuuuuuuuuuuuQQQQQQQQQQQQQQQQQQ",self.orderList.billing_details.data.InvoiceNumber);
                var arrayBufferView = new Uint8Array( response.data.data );
                var blob=new Blob([arrayBufferView], {type:"application/pdf"});
                var link=document.createElement('a');
@@ -412,11 +364,11 @@ export default {
            if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -449,34 +401,30 @@ export default {
         headers: {
           'Authorization': Cookies.get('auth_token'),
           'subscriptionId': Cookies.get('subscriptionId')
-        } 
+        }
         }).then(async function (response) {
 
-          console.log('response request quote------>',response.data.data)
           if(response.data.data.length == 0){
-            console.log("in if condition")
             self.$Notice.error({
               title: "Error",
               desc: 'Websites not available for this subscription',
               duration: 4.5
             })
-          }else{    
-            console.log("in else condition")       
+          }else{
             var result = _.uniqBy(response.data.data,'websiteId')
             self.websiteList = result
             self.website = self.websiteList[0].websiteId
             self.listData(self.website);
           }
         }).catch(error => {
-            console.log("-------",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -503,7 +451,6 @@ export default {
     listData (val) {
       var self = this
       var len
-      console.log("val", val)
       let Namearr = [];
       let Productarr = [];
         $('#selectCustom').children('option:not(:first)').remove();
@@ -515,16 +462,15 @@ export default {
            headers: {
             'Authorization': Cookies.get('auth_token'),
             // 'subscriptionId': Cookies.get('subscriptionId')
-          } 
+          }
       })
       .then(async function (response){
-          console.log("response val", response.data)
 
           self.data = _.orderBy(response.data.data, ['created_at'],['desc'])
           self.list = await self.mockTableData(1,self.pageSize)
         //   self.data = self.list
           self.data.forEach(obj => {
-            
+
             Namearr.push(obj.user_info.fullname)
             Productarr.push(obj.product_description.product_name)
           })
@@ -534,14 +480,12 @@ export default {
               var x = document.getElementById("selectCustom");
               var option = document.createElement("option");
               option.text = item;
-              console.log()
               x.add(option);
           })
           Productarr.forEach(item => {
               var x = document.getElementById("selectPro");
               var option = document.createElement("option");
               option.text = item;
-              console.log()
               x.add(option);
           })
 
@@ -550,11 +494,11 @@ export default {
         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -601,7 +545,6 @@ export default {
     //     console.log("-------",error);
     //       self.$Message.error(error)
     //   });
-    console.log("mounted of request quote")
     this.getReuestQuoteData();
   }
 }
