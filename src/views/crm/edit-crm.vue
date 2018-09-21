@@ -824,7 +824,7 @@
                               });
                         self.$router.push("/relationship/list-relationship")
                       },error: function(error){
-                        self.loading = false,
+                        self.loading = false
                           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 
                             let location = psl.parse(window.location.hostname)
@@ -882,7 +882,7 @@
                               });
                         self.$router.push("/relationship/list-relationship")
                       },error: function(error){
-                        self.loading = false,
+                        self.loading = false
                           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 
                             let location = psl.parse(window.location.hostname)

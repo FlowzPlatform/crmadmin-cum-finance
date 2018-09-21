@@ -561,7 +561,7 @@
 									success: function (data1) {
 										result = data1;
 										// console.log("json data******123",result);
-										self.loading = false,
+										self.loading = false
 										self.$Notice.success({
 											title: 'Sucess',
 											desc: 'New CRM case is Saved. ',
@@ -569,7 +569,7 @@
 										});
 										self.$router.push( "list-relationship")
 									},error: function(error){
-										self.loading = false,
+										self.loading = false
 										// console.log("error",error);
 										if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 											let location = psl.parse(window.location.hostname)
@@ -623,7 +623,7 @@
 									});
 									self.$router.push( "list-relationship")
 								},error: function(error){
-									self.loading = false,
+									self.loading = false
 									// console.log("error",error);
 									if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
 										let location = psl.parse(window.location.hostname)
