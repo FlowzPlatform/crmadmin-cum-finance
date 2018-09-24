@@ -82,9 +82,9 @@
                       })
                     }else{    
                       var result = _.uniqBy(response.data.data,'websiteId')
-                    //   console.log("result", result)
+                    //   // console.log("result", result)
                       self.websiteList = result
-                    //   console.log("website", self.websiteList[0].websiteId)                    
+                    //   // console.log("website", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
                     }
                 })
@@ -134,15 +134,15 @@
                             }
                         })
                         .then((response)=> {
-                            // console.log(response);
+                            // // console.log(response);
                             if (response.data.data.length != 0) {
                                 let faq = response.data.data[0].faq;
-                                // console.log('faq',faq);
+                                // // console.log('faq',faq);
                                 let maxQueId = 0;
                                 if (faq.length != 0) {
                                     maxQueId = Math.max.apply(Math,faq.map(function(o){return o.queId;}))
                                 }
-                                // console.log('maxQueId',maxQueId)
+                                // // console.log('maxQueId',maxQueId)
                                 faq.push({
                                     'que': this.que,
                                     'ans': CKEDITOR.instances.editor1.getData(),
@@ -156,13 +156,13 @@
                                     data: {'faq': faq},
                                 })
                                 .then((response) => {
-                                    // console.log(response);
+                                    // // console.log(response);
                                     this.$router.push({
                                         name: 'List FAQ'
                                     });
                                 })
                                 .catch(function(error) {
-                                    console.log(error);
+                                    // console.log(error);
                                 })
                             }
                             else {
@@ -176,26 +176,26 @@
                                     'isActive': true,
                                     'queId': 1
                                 }];
-                                // console.log('faqData',faqData);
+                                // // console.log('faqData',faqData);
                                 axios({
                                     method: 'post',
                                     url: config.default.serviceUrl + 'faq',
                                     data: faqData,
                                 })
                                 .then((response) => {
-                                    // console.log(response);
+                                    // // console.log(response);
                                     this.$router.push({
                                         name: 'List FAQ'
                                     });
                                 })
                                 .catch(function(error) {
-                                    console.log(error);
+                                    // console.log(error);
                                 })
         
                             }
                         })
                         .catch(function(error) {
-                            console.log(error);
+                            // console.log(error);
                         })
                 }
                 else {

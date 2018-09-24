@@ -258,7 +258,7 @@
             },
             changepagesize(pageSize){
                 this.selectedRows.length=0
-                console.log("####################################",pageSize)
+                // console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 this.pageSize = pageSize
                 if(this.pageSize > 10){
@@ -270,25 +270,25 @@
             },
             async changePage (p) {
                 this.selectedRows.length=0
-                console.log("page------------------------->",p)
+                // console.log("page------------------------->",p)
                 var self = this
                 if(self.filterArray.length == 0){
-                    console.log("inside",this.filterArray)
+                    // console.log("inside",this.filterArray)
                     self.list1 = await self.mockTableData1(p,self.pageSize);
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",self.list1)
+                    // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",self.list1)
                 }else{
                     self.list1 = await self.mockTableData2(p,self.pageSize);
                 }
             },
             async mockTableData1 (p,size) {
-                console.log("mocktable call---------------",size)
+                // console.log("mocktable call---------------",size)
                 this.len = this.data1.length
-                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.data1)
+                // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.data1)
                 if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
+                    // console.log("data length 0--------------->",this.tableHeight)
                     this.tableHeight = 100
                 }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
+                    // console.log("data length 10--------------->",this.tableHeight)
                      this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
@@ -298,10 +298,10 @@
             async mockTableData2 (p,size) {
                 this.len = this.filterArray.length
                 if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
+                    // console.log("data length 0--------------->",this.tableHeight)
                     this.tableHeight = 100
                 }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
+                    // console.log("data length 10--------------->",this.tableHeight)
                      this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
@@ -310,7 +310,7 @@
             },
             init () {
                 var self = this
-                console.log("config.default.orderapi", config.default.orderapi)
+                // console.log("config.default.orderapi", config.default.orderapi)
                 axios({
                     method: 'get',
                     url: config.default.subscriptionWebsitesapi,
@@ -323,9 +323,9 @@
                     } 
                 })
                 .then(function (response){
-                    console.log("------------------------response",response);
+                    // console.log("------------------------response",response);
                     if(response.data.data.length == 0){
-                      console.log("in if condition")
+                      // console.log("in if condition")
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
                         title: 'Error',
@@ -333,15 +333,15 @@
                       })
                     }else{    
                       var result = _.uniqBy(response.data.data,'websiteId')
-                      console.log("result", result)
+                      // console.log("result", result)
                       self.websiteList = result
-                      console.log("self.websiteList", self.websiteList[0].websiteId)                    
+                      // console.log("self.websiteList", self.websiteList[0].websiteId)                    
                       self.website = self.websiteList[0].websiteId
                       self.listData(self.website);
                     }                       
 
                 }).catch(error => {
-                    console.log("-------",error.response);
+                    // console.log("-------",error.response);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -377,7 +377,7 @@
             listData (val) {
                 var self = this
                 var len
-                console.log("val", val)
+                // console.log("val", val)
                 let Namearr = [];
                 $('#selectCustomer').children('option:not(:first)').remove();
                 axios.get( config.default.orderapi , {
@@ -385,7 +385,7 @@
                         website_id: val
                     }
                 }).then(async function (response){
-                    console.log("response val", response.data)
+                    // console.log("response val", response.data)
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
                     self.data1 = _.filter(self.data1, function(o) { return !o.po_detail; });
                     self.data1.forEach(item => {
@@ -397,13 +397,13 @@
                         var x = document.getElementById("selectCustomer");
                         var option = document.createElement("option");
                         option.text = item;
-                        console.log()
+                        // console.log()
                         x.add(option);
                     })
-                    console.log("self.orderidFilter------->",self.orderidFilter)
+                    // console.log("self.orderidFilter------->",self.orderidFilter)
                     self.list1 = await self.mockTableData1(1,self.pageSize)
                 }).catch(function (error) {
-                      console.log("-------",error);
+                      // console.log("-------",error);
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -441,53 +441,53 @@
             },
             Onselectdata(selection){
                 this.selectedRows = selection
-                console.log("selection-------->",this.selectedRows)
+                // console.log("selection-------->",this.selectedRows)
             },
             async changeData() {
-                console.log("this.data1", this.data1)
+                // console.log("this.data1", this.data1)
                 this.filterArray = this.data1
                 var self = this
 
                 if(this.dategt != ''){
-                console.log("this.dategt", this.dategt)
+                // console.log("this.dategt", this.dategt)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                     var a = moment(item.products[0].createdAt).format('YYYY-MM-DD')
                     if(moment(a).diff(moment(self.dategt).format(), 'days') >= 0){
-                        console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                        // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                         return item;
                     }
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
-                console.log("this.datelt", this.datelt)
+                // console.log("this.datelt", this.datelt)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                     var a = moment(item.products[0].createdAt).format('YYYY-MM-DD')
                     if(moment(a).diff(moment(self.datelt).format(), 'days') <= 0){
                         return item;
                     }
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.filterorderid != ''){
-                    console.log("this.filterorderid", this.filterorderid)
+                    // console.log("this.filterorderid", this.filterorderid)
                     this.filterArray = _.filter(this.filterArray,  function(item){    
                         return item.order_id === self.filterorderid;
                     });
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.cname != ''){
-                    console.log("this.cname", this.cname)
+                    // console.log("this.cname", this.cname)
                     this.filterArray = _.filter(this.filterArray,  function(item){    
                         return item.user_billing_info.name === self.cname;
                     });
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list1 = await this.mockTableData2(1,self.pageSize)
                 }
                 this.list1 = await this.mockTableData2(1,self.pageSize)
@@ -499,7 +499,7 @@
                     let self = this;
                     self.loading = true;
                     for (let po in self.selectedRows) {
-                        console.log('-----------------------', self.selectedRows[po])
+                        // console.log('-----------------------', self.selectedRows[po])
                         self.selectedRows[po].isManual = true;
                         self.selectedRows[po].subscription_id = Cookies.get("subscriptionId");
                         if (self.selectedRows[po].products.length > 0) {
@@ -534,7 +534,7 @@
             this.init()
             $('.panel-group').on('hidden.bs.collapse', this.toggleIcon);
             $('.panel-group').on('shown.bs.collapse', this.toggleIcon);
-            // console.log("@@@@@@@@@@@@@@@@@@@@@22!!!!!!!!!!!!!!!!!!!!!!!!!!!1",this.$refs.selection)
+            // // console.log("@@@@@@@@@@@@@@@@@@@@@22!!!!!!!!!!!!!!!!!!!!!!!!!!!1",this.$refs.selection)
         }
     }
 </script>

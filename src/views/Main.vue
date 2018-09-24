@@ -221,18 +221,18 @@
                         params : {module : 'crm'}
                     })
                     .then(response => {
-                        //console.log("res.................------>>>>", response)
+                        //// console.log("res.................------>>>>", response)
                         let new_data = response.data.data;
-                         //console.log(new_data.length)
+                         //// console.log(new_data.length)
                         for (let index = 0; index < new_data.length; index++) {
-                            console.log("data.........", new_data[index].role)
+                            // console.log("data.........", new_data[index].role)
                             
                             Role_id.push({
                                 "value1": new_data[index].role,
                                 "label1": new_data[index].role
                             })
                         }
-                        //console.log("Role_id..........", Role_id)
+                        //// console.log("Role_id..........", Role_id)
                         
                         this.options = Role_id
                     })
@@ -242,18 +242,18 @@
                         }
                     })
                     .then(response => {
-                        console.log("res.................------>>>>", response)
+                        // console.log("res.................------>>>>", response)
                         let new_data = response.data.data.package;
                         for (var key in new_data) {
                             if (new_data.hasOwnProperty(key)) {
-                                console.log( new_data[key].subscriptionId);
+                                // console.log( new_data[key].subscriptionId);
                                 sub_id.push({
                                 "value2": new_data[key].subscriptionId,
                                 "label2": new_data[key].name
                             })
                             }
                         }
-                        console.log("sub_id..........", sub_id)
+                        // console.log("sub_id..........", sub_id)
                         this.options2 = sub_id;
                         if(!Cookies.get("subscriptionId") || Cookies.get("subscriptionId") == undefined || Cookies.get("subscriptionId") == ""){
                             this.value2 = sub_id[0].value2;
@@ -266,7 +266,7 @@
                         
                     })
                     .catch(error => {
-                        console.log("errr...",error)                    
+                        // console.log("errr...",error)                    
                         if(error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -325,13 +325,13 @@
             //         }
             //     })
             //     .then(response => {
-            //         console.log("response response", response.data.data[0].userId)
+            //         // console.log("response response", response.data.data[0].userId)
             //         let userId = response.data.data[0].userId
 
             //         return userId
             //     })
             //     .catch(error => {
-            //         console.log("errr...",error)
+            //         // console.log("errr...",error)
             //         if(error.message == 'Network Error'){
             //             self.$Notice.error({
             //                 title : 'Error',
@@ -382,7 +382,7 @@
                     'authorization': Cookies.get('auth_token')
                     }
                 }).then(response => {
-                    console.log("response userDetail", response.data.data.username)
+                    // console.log("response userDetail", response.data.data.username)
                     if(response.data.data.fullname) {
                         this.user = response.data.data.fullname
                     }else if(response.data.data.firstname && response.data.data.lastname ) {
@@ -391,7 +391,7 @@
                         this.user = response.data.data.email
                     }
                 }).catch(error => {
-                    console.log("errr...",error.response)                    
+                    // console.log("errr...",error.response)                    
                      if(error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -427,7 +427,7 @@
                 this.shrink = !this.shrink;
             },
             handleClickUserDropdown (name) {
-                console.log('name---------->',name)
+                // console.log('name---------->',name)
                 if (name === 'ownSpace') {
                     util.openNewPage(this, 'ownspace_index');
                     this.$router.push({
@@ -465,7 +465,7 @@
                 }
             },
             handleSubmenuChange (val) {
-                // console.log(val)
+                // // console.log(val)
             },
             beforePush (name) {
                 // if (name === 'accesstest_index') {
@@ -476,7 +476,7 @@
                 return true;
             },
             fullscreenChange (isFullScreen) {
-                // console.log(isFullScreen);
+                // // console.log(isFullScreen);
             },
             goToSettings () {
                this.$router.push({

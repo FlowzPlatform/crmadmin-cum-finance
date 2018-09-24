@@ -149,7 +149,7 @@
                                     on: {
                                         myemitter: (item) => {
                                             // alert(item);
-                                            console.log("item************",item, this.poBillAddress)
+                                            // console.log("item************",item, this.poBillAddress)
                                             // this.EditBanner(item)
                                             // this.poBillAddress[cardIndex].product[params.index].shipping_method.shipping_detail[cardIndex]["edited_color_quantity"]=item.color_quantity
                                             this.poBillAddress[cardIndex].product[params.index].total_qty = item.total_qty
@@ -157,7 +157,7 @@
                                             this.poBillAddress[cardIndex].product[params.index].edited_color_quantity = item.edited_color_quantity
                                             this.poBillAddress[cardIndex].product[params.index]._expanded = true
                                             // params.row.color_quantity = item.color_quantity
-                                            console.log("item************",this.poBillAddress)
+                                            // console.log("item************",this.poBillAddress)
 
                                         }    
                                     }
@@ -193,36 +193,36 @@
                         align:  'center',
                         render : (h , params) => {
                             // let total = 0
-                            // console.log("Quantity ------------", this.poBillAddress)
+                            // // console.log("Quantity ------------", this.poBillAddress)
                             // this.poBillAddress.forEach(element => {
                             //     element.product.forEach((item,inx) => {
                             //         total = 0
                             //         item.totalColorQuantity.forEach((key,val) => {
                             //             if(inx == val) {
-                            //                 console.log("val",key, val)
+                            //                 // console.log("val",key, val)
                             //                 for (let k in key ){
                             //                     total = total + parseInt(key[k])
                             //                 } 
-                            //                 console.log("total",total)
+                            //                 // console.log("total",total)
                             //             }
                             //         })
                                     
 
                             //     })
                             //     // if (inx == params.index) {
-                            //     //     console.log("inside if", Object.values(element.totalColorQuantity))
+                            //     //     // console.log("inside if", Object.values(element.totalColorQuantity))
                             //     //     Object.values(element.totalColorQuantity).forEach(item => {
                             //     //         total = total + parseInt(item)
-                            //     //         console.log("total", item)
+                            //     //         // console.log("total", item)
                             //     //     })
                             //     // }
                             // })
                             // let t = 0;
-                            // console.log('parmas', params.row)
+                            // // console.log('parmas', params.row)
                             // for (let [inx, item] of params.row.totalColorQuantity.entries()) {
-                            //     console.log('', inx)
+                            //     // console.log('', inx)
                             //     if (params.index === inx) {
-                            //         console.log('MATCH')
+                            //         // console.log('MATCH')
                             //         for (let k in item) {
                             //             t += parseInt(item[k]);
                             //         }
@@ -272,7 +272,7 @@
                     //                     on: {
                     //                         click: () => {
                     //                             // alert('delete',row)
-                    //                             console.log("row",row);
+                    //                             // console.log("row",row);
                     //                             this.removeSingleProduct(row)
                     //                         }
                     //                     }
@@ -302,7 +302,7 @@
         },
         methods: {
             EditBanner (item) {
-                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', item)
+                // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', item)
             },
             splitProductAddress(orderData){
                 let tempPOAddressBill=[];
@@ -332,30 +332,30 @@
                         // shippingIds.push(shipAddId);
                     // }
                 }
-                console.log("Temp",tempPOAddressBill)
+                // console.log("Temp",tempPOAddressBill)
                 return tempPOAddressBill;
             },                            
             accounting(item){
                 return accounting.formatMoney(item)
             },
             removeSingleProduct(product) {
-                console.log("before delete data2",this.data2)                
+                // console.log("before delete data2",this.data2)                
                 this.data2 = this.data2.filter( (item) => item.id !== product.id)
-                console.log("after delete data2",this.data2)
+                // console.log("after delete data2",this.data2)
                 // this.poBillAddress.product = this.data2;
                 this.orderDetail.products = this.data2
-                console.log("this.poBillAddress",this.orderDetail)
+                // console.log("this.poBillAddress",this.orderDetail)
             },
             deleteSupplierProduct(supplier) {
-                console.log("supplier------------=============",supplier);
-                console.log("this.data2-------",this.data2);
+                // console.log("supplier------------=============",supplier);
+                // console.log("this.data2-------",this.data2);
                 if (supplier.product) {
                     supplier.product.forEach((product) => {
                         this.data2 = this.data2.filter( (item) => item.id !== product.id)
                     })
                 }
                 this.orderDetail.products = this.data2
-                console.log("final order object",this.orderDetail)
+                // console.log("final order object",this.orderDetail)
             },
             async generatePO(value) {
                 let self = this;
@@ -383,13 +383,13 @@
                     url: config.default.serviceUrl + 'settings/' + this.orderDetail.setting_id,
                 })
                 .then(function(response){
-                    console.log("setting response",response)
+                    // console.log("setting response",response)
                     self.orderDetail.distributor_info = {
                         address : response.data.address,
                         logo : response.data.logo
                     };
                 })
-                console.log("purchase order post object",this.orderDetail, this.poBillAddress)
+                // console.log("purchase order post object",this.orderDetail, this.poBillAddress)
                 if (this.orderDetail.products.length > 0) {
                     axios({
                         method: 'post',
@@ -398,7 +398,7 @@
                     })
                     .then(function(response) {
                         self.loading = false
-                        console.log("purchase order post response------------------",response)
+                        // console.log("purchase order post response------------------",response)
                         self.$Message.success("Purchase Order Generated Successfully");
                         self.$router.push({
                             name: 'Sent PO'
@@ -422,15 +422,15 @@
             this.orderDetail = this.$route.params;
             if(!(_.isEmpty(this.orderDetail))) {
                 self.poRefreshed = false;
-                console.log("********************///////////////////////",this.orderDetail);
+                // console.log("********************///////////////////////",this.orderDetail);
                 // let poDetail=poData[0]
                 self.date = moment().format('DD-MMM-YYYY')  
                 self.poBillAddress = self.splitProductAddress(this.orderDetail);
                 self.data1 = this.orderDetail;
                 self.data2 = this.orderDetail.products;
-                console.log("poBillAddress poBillAddress", self.poBillAddress)
+                // console.log("poBillAddress poBillAddress", self.poBillAddress)
             }else{
-                console.log("inside else")
+                // console.log("inside else")
                 self.poRefreshed = true;
             }
         }

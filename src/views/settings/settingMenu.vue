@@ -179,7 +179,7 @@
                 }
             },
             treeNodeClick(data) {
-                console.log("--------treedata",data)
+                // console.log("--------treedata",data)
                 this.treeData[0].expand=!this.treeData[0].expand
                 if (data[0].title === 'ACCOUNT') {
                     this.accountTab = true;

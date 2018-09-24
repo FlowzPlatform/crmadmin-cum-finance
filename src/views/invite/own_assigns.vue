@@ -44,7 +44,7 @@
                         title: 'Module',
                         key: 'module',
                         render: (h, params) => {
-                            console.log("params",params)
+                            // console.log("params",params)
                             return h('div', [
                                 //let obj= Object.keys(params.row.role);
                                 h('strong', this.capitalize(Object.keys(params.row)[0]))
@@ -55,8 +55,8 @@
                         title: 'Role',
                         key: 'role',
                         render: (h, params) => {
-                            // console.log("Object.keys(params.row.role)",Object.keys(params.row))
-                            // console.log("params.row[Object.keys(params.row)]",params.row[Object.keys(params.row)[0]])
+                            // // console.log("Object.keys(params.row.role)",Object.keys(params.row))
+                            // // console.log("params.row[Object.keys(params.row)]",params.row[Object.keys(params.row)[0]])
                             return h('div', [
                                 //let obj= Object.keys(params.row);
                                 h('strong', this.capitalize(params.row[Object.keys(params.row)[0]]))
@@ -71,9 +71,9 @@
         },
         methods : {
             capitalize (str) {
-                // console.log("str before",str)
+                // // console.log("str before",str)
                 str = str[0].toUpperCase() + str.slice(1)
-                // console.log("str after",str)                
+                // // console.log("str after",str)                
                 return str;
             },
             show (index) {
@@ -84,14 +84,14 @@
             async init(){
                 
                 let self = this
-                // console.log("this.row",this.row)
+                // // console.log("this.row",this.row)
                 self.spinShow = false;
                 for (let role in this.row.role) {
-                    // console.log("role",role)
-                    // console.log("this.row.role[role]",this.row.role[role])
+                    // // console.log("role",role)
+                    // // console.log("this.row.role[role]",this.row.role[role])
                     self.data7.push({ [role] : this.row.role[role]})
                 }
-                console.log("self.data7",self.data7)
+                // console.log("self.data7",self.data7)
             }
         },
         mounted() {

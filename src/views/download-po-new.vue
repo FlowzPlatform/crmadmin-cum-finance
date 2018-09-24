@@ -214,7 +214,7 @@
                 
                 }
 
-                console.log("KEys Product-->",this.products)
+                // console.log("KEys Product-->",this.products)
             },
             distributorAddressMtd(){
                 return  this.row.distributor_info.address || {}
@@ -233,7 +233,7 @@
                 // if(this.imgurl == undefined) {
                 //     return config.default.productImageUrl + url        
                 // }
-                console.log(url + img)
+                // console.log(url + img)
                 return url + img
             },
             getSubTotal(a, b, c, d) {
@@ -286,7 +286,7 @@
             }
         },
         mounted() {
-            console.log("This row===>",this.row)
+            // console.log("This row===>",this.row)
             this.calProduct(this.row)
             // this.quntityFun(this.row)
         }

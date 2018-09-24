@@ -201,7 +201,7 @@
       },
       async handleUpload (file) {
         var self = this
-        console.log('file',file)
+        // console.log('file',file)
         if(file.size >= 51200){
             this.$Notice.error({
               title: 'File Limit',
@@ -219,23 +219,23 @@
       handleLogoUpload () {
         // this.logoLoading = true;
         var self = this;
-        console.log('**************',this.file)
-        console.log("self.file.type", this.file.type)
+        // console.log('**************',this.file)
+        // console.log("self.file.type", this.file.type)
         // if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
         let file_ext = this.file.name.split('.').pop()
-        console.log("self.file.type file_ext", file_ext)    
+        // console.log("self.file.type file_ext", file_ext)    
         if( self.file != '' && (file_ext === "png" || file_ext === "jpg")){
-            // console.log('this.file',this.file)
+            // // console.log('this.file',this.file)
             var reader = new FileReader();
             var file = this.file;
             return new Promise(function(resolve, reject) {
               reader.addEventListener("load", function () {
-                console.log('reader------->',reader.result)
+                // console.log('reader------->',reader.result)
                 resolve(reader.result)
               });
   
               if (file) {
-                console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
+                // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
                 reader.readAsDataURL(file);
               }
 
@@ -255,7 +255,7 @@
           if (valid) {
             if (this.file !== null && this.file !== '') {
               logoContent = await self.handleLogoUpload();
-              console.log('==============================logoContent',logoContent)
+              // console.log('==============================logoContent',logoContent)
             }
             this.loading = true;
             if(this.formValidate.configuration === 'all'){ 
@@ -267,11 +267,11 @@
                 cancelText: 'Disagree',
                 onOk: () => {
                   delete this.formValidate.configuration;
-                  console.log('formValidate----------------------------->',this.formValidate)
-                  console.log('logoContent----------------',logoContent)
+                  // console.log('formValidate----------------------------->',this.formValidate)
+                  // console.log('logoContent----------------',logoContent)
                   var params = {'address':this.formValidate, 'logo':logoContent}
                   this.configs.forEach(item => {
-                      console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                      // console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
                       axios({
                         method: 'PATCH',
                         url: feathersUrl +'settings/'+item.id,
@@ -282,14 +282,14 @@
                         data: params
                       })  
                       .then(function (response) {
-                        console.log('response------------------------>',response)
+                        // console.log('response------------------------>',response)
                         self.loading = false;
                         self.$router.push({
                           name: 'Settings'
                         });
                       })
                       .catch(function (error) {
-                        console.log('error',error)
+                        // console.log('error',error)
                         self.loading = false;
                         if(error.response.status == 401){
                               let location = psl.parse(window.location.hostname)
@@ -328,10 +328,10 @@
               })                        
             }
             else{
-              console.log('this.configs',this.configs)
-              console.log('this.formValidate.configuration',this.formValidate.configuration)
+              // console.log('this.configs',this.configs)
+              // console.log('this.formValidate.configuration',this.formValidate.configuration)
               var data000 = _.filter(this.configs, {'id': this.formValidate.configuration })
-              console.log("data000----------------------------->",data000)
+              // console.log("data000----------------------------->",data000)
               var checkConfig;
 
               this.$Modal.confirm({
@@ -366,7 +366,7 @@
                             on: {
                               input: (val) => {
                                 checkConfig = val
-                                console.log("val",checkConfig)
+                                // console.log("val",checkConfig)
 
                               }
                             }
@@ -375,14 +375,14 @@
                         ])
                     },
                     onOk: () => {
-                    console.log('data----------------------------->',params)
-                    console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
+                    // console.log('data----------------------------->',params)
+                    // console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',checkConfig)
                     if(checkConfig == true){
                       delete this.formValidate.configuration;
                       var params = {'address':this.formValidate,'logo':logoContent}
-                      console.log('UUUUUUUUUUUUUUUUU',this.configs)
+                      // console.log('UUUUUUUUUUUUUUUUU',this.configs)
                       this.configs.forEach(item => {
-                        console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
+                        // console.log('iiiiiiiiiiiiiiiiiiiiii',item.id)
                         axios({
                           method: 'PATCH',
                           url: feathersUrl +'settings/'+item.id,
@@ -393,14 +393,14 @@
                           data: params
                         })  
                         .then(function (response) {
-                          // console.log('response------------------------>',response)
+                          // // console.log('response------------------------>',response)
                           self.loading = false;
                           self.$router.push({
                             name: 'Settings'
                           });
                         })
                         .catch(function (error) {
-                          console.log('error',error)
+                          // console.log('error',error)
                           self.loading = false;
                           if(error.response.status == 401){
                               let location = psl.parse(window.location.hostname)
@@ -434,7 +434,7 @@
                       })
                     }
                     else{
-                      // console.log('logoContent-------------------',logoContent)
+                      // // console.log('logoContent-------------------',logoContent)
                       var params = {'address':this.formValidate, 'logo':logoContent}
                       axios({
                         method: 'PATCH',
@@ -446,14 +446,14 @@
                         data: params
                       })  
                       .then(function (response) {
-                        // console.log('response------------------------>',response)
+                        // // console.log('response------------------------>',response)
                         self.loading = false;
                         self.$router.push({
                           name: 'Settings'
                         });
                       })
                       .catch(function (error) {
-                        console.log('error',error)
+                        // console.log('error',error)
                         self.loading = false;
                         if(error.response.status == 401){
                               let location = psl.parse(window.location.hostname)
@@ -509,16 +509,16 @@
 
         })
         .then(function (response) {
-          console.log("response >>>>>>>>>>>>>>>>",response)
+          // console.log("response >>>>>>>>>>>>>>>>",response)
           if (response.data.data.length != 0)
           {
             var newConf = [];
-            console.log("self.configs---------------->before",newConf)
+            // console.log("self.configs---------------->before",newConf)
             response.data.data.forEach(item => {
               newConf.push(item);
             })
             self.configs = _.sortBy(newConf, ['configName']);
-            console.log("self.configs---------------->after",self.configs)
+            // console.log("self.configs---------------->after",self.configs)
             if (self.profileconfig !== undefined) {
               self.configs = _.filter(self.configs, {'configName': self.profileconfig })
               self.formValidate.configuration = self.configs[0].id
@@ -535,7 +535,7 @@
           }
         })
         .catch(function (error) {
-          console.log("error",error);
+          // console.log("error",error);
           if(error.message == 'Network Error'){
             self.$Notice.error({
                 title: "Error",
@@ -575,14 +575,14 @@
       },
       onFileChange (e) {
         let self = this
-        console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',e)
+        // console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii',e)
         let files = e.target.files || e.dataTransfer.files
-        console.log('ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp',files)
+        // console.log('ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp',files)
         if (!files.length) {
           return
         }
         this.file = files[0]
-        console.log('this.file', this.file)
+        // console.log('this.file', this.file)
       },
     },
 
@@ -591,7 +591,7 @@
 
     async mounted () {
       this.settingData ();
-      console.log('params.query',this.profileconfig)
+      // console.log('params.query',this.profileconfig)
       this.formValidate.configuration = this.profileconfig
       populateCountries("country", "state");
       $("#country").on("change",function() {

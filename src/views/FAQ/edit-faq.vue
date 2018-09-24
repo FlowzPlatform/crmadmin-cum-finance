@@ -67,11 +67,11 @@
                     url: config.default.projectConfigurationUrl + '/' + this.websiteId
                 })
                 .then((response) => {
-                    console.log(response)
+                    // console.log(response)
                     this.website = response.data.websiteName
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    // console.log(error);
                 })
                 CKEDITOR.instances.editor1.setData(this.row.ans)
                 this.que = this.row.que
@@ -80,7 +80,7 @@
                 let que = this.que.trim();
                 let ans = CKEDITOR.instances.editor1.document.getBody().getChild(0).getText().trim();
                 // let ans = CKEDITOR.instances.editor1.getData();
-                console.log('ans',ans)
+                // console.log('ans',ans)
                 if((que != '') && (ans != '')) {
                     delete this.row._index;
                     delete this.row._rowKey;
@@ -88,24 +88,24 @@
                         websiteId : this.websiteId,
                         patchFaq: this.row
                     }
-                    console.log('faqdata',faqData);
+                    // console.log('faqdata',faqData);
                     faqData.patchFaq.que = this.que;
                     faqData.patchFaq.ans = CKEDITOR.instances.editor1.getData();
                     // faqData['updatedAt'] = new Date().toISOString();
-                    console.log('after edit',faqData);
+                    // console.log('after edit',faqData);
                     axios({
                         method: 'patch',
                         url: config.default.serviceUrl + 'faq/' + this.listId,
                         data: faqData,
                     })
                     .then(function(response) {
-                        console.log(response);
+                        // console.log(response);
                         this.$router.push({
                             name: 'List FAQ'
                         });
                     })
                     .catch(function(error) {
-                        console.log(error);
+                        // console.log(error);
                     })
                 }
                 else {
@@ -119,7 +119,7 @@
             }
         },
         async mounted() {
-            console.log(this.listId);
+            // console.log(this.listId);
             CKEDITOR.replace("editor1");
             this.setFaqData();
         }

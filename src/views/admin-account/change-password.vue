@@ -80,9 +80,9 @@ export default {
             };
     const validateNum =  async(rule, value, callback) => {
             let blankPatt = /^\S*$/g
-            console.log("------------value", typeof value)
+            // // console.log("------------value", typeof value)
             let blankTest = value.match(blankPatt)
-            console.log("======================_res",blankTest);
+            // // console.log("======================_res",blankTest);
             if (!blankTest) {
               callback(new Error('Password Does not Allow Spaces'))
             } else {
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     showpassword(value){
-      console.log('value', value)
+      // // console.log('value', value)
       if(value == "showCurrentpassword"){
         if(this.showCurrentpassword == "password"){
           this.showCurrentpassword = "text"
@@ -170,8 +170,8 @@ export default {
       var self = this
       this.$refs[name].validate((valid) => {
         if (valid) {
-          console.log('config.default.forgotPasswordUrl', config.default.forgotPasswordUrl)
-          console.log('self.formValidate1.email', self.formValidate1.email)
+          // // console.log('config.default.forgotPasswordUrl', config.default.forgotPasswordUrl)
+          // // console.log('self.formValidate1.email', self.formValidate1.email)
           axios.post(config.default.forgotPasswordUrl, {
                   email: self.formValidate1.email.trim(),
                   url: config.default.resetPasswordRedirectUrl,
@@ -180,7 +180,7 @@ export default {
                   }
               })
               .then(function(response) {
-                  console.log(response)
+                  // // console.log(response)
                   if (response.data.code == 200) {
                       self.$message.success(response.data.message);
                       self.formValidate1.email = ""
@@ -213,7 +213,7 @@ export default {
                       				'Content-Type': 'application/json'
                       			},
                       			success: function (result) {
-                              console.log('result',result)
+                              // // console.log('result',result)
                               if(result.code == 201){
                                 self.$Message.success({
                                     content: result.message,
@@ -224,7 +224,7 @@ export default {
 
                       			},
                       			error: function(err) {
-                              console.log('err', err.response)
+                              // // console.log('err', err.response)
                               self.$Message.error({
                                   content: 'incorrect current password',
                                   duration: 5

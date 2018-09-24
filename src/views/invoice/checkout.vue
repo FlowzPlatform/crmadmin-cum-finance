@@ -232,8 +232,8 @@ export default {
     }, 
     async getData (settingID) {
       let self = this;
-      console.log('getdata call-----------------',settingID)
-      console.log(settingID.query.domain)
+      // console.log('getdata call-----------------',settingID)
+      // console.log(settingID.query.domain)
       let getInvoiceUrl ;
       if(settingID.query.domain == undefined){
         getInvoiceUrl = 'invoice/'
@@ -269,13 +269,13 @@ export default {
                 Authorization : Cookies.get('auth_token')
             },
         }).then(function (response) {
-            console.log(">>>>>>>>>>>>>> response ", response)
+            // console.log(">>>>>>>>>>>>>> response ", response)
             if(Array.isArray(response.data)){
 
               responseData = response.data[0];
               if(Array.isArray(responseData.data)) {
                 responseData = responseData.data[0]
-                console.log("!!!!!!!!!!!",responseData)
+                // console.log("!!!!!!!!!!!",responseData)
 
                 self.responseDataForPayment = responseData;
                 self.payDetail.amount = responseData.Balance;
@@ -289,7 +289,7 @@ export default {
               }
               else {
                 responseData = responseData.data;
-                console.log("response data!!!!!!!!!!",responseData);
+                // console.log("response data!!!!!!!!!!",responseData);
                 self.responseDataForPayment = responseData;
                 self.payDetail.amount = responseData.AmountDue;
                 self.invoiceid = responseData.InvoiceID;
@@ -301,7 +301,7 @@ export default {
                 self.$Spin.hide();
               }
               // if(responseData.TotalAmt != undefined){
-              //   console.log("@@@@@@@@",responseData.TotalAmt)
+              //   // console.log("@@@@@@@@",responseData.TotalAmt)
               //   paymentAmount = responseData.TotalAmt;
               //   self.payDetail.amount = paymentAmount
               // }
@@ -315,8 +315,8 @@ export default {
               // }else {
               //   paymentInvoiceId = responseData.InvoiceID
               // }
-              // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",responseData)
-              // console.log("^^^^^^^^^^^^^^^^^^^",responseData.AmountDue,paymentInvoiceId,responseData.Contact.Name,responseData.AmountPaid,responseData.AmountDue,paymentAmount)
+              // // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",responseData)
+              // // console.log("^^^^^^^^^^^^^^^^^^^",responseData.AmountDue,paymentInvoiceId,responseData.Contact.Name,responseData.AmountPaid,responseData.AmountDue,paymentAmount)
               // responseData = responseData.data;
               // self.responseDataForPayment = responseData;
               // self.payDetail.amount = responseData.AmountDue;
@@ -346,7 +346,7 @@ export default {
         })
         .catch(function (error) {
           self.$Spin.hide();
-          console.log(error);
+          // console.log(error);
           if(error.message == 'Network Error'){
               self.$Notice.error({
                   title: "Error",
@@ -394,7 +394,7 @@ export default {
       this.loading = true
       if(domain == undefined){
 
-        console.log("responseData", self.responseDataForPayment)
+        // console.log("responseData", self.responseDataForPayment)
         
             let paymentInvoiceId;
             let contactName;
@@ -407,8 +407,8 @@ export default {
               contactName = self.responseDataForPayment.Contact.Name
             }
             let exYear = self.payDetail.expiryYY.getFullYear().toString().slice(-2)
-            // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
-            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
+            // // console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",self.settingId)
+            // // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu",Cookies.get('user'))
             // self.payDetail.amount = parseFloat(self.payDetail.amount);
             let param1 = {
               settingId:self.settingId.query.settingId,
@@ -439,7 +439,7 @@ export default {
             })
             .catch(function (error) {
               self.loading = false
-              console.log("errror in payment",error.response);
+              // console.log("errror in payment",error.response);
               if (error.response.data.code === '404') {
                 self.$Notice.error({
                       duration:0, 
@@ -504,7 +504,7 @@ export default {
               }
             })
             .then(function (res) {
-              console.log("payment done success", res)
+              // console.log("payment done success", res)
               self.$Message.success('payment done successfully');
               self.loading = false
               self.backFunction()
@@ -555,8 +555,8 @@ export default {
       let self = this
       this.$refs[name].validate(valid => {
         if(valid) {
-          console.log("self.payDetail.amount ", self.payDetail.amount);
-          console.log("self.responseDataForPayment.Due " , self.responseDataForPayment)
+          // console.log("self.payDetail.amount ", self.payDetail.amount);
+          // console.log("self.responseDataForPayment.Due " , self.responseDataForPayment)
           let DueAmount ;
           if(self.responseDataForPayment.Due != undefined){
             DueAmount = self.responseDataForPayment.Due
