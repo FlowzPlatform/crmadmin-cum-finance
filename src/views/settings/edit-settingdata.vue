@@ -231,7 +231,7 @@ export default {
     methods:{
         async handleUpload (file) {
             var self = this
-            console.log('file',file)
+            // console.log('file',file)
             if(file.size >= 1e+8){
                 this.$Notice.error({
                     title: 'File Limit',
@@ -248,7 +248,7 @@ export default {
         },
         async handleUpload1 (file) {
             var self = this
-            console.log('file',file)
+            // console.log('file',file)
             if(file.size >= 1e+8){
                 this.$Notice.error({
                 title: 'File Limit',
@@ -260,9 +260,9 @@ export default {
             }
             else {
                 self.file = file
-                console.log(this.file)
+                // console.log(this.file)
                 let file_ext = this.file.name.split('.').pop()
-                console.log("self.file.type file_ext", file_ext)
+                // console.log("self.file.type file_ext", file_ext)
                 if( self.file == null || file_ext !== "pem"){
                     self.$Message.error({
                         content: ' Please, attach a .pem file!',
@@ -273,16 +273,16 @@ export default {
             }
         },
         paymentIsDefaultChange (value) {
-            console.log("getchangecall",value)
+            // console.log("getchangecall",value)
             this.editFormItem['isDefault'] = value
         },
         async formData (name) {
-            // console.log(name)
+            // // console.log(name)
             var self = this
             self.loading3 = true
             self.$refs[name].validate((valid) => {
                 if (valid) {
-                    console.log("edited data", self.editFormItem);
+                    // console.log("edited data", self.editFormItem);
                     let patchData = {
                         id : self.settingEditData.id,
                         rowIndex : this.rowIndex,
@@ -290,7 +290,7 @@ export default {
                             [self.tabName] : self.editFormItem
                         }
                     }
-                    console.log("patchData--------->",patchData)
+                    // console.log("patchData--------->",patchData)
                     axios({
                         method:'patch',
                         url:feathersUrl +'settings/'+self.settingEditData.id,
@@ -300,7 +300,7 @@ export default {
                             subscriptionId : Cookies.get('subscriptionId')
                         },
                     }).then(response => {
-                        console.log("++++++++++++------------response",response);
+                        // console.log("++++++++++++------------response",response);
                         self.loading3 = false
                         if(response.status == 200){
                             this.$Message.success("Configuaration updated successfully")
@@ -312,7 +312,7 @@ export default {
                     })
                     .catch(error => {
                         self.loading3 = false
-                        console.log(error)
+                        // console.log(error)
                         if(error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -360,12 +360,12 @@ export default {
             if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
                 self.$refs['editGeneralData'].validate((valid) => {
                     if(valid){
-                            console.log('this.file',this.file)
+                            // console.log('this.file',this.file)
                             var reader = new FileReader();
                             var file = this.file
                             reader.addEventListener("load",function () {
                                 EditModifiedData = reader.result
-                                console.log('reader------->',self.editData.logo)
+                                // console.log('reader------->',self.editData.logo)
                                 let patchData = {
                                 id : self.editData.id,
                                 address : self.editData.address,
@@ -380,7 +380,7 @@ export default {
                                     subscriptionId : Cookies.get('subscriptionId')
                                 },
                                 }).then(response => {
-                                    console.log("response--------------->",response.data)
+                                    // console.log("response--------------->",response.data)
                                     self.loading1 = false;
                                     if(response.status == 200){
                                         self.$Message.success("Configuaration updated successfully")
@@ -390,7 +390,7 @@ export default {
                                         name: 'Settings'
                                     });
                                 }).catch(error => {
-                                    console.log(error)
+                                    // console.log(error)
                                    self.loading1 = false;
                                     if(error.response.status == 401){
                                         let location = psl.parse(window.location.hostname)
@@ -447,7 +447,7 @@ export default {
                                 subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
-                            console.log("response--------------->",response.data)
+                            // console.log("response--------------->",response.data)
                             if(response.status == 200){
                                 self.loading1 = false
                                 self.$Message.success("Configuaration updated successfully")
@@ -456,7 +456,7 @@ export default {
                                 })
                             }
                         }).catch(error => {
-                            console.log(error)
+                            // console.log(error)
                              self.loading1 = false
                             if(error.response.status == 401){
                                     let location = psl.parse(window.location.hostname)
@@ -505,7 +505,7 @@ export default {
             let reader  = new FileReader();
             return new Promise ((resolve , reject) =>{
                 if (this.file && this.editData.domain == "Xero") {
-                    console.log("Is file uploaded = yes")
+                    // console.log("Is file uploaded = yes")
                         reader.readAsDataURL(this.file);
                         reader.addEventListener("load", function () {
                             let lastModified = self.file.lastModified +"-"+self.file.name;
@@ -524,10 +524,10 @@ export default {
             self.$refs['editData'].validate(async (valid) => {
                 if(valid){
                     let EditModifiedData = await this.editedData() 
-                    console.log(EditModifiedData)
+                    // console.log(EditModifiedData)
                     let patchData = _.cloneDeep(EditModifiedData)
                     delete patchData.online_payment;
-                    console.log("settingEditData--------------",patchData);
+                    // console.log("settingEditData--------------",patchData);
                     axios({
                         method:'patch',
                         url:feathersUrl +'settings/'+this.editData.id,
@@ -548,7 +548,7 @@ export default {
                         // this.disabled = false;
                     })
                     .catch(error => {
-                            console.log(error)
+                            // console.log(error)
                             this.disabled = false;
                             self.loading2 = false
                             if(error.response.status == 401){
@@ -591,11 +591,11 @@ export default {
 
     },
     mounted(){
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",this.settingEditData)
+        // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@",this.settingEditData)
         if(this.dataEditIn == 'Online Payment'){
             this.editFormItem = this.settingEditData.online_payment[this.tabName][this.rowIndex]
             this.data = Object.keys(this.editFormItem)
-            console.log("this.editFormItem-------->", this.data)
+            // console.log("this.editFormItem-------->", this.data)
         }
         if(this.dataEditIn == 'Configuration'){
             this.editData = this.settingEditData

@@ -103,7 +103,7 @@ export default {
         }
     },
     mounted(){
-        console.log("@@@@@@@@@@@@@@@@@@@@@-------->",this.row)
+        // console.log("@@@@@@@@@@@@@@@@@@@@@-------->",this.row)
         this.data1 = this.row.products
     } 
 }

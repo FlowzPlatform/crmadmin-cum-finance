@@ -84,7 +84,7 @@
 
   let config = require("@/config/customConfig.js")
   import Cookies from 'js-cookie';
-  // console.log(config)
+  // // console.log(config)
   let feathersUrl =  config.default.serviceUrl;
   var _ = require('lodash');
   let subscriptionId = Cookies.get('subscriptionId')
@@ -175,7 +175,7 @@
             "sortable": true,
             "align":"center",
             render:(h,{row})=>{
-              // console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
+              // // console.log("row.Phones[2].PhoneNumber",row.Phones[2].PhoneNumber)
               if((row.Phones[2].PhoneNumber == undefined) || (row.Phones[2].PhoneNumber == ''))
                 {
                   // return "Not available"
@@ -372,7 +372,7 @@
             "title": "Customer Name",
             "key": "Name",
             render:(h,{row})=>{
-              // console.log("-------------row",row)
+              // // console.log("-------------row",row)
               // return row.Name
                 return h('div', [
                       h('span', row.Name)
@@ -432,7 +432,7 @@
     },
     methods: {
       changepagesize(pageSize){
-          console.log("####################################",pageSize)
+          // console.log("####################################",pageSize)
           this.pageSize = pageSize
           if(this.pageSize > 10){
             this.tableHeight = 530
@@ -448,33 +448,33 @@
         this.getAllSettings();
       },
       async changeData() {
-        // console.log("this.data6", this.data6)
+        // // console.log("this.data6", this.data6)
         this.filterArray = this.data6
         var self = this
 
         if(this.cname != ''){
-        //  console.log("this.cname", this.cname)
+        //  // console.log("this.cname", this.cname)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          // console.log("item",item)
+          // // console.log("item",item)
             if(item.Name != undefined){
               return item.Name === self.cname;
             }else{
               return item.DisplayName === self.cname;
             }
         });
-        //  console.log("myarr",this.filterArray)
+        //  // console.log("myarr",this.filterArray)
         //  this.list = await this.mockTableData2(1,self.pageSize)
         }else{
-            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-            // console.log("myarr",this.filterArray)
+            // // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+            // // console.log("myarr",this.filterArray)
             // this.list = await this.mockTableData2(1,self.pageSize)
           }
 
 
         if(this.status != ''){
-          // console.log("this.status", this.status)
+          // // console.log("this.status", this.status)
           this.filterArray = _.filter(this.filterArray,  function(item){
-          // console.log("item",item)
+          // // console.log("item",item)
             if(item.ContactStatus != undefined){
               return item.ContactStatus === self.status;
             }else{
@@ -489,18 +489,18 @@
               }
             }
           });
-        //  console.log("myarr",this.filterArray)
+        //  // console.log("myarr",this.filterArray)
         //  this.list = await this.mockTableData2(1,self.pageSize)
         }else{
-            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-            // console.log("myarr",this.filterArray)
+            // // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+            // // console.log("myarr",this.filterArray)
             // this.list = await this.mockTableData2(1,self.pageSize)
           }
         
         if(this.email != ''){
-        //  console.log("this.email", this.email)
+        //  // console.log("this.email", this.email)
         this.filterArray = _.filter(this.filterArray,  function(item){
-          // console.log("item",item)
+          // // console.log("item",item)
           if(item.EmailAddress != undefined){
             return item.EmailAddress === self.email;
           }
@@ -510,11 +510,11 @@
           }
           }
         });
-        //  console.log("myarr",this.filterArray)
+        //  // console.log("myarr",this.filterArray)
         //  this.list = await this.mockTableData2(1,self.pageSize)
         }else{
-            // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-            // console.log("myarr",this.filterArray)
+            // // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+            // // console.log("myarr",this.filterArray)
             // this.list = await this.mockTableData2(1,self.pageSize)
           }
 
@@ -522,15 +522,15 @@
           
       },
       async mockTableData2 (p,size) {
-        // console.log("p-------------->",p)
-        // console.log("p-------------->",size)
-        // console.log("console.log------------>",this.filterArray)
+        // // console.log("p-------------->",p)
+        // // console.log("p-------------->",size)
+        // // console.log("// console.log------------>",this.filterArray)
         this.len = this.filterArray.length
         if(this.len == 0){
-            console.log("data length 0--------------->",this.tableHeight)
+            // console.log("data length 0--------------->",this.tableHeight)
             this.tableHeight = 100
           }else {
-            console.log("data length 10--------------->",this.tableHeight)
+            // console.log("data length 10--------------->",this.tableHeight)
             this.tableHeight = (this.len * 40) + 35
           }
         return this.filterArray.slice((p - 1) * size, p * size);
@@ -538,10 +538,10 @@
       async mockTableData1 (p,size) {
         this.len = this.data6.length
         if(this.len == 0){
-            console.log("data length 0--------------->",this.tableHeight)
+            // console.log("data length 0--------------->",this.tableHeight)
             this.tableHeight = 100
           }else {
-            console.log("data length 10--------------->",this.tableHeight)
+            // console.log("data length 10--------------->",this.tableHeight)
             this.tableHeight = (this.len * 40) + 35
           }
         return this.data6.slice((p - 1) * size, p * size).reverse();
@@ -549,16 +549,16 @@
       async changePage (p) {
         var self = this
         this.page = p
-        // console.log("not inside",this.filterArray.length)
+        // // console.log("not inside",this.filterArray.length)
         if(this.filterArray.length == 0){
-          // console.log("inside",this.filterArray)
+          // // console.log("inside",this.filterArray)
           this.list = await this.mockTableData1(p,self.pageSize);
         }else{
           this.list = await this.mockTableData2(p,self.pageSize);
         }
       },
       async tabClicked(data){
-        // console.log(data)
+        // // console.log(data)
         this.tabIndex = data;
         let settingName = this.tabPanes[data].configName;
         let settingId = this.tabPanes[data].id
@@ -573,7 +573,7 @@
 
 
         if(settingDomain == 'custom'){
-          // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
+          // // console.log(">>>>>>>>>>>>> " , this.tabPanes[data]);
           let customerUrl = this.tabPanes[data].customer_url;
           await axios({
             method: 'get',
@@ -587,7 +587,7 @@
           })
           .then(async function (response) {
             self.$Loading.finish();
-            // console.log("custom customer get response",response)
+            // // console.log("custom customer get response",response)
             self.data6 = response.data.data.reverse();
 
             let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
@@ -607,7 +607,7 @@
             })
             .catch(function (error) {
               self.$Loading.error();
-              console.log("error in get customer",error);
+              // console.log("error in get customer",error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                     let location = psl.parse(window.location.hostname)
                     location = location.domain === null ? location.input : location.domain
@@ -649,7 +649,7 @@
             }
           })
           .then(async function (response) {
-            console.log("$$$$$$$$$$$$$$$$$$$",typeof response.data[0].data)
+            // console.log("$$$$$$$$$$$$$$$$$$$",typeof response.data[0].data)
             if (response.data[0].data.data) {
               self.$Loading.finish();
               $('.preload').css("display","none")
@@ -669,7 +669,7 @@
             }
           })
           .catch(function (error) {
-              console.log("error",error);
+              // console.log("error",error);
               if (error.response.data.message === 'invalid_grant') {
                   self.$Notice.error({
                       duration:0, 
@@ -719,7 +719,7 @@
 
 
         self.data6.forEach (obj => {
-        // console.log("obj------------------->",obj);
+        // // console.log("obj------------------->",obj);
         if(obj.Name != undefined){
           NameArr.push(obj.Name);
           StatusArr.push(obj.ContactStatus);
@@ -731,7 +731,7 @@
         }else{
           NameArr.push(obj.DisplayName)
           if(obj.PrimaryEmailAddr != undefined){
-          // console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
+          // // console.log('IIIIIIIIIIIIIIIIIIIIII',obj.PrimaryEmailAddr.Address)
           EmailArr.push(obj.PrimaryEmailAddr.Address)
           }
           if(obj.Active != undefined){            
@@ -741,17 +741,17 @@
             StatusArr.push("INACTIVE");
             }
           }
-          // console.log('StatusArr------------>',StatusArr)
+          // // console.log('StatusArr------------>',StatusArr)
         }
         })
 
-        // console.log("NameArr----------->before", NameArr);
+        // // console.log("NameArr----------->before", NameArr);
         NameArr.sort();
-        // console.log("NameArr----------->after", NameArr);
+        // // console.log("NameArr----------->after", NameArr);
 
-        // console.log("EmailArr----------->before", EmailArr);
+        // // console.log("EmailArr----------->before", EmailArr);
         EmailArr.sort();
-        // console.log("EmailArr----------->after", EmailArr);
+        // // console.log("EmailArr----------->after", EmailArr);
 
         NameArr.forEach(item => {
         var x = document.getElementById("selectCustomer");
@@ -785,8 +785,8 @@
           },
         })
         .then(function (response) {
-          // console.log("response------>iuy",response);
-          // console.log('this.tabIndex', self.tabIndex)
+          // // console.log("response------>iuy",response);
+          // // console.log('this.tabIndex', self.tabIndex)
           self.spinShow = false;
           if (response.data.data.length != 0)
           {
@@ -812,7 +812,7 @@
 
         })
         .catch(function (error) {
-          console.log("error",error);
+          // console.log("error",error);
           self.spinShow = false;
           if(error.message == 'Network Error'){
             self.$Notice.error({
@@ -853,7 +853,7 @@
       },
       exportData (type) {
             if (type === 1) {
-              console.log(this.$refs);
+              // console.log(this.$refs);
               this.$refs.table[0].exportCsv({
                 filename: 'The original data'
               });

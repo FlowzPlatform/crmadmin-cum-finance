@@ -20,7 +20,7 @@
                     <div  style="color: #777777;">INVOICE TO:</div>
                     <h2  style="font-size: 16px;font-weight: normal;margin: 0;">{{row.user_billing_info.name}}</h2>
                     <div >{{row.user_billing_info.street1}}, <span v-if="row.user_billing_info.street2"> {{row.user_billing_info.street2}},</span> {{row.user_billing_info.city}}-{{row.user_billing_info.postalcode}}, </div>
-                    <div >{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>                    
+                    <div >{{row.user_billing_info.state}}, {{row.user_billing_info.country}}</div>
                     <div >
                         <a href="mailto:john@example.com" style="color: #0087C3;text-decoration: none;">{{row.user_billing_info.email}} </a>
                     </div>
@@ -98,8 +98,8 @@
     import 'owl.carousel/dist/assets/owl.carousel.css';
     import jQuery from 'jquery';
     import owlCarousel from 'owl.carousel';
-     import config from '../../config/customConfig.js'    
-    import Cookies from 'js-cookie'; 
+     import config from '../../config/customConfig.js'
+    import Cookies from 'js-cookie';
     const accounting = require('accounting-js');
     let axios = require('axios');
     let result;
@@ -153,7 +153,7 @@
                     sum += item.total_qty * item.unit_price
                 }
                 let res = charge - sum
-                return accounting.formatMoney(res)                
+                return accounting.formatMoney(res)
             },
             invoiceData(){
                 let self = this;
@@ -164,19 +164,19 @@
                     },
                 })
                 .then(function (response) {
-                    console.log("response------>iuy",response.data);
+                    // // console.log("response------>iuy",response.data);
                     self.emailDataCompany = response.data
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // // console.log("error",error);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
-                        
-                        Cookies.remove('auth_token' ,{domain: location}) 
-                        Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                        Cookies.remove('auth_token' ,{domain: location})
+                        Cookies.remove('subscriptionId' ,{domain: location})
                         self.$store.commit('logout', self);
-                        
+
                         self.$router.push({
                             name: 'login'
                         });
@@ -200,7 +200,7 @@
                     }
                 });
             }
-            
+
         },
         filters: {
             upper(item) {
@@ -208,11 +208,11 @@
             }
         },
         mounted() {
-            
+
         },
         watch: {
             'row': async function(id) {
-                console.log("Row Data Invoice",this.row)
+                // // console.log("Row Data Invoice",this.row)
                   this.invoiceData()
             }
         }

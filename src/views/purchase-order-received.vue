@@ -474,7 +474,7 @@
 						width: 50,
 						render: (h, params) => {
 							if($('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id') != undefined){
-								console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
+								// console.log("***",$('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id'))
 								let cardIndex = $('.ivu-table-cell-expand-expanded').parents('.mainClass').attr('id');
 								let addressId = this.poBillAddress[cardIndex].selected_address_id
 								return h(expandRow, {
@@ -639,7 +639,7 @@
 			},
 			async handleUpload (file) {
 				var self = this
-				console.log('file',file)
+				// console.log('file',file)
 				if(file.size >= 1e+8){
 					this.$Notice.error({
 						title: 'File Limit',
@@ -658,7 +658,7 @@
 				}
 			},
 			calculateAmount () {
-				console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
+				// console.log('this.shippingCharge',this.shippingCharge,typeof this.shippingCharge)
 				if (!this.shippingCharge || isNaN(this.shippingCharge)){
 					this.shippingCharge='0.00'
 				}
@@ -686,13 +686,13 @@
 					this.total = (parseFloat(this.data1.total) + parseFloat(charge)).toFixed(2);
 			},
 			handleEdit (tabname, rowinx) {
-				console.log('handleEdit............', tabname, rowinx)
+				// console.log('handleEdit............', tabname, rowinx)
 				let self = this;
                 this.exData = this.data2[0].online_payment[tabname][rowinx];
 				let oldData = _.cloneDeep(this.data2[0].online_payment[tabname][rowinx])
                 oldData = _.omit(oldData, ['_index', '_rowKey'])
-                console.log('exData...',  this.exData )
-				console.log('.oldData..',  oldData )
+                // console.log('exData...',  this.exData )
+				// console.log('.oldData..',  oldData )
 				this.$Modal.confirm({
                     title: 'Edit',
                     closable: true,
@@ -712,7 +712,7 @@
                                         },
                                         on: {
                                             'on-change': (value) => {
-                                                console.log(value)
+                                                // console.log(value)
                                                 oldData[k] = value
                                             }
                                         }
@@ -732,7 +732,7 @@
                                         },
                                         on: {
                                             'on-change': (value) => {
-                                                console.log(value)
+                                                // console.log(value)
                                                 oldData[k] = value
                                             }
                                         }
@@ -755,7 +755,7 @@
 										},
                                         on: {
                                             'on-change': (value) => {
-                                                console.log(value)
+                                                // console.log(value)
                                                 oldData[k] = value
                                             }
                                         }
@@ -776,7 +776,7 @@
                                             },
                                             on: {
                                                 'input': (value) => {
-                                                    console.log('Input:: ', value)
+                                                    // console.log('Input:: ', value)
                                                     oldData[k] = value
                                                 }
                                             }
@@ -785,20 +785,20 @@
                                 )
                             }
                         } 
-                        // console.log('myFormItem', myFormItem)
+                        // // console.log('myFormItem', myFormItem)
                         return h('div', {},  
                         [
                             h('Form', {}, myFormItem)
                         ])
 					},
                     onOk() {
-                        console.log("edited data", oldData);
+                        // console.log("edited data", oldData);
 						self.exData=oldData
-						console.log("edited  exData data", self.exData);
+						// console.log("edited  exData data", self.exData);
                         let rowIndex = rowinx;
 						// self.exData = _.omit(self.exData, ['_index', '_rowKey'])
 						let configId = self.data2[0].id;
-                        console.log("rowIndex",rowIndex);
+                        // console.log("rowIndex",rowIndex);
                         let patchData = {
 							id : configId,
                             rowIndex : rowIndex,
@@ -806,13 +806,13 @@
                                 [tabname] : self.exData
                             }
                         };
-                        console.log("patchData",patchData)
+                        // console.log("patchData",patchData)
                         axios({
                             method:'patch',
 							url: config.default.serviceUrl + 'supplier-payment-config/' + configId,
                             data: patchData,
                         }).then(response => {
-                            console.log("++++++++++++------------response",response);
+                            // console.log("++++++++++++------------response",response);
                             if(response.status == 200){
 								Vue.set(self.data2[0].online_payment[tabname],rowinx,self.exData)
                                 this.$Message.success("Configuaration updated successfully")
@@ -820,7 +820,7 @@
                             
                         })
                         .catch(error => {
-                                console.log(error)
+                                // console.log(error)
                                 
                                 if(error.response.status == 401){
                                     let location = psl.parse(window.location.hostname)
@@ -837,13 +837,13 @@
                         });
                     },
                     onCancel() {
-                        console.log('CANCEL!!')
+                        // console.log('CANCEL!!')
                     }
                 })
 			},
 			handleDelete (tabname, rowinx) {
-                console.log("in handleDelete-------------->",tabname, rowinx)
-				console.log("delet data", this.data2[0].online_payment[tabname][rowinx])
+                // console.log("in handleDelete-------------->",tabname, rowinx)
+				// console.log("delet data", this.data2[0].online_payment[tabname][rowinx])
 				let self = this;
 				let configId = self.data2[0].id;
                 this.$Modal.confirm({ 
@@ -853,7 +853,7 @@
                     content: '',
                     onOk: () => {
                         self.exData = self.data2[0].online_payment[tabname][rowinx];
-                        console.log("self.exData",self.exData);
+                        // console.log("self.exData",self.exData);
                         self.exData.isDeleted = true;
                         let patchData = {
                             id : configId,							
@@ -862,7 +862,7 @@
                                 [tabname] : self.exData
                             }
                         };
-                        console.log("patchData",patchData)
+                        // console.log("patchData",patchData)
                         axios({
 							method:'patch',
 							url: config.default.serviceUrl + 'supplier-payment-config/' + configId,
@@ -871,11 +871,11 @@
                             if(response.status == 200){
                                 this.$Message.success("Configuaration deleated successfully")
                             }
-                            console.log("YYYYYYYYYYYYy",self.exData);
-                            console.log("EEEEEEEEEEEEe",self.data2[0].online_payment[tabname][rowinx])
+                            // console.log("YYYYYYYYYYYYy",self.exData);
+                            // console.log("EEEEEEEEEEEEe",self.data2[0].online_payment[tabname][rowinx])
                         })
                         .catch(error => {
-                                console.log(error)
+                                // console.log(error)
                                 
                                 if(error.response.status == 401){
                                     let location = psl.parse(window.location.hostname)
@@ -915,7 +915,7 @@
 			},		
 			async init (){
 				var self = this
-				// console.log("config.default.orderapi", config.default.orderapi)
+				// // console.log("config.default.orderapi", config.default.orderapi)
 				axios({
 					method: 'get',
 					url: config.default.serviceUrl +'purchase-order',
@@ -924,7 +924,7 @@
 						// user : Cookies.get('user')
 					}
 				}).then(function (response){
-					console.log("------------------------response",response.data.data[0]);
+					// console.log("------------------------response",response.data.data[0]);
 					
 					 	let poData=response.data.data;
 						if(poData && poData.length>0){
@@ -939,7 +939,7 @@
 								self.showError = true
 						}
 				}).catch(error => {
-					console.log("-------",error);
+					// console.log("-------",error);
 					if(error.message == 'Network Error') {
 						self.$Notice.error({
 							title: "Error",
@@ -1005,7 +1005,7 @@
 					// }
 				}
 
-				console.log("Temp",tempPOAddressBill)
+				// console.log("Temp",tempPOAddressBill)
 				return tempPOAddressBill;
 
 			},
@@ -1042,26 +1042,26 @@
 			handleSubmitProfile (name) {
 				var self = this;
 				var file = this.file
-				console.log("HandleSubmitProfile call")
+				// console.log("HandleSubmitProfile call")
 				this.$refs[name].validate((valid) => {
 					if (valid) {
-						console.log("Inside Valid If")
+						// console.log("Inside Valid If")
 						if(file != ''){
-							console.log("inside file If")
+							// console.log("inside file If")
 							var reader = new FileReader();
-							console.log('uuuuuu',file)
+							// console.log('uuuuuu',file)
 							reader.readAsDataURL(file);
 						  	reader.addEventListener("load", function () {
-								console.log('uuuuuu',file.name)
+								// console.log('uuuuuu',file.name)
 								var fileupObj = {
 									"filename":file.name,
 									"url":reader.result
 								}
-								console.log('fileupObj fileupObj',fileupObj)								
+								// console.log('fileupObj fileupObj',fileupObj)								
 								self.formValidateProfile.logo.push(fileupObj);
 							})
 						}
-						console.log("address", this.formValidateProfile)
+						// console.log("address", this.formValidateProfile)
 					} 
 					else {
 						this.$Message.error('Please fill up all the fields correctly');
@@ -1072,7 +1072,7 @@
 				var self = this;
 				this.$refs[name].validate((valid) => {
 					if (valid) {
-						console.log('formValidate----------------------------->',this.formValidatePayment, this.poBillAddress)
+						// console.log('formValidate----------------------------->',this.formValidatePayment, this.poBillAddress)
 						let patchData = _.cloneDeep(this.formValidatePayment)
 						if (this.formValidatePayment.gateway == 'stripe') {
 							delete patchData.Transaction_Key
@@ -1094,9 +1094,9 @@
 						delete patchData.gateway;
 						patchData['isDefault'] = true;
 						patchData['isDeleted'] = false;
-						console.log('patchData----------------------------->',patchData)						
+						// console.log('patchData----------------------------->',patchData)						
 						params.online_payment[this.formValidatePayment.gateway] = [patchData];
-						console.log("---------------------params online payment",params);
+						// console.log("---------------------params online payment",params);
 
 						axios({
 							method: 'post',
@@ -1111,9 +1111,9 @@
 							self.init()
 							self.handleResetPayment();
 							$('.online_payment').slideToggle(700);
-							console.log('??????????????', response)
+							// console.log('??????????????', response)
 						}).catch(function (error){
-							console.log("error", error)
+							// console.log("error", error)
 							self.$Notice.error({
 								title: error.response.data.name,
 								desc: error.response.data.message,
@@ -1128,11 +1128,11 @@
 				})
 			},
 			clicked () {
-                console.log("Clickeddddd...............");
+                // console.log("Clickeddddd...............");
                 $('.online_payment').slideToggle(700);
 			},
 			clickedProfile () {
-				console.log("Clickeddddd...............");
+				// console.log("Clickeddddd...............");
                 $('.profileConfig').slideToggle(700);
 			},
 			supplierPayment () {
@@ -1145,12 +1145,12 @@
 					},
 					
 				}).then(function(response){
-					console.log('supplierPayment...........', response.data.data)
+					// console.log('supplierPayment...........', response.data.data)
 					self.data2 = response.data.data
-					console.log('data2 data2 data2', self.data2)
+					// console.log('data2 data2 data2', self.data2)
 					
 				}).catch(function (error){
-					console.log("error", error)
+					// console.log("error", error)
 					self.$Notice.error({
 						title: error.response.data.name,
 						desc: error.response.data.message,
@@ -1160,7 +1160,7 @@
 
 			},
 			keyName(k) {
-				console.log("kkkkkkkkkkkkkkkkkkkk", k)
+				// console.log("kkkkkkkkkkkkkkkkkkkk", k)
                 if (k === 'auth') {
                     return 'Authorize.Net'
                 }
@@ -1188,7 +1188,7 @@
 				if(this.dueDate != "" ) {
 
 					if (this.data2.length > 0) {
-						console.log("poData data1", this.data2[0].online_payment)
+						// console.log("poData data1", this.data2[0].online_payment)
 						let payment =  this.data2[0].online_payment
 						for(let item in payment) {
 							for(let val in payment[item]) {
@@ -1215,7 +1215,7 @@
 							'dueDate': this.dueDate,
 							'paymentInfo': paymentInfo
 						}
-						console.log("po bill data", invoiceData)
+						// console.log("po bill data", invoiceData)
 					
 					axios({
 							method: 'post',
@@ -1223,16 +1223,16 @@
 							data: invoiceData
 							
 						}).then(function(response){
-							console.log('Generate PO...........', response)
+							// console.log('Generate PO...........', response)
 							self.invoiceBillObject=response.data
 							self.$Message.success("Purchase Order Invoice Generated Successfully");
 							self.invoiceGenerated=true;
 							// self.invoiceBillGenerated=true;
 							// self.data2 = response.data.data
-							// console.log('data2 data2 data2', self.data2)
+							// // console.log('data2 data2 data2', self.data2)
 							self.invoiceBillGenerated=true;
 						}).catch(function (error){
-							console.log("error", error)
+							// console.log("error", error)
 							self.$Notice.error({
 								title: error.response.data.name,
 								desc: error.response.data.message,
@@ -1253,12 +1253,12 @@
             },
 			countryChange (val) {
 				this.allState = countryStateCity.getStatesOfCountry(val)
-				console.log("countryChange countryChange", this.allState)
+				// console.log("countryChange countryChange", this.allState)
 				$('.state1').css("display","block")
 			},
 			stateChange (val) {
 				this.allCity = countryStateCity.getCitiesOfState(val)
-				console.log("countryChange countryChange", this.allCity)
+				// console.log("countryChange countryChange", this.allCity)
 				$('.city1').css("display","block")
 			},
             async download() {
@@ -1271,7 +1271,7 @@
                         "html" : $('#orderList').html()
                     },  
                 }).then(function (response) {
-                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     self.$Loading.finish()
                     var arrayBufferView = new Uint8Array( response.data.data );
                     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -1325,7 +1325,7 @@
                         "html" : $('#invoiceBillList').html()
                     },  
                 }).then(function (response) {
-                    console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                    // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                     self.$Loading.finish()
                     var arrayBufferView = new Uint8Array( response.data.data );
                     var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -1370,7 +1370,7 @@
 				mywindow.document.getElementsByTagName('body')[0].innerHTML = '';
 				let script = `<script>function printDiv(divName) {
 								var printContents = document.getElementById(divName).innerHTML;
-								console.log("PrintContent:-->",printContents)
+								// console.log("PrintContent:-->",printContents)
 								var originalContents = document.body.innerHTML;
 
 								document.body.innerHTML = printContents;
@@ -1399,11 +1399,11 @@
             
 		},
 		mounted() {
-			// console.log("this.$route.params.id", this.$route.query.PO_id)
+			// // console.log("this.$route.params.id", this.$route.query.PO_id)
 			this.init()
 			this.shippingCharge = parseFloat(this.shippingCharge).toFixed(2)
 			this.allCountry = countryStateCity.getAllCountries()
-			// console.log("allCountry allCountry", this.allCountry)			
+			// // console.log("allCountry allCountry", this.allCountry)			
 		}
 		
 	}

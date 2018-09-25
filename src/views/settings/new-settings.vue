@@ -215,9 +215,9 @@
                 
                 this.$refs[name].validate(async  (valid)   => {
                     if (valid) {
-                        console.log(this.file)
+                        // console.log(this.file)
                         let file_ext = this.file.name.split('.').pop()
-                        console.log("self.file.type file_ext", file_ext)
+                        // console.log("self.file.type file_ext", file_ext)
                         if( self.file == null || file_ext !== "pem"){
                             self.$Message.error({
                                 content: ' Please, attach a .pem file!',
@@ -255,7 +255,7 @@
                                     data: data
                                 })
                                 .then(function (response) {
-                                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
+                                    // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>> " , response)
                                     self.loading = false;
                                     if (response.data.status != 403) {
                                         self.$Message.success('Configuration Added Successfully');
@@ -347,7 +347,7 @@
                             data: data
                         })  
                         .then(function (response) {
-                            console.log(response)
+                            // console.log(response)
                                 self.loading = false;
                                 self.$Message.success('Configuration Added Successfully');
                                 self.handleReset('QBformValidate')
@@ -423,7 +423,7 @@
             //                     data: data
             //                 })  
             //                 .then(function (response) {
-            //                     console.log(response)
+            //                     // console.log(response)
             //                      self.$Message.success('Configuration Added Successfully');
             //                      self.loading = false;
             //                      self.handleReset('customformValidate')
@@ -465,7 +465,7 @@
             //                     data: data
             //                 })  
             //                 .then(function (response) {
-            //                     console.log(response)
+            //                     // console.log(response)
             //                      self.$Message.success('Configuration Added Successfully');
             //                      self.loading = false;
             //                      self.handleReset('customformValidate')
@@ -502,8 +502,8 @@
             }
         },
         mounted() {
-            console.log(this.$store.state.settingData)
-            //console.log()
+            // console.log(this.$store.state.settingData)
+            //// console.log()
         }
     }
 </script>

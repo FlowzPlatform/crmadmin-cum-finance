@@ -291,21 +291,21 @@
 
             quntityFun(row){    
                 let self=this
-                console.log("row",row)
+                // console.log("row",row)
                 // var shipDetail=row.shipping_method.shipping_detail
                 // shipDetail.forEach((element) => {
                     // if(self.selected_address_id == element.selected_address_id){
                      if(row.edited_color_quantity){
-                        console.log("edited_color_quantity")
+                        // console.log("edited_color_quantity")
                         self.productitem= row.edited_color_quantity
                      }
                      else{
-                        console.log("color")                         
+                        // console.log("color")                         
                         self.productitem= row.color
                      }
                     // }
                 // })
-            console.log("---Quntiity----end",this.productitem)
+            // console.log("---Quntiity----end",this.productitem)
 
                 // return {} 
             },
@@ -340,7 +340,7 @@
             },
             clicked (inx) {
                 this.isShow=!this.isShow
-                console.log("Clickeddddd...............",inx);
+                // console.log("Clickeddddd...............",inx);
                 // $('#description'+this.total+inx).slideToggle(700);
                 // if($('#description'+inx).css('display') === 'none') {
                 //     $('#description'+inx).css('display', 'table-row');
@@ -364,23 +364,23 @@
             show (data,val,inx) {
                 let self = this
                 this.modal2 = true
-                console.log("show show ", data)
+                // console.log("show show ", data)
                 this.productData = data
                 this.formValidate.value = val
                 this.index = inx
             },
             onOk (data,value,name){
-                console.log('ok',data,value,name)
+                // console.log('ok',data,value,name)
                 
                 let totalValue = parseInt(value)
                 for(let key in this.productitem){
-                    console.log('&&&&&&', key)
+                    // console.log('&&&&&&', key)
                     if(key !== name){
                         totalValue = totalValue + parseInt(this.productitem[key])
                     }
                 }
                
-                console.log('&&&&&&&& totalvalue', totalValue )
+                // console.log('&&&&&&&& totalvalue', totalValue )
                 // this.modal2 = false;
                 this.price = ''
 
@@ -388,15 +388,15 @@
                     if(item.price_type == 'regular' && item.type == 'decorative' && item.global_price_type == 'global') {
                         item.price_range.forEach((element) => {
                             if(element.qty.lte) {
-                                    console.log("if first",element.qty, this.price)                                
+                                    // console.log("if first",element.qty, this.price)                                
                                 if(totalValue >= element.qty.gte && totalValue <= element.qty.lte){
                                     this.price = element.price                                    
-                                    console.log("if",this.price,totalValue)
+                                    // console.log("if",this.price,totalValue)
                                 } 
                             }else {
                                 if(totalValue >= element.qty.gte){
                                      this.price = element.price                                    
-                                    console.log("else",this.price,totalValue)
+                                    // console.log("else",this.price,totalValue)
                                 }
                             }
                         })
@@ -413,7 +413,7 @@
                 }
                 data.edited_color_quantity[name] = value
                 this.productitem = data.edited_color_quantity
-                console.log("this.productitem",data, this.productitem)
+                // console.log("this.productitem",data, this.productitem)
                 // this.productitem = data.color_quantity
 
                 if(this.price == ''){
@@ -426,7 +426,7 @@
                 else{
                     this.modal2 = false;
                     this.quntityFun(data)                    
-                    console.log(data)
+                    // console.log(data)
                     this.$emit('myemitter',data)
                     
                 }                    
@@ -441,13 +441,13 @@
             }
         },
         mounted() {
-                console.log("this 00000", this.row)   
+                // console.log("this 00000", this.row)   
                 this.spinShow = false;     
                 this.quntityFun(this.row)
             },
         watch: {
             'row': async function(id) {
-                console.log("this.row 11111", this.row)
+                // console.log("this.row 11111", this.row)
             }
         }
     }

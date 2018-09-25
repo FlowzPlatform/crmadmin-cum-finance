@@ -385,7 +385,7 @@
                     .toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
             },
             changepagesize(pageSize){
-                console.log("####################################",pageSize)
+                // console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 this.pageSize = pageSize
                 if(this.pageSize > 10){
@@ -415,35 +415,35 @@
                 this.dategt = '';
                 this.datelt = '';
                 // this.getAllSettings();
-                console.log('settingId',settingId);
+                // console.log('settingId',settingId);
                 if (settingId === undefined) {
                     settingId = this.tabPanes[this.tabIndex].id;
                 }
                 this.getTransaction(settingId);
             },
             async changeData() {
-                console.log("this.data", this.data)
+                // console.log("this.data", this.data)
                 this.filterArray = this.data
                 var self = this
 
                 if(this.cname != ''){
-                console.log("this.cname", this.cname)
+                // console.log("this.cname", this.cname)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                    console.log("item",item)
+                    // console.log("item",item)
                     return item.paymentAccounting.Contact.Name === self.cname;
 
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list = await this.mockTableData2(1,self.pageSize)
                 }else{
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.invoiceId != ''){
-                    console.log("this.invoiceId", this.invoiceId)
+                    // console.log("this.invoiceId", this.invoiceId)
                     this.filterArray = _.filter(this.filterArray,  function(item){
-                        console.log("item",item)
+                        // console.log("item",item)
                         //   return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
                         if(item.paymentAccounting.Invoice.InvoiceNumber != undefined){
                             return item.paymentAccounting.Invoice.InvoiceNumber === self.invoiceId;
@@ -451,60 +451,60 @@
                             return item.paymentAccounting.Invoice.InvoiceID === self.invoiceId;
                         }
                     });
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 //  if(this.dategt != ''){
-                //     console.log("this.dategt", this.dategt)
+                //     // console.log("this.dategt", this.dategt)
                 //     this.filterArray = _.filter(this.filterArray,  function(item){
                 //       // if(moment(item.DueDate).diff(moment(self.dategt).format(), 'days') >= 0){
-                //       //   console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                //       //   // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                 //       //   return item;
                 //       // }
-                //       console.log("item",item.paymentAccounting.Invoice.Date)
+                //       // console.log("item",item.paymentAccounting.Invoice.Date)
                 //       var newdate = moment(self.dategt).format('DD/MM/YYYY');
-                //       console.log("newdate",newdate)
-                //       console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
+                //       // console.log("newdate",newdate)
+                //       // console.log('item.paymentAccounting.Invoice.Date >= newdate;', item.paymentAccounting.Invoice.Date >= newdate)
                 //       return item.paymentAccounting.Invoice.Date >= newdate;
                 //     });
-                //      console.log("myarr",this.filterArray)
+                //      // console.log("myarr",this.filterArray)
                 //      this.list = await this.mockTableData2(1,pageSize)
 
                 //   }
 
                 //   if(this.datelt != ''){
-                //     console.log("this.datelt", this.datelt)
+                //     // console.log("this.datelt", this.datelt)
                 //     this.filterArray = _.filter(this.filterArray,  function(item){
-                //       console.log("item",item.paymentAccounting.Invoice.Date)
+                //       // console.log("item",item.paymentAccounting.Invoice.Date)
                 //       var newdate = moment(self.datelt).format('DD/MM/YYYY');
-                //       console.log("newdate",newdate)
+                //       // console.log("newdate",newdate)
                 //       return item.paymentAccounting.Invoice.Date <= newdate;
                 //     });
-                //      console.log("myarr",this.filterArray)
+                //      // console.log("myarr",this.filterArray)
                 //      this.list = await this.mockTableData2(1,pageSize)
                 //   }
 
                 if(this.dategt != ''){
-                    console.log("this.dategt", this.dategt)
+                    // console.log("this.dategt", this.dategt)
                     this.filterArray = _.filter(this.filterArray,  function(item){
                     if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.dategt).format(), 'days') >= 0){
                         return item;
                     }
                     });
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list = await this.mockTableData2(1,self.pageSize)
 
                 }
 
                 if(this.datelt != ''){
-                    console.log("this.datelt", this.datelt)
+                    // console.log("this.datelt", this.datelt)
                     this.filterArray = _.filter(this.filterArray,  function(item){
                     if(moment(item.paymentAccounting.Invoice.Date).diff(moment(self.datelt).format(), 'days') <= 0){
                         return item;
                     }
                     });
-                    console.log("myarr",this.filterArray)
+                    // console.log("myarr",this.filterArray)
                     // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
@@ -512,15 +512,15 @@
 
             },
             async mockTableData2 (p,size) {
-                console.log("p-------------->",p)
-                console.log("p-------------->",size)
-                console.log("console.log------------>",this.filterArray)
+                // console.log("p-------------->",p)
+                // console.log("p-------------->",size)
+                // console.log("// console.log------------>",this.filterArray)
                 this.len = this.filterArray.length
                 if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
+                    // console.log("data length 0--------------->",this.tableHeight)
                     this.tableHeight = 100
                 }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
+                    // console.log("data length 10--------------->",this.tableHeight)
                      this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
@@ -540,17 +540,17 @@
                     },
                 })
                 .then(function (response) {
-                    console.log("setting response",response);
+                    // console.log("setting response",response);
                     self.list = self.list
                     self.spinShow = false;
                     if (response.data.data.length != 0)
                     {
                         self.tabPanes = response.data.data;
                         $('.preload').css("display","none")
-                        console.log('this.tabPanes', self.tabPanes)
-                        console.log('this.tabIndex', self.tabIndex)
+                        // console.log('this.tabPanes', self.tabPanes)
+                        // console.log('this.tabIndex', self.tabIndex)
                         let settingId = self.tabPanes[self.tabIndex].id;
-                        // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
+                        // // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', self.list[0].key)
                         self.getTransaction(settingId)
                     }
                     else {
@@ -567,7 +567,7 @@
                     }
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // console.log("error",error);
                     self.spinShow = false;
                     if(error.message == 'Network Error'){
                         self.$Notice.error({
@@ -607,8 +607,8 @@
                 });
             },
             async tabClicked(data){
-                console.log(this.tabPanes)
-                console.log(">>>>>>>>>>>>>>>>>> " , data)
+                // console.log(this.tabPanes)
+                // console.log(">>>>>>>>>>>>>>>>>> " , data)
                 this.tabIndex = data;
                 let settingId = this.tabPanes[data].id
                 this.reset(settingId);
@@ -618,10 +618,10 @@
             async mockTableData1 (p,size) {
                 this.len = this.data.length
                 if(this.len == 0){
-                    console.log("data length 0--------------->",this.tableHeight)
+                    // console.log("data length 0--------------->",this.tableHeight)
                     this.tableHeight = 100
                 }else if(this.len < 10){
-                    console.log("data length 10--------------->",this.tableHeight)
+                    // console.log("data length 10--------------->",this.tableHeight)
                      this.tableHeight = (this.len * 40) + 35
                 }else{
                     this.tableHeight = 450
@@ -631,9 +631,9 @@
             async changePage (p) {
                 // this.page = p
                 var self =this
-                console.log("not inside",this.filterArray.length)
+                // console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
-                    console.log("inside",this.filterArray)
+                    // console.log("inside",this.filterArray)
                     this.list = await this.mockTableData1(p,self.pageSize);
                 }else{
                     this.list = await this.mockTableData2(p,self.pageSize);
@@ -651,7 +651,7 @@
                     }
                 })
                 .then(async function (response) {
-                    console.log("transaction response",response);
+                    // console.log("transaction response",response);
                     var deep = _.cloneDeep(response.data.data);
                     _(deep).each(function(item , index){
                         var dt = moment(item.paymentAccounting.Invoice.Date,['DD-MM-YYYY','MM-DD-YYYY'])
@@ -677,7 +677,7 @@
                     }
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // console.log("error",error);
                     self.$Loading.error();
                     self.flag = false
                     if(error.response.status == 401){
@@ -714,7 +714,7 @@
                 var NameArr = [];
                 $('#selectCustomer').children('option:not(:first)').remove();
                 self.data.forEach (obj => {
-                    // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
+                    // // console.log("/////////////////////////////////////////////////////////////////",obj.Name)
                     NameArr.push(obj.paymentAccounting.Contact.Name);
                     if(obj.paymentAccounting.Invoice.InvoiceNumber != undefined){
                         self.invnoFilter.push(obj.paymentAccounting.Invoice.InvoiceNumber);
@@ -728,7 +728,7 @@
                     var x = document.getElementById("selectCustomer");
                     var option = document.createElement("option");
                     option.text = item;
-                    // console.log()
+                    // // console.log()
                     x.add(option);
                 })
             }
@@ -740,7 +740,7 @@
         },
         watch: {
             '$route': function (id) {
-            console.log(id)
+            // console.log(id)
 
             // this.activetab = "2"
             }

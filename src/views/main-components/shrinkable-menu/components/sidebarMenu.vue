@@ -66,9 +66,9 @@ export default {
     },
     mounted(){
         
-        console.log("--------------------",this.menuList)
+        // console.log("--------------------",this.menuList)
         this.testArray = this.menuList.filter(function(e)  {
-            // console.log("------------********",e.name)
+            // // console.log("------------********",e.name)
            return e.name !== 'INVITE1';
         })
     }

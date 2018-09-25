@@ -536,12 +536,12 @@
                 }
             },
             getTabValue (inx) {
-                // console.log('inx', this.tabarr[inx].activetab)
+                // // console.log('inx', this.tabarr[inx].activetab)
                 return this.tabarr[inx].activetab
             },
             setTabValue (name) {
                 let inx = parseInt(name.charAt(name.length - 1))
-                // console.log('name :: ', name)
+                // // console.log('name :: ', name)
                 this.tabarr[inx].activetab = name
             },
             setname (k, inx) {
@@ -549,7 +549,7 @@
             },
             handleEdit (card, tabname, rowinx) {
                 this.propDataEdit =  this.data6[card];
-                console.log('this.propDataEdit............', this.propDataEdit)
+                // console.log('this.propDataEdit............', this.propDataEdit)
                 this.$router.push({
                     name:'Edit Settingdata',
                     params: {
@@ -562,9 +562,9 @@
                 })
             },
             handleDelete (card, tabname, rowinx) {
-                // console.log("in handleDelete-------------->",handleDelete)
+                // // console.log("in handleDelete-------------->",handleDelete)
                 let self = this;
-                console.log('Delete :: ', card, tabname, rowinx, '--data--', this.data6[card].online_payment[tabname][rowinx])
+                // console.log('Delete :: ', card, tabname, rowinx, '--data--', this.data6[card].online_payment[tabname][rowinx])
                 let configId = self.data6[card].id;
                 let isDeleatedArray = [];
                 this.$Modal.confirm({ 
@@ -574,14 +574,14 @@
                     content: '',
                     onOk: () => {
                         self.exData = self.data6[card].online_payment[tabname][rowinx];
-                        console.log("self.exData",self.exData);
+                        // console.log("self.exData",self.exData);
                         self.exData.isDeleted = true;
-                        console.log("outside",self.data6[card].online_payment[tabname])
+                        // console.log("outside",self.data6[card].online_payment[tabname])
                         for (let i=0; i<self.data6[card].online_payment[tabname].length; i++) {
-                                console.log("inside if self.data6[card].online_payment[tabname][i]",self.data6[card].online_payment[tabname][i])
+                                // console.log("inside if self.data6[card].online_payment[tabname][i]",self.data6[card].online_payment[tabname][i])
                             if(self.data6[card].online_payment[tabname][i].isDeleted == false) {
                                 isDeleatedArray.push(self.data6[card].online_payment[tabname][i])
-                                console.log("isDeleatedArray.length",isDeleatedArray.length)
+                                // console.log("isDeleatedArray.length",isDeleatedArray.length)
                             }
                         }
                         if(isDeleatedArray.length == 0) {
@@ -595,7 +595,7 @@
                                 [tabname] : self.exData
                             }
                         };
-                        console.log("patchData",patchData)
+                        // console.log("patchData",patchData)
                         axios({
                             method:'patch',
                             url:feathersUrl +'settings/'+configId,
@@ -608,11 +608,11 @@
                             if(response.status == 200){
                                 this.$Message.success("Configuaration deleated successfully")
                             }
-                            console.log("YYYYYYYYYYYYy",self.exData);
-                            console.log("EEEEEEEEEEEEe",self.data6[card].online_payment[tabname][rowinx])
+                            // console.log("YYYYYYYYYYYYy",self.exData);
+                            // console.log("EEEEEEEEEEEEe",self.data6[card].online_payment[tabname][rowinx])
                         })
                         .catch(error => {
-                            console.log(error)
+                            // console.log(error)
                             if(error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -697,7 +697,7 @@
                 });
             },
             addNewPaymentSettingsConfig (key) {
-                console.log("here")
+                // console.log("here")
                 this.$store.state.settingData = ""
                 this.$router.push({
                     name: 'Payment Settings',
@@ -708,7 +708,7 @@
                 });
             },
             addNewPaymentSettings() {
-                console.log("here")
+                // console.log("here")
                 this.$store.state.settingData = ""
                 this.$router.push({
                     name: 'Payment Settings'
@@ -716,7 +716,7 @@
             },
             defaultChanged(e){
                 
-                console.log(e)
+                // console.log(e)
             },
             change (status) {
                 
@@ -739,7 +739,7 @@
                         }).then(response => {
                             if(response.status == 200){
                                 this.$Message.success("Configuaration deleated successfully")
-                                console.log("TTTTTTTTTTTTTTTTT------------------")
+                                // console.log("TTTTTTTTTTTTTTTTT------------------")
                                 let deletedData =  this.data6.filter(function(el) {
                                     return el.id !== data.id;
                                 });
@@ -748,7 +748,7 @@
                             
                         })
                         .catch(error => {
-                            console.log(error)
+                            // console.log(error)
                             if(error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -805,17 +805,17 @@
                     cancelText: 'Cancel',
                     content: '',
                     onOk: () => {
-                      console.log("this.isDeleteLogo============>",this.isDeleteLogo)
-                      console.log("this.isDeleteAddress============>",this.isDeleteAddress)
+                      // console.log("this.isDeleteLogo============>",this.isDeleteLogo)
+                      // console.log("this.isDeleteAddress============>",this.isDeleteAddress)
                       if(this.isDeleteLogo == true){
-                        console.log("inside logo"); 
+                        // console.log("inside logo"); 
                         this.editData.logo = '';
                       }
                       if(this.isDeleteAddress == true){
-                        console.log("inside address");
+                        // console.log("inside address");
                         this.editData.address = '';
                       }
-                        console.log("TTTTTTTTTTTTT",this.editData)
+                        // console.log("TTTTTTTTTTTTT",this.editData)
                         axios({
                             method:'patch',
                             url:feathersUrl +'settings/'+data.id,
@@ -825,23 +825,23 @@
                                 subscriptionId : Cookies.get('subscriptionId')
                             },
                         }).then(response => {
-                            console.log("response-------------->",response)
+                            // console.log("response-------------->",response)
                             let configName = response.data.configName;
-                            // console.log("configName",configName);
-                            // console.log("this.data6",this.data6);
-                            console.log("this.data6[response.data.configName]",this.data6[index])
+                            // // console.log("configName",configName);
+                            // // console.log("this.data6",this.data6);
+                            // console.log("this.data6[response.data.configName]",this.data6[index])
                             this.data6[index].logo = response.data.logo;
                             this.data6[index].address = response.data.address;
-                            console.log("this.editData",this.editData)
-                            console.log("this.editGeneralData",this.editGeneralData)
+                            // console.log("this.editData",this.editData)
+                            // console.log("this.editGeneralData",this.editGeneralData)
                             // this.data6[index] = response.data
-                            // console.log("this.data6[card]",this.data6[card])
+                            // // console.log("this.data6[card]",this.data6[card])
                             if(response.status == 200){
                                 this.$Message.success("Configuaration deleated successfully")
                             }
                         })
                         .catch(error => {
-                            console.log(error)
+                            // console.log(error)
                             if(error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -898,7 +898,7 @@
                             },
                             on: {
                                 input: (val) => {
-                                    console.log("val", val)
+                                    // console.log("val", val)
                                     this.isDeleteLogo = val
                                 }
                             }
@@ -911,7 +911,7 @@
                             },
                             on: {
                                 input: (val) => {
-                                  console.log("val-------->", val)
+                                  // console.log("val-------->", val)
                                   this.isDeleteAddress = val
                                 }
                             }
@@ -946,7 +946,7 @@
                 })
             },
             editGeneralConfig(data,inx) {
-                console.log("inside edit")
+                // console.log("inside edit")
                 var newassignData = _.cloneDeep(data);
                 this.editindex = inx
                 this.editData = newassignData
@@ -969,23 +969,23 @@
             // async getGeneralEditedData() {
             //     let self = this;
             //     // return new Promise ((resolve , reject) =>{ 
-            //         console.log('**************',this.file)
-            //         console.log("self.file.type", this.file.type)
-            //         console.log("-------------config id",this.editData.id)              
+            //         // console.log('**************',this.file)
+            //         // console.log("self.file.type", this.file.type)
+            //         // console.log("-------------config id",this.editData.id)              
             //         // self.editData['logo'] = '';
             //         if( self.file != '' && (self.file.type === "image/png" || self.file.type === "image/jpeg")){
-            //             console.log('this.file',this.file)
+            //             // console.log('this.file',this.file)
             //             var reader = new FileReader();
             //             var file = this.file
                         
             //             // var logoData1 = {'logo': reader.result}
             //             await reader.addEventListener("load",function () {
             //                 self.editData.logo = reader.result
-            //                 console.log('reader------->',self.editData.logo)
+            //                 // console.log('reader------->',self.editData.logo)
             //             }, false);
 
             //             if (file) {
-            //                 // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
+            //                 // // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$',reader)
             //                 reader.readAsDataURL(file);
             //             }
             //         }
@@ -995,7 +995,7 @@
             //             self.$Message.error(' Please, attach a .jpg or .png file!');
             //         }
 
-            //         console.log("=====++++++++++++self.editData",self.editData.logo)
+            //         // console.log("=====++++++++++++self.editData",self.editData.logo)
             //         return(self.editData.logo);
             //     // })
             // },
@@ -1005,7 +1005,7 @@
             },
            async handleUpload (file) {
               var self = this
-              console.log('file',file)
+              // console.log('file',file)
               if(file.size >= 1e+8){
                   this.$Notice.error({
                     title: 'File Limit',
@@ -1021,7 +1021,7 @@
               return false;
             },
             showSecret(data){
-                console.log("----------=================",this[data])
+                // console.log("----------=================",this[data])
                 if(this[data] == "password" ){
                     this[data] = "text"
                 }else{
@@ -1073,7 +1073,7 @@
                     this.disabled = false;
                 })
                 .catch(error => {
-                        console.log(error)
+                        // console.log(error)
                         this.disabled = false;
                         if(error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
@@ -1113,7 +1113,7 @@
         },
         async mounted(){
             this.$Loading.start()
-            // console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
+            // // console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&",this.$route.params)
             // if (this.$route.params.tabName) {
             //     this.activetabs = this.$route.params.tabName
             // }
@@ -1139,12 +1139,12 @@
                 },
             })
             .then(async response => {
-                console.log("---------response",response)
+                // console.log("---------response",response)
                 localStorage.clear();
                 self.data6 = response.data.data
-                console.log("+++++++++++++++++++++data6",self.data6);
+                // console.log("+++++++++++++++++++++data6",self.data6);
                 let arrIndex = _.findIndex(response.data.data, function(o) { return o.domain == 'custom'; });
-                console.log("arrIndex",arrIndex)
+                // console.log("arrIndex",arrIndex)
                 if (arrIndex < 0) {
                     await axios({
                         method: 'post',
@@ -1156,7 +1156,7 @@
                         data: data
                     })
                     .then(function (response) {
-                        console.log("-----------settings response",response)
+                        // console.log("-----------settings response",response)
                         if (response.data.status != 403) {
                             self.data6.push(response.data);
                         }
@@ -1164,7 +1164,7 @@
                         // self.$Message.success('Success!');
                     })
                     .catch(function (error) {
-                        console.log("error in get settings",error)
+                        // console.log("error in get settings",error)
                         if(error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -1177,7 +1177,7 @@
                                 name: 'login'
                             });
                         }else if(error.response.status == 403){
-                            console.log("error.response",error.response)
+                            // console.log("error.response",error.response)
                             // if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER' || error.response.data.data.errorCode === 'ERR-PERMISSION') {
                             //     self.$Notice.error({
                             //         duration:0, 
@@ -1201,15 +1201,15 @@
                         }
                     });
                 }
-                console.log("after post self.data6",self.data6);
+                // console.log("after post self.data6",self.data6);
                 for (let [inx, item] of self.data6.entries()) {
 
                     if (item.hasOwnProperty('online_payment')) {
                         let i = 0
-                        // console.log('item:: ', item.online_payment)
+                        // // console.log('item:: ', item.online_payment)
                         if (item.online_payment !== '') {
                             for (let k in item.online_payment) {
-                                console.log("before",item.online_payment[k])
+                                // console.log("before",item.online_payment[k])
                                 item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
                                 if (item.online_payment[k].length > 0) {
                                     if (i === 0) {
@@ -1222,12 +1222,12 @@
                                 }
                                 else {
                                     //message
-                                    console.log(2);
+                                    // console.log(2);
                                     // self.alldata = true;
                                     item.online_payment[k].alldeleted = true;
                                     self.tabarr.push({activetab : ''})
                                 }
-                                console.log("after",item.online_payment[k])
+                                // console.log("after",item.online_payment[k])
                             }
                         }
                         else {
@@ -1237,7 +1237,7 @@
                         self.tabarr.push({activetab : ''})
                     }
                 }
-                console.log("self.tabarr",self.tabarr)
+                // console.log("self.tabarr",self.tabarr)
                 self.$Loading.finish();
             })
             .catch(error => {
@@ -1260,7 +1260,7 @@
                         name: 'login'
                     });
                 }else if(error.response.status == 403){
-                    console.log("error.response.data.data.errorCode",error.response.data.data.errorCode)
+                    // console.log("error.response.data.data.errorCode",error.response.data.data.errorCode)
                     if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER' || error.response.data.data.errorCode === 'ERR-PERMISSION') {
                         self.$Notice.error({
                             duration:0, 
@@ -1303,7 +1303,7 @@
             //     data: data
             // })  
             // .then(function (response) {
-            //     console.log("-----------settings response",response)
+            //     // console.log("-----------settings response",response)
             //     // self.$Message.success('Success!');
             //     self.loading = false;
             //     axios({
@@ -1315,15 +1315,15 @@
             //         },
             //     })
             //     .then(response => {
-            //         console.log(response)
+            //         // console.log(response)
             //         localStorage.clear();
             //         self.data6 = response.data.data
-            //         console.log("+++++++++++++++++++++data6",self.data6);
+            //         // console.log("+++++++++++++++++++++data6",self.data6);
             //         for (let [inx, item] of self.data6.entries()) {
 
             //             if (item.hasOwnProperty('online_payment')) {
             //                 let i = 0
-            //                 // console.log('item:: ', item.online_payment)
+            //                 // // console.log('item:: ', item.online_payment)
             //                 if (item.online_payment !== '') {
             //                     for (let k in item.online_payment) {
             //                         item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
@@ -1342,7 +1342,7 @@
             //                 self.tabarr.push({activetab : ''})
             //             }
             //         }
-            //         console.log("self.tabarr",self.tabarr)
+            //         // console.log("self.tabarr",self.tabarr)
             //         self.$Loading.finish();
             //     })
             //     .catch(error => {
@@ -1369,7 +1369,7 @@
             //     });
             // })
             // .catch(function (error) {
-            //     console.log(error)
+            //     // console.log(error)
             //     if(error.response.status == 401){
             //         let location = psl.parse(window.location.hostname)
             //         location = location.domain === null ? location.input : location.domain
@@ -1382,7 +1382,7 @@
             //             name: 'login'
             //         });
             //     }else if(error.response.status == 403){
-            //         console.log("error.response",error.response)
+            //         // console.log("error.response",error.response)
             //         // if (error.response.data.data.errorCode === 'ERR-LIMIT-OVER') {
             //             axios({
             //                 method:'get',
@@ -1393,14 +1393,14 @@
             //                 },
             //             })
             //             .then(response => {
-            //                 console.log(response)
+            //                 // console.log(response)
             //                 localStorage.clear();
             //                 self.data6 = response.data.data
-            //                 console.log("+++++++++++++++++++++data6",self.data6);
+            //                 // console.log("+++++++++++++++++++++data6",self.data6);
             //                 for (let [inx, item] of self.data6.entries()) {
             //                     if (item.hasOwnProperty('online_payment')) {
             //                         let i = 0
-            //                         // console.log('item:: ', item.online_payment)
+            //                         // // console.log('item:: ', item.online_payment)
             //                         for (let k in item.online_payment) {
             //                             item.online_payment[k] = _.reject(item.online_payment[k], {isDeleted: true})
             //                             if (item.online_payment[k].length > 0) {
@@ -1414,7 +1414,7 @@
             //                         self.tabarr.push({activetab : ''})
             //                     }
             //                 }
-            //                 console.log("self.tabarr",self.tabarr)
+            //                 // console.log("self.tabarr",self.tabarr)
             //                 self.$Loading.finish();
             //             })
             //         // }

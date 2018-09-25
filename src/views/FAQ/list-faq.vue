@@ -211,9 +211,9 @@
                       })
                     }else{    
                       let result = _.uniqBy(response.data.data,'websiteId')
-                      console.log("result", result)
+                      // console.log("result", result)
                       this.websiteList = result
-                      console.log("this.websiteList", this.websiteList[0].websiteId) 
+                      // console.log("this.websiteList", this.websiteList[0].websiteId) 
                       this.website = this.websiteList[0].websiteId
                       this.websiteChange();
                     }
@@ -251,7 +251,7 @@
                 })
             },
             async websiteChange() {
-                console.log('this.websiteId',this.website)
+                // console.log('this.websiteId',this.website)
                 this.queList = [];
                 this.list = [];
                 if (this.website != '' && this.website != undefined) {
@@ -264,7 +264,7 @@
                         }
                     })
                     .then((response)=> {
-                        console.log(response);
+                        // console.log(response);
                         this.$Loading.finish();
                         if (response.data.data.length != 0) {
                             this.listId = response.data.data[0].id;
@@ -285,7 +285,7 @@
                     })
                     .catch((error) => {
                         this.$Loading.error();
-                        console.log('errrooorrr',error.response);
+                        // console.log('errrooorrr',error.response);
                         if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
@@ -338,7 +338,7 @@
                     websiteId : this.website,
                     patchFaq: row
                 }
-                // console.log('faqdata',faqData);
+                // // console.log('faqdata',faqData);
                 faqData.patchFaq.isActive = status;
                 axios({
                     method: 'patch',
@@ -346,7 +346,7 @@
                     data: faqData,
                 })
                 .then((response) => {
-                    // console.log(response);
+                    // // console.log(response);
                     let statusText = '';
                     if (status) {
                         statusText = 'Activated'
@@ -357,7 +357,7 @@
                     this.$Message.success(statusText+' successfully');
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    // console.log(error);
                 })
             },
             deleteFaq(row) {
@@ -370,19 +370,19 @@
                             websiteId : this.website,
                             deleteFaq: row
                         };
-                        // console.log('faqdata',faqData);
+                        // // console.log('faqdata',faqData);
                         axios({
                             method: 'patch',
                             url: config.default.serviceUrl + 'faq/' + this.listId,
                             data: faqData,
                         })
                         .then((response) => {
-                            // console.log(response);
+                            // // console.log(response);
                             this.list = this.list.filter(function(item) { return item.queId != row.queId })
                             this.$Message.success('Deleted successfully');
                         })
                         .catch(function(error) {
-                            console.log(error);
+                            // console.log(error);
                         })
                     }
                 })

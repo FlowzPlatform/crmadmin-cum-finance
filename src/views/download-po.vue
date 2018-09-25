@@ -360,21 +360,21 @@
             },
             quntityFun(row){    
                 let self=this
-                console.log("row",row)
+                // console.log("row",row)
                 // var shipDetail=row.shipping_method.shipping_detail
                 row.products.forEach((element) => {
                     // if(self.selected_address_id == element.selected_address_id){
                      if(element.edited_color_quantity){
-                        console.log("edited_color_quantity")
+                        // console.log("edited_color_quantity")
                         self.productitem= element.edited_color_quantity
                      }
                      else{
-                        console.log("color")                         
+                        // console.log("color")                         
                         self.productitem= element.color
                      }
                     // }
                 })
-            console.log("---Quntiity----end",this.productitem)
+            // console.log("---Quntiity----end",this.productitem)
 
                 // return {} 
             },

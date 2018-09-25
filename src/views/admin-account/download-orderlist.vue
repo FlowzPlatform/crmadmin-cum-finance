@@ -121,7 +121,7 @@
                                                                                 <td style="font-weight: normal;font-size: 10px;color: #666" align="left" valign="top">Imprint Method : <span style="color: #404040"> {{element.imprint_method_name}}</span>
                                                                                     <br><span v-if="element.no_of_color">How Many Colors : <span style="color: #404040">{{element.no_of_color}} Color</span></span><span v-else></span>
                                                                                     <br><span v-if="element.selected_colors">
-                                                                                            <span v-for="(item) in element.selected_colors"> Color : 
+                                                                                            <span v-for="(item) in element.selected_colors"> Color :
                                                                                                 <span style="color: #404040">{{item}} </span>
                                                                                             </span>
                                                                                         </span>
@@ -297,15 +297,15 @@
                                                             <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SUB TOTAL : {{ getMulti(item.total_qty, item.unit_price) }}</td>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">ADDITIONAL CHARGES :  <span v-if="item.charges">{{accounting(item.charges.setup_charge)}}</span>
-                                                                                <span v-else> $00.00 </span> 
+                                                                                <span v-else> $00.00 </span>
                                                             </td>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES: <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span> 
+                                                            <td align="left" valign="top" style="border-right: 1px solid #DDD;line-height: 30px; font-size:12px">SHIPPING CHARGES: <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge"> {{ getShippingCharge(item.shipping_method.shipping_detail)}}</span>
                                                                 <span v-else> $00.00 </span>
                                                             </td>
                                                             <td width="20" align="left" valign="top"></td>
-                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX : 
-                                                                <span v-if="item.taxcloud"> {{ getTaxAmount(item.taxcloud.tax_amount)}}</span> 
+                                                            <td align="left" valign="top" style="line-height: 30px; font-size:12px">TAX :
+                                                                <span v-if="item.taxcloud"> {{ getTaxAmount(item.taxcloud.tax_amount)}}</span>
                                                                 <span v-else> $00.00 </span>
                                                             </td>
                                                         </tr>
@@ -321,7 +321,7 @@
                                                         <tr>
                                                             <td width="20" align="left" valign="top"></td>
                                                             <td align="left" valign="top"></td>
-                                                            <td align="right" valign="top" style="font-size:15px">TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span> 
+                                                            <td align="right" valign="top" style="font-size:15px">TOTAL : <span v-if="item.shipping_method.shipping_detail[0].shipping_detail.shipping_charge">  {{ getSubTotal(item.total_qty, item.unit_price, item, item.shipping_method.shipping_detail) }}</span>
                                                         <span v-else> {{ getSubTotal(item.total_qty, item.unit_price, item, 0) }} </span></td>
                                                             <td width="20" align="left" valign="top"></td>
                                                         </tr>
@@ -410,7 +410,7 @@
                 let chargeAmount = 0;
                 let taxAmount = 0;
                 let res;
-                console.log('d',d)
+                // // console.log('d',d)
                 if (d != 0) {
                     for (let i of d) {
                         let Charge = i.shipping_detail.shipping_charge
@@ -454,7 +454,7 @@
             }
         },
         mounted() {
-            console.log('row',this.row)
+            // // console.log('row',this.row)
         }
     };
 </script>

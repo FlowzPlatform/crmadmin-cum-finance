@@ -285,10 +285,10 @@
                     chartdata = response.data[0].data;
                     // chartdata.reverse();
                     self.$Loading.finish()
-                    console.log("chart data",chartdata)
+                    // console.log("chart data",chartdata)
                 })
                 .catch(function (error) {
-                    console.log("error",error.response);
+                    // console.log("error",error.response);
                     self.$Loading.error()
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
@@ -365,7 +365,7 @@
                     series: []
                 };
 
-                // console.log("chart_data",chart_data);
+                // // console.log("chart_data",chart_data);
                 chart_data[0].data.forEach(function(invoice_data) {
                     option.xAxis.data.push(invoice_data.label)
                 })
@@ -383,7 +383,7 @@
                     option.series.push(series)
                 })
 
-                console.log("options",option)
+                // console.log("options",option)
                 // use configuration item and data specified to show chart
                 barchart.hideLoading();
                 barchart.setOption(option)
@@ -404,10 +404,10 @@
                 .then(function (response) {
                     chartdata = response.data[0].data;
                     // chartdata.reverse();
-                    console.log("pie chart data",chartdata)
+                    // console.log("pie chart data",chartdata)
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // console.log("error",error);
                     if (error.response.data.message === 'invalid_grant') {
                         self.$Notice.error({
                             duration:0,
@@ -485,7 +485,7 @@
                 }]
                 };
                 chart_data.forEach(function(piedata) {
-                    // console.log("piedata",piedata);
+                    // // console.log("piedata",piedata);
                     option.legend.data.push(piedata.name);
                     option.series[0].data.push(piedata);
                 })
@@ -547,7 +547,7 @@
                 })
                 option.series.push(series);
                 })
-                // console.log("Inside line chart option",option)
+                // // console.log("Inside line chart option",option)
                 // use configuration item and data specified to show chart
                 linechart.hideLoading();
                 linechart.setOption(option);
@@ -568,10 +568,10 @@
                 })
                 .then(function (response) {
                     chartdata = response.data[0].data;
-                    console.log("waterfall chart data",chartdata)
+                    // console.log("waterfall chart data",chartdata)
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // console.log("error",error);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -699,7 +699,7 @@
                     option.xAxis[0].data.push(chart_data1.label);
                     data_arr.push(chart_data1.y);
                 })
-                // console.log("waterfall data_arr",data_arr);
+                // // console.log("waterfall data_arr",data_arr);
 
                 for (let i = 0; i<data_arr.length; i++ ) {
                     let diff = data_arr[i] - data_arr[i-1];
@@ -740,9 +740,9 @@
                     }
                 }
 
-                // console.log("data1",data1);
-                // console.log("data2",data2);
-                // console.log("data3",data3);
+                // // console.log("data1",data1);
+                // // console.log("data2",data2);
+                // // console.log("data3",data3);
                 waterfallChart.hideLoading();
                 waterfallChart.setOption(option);
             },
@@ -762,10 +762,10 @@
                 .then(function (response) {
                     statsData = response.data[0].data;
                     // statsdata.reverse();
-                    console.log("statsData",statsData)
+                    // console.log("statsData",statsData)
                 })
                 .catch(function (error) {
-                    console.log("error",error);
+                    // console.log("error",error);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -813,7 +813,7 @@
             async getContacts() {
                 let self = this;
                 self.contactData = [];
-                console.log("config name inside get contacts",self.config)
+                // console.log("config name inside get contacts",self.config)
 
 
                 await axios({
@@ -825,7 +825,7 @@
                     }
                 })
                 .then(async function(response) {
-                    console.log("setting response",response)
+                    // console.log("setting response",response)
                     if(response.data.domain == 'custom'){
 
                         let customCustomerUrl = response.data.customer_url;
@@ -841,9 +841,9 @@
                             }
                         })
                         .then(function (response) {
-                            console.log("customcontact response",response)
+                            // console.log("customcontact response",response)
                             let contacts = response.data;
-                            console.log("%%%%%%%%%%",contacts.data.length)
+                            // console.log("%%%%%%%%%%",contacts.data.length)
                             let cnt = {
                                 Id : 'All',
                                 Name : 'All'
@@ -860,7 +860,7 @@
                             // resp = response.data.data
                         })
                         .catch(function (error) {
-                            console.log(error.response)
+                            // console.log(error.response)
                             // self.$Message.error(error.response.data.data[0].message)
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
@@ -900,9 +900,9 @@
                         }
                         })
                         .then(function(response) {
-                            console.log("Contact data",response);
+                            // console.log("Contact data",response);
                             let contacts = response.data[0];
-                            console.log("%%%%%%%%%%",contacts.data.length)
+                            // console.log("%%%%%%%%%%",contacts.data.length)
                             let cnt = {
                                 Id : 'All',
                                 Name : 'All'
@@ -926,7 +926,7 @@
                             self.contacts = 'All'
                         })
                         .catch(function(error) {
-                            console.log("Inside getcontact error",error)
+                            // console.log("Inside getcontact error",error)
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -970,7 +970,7 @@
                         headers: {'Authorization': Cookies.get('auth_token')}
                     })
                     .then(function(result) {
-                        console.log(">>>>>>>>>>>>>>>> " , result)
+                        // console.log(">>>>>>>>>>>>>>>> " , result)
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
                         Cookies.set('user',  result.data.data.email  , {domain: location});
@@ -1008,7 +1008,7 @@
                 }
 
                 this.name = await Cookies.get('user');
-                //console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
+                //// console.log("Cookies.get('auth_token')",Cookies.get('auth_token'));
                 let resp;
                 await axios.get(serviceUrl+"settings", {
                     params: {
@@ -1035,7 +1035,7 @@
                             self.mData = response.data.data;
                             self.config = self.mData[0].id;
                             self.getContacts(self.config)
-                            console.log("self.mData[0].id------------",self.mData[0].id,self.mData[0].configName)
+                            // console.log("self.mData[0].id------------",self.mData[0].id,self.mData[0].configName)
                             self.barChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
                             self.pieChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
                             self.lineChartFun(moment(self.daterange1[0]).format('YYYY,MM,DD'),moment(self.daterange1[1]).format('YYYY,MM,DD'),self.config,self.mData[0].configName),
@@ -1100,7 +1100,7 @@
 
             changeFilter() {
                 let self = this;
-                // console.log("daterange",this.daterange1, typeof this.daterange1)
+                // // console.log("daterange",this.daterange1, typeof this.daterange1)
                 // alert(moment(this.daterange1[0]).format('YYYY,MM,DD'))
                 // alert(moment(this.daterange1[1]).format('YYYY,MM,DD'))
                 // let index = _.indexOf(this.mData, this.config);
@@ -1108,7 +1108,7 @@
                     return o.id == self.config
                 });
                 let configName = ConfigName[0].configName;
-                console.log("configName",configName)
+                // console.log("configName",configName)
                 if (this.contacts == 'All') {
                     this.barChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,configName),
                     this.pieChartFun(moment(this.daterange1[0]).format('YYYY,MM,DD'),moment(this.daterange1[1]).format('YYYY,MM,DD'),this.config,configName),
@@ -1130,7 +1130,7 @@
                 const end = new Date();
                 const start = new Date();
                 await start.setTime(start.getTime() - 3600 * 1000 * 24 * days);
-                console.log("!!!!!!!!!!!!",[start, end])
+                // console.log("!!!!!!!!!!!!",[start, end])
                 return [start, end];
             }
 
@@ -1139,10 +1139,10 @@
 
             let self = this
             this.daterange1 = await this.getDate(91);
-            console.log("daterange1",this.daterange1)
-            console.log("daterange1",this.daterange1[0])
-            // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
-            // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
+            // console.log("daterange1",this.daterange1)
+            // console.log("daterange1",this.daterange1[0])
+            // // console.log("@@@@@@@@@@@",moment(this.daterange1[0]).format('YYYY,MM,DD'), moment(this.daterange1[0]).format('YYYY,MM,DD'))
+            // // console.log("&&&&&&&&&&&&&",moment(this.daterange1[1]).format('YYYY,MM,DD'))
             setTimeout(function() {
                 self.init()
             }, 2000);

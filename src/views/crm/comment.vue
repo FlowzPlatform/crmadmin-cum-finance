@@ -296,7 +296,7 @@
                   <!-- <span>1 day ago</span> -->
                   <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
                   <!-- <span v-else style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> || -->
-                      
+
                   <!-- <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
                   <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span>
                   <span v-else>{{getDate(item.created_at)}}</span>
@@ -316,7 +316,7 @@
                 <span class="sentDate">
                   <!-- <span v-if="item.isEdited" style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edited</span> -->
                   <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
-                      
+
                   <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span>
                   <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span>
                   <span v-else>{{getDate(item.created_at)}}</span>
@@ -362,7 +362,7 @@
   var relationshipcomments = config.default.serviceUrl
   export default {
     data() {
-      return { 
+      return {
         isActive:false,
         userId: '',
         modal2: false,
@@ -391,7 +391,6 @@
       },
       deleteItem (item) {
         var itemId = item.id
-        console.log('deleteItem', item)
         let self = this
         this.$Modal.confirm({
           okText: 'OK',
@@ -411,9 +410,7 @@
               data: data1
             })
             .then(function(response) {
-              console.log("delete response.....",response)
               for(let i=0;i<self.commentData.length;i++){
-                console.log("for..................",self.commentData[i])
                 if(response.data.id == self.commentData[i].id){
                   self.commentData.splice(i,1)
                 }
@@ -422,11 +419,11 @@
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -458,17 +455,13 @@
       clicked (item, index) {
         var data1
         var msg = this.commentData[index].comment
-        console.log("msg[0]",msg[0])
         if(msg[0] == '<'){
           var msg1 = $(msg).text()
           var comment = msg1
-          console.log("inside if", comment)
         }else{
           var comment = msg
-          console.log("inside else", comment)          
         }
         let comment1 = ''
-        console.log("************", comment)
         this.modal2 = true
         this.formValidate.value = comment
         this.index = index
@@ -506,23 +499,22 @@
               data: data1
             })
             .then(function(response) {
-              console.log("update response.....",response)
               self.$Notice.success({
                 title: 'Success',
                 desc: 'Comment edited successfully',
               });
-              self.commentData[index].edited_at = new Date() 
+              self.commentData[index].edited_at = new Date()
               self.commentData[index].isEdited = true
               self.commentData[index].edited_by = userid
             }).catch(function (error){
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -564,7 +556,7 @@
         //       },
         //       on: {
         //         input: (val) => {
-        //           console.log('val', val)
+        //           // console.log('val', val)
         //           comment1 = val;
         //           if(comment1 == ""){
         //             this.$Notice.error({
@@ -579,11 +571,11 @@
         //   onOk: () => {
         //     var self = this
         //     var userid = Cookies.get('user')
-        //     console.log("comment....",comment)
+        //     // console.log("comment....",comment)
         //     if(comment1 != ""){
-        //       console.log("inside if",comment1)
+        //       // console.log("inside if",comment1)
         //       self.commentData[index].comment = comment1
-        //       self.commentData[index].created_at = new Date() 
+        //       self.commentData[index].created_at = new Date()
         //       data1 = {
         //         "comment": self.commentData[index].comment,
         //         "edited_by": userid,
@@ -603,12 +595,12 @@
         //         data: data1
         //       })
         //       .then(function(response) {
-        //         console.log("update response.....",response)
+        //         // console.log("update response.....",response)
         //         self.$Notice.success({
         //           title: 'Success',
         //           desc: 'Comment edited successfully',
         //         });
-        //         self.commentData[index].edited_at = new Date() 
+        //         self.commentData[index].edited_at = new Date()
         //         self.commentData[index].isEdited = true
         //         self.commentData[index].edited_by = userid
         //       });
@@ -617,8 +609,8 @@
         //         title: 'Error',
         //         desc: 'Please Enter Comment'
         //       });
-        //       // console.log("inside else",comment)              
-        //       // this.commentData[index].comment = comment              
+        //       // // console.log("inside else",comment)
+        //       // this.commentData[index].comment = comment
         //     }
         //   },
         //   onCancel: () => {
@@ -636,22 +628,19 @@
           CKEDITOR.instances.editor2.setData("")
           this.isActive = !this.isActive
           document.getElementById("block").style.display = "inline-block";
-        } 
+        }
         else {
-          
+
           // this.$Message.success('Comment Saved')
           var data1
           var self = this
-          console.log('else')
           var content = CKEDITOR.instances['editor2'].getData();
           new_comment = content
           created_date = new Date();
           crm_id = self.$route.params.id
           userid = Cookies.get('user')
-          console.log("text.....",new_comment,"date.....",created_date)
-          console.log("Save called", this.commentData)
           // this.commentData.forEach(function(element) {
-            // console.log(element);
+            // // console.log(element);
             data1 = {
               "comment": new_comment,
               "created_at": created_date,
@@ -666,17 +655,14 @@
               "edited_at": "",
             }
           // });
-          console.log('data1', data1)
           axios({
             method:'post',
             url: relationshipcomments + 'relationshipcomments',
             data: data1
           })
           .then(function(response) {
-            console.log("save response.....",response)
             // self.commentData.push({comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
             self.commentData.splice(0, 0, {comment: new_comment, created_at: created_date, id: response.data.id, created_by: userid, user_id: response.data.user_id})
-            console.log("this.commentData", self.commentData)
             this.$Notice.success({
               title: 'Success',
               desc: 'Comment Saved',
@@ -693,11 +679,11 @@
             }else if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -720,13 +706,12 @@
                   })
               }
           })
-          
+
           editor.destroy();
           this.isActive = !this.isActive
           document.getElementById("editor2").style.display = "none";
           document.getElementById("block").style.display = "inline-block";
         }
-        console.log('outer',this.isActive)
       },
       getData () {
         var self = this
@@ -742,21 +727,20 @@
             // if (item.crm_id == crm_id){
               self.commentData.push(item);
             }
-          })          
-          
-          console.log("++++++++++++++self.commentData",self.commentData)
+          })
+
           self.commentData = _.orderBy(self.commentData, ['created_at'],['desc']);
-          
+
         })
         .catch(function (error){
           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -786,4 +770,3 @@
     }
   }
 </script>
-

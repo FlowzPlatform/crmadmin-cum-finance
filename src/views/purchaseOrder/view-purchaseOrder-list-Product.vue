@@ -224,7 +224,7 @@
             }
         },
         mounted() {
-                console.log("this 00000------------->", this.row)   
+                // console.log("this 00000------------->", this.row)   
                 this.spinShow = false;  
                 $('.owl-carousel').owlCarousel({
                         stopOnHover : true,
@@ -238,7 +238,7 @@
             },
         watch: {
             'row': async function(id) {
-                console.log("this.row 11111", this.row)
+                // console.log("this.row 11111", this.row)
             }
         }
     }
