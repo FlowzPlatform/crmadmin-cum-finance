@@ -74,7 +74,7 @@ export default {
   name: 'newinvoice',
   data () {
     const validateQty = (rule, value, callback) => {
-        console.log("----------------value",value, typeof value)
+        // console.log("----------------value",value, typeof value)
         if (value === '') {
           callback(new Error('Quantity is required'));
         } else {
@@ -112,9 +112,9 @@ export default {
     };
     // const validateBlank = async(rule, value, callback) => {
           //   let blankPatt = /^\S*$/g
-          //   console.log("------------value", typeof value)
+          //   // console.log("------------value", typeof value)
           //   let blankTest = value.match(blankPatt)
-          //   console.log("======================_res",blankTest);
+          //   // console.log("======================_res",blankTest);
           //   if (!blankTest) {
           //     callback(new Error('Password Does not Allow Spaces'))
           //   } else {
@@ -200,7 +200,7 @@ export default {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
     },
     configChange(data){
-      console.log("-------------------configChange data",data)
+      // console.log("-------------------configChange data",data)
       $('#CustomerName').css("display","block")
       this.formItem.name = ''
       this.data2 = []
@@ -218,13 +218,13 @@ export default {
         },
       })
       .then(function (response) {
-        console.log("response >>>>>>>>>>>>>>>>",response)
+        // console.log("response >>>>>>>>>>>>>>>>",response)
         if (response.data.data.length != 0)
         {
           var newConf = response.data.data
-          console.log("self.configs---------------->before",newConf)
+          // console.log("self.configs---------------->before",newConf)
           self.configs = _.sortBy(newConf, ['configName']);
-          console.log("self.configs---------------->after",self.configs)
+          // console.log("self.configs---------------->after",self.configs)
         }else {
             self.$Modal.warning({
               title: 'No Configuration available',
@@ -240,7 +240,7 @@ export default {
         
       })
       .catch(function (error) {
-        console.log("error",error);
+        // console.log("error",error);
         if(error.message == 'Network Error'){
             self.$Notice.error({
                 title: "Error",
@@ -295,7 +295,7 @@ export default {
           },
       })
       .then(async function(response) {
-          console.log("-----------============",response)
+          // console.log("-----------============",response)
           if(response.data.domain == 'custom'){
 
               self.customCustomerUrl = response.data.customer_url;
@@ -310,15 +310,15 @@ export default {
                 }
               })
               .then(function (response) {
-                console.log(response)
+                // console.log(response)
                 resp = response.data.data
-                console.log("resp",resp)
+                // console.log("resp",resp)
                 self.data2 = _.sortBy(resp, ['Name']);
-                console.log("self.data2---------------->after",self.data2)
+                // console.log("self.data2---------------->after",self.data2)
               })
 
               .catch(function (error) {
-                console.log(error.response)
+                // console.log(error.response)
                 self.$Message.error(error.response.data.data[0].message)
               });
 
@@ -334,7 +334,7 @@ export default {
                   },
               })
               .then(function (response) {
-                  console.log('contacts get response',response);
+                  // console.log('contacts get response',response);
                   if (response.data[0].data.hasOwnProperty('data')) {
                     if (response.data[0].data.data.oauth_problem) {
                       self.$Notice.error({
@@ -346,13 +346,13 @@ export default {
                   }
                   else {
                     resp = response.data
-                    console.log("resp",resp[0].data)
+                    // console.log("resp",resp[0].data)
                     self.data2 = _.sortBy(resp[0].data, ['Name']);
-                    console.log("self.data2---------------->after",self.data2)
+                    // console.log("self.data2---------------->after",self.data2)
                   }
               })
               .catch(function (error) {
-                  console.log(error);
+                  // console.log(error);
                   if (error.response.data.message === 'invalid_grant') {
                     self.$Notice.error({
                       duration:0, 
@@ -364,7 +364,7 @@ export default {
           }
       })
       .catch(function (error) {
-        console.log("error----------",error);
+        // console.log("error----------",error);
         self.loading = false;
         // self.spinShow = false;
           if(error.response.status == 401){
@@ -398,11 +398,11 @@ export default {
           }
       });
 
-      console.log("response------>iuy",resp);
+      // console.log("response------>iuy",resp);
     },
 
     async InvoiceSubmit (name) {
-      // console.log(name)
+      // // console.log(name)
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.newInvoice();
@@ -425,7 +425,7 @@ export default {
         },
       })
       .then(async function(response) {
-        console.log(response)
+        // console.log(response)
         if(response.data.domain == 'custom'){
           // alert(self.formItem.configuration)
             let postData1 = {
@@ -466,7 +466,7 @@ export default {
               // self.Cancel();
             })
             .catch(function (error) {
-              console.log("error",error);
+              // console.log("error",error);
               self.loading = false;
               self.$Message.error('invoice creation error');
             });
@@ -497,7 +497,7 @@ export default {
                       },
             })
             .then(function (res) {
-                console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
+                // console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",res)
                 if (res.data.data) {
                   if (res.data.data.Elements) {
                     self.loading = false;
@@ -517,7 +517,7 @@ export default {
                 // self.Cancel();
             })
             .catch(function (err) {
-                console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
+                // console.log("errerrerrerrerrerrerrerrerrerrerrerrerr",err)
                 self.$Message.error('invoice creation error')
                 self.loading = false;
             });
@@ -525,7 +525,7 @@ export default {
         }
       })
       .catch(function (error) {
-        console.log("error",error);
+        // console.log("error",error);
         self.loading = false;
         // self.spinShow = false;
           if(error.response.status == 401){

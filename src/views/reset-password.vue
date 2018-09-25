@@ -64,18 +64,18 @@ export default {
                     if (valid) {
                         // let url = new URL(window.location.href);
                         let forgetToken = self.$route.query.forget_token
-                        console.log("this.$route.params",forgetToken)
+                        // console.log("this.$route.params",forgetToken)
                     axios.post(config.default.resetPasswordUrl, {
                               new_password: self.formValidate.newPassword.trim(),
                               token: forgetToken
                         })
                         .then(function (response) {
-                            console.log(response);
+                            // console.log(response);
                             self.$message.success(response.data.message);
                             self.$router.push('/login');
                         })
                         .catch(function (error) {
-                            console.log(error.response);
+                            // console.log(error.response);
                             self.$message.error(error.response.data);
                         });
                     

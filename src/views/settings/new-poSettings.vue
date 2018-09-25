@@ -109,22 +109,22 @@
                 }
             })
             .then(response => {
-                // console.log("userdetail response",response.data);
+                // // console.log("userdetail response",response.data);
                 this.distributorId = response.data.data._id;
             })
             .catch(error => {
-                console.log("Error in userdetail",error)
+                // console.log("Error in userdetail",error)
             })
 
             //Get existing poSettings for selected website
-            console.log("distributorId",this.distributorId)
+            // console.log("distributorId",this.distributorId)
 
             this.init()
         },
         methods: {
             async listData (val) {
                 let len
-                console.log("listdata val",val)
+                // console.log("listdata val",val)
                 this.data3 = [];
                 this.leftarr = [];
                 this.rightarr = [];
@@ -132,26 +132,26 @@
                 await this.getSupplierData(val.vid);
             },
             async getMockData (response) {
-                //console.log("getmockdata response",response)
+                //// console.log("getmockdata response",response)
                 
                 let self = this
-                // console.log(response)
+                // // console.log(response)
                 if(response != undefined) {
                     this.data4 = response.data.aggregations.group_by_username.buckets;
-                    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.data4)
+                    // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.data4)
                     let modified_supplier_data = await this.modify_supplier_data(this.data4)
                     this.data3 = modified_supplier_data;
-                    console.log("modified_supplier_data",this.data3[0])
+                    // console.log("modified_supplier_data",this.data3[0])
                     self.supplierArr = [];
                     for (let item of this.data3) {
                         self.supplierArr.push(item.key)
                     }
                     this.supplierArr = this.supplierArr.filter((e) => !this.poArr.includes(e))
-                    console.log("supplierArr",self.supplierArr);
+                    // console.log("supplierArr",self.supplierArr);
                 } 
             },
             async modify_supplier_data(data){
-                // console.log("inside modified supplier data----------",data)
+                // // console.log("inside modified supplier data----------",data)
                 let self = this;
                 self.newSupplierArr = [];
                 // return new Promise((resolve , reject) =>{
@@ -164,19 +164,19 @@
                     //             } 
                     //         })
                     //         .then(async function (response){
-                    //             console.log("user data response " , response)
+                    //             // console.log("user data response " , response)
                     //             response.data.data[0].key = item.key
                     //             self.newSupplierArr.push(response.data.data[0])
                                 
                     //         }).catch(error => {
-                    //             console.log("-------",error); 
+                    //             // console.log("-------",error); 
                     //         });
                     //     })
-                    //     console.log("self.newSupplierArr------------------------------------> " , self.newSupplierArr)
+                    //     // console.log("self.newSupplierArr------------------------------------> " , self.newSupplierArr)
                     //     resolve(self.newSupplierArr)
                 // })
                 for (let [index, item] of data.entries()) {
-                    console.log("item",item)
+                    // console.log("item",item)
                     let resp = await axios({
                         method: 'get',
                         url: "https://api.flowzcluster.tk/user/getuserdetails/"+item.key,
@@ -185,10 +185,10 @@
                         } 
                     })
                     .then(function (response){
-                        console.log("user data response " , response)
+                        // console.log("user data response " , response)
                         return response.data.data[0]                        
                     }).catch(error => {
-                        console.log("-------",error);
+                        // console.log("-------",error);
                         return {} 
                     });
 
@@ -203,7 +203,7 @@
             },
             // getMockData (response,poSettingGetData) {
             //     let self = this;
-            //     console.log("getmockdata response",response)
+            //     // console.log("getmockdata response",response)
             //     if(response != undefined) {
             //         this.data3 = response.data.aggregations.group_by_username.buckets;
             //         for (let i=0;i<this.data3.length;i++) {
@@ -212,13 +212,13 @@
             //         this.supplierArr = this.supplierArr.filter((e) => !this.poArr.includes( e ))
             //     }
                 
-            //     console.log("this.data3",JSON.stringify(this.data3))
+            //     // console.log("this.data3",JSON.stringify(this.data3))
 
             //     return this.data3;
             // },
             handleChange3 (newTargetKeys,direction,moveKeys) {
-                // console.log("=================handleChange3 direction",direction)
-                // console.log("movedkey",movedkey)
+                // // console.log("=================handleChange3 direction",direction)
+                // // console.log("movedkey",movedkey)
                 if (direction === 'left') {
                     moveKeys.forEach(item => {
                         this.leftarr.push(item)
@@ -236,9 +236,9 @@
 
                 }
                 this.targetKeys3 = newTargetKeys;
-                console.log("this.leftarr",this.leftarr)
-                console.log("this.rightarr",this.rightarr)
-                // console.log("------------------this.targetKeys3",this.targetKeys3)
+                // console.log("this.leftarr",this.leftarr)
+                // console.log("this.rightarr",this.rightarr)
+                // // console.log("------------------this.targetKeys3",this.targetKeys3)
             },
             render3 (item) {
                 // return item.key ;
@@ -259,7 +259,7 @@
                         //Get distributorId from Userdetail 
                         self.loading1 = true;
                         this.rightarr = this.rightarr.filter((e) => !this.poArr.includes( e ))
-                        console.log("on submit this.rightarr",this.rightarr)
+                        // console.log("on submit this.rightarr",this.rightarr)
                         this.rightarr.forEach(item => {
                             let poPostData = {
                                 po_generate_mode : 'Auto',
@@ -271,7 +271,7 @@
                                 vId: this.website.vid,
                                 supplierId : item
                             };
-                            console.log("PO PostData",poPostData)
+                            // console.log("PO PostData",poPostData)
                             axios({
                                 method: 'POST',
                                 url: feathersUrl +'po-settings',
@@ -282,53 +282,53 @@
                                 data: poPostData
                             })  
                             .then(function (response) {
-                                // console.log('response------------------------>',response)
+                                // // console.log('response------------------------>',response)
                                 self.loading1 = false;
                                 self.poReset();
                                 // self.submit = true;
-                                // console.log("------------poArr before",self.poArr,"++++++++rightarr", self.rightarr)
-                                // console.log("======supplierarr before",self.supplierArr)
+                                // // console.log("------------poArr before",self.poArr,"++++++++rightarr", self.rightarr)
+                                // // console.log("======supplierarr before",self.supplierArr)
                                 self.poArr.push(item);
                                 self.supplierArr = self.supplierArr.filter((e) => !self.rightarr.includes(e))
-                                // console.log("------------poArr after",self.poArr)
-                                // console.log("------------supplierArr after",self.supplierArr)
+                                // // console.log("------------poArr after",self.poArr)
+                                // // console.log("------------supplierArr after",self.supplierArr)
                                 self.rightarr = [];
                             })
                             .catch(function (error) {
                                 self.loading1 = false;
                                 // self.submit = false;
-                                console.log('error in generating po',error)
+                                // console.log('error in generating po',error)
                             })
                         });
                         
                         this.leftarr = this.leftarr.filter((e) => !this.supplierArr.includes(e))
-                        console.log("on submit this.leftarr",this.leftarr)
+                        // console.log("on submit this.leftarr",this.leftarr)
                         this.leftarr.forEach(async (item) => {
-                            console.log("inside leftarr foreach",item)
-                            console.log("this.poSettingGetData",this.poSettingGetData)
+                            // console.log("inside leftarr foreach",item)
+                            // console.log("this.poSettingGetData",this.poSettingGetData)
                             let index = _.findIndex(this.poSettingGetData, function(o) { return o.supplierId === item; });
-                            console.log("index",index)
+                            // console.log("index",index)
                             if (index >= 0) {
                                 let poId = this.poSettingGetData[index].id;
-                                console.log("poId",poId)
+                                // console.log("poId",poId)
                                 await axios.delete(feathersUrl+'po-settings/'+poId)                                    
                                 .then(async (res) => {
-                                    // console.log("po delete response",res);
+                                    // // console.log("po delete response",res);
                                     self.loading1 = false;
                                     self.poReset();
                                     // self.submit = true;
-                                    // console.log("===============poarr before",self.poArr, "+++++++leftarr", self.leftarr);
-                                    // console.log("------------supplierArr before",self.supplierArr)
+                                    // // console.log("===============poarr before",self.poArr, "+++++++leftarr", self.leftarr);
+                                    // // console.log("------------supplierArr before",self.supplierArr)
                                     self.supplierArr.push(item);
                                     self.poArr = self.poArr.filter((e) => !self.leftarr.includes(e))
-                                    // console.log("------------poarr after",self.poArr)
-                                    // console.log("------------supplierArr after",self.supplierArr)
+                                    // // console.log("------------poarr after",self.poArr)
+                                    // // console.log("------------supplierArr after",self.supplierArr)
                                     self.leftarr = [];
                                 })
 
                             }
                         })
-                        // console.log("this.submit",this.submit);
+                        // // console.log("this.submit",this.submit);
                         // if (this.submit) {
                         //     this.$Message.success('PO setting updated successfully')
                         // }
@@ -356,9 +356,9 @@
                     } 
                 })
                 .then(async function (response){
-                    console.log("------------------------response",response);
+                    // console.log("------------------------response",response);
                     if(response.data.data.length == 0){
-                      console.log("in if condition")
+                      // console.log("in if condition")
                       self.$Notice.error({
                         desc: 'Websites not available for this subscription',
                         title: 'Error',
@@ -366,16 +366,16 @@
                       })
                     }else{
                         let result = _.uniqBy(response.data.data,'websiteId')
-                        console.log("result", result)
+                        // console.log("result", result)
                         self.websiteList = result
-                        console.log("self.websiteList", self.websiteList[0])                    
+                        // console.log("self.websiteList", self.websiteList[0])                    
                         self.website = self.websiteList[0]
-                        console.log("self.website",self.website)
+                        // console.log("self.website",self.website)
                         // await self.getPoSettings();
                         // await self.getSupplierData(self.website.vid);
                     }                       
                 }).catch(error => {
-                    console.log("-------",error.response);
+                    // console.log("-------",error.response);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain
@@ -424,18 +424,18 @@
                     }
                 })
                 .then(function(response){
-                    // console.log("posetting get response",response.data.data);
+                    // // console.log("posetting get response",response.data.data);
                     self.poSettingGetData = response.data.data
                     self.poArr = [];
                     for (let item of self.poSettingGetData) {
                         self.poArr.push(item.supplierId)
                     }
                     self.targetKeys3 = self.poArr;
-                    console.log("get posetting data inside function",self.poSettingGetData)
-                    // console.log("self.poArr",JSON.stringify(self.poArr))
+                    // console.log("get posetting data inside function",self.poSettingGetData)
+                    // // console.log("self.poArr",JSON.stringify(self.poArr))
                 })
                 .catch(function(error) {
-                    console.log("error in get posetting",error)
+                    // console.log("error in get posetting",error)
                 })
             },
             async getSupplierData (vid) {
@@ -454,10 +454,10 @@
                     } 
                 })
                 .then(async function (response){
-                    console.log(".>>>>>>>>>>>>>>>>>>> ....supplier get response ",response)
+                    // console.log(".>>>>>>>>>>>>>>>>>>> ....supplier get response ",response)
                     await self.getMockData(response);
                 }).catch(error => {
-                    console.log("-------",error.response);
+                    // console.log("-------",error.response);
                     if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                         let location = psl.parse(window.location.hostname)
                         location = location.domain === null ? location.input : location.domain

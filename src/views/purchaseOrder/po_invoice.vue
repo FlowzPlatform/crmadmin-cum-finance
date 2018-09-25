@@ -150,7 +150,7 @@ export default {
           align: 'center',
           width: 30,
           render: (h, params) => {
-            console.log("params.row  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",params.row)
+            // console.log("params.row  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",params.row)
             return h(expandRow, {
               props: {
                 row: params.row
@@ -245,7 +245,7 @@ export default {
           width: 100,
           align: 'center',
           render: (h, params) => {
-            console.log("params-------------------------------------->",params.row.status, params.row.paymentInfo)
+            // console.log("params-------------------------------------->",params.row.status, params.row.paymentInfo)
             // if (Object.keys(params.row.paymentInfo).length === 0 && params.row.status == 'pending') {
 
             // } else 
@@ -312,7 +312,7 @@ export default {
                       //   },
                       //   on: {
                       //     input: (val) => {
-                      //       console.log("val",val)
+                      //       // console.log("val",val)
                       //       this.markAsPaid(val,params);
                       //     }
                       //   }
@@ -357,7 +357,7 @@ export default {
                       //   },
                       //   on: {
                       //     input: (val) => {
-                      //       console.log("val",val)
+                      //       // console.log("val",val)
                       //       this.markAsPaid(val,params);
                       //     }
                       //   }
@@ -423,7 +423,7 @@ export default {
       this.listData(this.website);
     },
     async changepagesize(pageSize){
-      console.log("####################################",pageSize)
+      // console.log("####################################",pageSize)
       this.pageSize = pageSize
       if(this.pageSize > 10){
         this.tableHeight = 530
@@ -435,10 +435,10 @@ export default {
     async mockTableData1 (p,size) {
       this.len = this.data.length
       if(this.len == 0){
-        console.log("data length 0--------------->",this.tableHeight)
+        // console.log("data length 0--------------->",this.tableHeight)
         this.tableHeight = 100
       }else if(this.len < 10){
-        console.log("data length 10--------------->",this.tableHeight)
+        // console.log("data length 10--------------->",this.tableHeight)
         this.tableHeight = (this.len * 40) + 35
       }else{
         this.tableHeight = 450
@@ -446,15 +446,15 @@ export default {
       return this.data.slice((p - 1) * size, p * size);
     },
     async mockTableData2 (p,size) {
-      console.log("p-------------->",p)
-      console.log("p-------------->",size)
-      console.log("console.log------------>",this.filterArray)
+      // console.log("p-------------->",p)
+      // console.log("p-------------->",size)
+      // console.log("// console.log------------>",this.filterArray)
       this.len = this.filterArray.length
       if(this.len == 0){
-        console.log("data length 0--------------->",this.tableHeight)
+        // console.log("data length 0--------------->",this.tableHeight)
         this.tableHeight = 100
       }else if(this.len < 10){
-        console.log("data length 10--------------->",this.tableHeight)
+        // console.log("data length 10--------------->",this.tableHeight)
         this.tableHeight = (this.len * 40) + 35
       }else{
         this.tableHeight = 450
@@ -463,9 +463,9 @@ export default {
     },
     async changePage (p) {
       var self = this
-      console.log("not inside",self.filterArray.length)
+      // console.log("not inside",self.filterArray.length)
       if(self.filterArray.length == 0){
-        console.log("inside",self.filterArray)
+        // console.log("inside",self.filterArray)
         self.list = await self.mockTableData1(p,self.pageSize);
       }else{
         self.list = await self.mockTableData2(p,self.pageSize);
@@ -477,10 +477,10 @@ export default {
 
         if(this.ponum != ''){
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
             return item.PO_id === self.ponum;
           });
-		      console.log("myarr",this.filterArray)
+		      // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
@@ -492,50 +492,50 @@ export default {
         }
 
         if(this.dategt != ''){
-          console.log("this.dategt", this.dategt)
+          // console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(moment(item.createdAt).diff(moment(self.dategt).format(), 'days') >= 0){
-                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                 return item;
             }
           });
-		      console.log("myarr",this.filterArray)
+		      // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.datelt != ''){
-          console.log("this.datelt", this.datelt)
+          // console.log("this.datelt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item.DueDate)
+            // console.log("item",item.DueDate)
               if(moment(item.createdAt).diff(moment(self.datelt).format(), 'days') <= 0){
               return item;
               }
           });
-		      console.log("myarr",this.filterArray)
+		      // console.log("myarr",this.filterArray)
         	// this.list = await this.mockTableData2(1,self.pageSize)
 		    }
 		
 		    if(this.duedategt != ''){
-          console.log("this.dategt", this.dategt)
+          // console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(moment(item.dueDate).diff(moment(self.duedategt).format(), 'days') >= 0){
-                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                 return item;
             }
           });
-		      console.log("myarr",this.filterArray)
+		      // console.log("myarr",this.filterArray)
         	// this.list = await this.mockTableData2(1,self.pageSize)
         }
 
         if(this.duedatelt != ''){
-          console.log("this.datelt", this.datelt)
+          // console.log("this.datelt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item.DueDate)
+            // console.log("item",item.DueDate)
               if(moment(item.dueDate).diff(moment(self.duedatelt).format(), 'days') <= 0){
               return item;
               }
           });
-          console.log("myarr",this.filterArray)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,self.pageSize)
         }
         
@@ -561,9 +561,9 @@ export default {
           } 
       })
       .then(function (response){
-          console.log("------------------------response",response);
+          // console.log("------------------------response",response);
           if(response.data.data.length == 0){
-            console.log("in if condition")
+            // console.log("in if condition")
             self.$Notice.error({
               desc: 'Websites not available for this subscription',
               title: 'Error',
@@ -571,15 +571,15 @@ export default {
             })
           }else{    
             var result = _.uniqBy(response.data.data,'websiteId')
-            console.log("result", result)
+            // console.log("result", result)
             self.websiteList = result
-            console.log("self.websiteList", self.websiteList[0].websiteId)                    
+            // console.log("self.websiteList", self.websiteList[0].websiteId)                    
             self.website = self.websiteList[0].websiteId;
             self.listData(self.website);
           }                       
 
       }).catch(error => {
-          console.log("-------",error);
+          // console.log("-------",error);
           if(error.message == 'Network Error'){
               self.$Notice.error({
                   title: 'Error',
@@ -618,7 +618,7 @@ export default {
       });
     },
     makepayment(data){
-      console.log("data---------------------------->",data)
+      // console.log("data---------------------------->",data)
       this.$router.push({
         name :"PO Checkout",
         params: {
@@ -650,7 +650,7 @@ export default {
         onOk: () => {
           let self = this;
           if (value && paymentNote != '') {
-            console.log('-----------paymentNote',paymentNote)
+            // console.log('-----------paymentNote',paymentNote)
             axios({
               method: 'patch',
               url: config.default.serviceUrl + 'po-invoice/' + params.row.id,
@@ -660,13 +660,13 @@ export default {
               }
             })
             .then(async function (res) {
-              console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@", res)
+              // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@", res)
               self.data[params.index] = res.data
               self.list = await self.mockTableData1(1, self.pageSize)
               self.$Message.info(`Payment status changed for ${params.row.invoiceId}`);
             })
             .catch(function (error) {
-              console.log("$$$$$$$$$$$$$$$$$", error)
+              // console.log("$$$$$$$$$$$$$$$$$", error)
             })
           } else {
             self.$Modal.remove();
@@ -689,7 +689,7 @@ export default {
         params: params1,
       })
       .then(async function(response) {
-          console.log('response-------------->',response)
+          // console.log('response-------------->',response)
           self.data = _.orderBy(response.data.data, ['createdAt'], ['desc']);
           self.list = await self.mockTableData1(1,self.pageSize)
           var Emailarr = [];
@@ -704,23 +704,23 @@ export default {
           self.invoicenumFilter = _.chain(self.invoicenumFilter).sort().uniq().value();
           self.orderidfilter = _.chain(self.orderidfilter).sort().uniq().value();
           self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();      
-          console.log("##########################",self.orderidfilter)
+          // console.log("##########################",self.orderidfilter)
           Emailarr.forEach(item => {
             var x = document.getElementById("selectEmail");
             var option = document.createElement("option");
             option.text = item;
-            console.log()
+            // console.log()
             x.add(option);
           })
-          console.log('response-------------->list',self.list)
+          // console.log('response-------------->list',self.list)
               
       }).catch(function (error){
-        console.log("error------------------->",error)
+        // console.log("error------------------->",error)
       })
     },
     async viewDetails(params,status){
       // this.tableHeight = 250
-      // console.log("this.tableHeight------->",this.len)
+      // // console.log("this.tableHeight------->",this.len)
       // this.tableHeight = (this.len * 40) + 35
       // if(this.tableHeight >= 450){
       //     this.tableHeight = 450
@@ -730,7 +730,7 @@ export default {
 
       // if(status){
       //     this.tableHeight = 530
-      //     console.log("###############################",this.tableHeight)
+      //     // console.log("###############################",this.tableHeight)
       // }
     }
 },

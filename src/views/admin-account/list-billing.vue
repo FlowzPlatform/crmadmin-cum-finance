@@ -93,10 +93,10 @@ export default {
   },
   methods: {
     // viewDetails(params) {
-    //   console.log('uuuuuuuuuuuuuuuuuu',params)
+    //   // console.log('uuuuuuuuuuuuuuuuuu',params)
     // },
     // DeleteDetails(params){
-    //   console.log('uuuuuuuuuuuuuuuuuu',params)
+    //   // console.log('uuuuuuuuuuuuuuuuuu',params)
     // },
     // async getReuestQuoteData () {
     //   var self = this;
@@ -108,12 +108,12 @@ export default {
     //     headers:{
     //     }
     //     }).then(async function (response) {
-    //       console.log('response------>',response)
+    //       // console.log('response------>',response)
     //       self.list = response.data.data
 
     //     })
     //     .catch(function (error) {
-    //       console.log(error);
+    //       // console.log(error);
     //     });
     // }
   },

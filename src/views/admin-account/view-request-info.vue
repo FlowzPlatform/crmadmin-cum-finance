@@ -60,7 +60,7 @@
                 <!-- <div v-for="(element,inx) in item.pricing">
                   <div v-if="element.price_type == 'regular' && element.type == 'decorative' && element.global_price_type == 'global'">
                     <h3 class="quantity-price">Quantity Price</h3>
-                    
+
                      <div class="quantity-table" style="margin: 10px;">
                       <div class="quantity-table-title" style="margin-top: 15px;">
                           <div class="table-heading">Quantity </div>
@@ -75,7 +75,7 @@
                         </div>
                       </div>
                     </div>
-                 
+
                 </div> -->
                 <h3 class="product-summary">Colours</h3>
                   <div class="estimate-detail product-section-box">
@@ -83,7 +83,7 @@
                       <div class="row">
                         <div class="col-sm-12">
                           <div class="inquiry-color-block" v-for="i in item.attributes.colors" style="display:inline-block">
-                            <ul class="ulList">                              
+                            <ul class="ulList">
                               <li class="color2">
                                 <i class="white-color-box" :style="{ backgroundColor: i }"  :title="i">
                                     <img src="">
@@ -120,7 +120,7 @@
                 <p slot="content">
                   <label class="container">
                     <div class="col-md-6">
-                      <h4 style="margin-top:0px;padding-right:15px;padding-left:15px;text-transform: capitalize;">{{this.userDetailObject.fullname}}</h4>    
+                      <h4 style="margin-top:0px;padding-right:15px;padding-left:15px;text-transform: capitalize;">{{this.userDetailObject.fullname}}</h4>
                     </div>
                     <div class="col-md-6">
                       <Icon type="ios-email" size="15"></Icon>
@@ -135,7 +135,7 @@
            <!-- <div> -->
                 <div class="chat" id="chatmsg">
                   <!-- <div id="block" style="text-align:right;width:100%;display:inline-block">
-                  
+
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageDataDisplay" style="margin-bottom: 10px;margin-right: 10px;">
@@ -163,7 +163,7 @@
                             <p class="emailText" v-html="item.message"></p>
                             <span class="sentDate">
                               <!-- <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
-                                  
+
                               <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
@@ -176,10 +176,10 @@
                     </div>
                     <div v-else></div>
                   </div>
-                  
+
                 </div>
                 <div class="product-section-box">
-                       <div class="request-comment-info">            
+                       <div class="request-comment-info">
                           <div id="js-comment-list-ajaxresponse">
                              <div id="style-1 js-comment-list-container" class="scrollbar">
                                 <div class="force-overflow">
@@ -274,20 +274,17 @@ export default {
         let height
         setTimeout(function(){
           height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
           $('.chat').animate({scrollTop: height });
         },1000)
         self.commentMessage = '';
-        console.log(response)
       })
       }
     },
      myFunction(){
-      
-      console.log("$$$$$$$$$$$$$$$$$$$$$",event)
+
         if(event.key == "Enter" && event.ctrlKey == true){
           this.sendcomment();
-        } 
+        }
     },
   },
   computed: {
@@ -298,10 +295,8 @@ export default {
     // }
   },
   mounted(){
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",this.row)
     var self = this
     this.requestUser = this.row.productInfo[0].username
-    console.log("^^^^^^^^^^^^^^^^^^^^^^^",config.default.socketUrlapi)
     let socketurl = io(config.default.socketUrlapi,{reconnection: true})
     const app = feathers().configure(socketio(socketurl))
     // const app = feathers().configure(socketio(io('http://localhost:4032')))
@@ -310,7 +305,6 @@ export default {
         self.messageDataDisplay = message.message
         setTimeout(function(){
           let height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
           $('.chat').animate({scrollTop: height });
         },1000)
       })
@@ -319,7 +313,6 @@ export default {
         self.messageDataDisplay = message.message
         setTimeout(function(){
           let height = document.getElementsByClassName("chat")[0].scrollHeight;
-          console.log('WWWWWWWWWWWWWWWWW',height)
           $('.chat').animate({scrollTop: height });
         },1000)
       })
@@ -332,9 +325,7 @@ export default {
           'Authorization': Cookies.get('auth_token')
         }
     }).then(function (response) {
-      console.log("response response", response.data.data[0])
       self.userDetailObject = response.data.data[0]
-      console.log("userDetailObject", self.userDetailObject)
     })
 
 
@@ -349,15 +340,12 @@ export default {
        }
        }).then(function (response) {
         self.userid = Cookies.get('user')
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@",self.userid,response.data)
         if(response.data.data.length != 0){
           self.messageDataDisplay = response.data.data[0].message
           // self.messageData = _.filter(response.data.data[0].message, ['created_by', self.userid]);
-          console.log("##################",self.messageDataDisplay)
           let height
           setTimeout(function(){
              height = document.getElementsByClassName("chat")[0].scrollHeight;
-            console.log('WWWWWWWWWWWWWWWWW',height)
             $('.chat').animate({scrollTop: height });
           },1000)
         }
@@ -956,7 +944,7 @@ html input[type=button] {
         }
   .ulList {
             list-style-type: none ;
-        }  
+        }
 .ivu-collapse-content>.ivu-collapse-content-box {
     padding: 16px;
     overflow-y: auto;

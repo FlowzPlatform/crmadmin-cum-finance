@@ -2,7 +2,7 @@
   <div>
     <Card>
       <div class="row">
-        <div class="col-md-6" id="product_list">         
+        <div class="col-md-6" id="product_list">
           <div style="text-align:center">
             <div class="row">
               <div class="col-sm-12">
@@ -168,7 +168,7 @@
                         </div>
                       </div>
                     </div>
-                <div v-if="row.special_instruction != ''">    
+                <div v-if="row.special_instruction != ''">
                   <h3>Special Instructions</h3>
                   <div class="estimate-tag-block">
                     <div>
@@ -245,7 +245,7 @@
            <!-- <div> -->
                 <div class="chat">
                  <!--  <div id="block" style="text-align:right;width:100%;display:inline-block">
-                  
+
                   </div> -->
                   <!-- <textarea class="form-control" id="editor2" name="editor2" ></textarea> -->
                   <div v-for="(item, index) in messageData" style="margin-bottom: 10px;margin-right: 10px;">
@@ -273,7 +273,7 @@
                             <p class="emailText" v-html="item.message"></p>
                             <span class="sentDate">
                               <!-- <span style="color:blue;cursor:pointer" v-on:click="clicked(item, index)">Edit</span> ||
-                                  
+
                               <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
                               <span>{{getDate(item.created_at)}}</span>
@@ -286,10 +286,10 @@
                     </div>
                     <div v-else></div>
                   </div>
-                  
+
                 </div>
                 <div class="product-section-box">
-                       <div class="request-comment-info">            
+                       <div class="request-comment-info">
                           <div id="js-comment-list-ajaxresponse">
                              <div id="style-1 js-comment-list-container" class="scrollbar">
                                 <div class="force-overflow">
@@ -364,8 +364,7 @@ export default {
         return moment(date).fromNow()
       },
     myFunction(){
-      
-      console.log("$$$$$$$$$$$$$$$$$$$$$------------->",event)
+
         if(event.key == "Enter" && event.ctrlKey == true){
           this.sendcomment();
         }
@@ -373,9 +372,9 @@ export default {
     sendcomment() {
       var self = this
       let date = new Date()
-      // console.log("this.commentMessage----------> before",this.commentMessage)
+      // // console.log("this.commentMessage----------> before",this.commentMessage)
       let msg = this.commentMessage.trim();
-      // console.log("this.commentMessage---------->",msg)
+      // // console.log("this.commentMessage---------->",msg)
       if(msg != ''){
         this.resetData = this.commentMessage
         axios({
@@ -398,10 +397,8 @@ export default {
           let height
           setTimeout(function(){
             height = document.getElementsByClassName("chat")[0].scrollHeight;
-            console.log('WWWWWWWWWWWWWWWWW',height)
             $('.chat').animate({scrollTop: height },0);
           },1000)
-          console.log(response)
         })
       }
     }
@@ -410,7 +407,6 @@ export default {
     this.requestUser = this.row.user_info.fullname
     this.requestUserEmail = this.row.user_info.email
 
-    console.log("^^^^^^^^^^^^^^^^^^^^^^^",config.default.socketUrlapi)
     let socketurl = io(config.default.socketUrlapi,{reconnection: true})
     const app = feathers().configure(socketio(socketurl))
     // const app = feathers().configure(socketio(io('http://localhost:4032')))
@@ -443,7 +439,6 @@ export default {
           let height
           setTimeout(function(){
              height = document.getElementsByClassName("chat")[0].scrollHeight;
-            console.log('WWWWWWWWWWWWWWWWW',height)
             $('.chat').animate({scrollTop: height },0);
           },1000)
 
@@ -1046,7 +1041,7 @@ html input[type=button] {
         }
   .ulList {
             list-style-type: none ;
-        }  
+        }
 .ivu-collapse-content>.ivu-collapse-content-box {
     padding: 16px;
     overflow-y: auto;

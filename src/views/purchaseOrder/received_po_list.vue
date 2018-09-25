@@ -116,7 +116,7 @@
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
-                            console.log('rowwwwwwwwwwwwww-------Expand', params)
+                            // console.log('rowwwwwwwwwwwwww-------Expand', params)
                             return h(expandRow, {
                                 props: {
                                     row: params.row
@@ -250,9 +250,9 @@
             //         } 
             //     })
             //     .then(function (response){
-            //         console.log("websitelist------------------------response",response);
+            //         // console.log("websitelist------------------------response",response);
             //         if(response.data.data.length == 0){
-            //           console.log("in if condition")
+            //           // console.log("in if condition")
             //           self.$Notice.error({
             //             desc: 'Websites not available for this subscription',
             //             title: 'Error',
@@ -260,15 +260,15 @@
             //           })
             //         }else{    
             //           var result = _.uniqBy(response.data.data,'websiteId')
-            //           console.log("result", result)
+            //           // console.log("result", result)
             //           self.websiteList = result
-            //           console.log("self.websiteList", self.websiteList[0].websiteId)                    
+            //           // console.log("self.websiteList", self.websiteList[0].websiteId)                    
             //           self.website = self.websiteList[0].websiteId
             //           self.listData(self.website);
             //         }                       
 
             //     }).catch(error => {
-            //         console.log("-------",error);
+            //         // console.log("-------",error);
             //         if(error.message == 'Network Error'){
             //             self.$Notice.error({
             //                 title: 'Error',
@@ -324,10 +324,10 @@
                         'subscriptionId': Cookies.get('subscriptionId')
                     } 
                 }).then(async function (response){
-                    console.log("------------------------response",response.data.data);
+                    // console.log("------------------------response",response.data.data);
                     self.data1 = _.orderBy(response.data.data, ['created_at'], ['desc']);
                     self.list = await self.mockTableData1(1,self.pageSize)
-                    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",self.list)
+                    // console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",self.list)
                     self.data1.forEach(item => {
                         self.ponumFilter.push(item.PO_id)
                         self.orderFilter.push(item.orderId)
@@ -335,7 +335,7 @@
                     self.ponumFilter = _.chain(self.ponumFilter).sort().uniq().value();
                     self.orderFilter = _.chain(self.orderFilter).sort().uniq().value();
                 }).catch(error => {
-                    console.log("-------",error);
+                    // console.log("-------",error);
                     if(error.message == 'Network Error') {
                         self.$Notice.error({
                             title: "Error",
@@ -375,14 +375,14 @@
 
             },
             async mockTableData1 (p,size) {
-                // console.log("mocktable call---------------")
+                // // console.log("mocktable call---------------")
                 // this.len = this.data1.length
-                // console.log("data length--------------->",this.len)
+                // // console.log("data length--------------->",this.len)
                 // if(this.len == 0){
-                //     console.log("data length 0--------------->",this.tableHeight)
+                //     // console.log("data length 0--------------->",this.tableHeight)
                 //     this.tableHeight = 100
                 // }else if(this.len < 10){
-                //     console.log("data length 10--------------->",this.tableHeight)
+                //     // console.log("data length 10--------------->",this.tableHeight)
                 //      this.tableHeight = (this.len * 40) + 35
                 // }else{
                 //     this.tableHeight = 450
@@ -390,16 +390,16 @@
                 return this.data1.slice((p - 1) * size, p * size);
             },
             async mockTableData2 (p,size) {
-                // console.log("p-------------->",p)
-                // console.log("p-------------->",size)
-                // console.log("console.log------------>",this.filterArray)
+                // // console.log("p-------------->",p)
+                // // console.log("p-------------->",size)
+                // // console.log("// console.log------------>",this.filterArray)
                 // this.len = this.filterArray.length
-                // console.log("data length--------------->",this.len)
+                // // console.log("data length--------------->",this.len)
                 // if(this.len == 0){
-                //     console.log("data length 0--------------->",this.tableHeight)
+                //     // console.log("data length 0--------------->",this.tableHeight)
                 //     this.tableHeight = 100
                 // }else if(this.len < 10){
-                //     console.log("data length 10--------------->",this.tableHeight)
+                //     // console.log("data length 10--------------->",this.tableHeight)
                 //      this.tableHeight = (this.len * 40) + 35
                 // }else{
                 //     this.tableHeight = 450
@@ -408,16 +408,16 @@
             },
             async changePage (p) {
                 // this.page = p
-                console.log("not inside",this.filterArray.length)
+                // console.log("not inside",this.filterArray.length)
                 if(this.filterArray.length == 0){
-                    console.log("inside",this.filterArray)
+                    // console.log("inside",this.filterArray)
                     this.list = await this.mockTableData1(p,this.pageSize);
                 }else{
                     this.list = await this.mockTableData2(p,this.pageSize);
                 }
             },
             changepagesize(pageSize){
-                console.log("####################################",pageSize)
+                // console.log("####################################",pageSize)
                 this.pageSize = pageSize
                 if(this.pageSize > 10){
                 this.tableHeight = 530
@@ -438,28 +438,28 @@
                 this.listData()
             },
             async changeData() {
-                console.log("this.data1", this.data1)
+                // console.log("this.data1", this.data1)
                 this.filterArray = this.data1
                 var self = this
 
                 if(this.ponum != ''){
-                console.log("this.ponum", this.ponum)
+                // console.log("this.ponum", this.ponum)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                    console.log("item",item)
+                    // console.log("item",item)
                     return item.PO_id === self.ponum;
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
                 // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.order_id != ''){
-                console.log("this.order_id", this.order_id)
+                // console.log("this.order_id", this.order_id)
                 this.filterArray = _.filter(this.filterArray,  function(item){
-                    console.log("item",item)
+                    // console.log("item",item)
                     return item.orderId === self.order_id;
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
                 // this.list = await this.mockTableData2(1,self.pageSize)
                 }
@@ -472,28 +472,28 @@
                 }
 
                 if(this.dategt != ''){
-                console.log("this.dategt", this.dategt)
+                // console.log("this.dategt", this.dategt)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                     var a = moment(item.PO_generate_date).format('YYYY-MM-DD')
                     if(moment(a).diff(moment(self.dategt).format(), 'days') >= 0){
-                        console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                        // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                         return item;
                     }
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
                 // this.list = await this.mockTableData2(1,self.pageSize)
                 }
 
                 if(this.datelt != ''){
-                console.log("this.datelt", this.datelt)
+                // console.log("this.datelt", this.datelt)
                 this.filterArray = _.filter(this.filterArray,  function(item){
                     var a = moment(item.PO_generate_date).format('YYYY-MM-DD')
                     if(moment(a).diff(moment(self.datelt).format(), 'days') <= 0){
                         return item;
                     }
                 });
-                console.log("myarr",this.filterArray)
+                // console.log("myarr",this.filterArray)
                 // this.list = this.filterArray
                 // this.list = await this.mockTableData2(1,self.pageSize)
                 }

@@ -709,8 +709,8 @@
               type: 'expand',
               width: 50,
               render: (h, params) => {
-                console.log('params--------------->',this.newList)
-                console.log('this.newTabIndex............', this.newTabIndex)
+                // console.log('params--------------->',this.newList)
+                // console.log('this.newTabIndex............', this.newTabIndex)
                 return h(listtransaction, {
 
                   props: {
@@ -734,7 +734,7 @@
                 align: 'center',
                 sortable: true,
                 render:(h,{row})=>{ 
-                  // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
+                  // // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " , row.Contact.Name)
                   return h('div', [
                                 
                                 h('span', row.Contact.Name)
@@ -1000,8 +1000,8 @@
               type: 'expand',
               width: 50,
               render: (h, params) => {
-                console.log('params--------------->',this.newList)
-                console.log('this.newTabIndex............', this.newTabIndex)
+                // console.log('params--------------->',this.newList)
+                // console.log('this.newTabIndex............', this.newTabIndex)
                 return h(listtransaction, {
 
                   props: {
@@ -1043,7 +1043,7 @@
     methods: {
       
       changepagesize(pageSize){
-        console.log("####################################",pageSize)
+        // console.log("####################################",pageSize)
         this.pageSize = pageSize
         this.changePage(1)
       },
@@ -1069,13 +1069,13 @@
           // return $(item).text();
       },
       accounting(item){
-          // console.log("item",item)
+          // // console.log("item",item)
           return accounting.formatMoney(item)
       },
 
       // async mockTableData1 (p,size) {
       //   this.len = this.data1.length
-      //   console.log("this.data111",this.data1)
+      //   // console.log("this.data111",this.data1)
       //             return this.data1.slice((p - 1) * size, p * size);
       // },
       // async changePage (p) {
@@ -1086,7 +1086,7 @@
       // async searchdata() {
       //   $('.preload').css("display","block")
       //   this.resdata = await this.apiData();
-      //   console.log("response------------------------>", this.resdata)
+      //   // console.log("response------------------------>", this.resdata)
       //   this.tableDataBind();
       //   this.list = await this.mockTableData1(1,pageSize)
       //   this.spind = true
@@ -1111,14 +1111,14 @@
       },
 
       async changeData() {
-        console.log("this.data6", this.data6)
+        // console.log("this.data6", this.data6)
         this.filterArray = this.data6
         var self = this
 
         if(this.invoiceno != ''){
-          console.log("this.invoiceno", this.invoiceno)
+          // console.log("this.invoiceno", this.invoiceno)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
             if(item.InvoiceNumber != undefined){
               return item.InvoiceNumber === self.invoiceno;
             }else if(item.Id != undefined) {
@@ -1127,14 +1127,14 @@
               return item.Invoice_No === self.invoiceno;
             }
           });
-          console.log("myarr",this.filterArray)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.cname != ''){
-          console.log("this.cname", this.cname)
+          // console.log("this.cname", this.cname)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
             if(item.Contact != undefined){
               return item.Contact.Name === self.cname;
             }else if(item.CustomerRef != undefined){
@@ -1143,18 +1143,18 @@
               return item.Name === self.cname;
             }
           });
-          console.log("myarr",this.filterArray)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,pageSize)
         }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
-          console.log("myarr",this.filterArray)
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.cname)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.status != ''){
-          console.log("this.status", this.status)
+          // console.log("this.status", this.status)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
             if(item.Status != undefined){
               return item.Status === self.status;
             }
@@ -1170,42 +1170,42 @@
               }
             }
           });
-           console.log("myarr",this.filterArray)
+           // console.log("myarr",this.filterArray)
           //  this.list = await this.mockTableData2(1,pageSize)
         }else{
-          console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
-          console.log("myarr",this.filterArray)
+          // console.log("uuuuuuuuuuuuuuuuuuuuuuuuu",this.status)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.dategt != ''){
-          console.log("this.dategt", this.dategt)
+          // console.log("this.dategt", this.dategt)
           this.filterArray = _.filter(this.filterArray,  function(item){
             if(item.Date != undefined){
               var a = moment(item.Date).format('YYYY-MM-DD')
               if(moment(a).diff(moment(self.dategt).format(), 'days') >= 0){
-                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                 return item;
               }
               // if(moment(item.Date).diff(moment(self.dategt).format(), 'days') >= 0){
-              // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+              // // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
               // return item;
               // }
             }else{
               if(moment(item.TxnDate).diff(moment(self.dategt).format(), 'days') >= 0){
-                console.log('item>>>>>>>>>>>>>>>>>>>>', item)
+                // console.log('item>>>>>>>>>>>>>>>>>>>>', item)
                 return item;
               }
             }
           });
-          console.log("myarr",this.filterArray)
+          // console.log("myarr",this.filterArray)
           // this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.datelt != ''){
-          console.log("this.datelt", this.datelt)
+          // console.log("this.datelt", this.datelt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item.DueDate)
+            // console.log("item",item.DueDate)
             if(item.Date != undefined){
               var a = moment(item.Date).format('YYYY-MM-DD')
               if(moment(a).diff(moment(self.datelt).format(), 'days') <= 0){
@@ -1220,35 +1220,35 @@
               }
             }
           });
-           console.log("myarr",this.filterArray)
+           // console.log("myarr",this.filterArray)
           //  this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.totalgt != ''){
-          console.log("this.totalgt", this.totalgt)
+          // console.log("this.totalgt", this.totalgt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
             if(item.Total != undefined){
               return item.Total >= self.totalgt;
             }else{
               return item.TotalAmt >= self.totalgt;
             }
           });
-           console.log("myarr",this.filterArray)
+           // console.log("myarr",this.filterArray)
           //  this.list = await this.mockTableData2(1,pageSize)
         }
 
         if(this.totallt != ''){
-          console.log("this.totallt", this.totallt)
+          // console.log("this.totallt", this.totallt)
           this.filterArray = _.filter(this.filterArray,  function(item){
-            console.log("item",item)
+            // console.log("item",item)
              if(item.Total != undefined){
               return item.Total <= self.totallt;
             }else{
               return item.TotalAmt <= self.totallt;
             }
           });
-           console.log("myarr",this.filterArray)
+           // console.log("myarr",this.filterArray)
           //  this.list = await this.mockTableData2(1,pageSize)
         }
           this.list = await this.mockTableData2(1,pageSize)      
@@ -1258,12 +1258,12 @@
         // $('#selectCustomer').remove();
         var NameArr = [];
         $('#selectCustomer').children('option:not(:first)').remove();
-        console.log("NameArr ", NameArr )
+        // console.log("NameArr ", NameArr )
         let res
-        console.log("settingId----------------------->",settingDomain)
+        // console.log("settingId----------------------->",settingDomain)
         if(settingDomain == 'custom'){
             let customerUrl = this.tabPanes[data].customer_url;
-            console.log('--------iiiiiiiiii------------',customerUrl)
+            // console.log('--------iiiiiiiiii------------',customerUrl)
             await axios({
               method: 'get',
               url: customerUrl,
@@ -1275,11 +1275,11 @@
               }
             })
             .then(function (response) {
-                console.log('------------->',response)
+                // console.log('------------->',response)
                 res = response.data.data
             })
             .catch(function (error) {
-              console.log(error);
+              // console.log(error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1325,7 +1325,7 @@
                 res = response.data[0].data
             })
             .catch(function (error) {
-                console.log("Error in customer by settingId",error);
+                // console.log("Error in customer by settingId",error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1360,10 +1360,10 @@
         }
 
 
-        console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
+        // console.log('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO',res)
 
               res.forEach (obj => {
-                  // console.log("/////////////////////////////////////////////////////////////////",obj)
+                  // // console.log("/////////////////////////////////////////////////////////////////",obj)
                   if(obj.Name == undefined){
                       NameArr.push(obj.DisplayName)
                   }else{
@@ -1376,14 +1376,14 @@
                   var x = document.getElementById("selectCustomer");
                   var option = document.createElement("option");
                   option.text = item;
-                  console.log()
+                  // console.log()
                   x.add(option);
               })
 
       },
       exportData (type) {
           if (type === 1) {
-            console.log(this.$refs);
+            // console.log(this.$refs);
               this.$refs.table[0].exportCsv({
                   filename: 'The original data'
               });
@@ -1400,17 +1400,17 @@
         return this.data6.slice((p - 1) * size, p * size);
       },
       async mockTableData2 (p,size) {
-          console.log("p-------------->",p)
-          console.log("p-------------->",size)
-          console.log("console.log------------>",this.filterArray)
+          // console.log("p-------------->",p)
+          // console.log("p-------------->",size)
+          // console.log("// console.log------------>",this.filterArray)
           this.len = this.filterArray.length
           return this.filterArray.slice((p - 1) * size, p * size);
       },
       async changePage (p) {
           this.page = p
-          console.log("not inside",this.filterArray.length)
+          // console.log("not inside",this.filterArray.length)
           if(this.filterArray.length == 0){
-            console.log("inside",this.filterArray)
+            // console.log("inside",this.filterArray)
             this.list = await this.mockTableData1(p,pageSize);
           }else{
             this.list = await this.mockTableData2(p,pageSize);
@@ -1418,7 +1418,7 @@
       },
       async createPDFXero (params) {
           this.$Loading.start();
-          console.log("paramsssssssssssssssss " , params)
+          // console.log("paramsssssssssssssssss " , params)
           this.emailData = params;
           var self = this
           var date = new Date(params.row.Date);
@@ -1438,7 +1438,7 @@
           }).then(function (response) {
             self.emailDataCustomer = response.data[0].data[0]
           }).catch(function (error) {
-              console.log(error);
+              // console.log(error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -1477,11 +1477,11 @@
                   subscriptionId : subscriptionId
               },
               }).then(function (response) {
-                console.log("ooooooooooooooooo",response);
+                // console.log("ooooooooooooooooo",response);
                 self.emailDataCompany = response.data
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1513,7 +1513,7 @@
                 }
               });
 
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+              // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
         axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
           headers:{
@@ -1524,7 +1524,7 @@
           }
         })
         .then(async function (response) {
-          console.log('response>>>>>>>>>>>>>>', response)
+          // console.log('response>>>>>>>>>>>>>>', response)
           self.DescriptionPdf = _.filter(response.data[0].data.LineItems, function(desc) {
             if(desc.Description == 'additional_charges') {
               self.additional_charges = (desc.Quantity * desc.UnitAmount)
@@ -1570,9 +1570,9 @@
           }
         });
 
-        console.log('self.emailDataCustomer',self.emailDataCustomer)
+        // console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
-          console.log('self.$refs.email1.innerHTML----->',self.$refs)
+          // console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
           // document.querySelector('#myfooter').style.position = 'initial'
           self.$Modal.confirm({
@@ -1593,7 +1593,7 @@
 
               })
               .then(function (response) {
-                  console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                  // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                   // document.querySelector('#myfooter').style.position = 'initial' 
                   var arrayBufferView = new Uint8Array( response.data.data );
                   var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -1603,7 +1603,7 @@
                   link.click();
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1636,7 +1636,7 @@
               });
 
               // saveAs(blob, filename);
-              // console.log(self.$refs.email1.innerHTML)
+              // // console.log(self.$refs.email1.innerHTML)
               // var doc = new jsPDF();
               // doc.fromHTML(self.$refs.email1.innerHTML, 15, 15, {
               //     'width': 170
@@ -1650,7 +1650,7 @@
             }
           })
 
-          // console.log(self.$refs.email1.innerHTML)
+          // // console.log(self.$refs.email1.innerHTML)
           //   var filename = "invoice.html";
           //   var data = self.$refs.email1.innerHTML;
           //   var blob = new Blob([data], {
@@ -1662,7 +1662,7 @@
       },
       async createPDFQB(params) {
         this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
+        // console.log("paramsssssssssssssssss " , params)
         this.emailData = params;
         var self = this
         var date = new Date(params.TxnDate);
@@ -1680,12 +1680,12 @@
               Authorization : Cookies.get('auth_token')
           },
               }).then(function (response) {
-                console.log("contact response",response);
+                // console.log("contact response",response);
                 self.emailDataCustomer = response.data[0].data[0]
-                console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+                // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1724,11 +1724,11 @@
                   subscriptionId : subscriptionId
               },
               }).then(function (response) {
-                console.log("ooooooooooooooooosetting response",response);
+                // console.log("ooooooooooooooooosetting response",response);
                 self.emailDataCompany = response.data
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1760,7 +1760,7 @@
                 }
               });
 
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+              // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
         axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
           headers:{
@@ -1771,9 +1771,9 @@
           }
         })
         .then(async function (response) {
-          console.log('response>>>>>>>>>>>>>>', response)
+          // console.log('response>>>>>>>>>>>>>>', response)
           self.DescriptionPdf = response.data[0].data[0].Line;
-          console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+          // console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
 
         })
         .catch(function (error) {
@@ -1808,9 +1808,9 @@
           }
         });
 
-        // console.log('self.emailDataCustomer',self.emailDataCustomer)
+        // // console.log('self.emailDataCustomer',self.emailDataCustomer)
         setTimeout(function(){
-          console.log('self.$refs.email1.innerHTML----->',self.$refs)
+          // console.log('self.$refs.email1.innerHTML----->',self.$refs)
           self.$Loading.finish();
           self.$Modal.confirm({
             title: '',
@@ -1828,7 +1828,7 @@
               },
 
               }).then(function (response) {
-                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                 // document.querySelector('#myfooter').style.position = 'initial' 
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -1838,7 +1838,7 @@
                 link.click();
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -1871,7 +1871,7 @@
               });
 
               // saveAs(blob, filename);
-              // console.log(self.$refs.email1.innerHTML)
+              // // console.log(self.$refs.email1.innerHTML)
               // var doc = new jsPDF();
               // doc.fromHTML(self.$refs.email1.innerHTML, 15, 15, {
               //     'width': 170
@@ -1885,7 +1885,7 @@
             }
           })
 
-          // console.log(self.$refs.email1.innerHTML)
+          // // console.log(self.$refs.email1.innerHTML)
           //   var filename = "invoice.html";
           //   var data = self.$refs.email1.innerHTML;
           //   var blob = new Blob([data], {
@@ -1897,10 +1897,10 @@
       },
       async makepayment(params){
           //alert(">>>>>>>>>>> , "+this.settingIdForPayment)
-         console.log(params)
+         // console.log(params)
         // this.$store.state.invoiceData = params;
         // this.$store.state.settingId = this.settingIdForPayment
-        // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
+        // // console.log(">>>>>>>>> " , this.$store.state.invoiceData);
         if(params.InvoiceID != undefined){
           this.$router.push('/checkout/' + params.InvoiceID+"?settingId="+this.settingIdForPayment)
         }else{
@@ -1910,7 +1910,7 @@
       
       async sendemailXERO(params){
         this.$Loading.start();
-        // console.log("paramsssssssssssssssss " , params)
+        // // console.log("paramsssssssssssssssss " , params)
         this.emailData = params;
         var self = this
         var date = new Date(params.row.Date);
@@ -1931,7 +1931,7 @@
           self.emailDataCustomer = response.data[0].data[0]
         })
         .catch(function (error) {
-          console.log(error);
+          // console.log(error);
           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
               let location = psl.parse(window.location.hostname)
               location = location.domain === null ? location.input : location.domain
@@ -1970,11 +1970,11 @@
                   subscriptionId : subscriptionId
               },
 		}).then(function (response) {
-			// console.log("ooooooooooooooooo",response);
+			// // console.log("ooooooooooooooooo",response);
 			self.emailDataCompany = response.data
 		})
 		.catch(function (error) {
-      console.log(error);
+      // console.log(error);
       if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
           let location = psl.parse(window.location.hostname)
           location = location.domain === null ? location.input : location.domain
@@ -2006,7 +2006,7 @@
       }
 		});
 
-              // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+              // // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
 
         axios.get(config.default.serviceUrl + 'invoice/' + params.row.InvoiceID, {
           headers:{
@@ -2017,7 +2017,7 @@
           }
         })
         .then(async function (response) {
-        //   console.log('response>>>>>>>>>>>>>>', response)
+        //   // console.log('response>>>>>>>>>>>>>>', response)
           self.DescriptionPdf = response.data[0].data.LineItems;
 
         })
@@ -2088,7 +2088,7 @@
                             
                           }
                           }).then(function (response) {
-                            console.log(response);
+                            // console.log(response);
                             // self.$message.success(response.data.success);
                             self.$Message.success("Email Sent Successfully");
                             // self.list[params.index].loading1 = false
@@ -2097,7 +2097,7 @@
                           .catch(function (error) {
                             self.$Message.warning("Email Sent Failed, Please try again later");
                             self.$Loading.finish();
-                            console.log(error);
+                            // console.log(error);
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                               let location = psl.parse(window.location.hostname)
                               location = location.domain === null ? location.input : location.domain
@@ -2135,7 +2135,7 @@
       async sendemailQB(params){
 
           this.$Loading.start();
-          console.log("paramsssssssssssssssss " , params)
+          // console.log("paramsssssssssssssssss " , params)
           this.emailData = params;
           var self = this
           var date = new Date(params.TxnDate);
@@ -2153,12 +2153,12 @@
               Authorization : Cookies.get('auth_token')
             },
           }).then(function (response) {
-            console.log("contact response",response);
+            // console.log("contact response",response);
             self.emailDataCustomer = response.data[0].data[0]
-            // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
+            // // console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^",self.emailDataCustomer)
           })
           .catch(function (error) {
-            console.log(error);
+            // console.log(error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -2197,11 +2197,11 @@
               subscriptionId : subscriptionId
             },
           }).then(function (response) {
-            console.log("ooooooooooooooooosetting response",response);
+            // console.log("ooooooooooooooooosetting response",response);
             self.emailDataCompany = response.data
           })
           .catch(function (error) {
-            console.log(error);
+            // console.log(error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
@@ -2233,7 +2233,7 @@
             }
           });
 
-            //   console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+            //   // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
           axios.get(config.default.serviceUrl + 'invoice/' + params.Id, {
             headers:{
               Authorization : Cookies.get('auth_token')
@@ -2242,9 +2242,9 @@
               settingId : settingID
             }
           }).then(async function (response) {
-            console.log('response>>>>>>>>>>>>>>', response)
+            // console.log('response>>>>>>>>>>>>>>', response)
             self.DescriptionPdf = response.data[0].data[0].Line;
-            //   console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
+            //   // console.log("$$$$$$$$$$$$$$$4",self.DescriptionPdf)
           })
           .catch(function (error) {
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -2278,7 +2278,7 @@
             }
           });
           
-          console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
+          // console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
           this.$Modal.confirm({
             title: 'Email would be sent to',
             okText: 'OK',
@@ -2313,14 +2313,14 @@
                   'authorization':  Cookies.get('auth_token'),
                 }
               }).then(function (response) {
-                console.log(response);
+                // console.log(response);
                 // self.$Message.success(response.data.success);
                 self.$message.success("Email Sent Successfully");
                 self.$Loading.finish();
                 // self.list[params.index].loading1 = false
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 self.$Message.warning("Email Sent Failed, Please try again later");
                 self.$Loading.finish();
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
@@ -2358,7 +2358,7 @@
 
       },
       async tabClicked(data){
-        // console.log(data)
+        // // console.log(data)
         this.tabIndex = data;
         this.reset();
         // this.newList = [];
@@ -2372,7 +2372,7 @@
         // this.getCustomerBySettingId(settingId , settingDomain , data)
       },
       async getInvoiceBySettingId(settingId , settingDomain , data, settingName){
-        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId,settingDomain)
+        // console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTtt",settingId,settingDomain)
         settingID = settingId
         this.$Loading.start();
         this.data6 = [];
@@ -2394,7 +2394,7 @@
           .then(async function (response) {
             self.$Loading.finish();
             $('.preload').css("display","none")
-            console.log("iiiiiiiii------------------>",response);
+            // console.log("iiiiiiiii------------------>",response);
             self.data6 = response.data.data;
             self.invnoFilter = []
             response.data.data.forEach(item => {
@@ -2403,7 +2403,7 @@
             let columnArray =  _.union(...(_.chain(self.data6).map(m => { return _.keys(m) }).value()))
             let modifiedArray = _.pull(columnArray, "id", "importTracker_id" ,"Action","settingId" );
 
-            console.log("############# " , columnArray);
+            // console.log("############# " , columnArray);
             columnArray = ["Invoice_No","Name", "Date", "Paid",  "Total" , "Status"]
             let arr = [];
             let len = columnArray.length;
@@ -2449,7 +2449,7 @@
                 width: 210,
                 align: 'center',
                 render: (h, params) => {
-                  // console.log("============params",params);
+                  // // console.log("============params",params);
                   if (params.row.Due != 0) {
                     return h('div', [
                       h('Tooltip', {
@@ -2591,8 +2591,8 @@
               type: 'expand',
               width: 50,
               render: (h, params) => {
-                console.log('params--------------->',self.newList)
-                console.log('this.newTabIndex............',self.newTabIndex)
+                // console.log('params--------------->',self.newList)
+                // console.log('this.newTabIndex............',self.newTabIndex)
                 return h(listtransaction, {
                 props: {
                   list:self.newList,
@@ -2606,7 +2606,7 @@
             self.columns3 = arr;
 			    })
           .catch(function (error) {
-            console.log("error",error);
+            // console.log("error",error);
             self.$Loading.error();
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
@@ -2649,7 +2649,7 @@
             }
           })
           .then(async function (response) {
-              console.log("response------>iuy",response);
+              // console.log("response------>iuy",response);
               self.invnoFilter = []
               if (response.data[0].data.data) {
                 self.$Loading.finish();
@@ -2678,7 +2678,7 @@
               }
           })
           .catch(function (error) {
-            console.log("error",error);
+            // console.log("error",error);
             if (error.response.data.message === 'invalid_grant') {
               self.$Notice.error({
                 duration:0, 
@@ -2723,7 +2723,7 @@
 
       async makePaymentCustom(params ,settingIdForPayment, domain){
 
-          console.log(params)
+          // console.log(params)
           this.$router.push('/checkout/' + params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
 
       },
@@ -2733,7 +2733,7 @@
 
         //this.$router.push('/transaction/list-transaction/'+ params.row.id+"?settingId="+settingIdForPayment+"&domain=custom")
         // this.viewDetailModal = true;
-        // console.log(this)
+        // // console.log(this)
         //alert(this.tabIndex);
         setTimeout(function(){
           $('.my-panel').css('display','none')
@@ -2752,7 +2752,7 @@
               }
           })
           .then(function (response) {
-              console.log("transaction response",response);
+              // console.log("transaction response",response);
               //alert(self.tabPanes[self.tabIndex].configName)
               self.newTabIndex = self.tabIndex
               if(response.data.data.length == 0){
@@ -2772,7 +2772,7 @@
               // self.newList = await self.mockTableData1(1,pageSize)
           })
           .catch(function (error) {
-              console.log("error",error);
+              // console.log("error",error);
               self.$Loading.error();
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
@@ -2807,9 +2807,9 @@
       },
 
       async viewDetails(params,status){
-        // console.log(this.previous)
+        // // console.log(this.previous)
         // if(this.previous == true){
-        // console.log('status', status)
+        // // console.log('status', status)
         setTimeout(function(){
           $('.my-panel').css('display','none')
         },100)
@@ -2819,8 +2819,8 @@
           $('.my-tab .ivu-tabs-tab').addClass('ivu-tabs-tab-disabled')
         },1000)
         let self = this;
-        // console.log(self.tabPanes[self.tabIndex].domain)
-        console.log('id..........',params.Id)
+        // // console.log(self.tabPanes[self.tabIndex].domain)
+        // console.log('id..........',params.Id)
         let id;
         if(self.tabPanes[self.tabIndex].domain == "QB"){
           id = params.Id
@@ -2834,12 +2834,12 @@
             }
         })
         .then(function (response) {
-          console.log('rrrrrrrrrrrrrrrrrr',response)
+          // console.log('rrrrrrrrrrrrrrrrrr',response)
             self.newTabIndex = self.tabIndex
-            console.log(response.data.data)
+            // console.log(response.data.data)
             if(response.data.data.length == 0){
               // self.newList = [{"paymentAccounting":{"Invoice":{"InvoiceNumber":"", "Date":"00/00/0000"},"Contact":{"Name":""},"Amount": ""}, "paymentGateway": {"id": ""},"key" : "No transaction has been made for this Invoice"}]
-              console.log("self.newList>>>>>>>>>>>>>", self.newList)
+              // console.log("self.newList>>>>>>>>>>>>>", self.newList)
               // self.newList = [{key : "No transaction has been made for this Invoice"}]
               self.newList = []
             } else {
@@ -2854,7 +2854,7 @@
             }
         })
         .catch(function (error) {
-            console.log("error",error);
+            // console.log("error",error);
             self.$Loading.error();
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
@@ -2892,16 +2892,16 @@
       async createPDFCustom(params){
         var self = this
         this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
+        // console.log("paramsssssssssssssssss " , params)
         this.emailDataCustom = params.row;
         var date = new Date(params.row.Date);
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
        
-        console.log("%%%%%%%%%%%%%",this.emailData)
-        console.log("this.createdDate",this.createdDate)
-        console.log("this.dueDate",this.dueDate)
+        // console.log("%%%%%%%%%%%%%",this.emailData)
+        // console.log("this.createdDate",this.createdDate)
+        // console.log("this.dueDate",this.dueDate)
         await axios({
               method: 'get',
               url: config.default.serviceUrl + 'customcustomer',
@@ -2916,7 +2916,7 @@
                 self.emailDataCustomer = response.data.data[0]
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -2947,7 +2947,7 @@
                   })
               }
               });
-                console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
+                // console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
@@ -2957,11 +2957,11 @@
                   subscriptionId : subscriptionId
               },
               }).then(function (response) {
-                console.log("ooooooooooooooooo",response);
+                // console.log("ooooooooooooooooo",response);
                 self.emailDataCompany = response.data
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -2992,13 +2992,13 @@
                   })
               }
               });
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+              // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
               self.DescriptionPdf = this.emailDataCustom.products;
               self.customTotaltax = 0
               self.DescriptionPdf.forEach(item => {
                 self.customTotaltax += item.tax
               })
-              console.log("self.customTotaltax---->",self.customTotaltax)
+              // console.log("self.customTotaltax---->",self.customTotaltax)
                 // axios.get(config.default.serviceUrl + 'invoice', {
                 //   headers:{
                 //       Authorization : Cookies.get('auth_token')
@@ -3009,7 +3009,7 @@
                 //   }
                 // })
                 // .then(async function (response) {
-                //   console.log('response>>>>>>>>>>>>>>', response)
+                //   // console.log('response>>>>>>>>>>>>>>', response)
                 //   self.DescriptionPdf = response.data[0].data.LineItems;
                 // })
                 // .catch(function (error) {
@@ -3031,7 +3031,7 @@
                   "html" : self.$refs.email2.innerHTML
               },
               }).then(function (response) {
-                console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
+                // console.log("uuuuuuuuuuuuuuuuuuuuuu",response);
                 // document.querySelector('#myfooter').style.position = 'initial'
                 var arrayBufferView = new Uint8Array( response.data.data );
                 var blob=new Blob([arrayBufferView], {type:"application/pdf"});
@@ -3079,16 +3079,16 @@
       async sendemailCustom(params){
         var self = this
         this.$Loading.start();
-        console.log("paramsssssssssssssssss " , params)
+        // console.log("paramsssssssssssssssss " , params)
         this.emailDataCustom = params.row;
         var date = new Date(params.row.Date);
         this.createdDate =  date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear()
         var date1 = new Date(params.row.DueDate);
         this.dueDate =  date1.getDate() + '/' + (date1.getMonth() + 1) + '/' +  date1.getFullYear()
        
-        console.log("%%%%%%%%%%%%%",this.emailData)
-        console.log("this.createdDate",this.createdDate)
-        console.log("this.dueDate",this.dueDate)
+        // console.log("%%%%%%%%%%%%%",this.emailData)
+        // console.log("this.createdDate",this.createdDate)
+        // console.log("this.dueDate",this.dueDate)
         await axios({
               method: 'get',
               url: config.default.serviceUrl + 'customcustomer',
@@ -3103,7 +3103,7 @@
                 self.emailDataCustomer = response.data.data[0]
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -3134,7 +3134,7 @@
                   })
               }
               });
-                console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
+                // console.log('self.emailDataCustomer---------->',self.emailDataCustomer)
                 this.customaddress = self.emailDataCustomer.Address.split(",");
         await axios({
               method: 'get',
@@ -3144,11 +3144,11 @@
                   subscriptionId : subscriptionId
               },
               }).then(function (response) {
-                console.log("ooooooooooooooooo",response);
+                // console.log("ooooooooooooooooo",response);
                 self.emailDataCompany = response.data
               })
               .catch(function (error) {
-                console.log(error);
+                // console.log(error);
                 if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
@@ -3179,15 +3179,15 @@
                   })
               }
               });
-              console.log('self.emailDataCompany--------------->',self.emailDataCompany)
+              // console.log('self.emailDataCompany--------------->',self.emailDataCompany)
               self.DescriptionPdf = this.emailDataCustom.products;
               self.customTotaltax = 0
               self.DescriptionPdf.forEach(item => {
                 self.customTotaltax += item.tax
               })
-              console.log("self.customTotaltax---->",self.customTotaltax)
+              // console.log("self.customTotaltax---->",self.customTotaltax)
         
-        console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
+        // console.log('self.emailDataCustomer',self.emailDataCustomer.EmailAddress)
         this.$Modal.confirm({
                       title: 'Email would be sent to',
                       okText: 'OK',
@@ -3226,7 +3226,7 @@
                           }
                           }).then(function (response) {
                             self.$Modal.remove();
-                            console.log(response);
+                            // console.log(response);
                             self.$Message.success(response.data.success);
                             self.$Loading.finish();
                             // self.list[params.index].loading1 = false
@@ -3235,7 +3235,7 @@
                             self.$Modal.remove();
                             self.$Message.warning("email sent failed , Please try again later");
                             self.$Loading.finish();
-                            console.log(error);
+                            // console.log(error);
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -3289,12 +3289,12 @@
           },
         })
         .then(function (response) {
-          console.log("response------>iuy",response);
+          // console.log("response------>iuy",response);
           self.spinShow = false;
           if (response.data.data.length != 0)
           {
             self.tabPanes = response.data.data;
-            console.log('this.tabIndex', self.tabIndex)
+            // console.log('this.tabIndex', self.tabIndex)
             $('.preload').css("display","none")
             let settingId = self.tabPanes[self.tabIndex].id;
             let settingDomain = self.tabPanes[self.tabIndex].domain;
@@ -3317,7 +3317,7 @@
         })
         .catch(function (error) {
 
-          console.log("error",error);
+          // console.log("error",error);
           self.spinShow = false;
           if(error.message == 'Network Error'){
               self.$Notice.error({

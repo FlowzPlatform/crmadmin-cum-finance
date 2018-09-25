@@ -57,7 +57,7 @@
                         key: 'role',
                         render: (h, params) => {
                             return h('div', [
-                                //console.log(params)
+                                //// console.log(params)
                                 //let obj= Object.keys(params.row.role);
                                 h('strong', this.capitalize(params.row.role[Object.keys(params.row.role)]))
                             ]);
@@ -94,10 +94,10 @@
                                     on: {
                                         click: () => {
                                             
-                                            // console.log("params.row[params.index].flag",this.data6[params.index])
+                                            // // console.log("params.row[params.index].flag",this.data6[params.index])
                                             // params.row[params.index].flag = true
                                             params.row.flag.sendMailFlag = true;
-                                            // console.log("============this.data6[params.index]",this.data6[params.index])
+                                            // // console.log("============this.data6[params.index]",this.data6[params.index])
                                             this.sendEmail(params)
                                         }
                                     }
@@ -124,9 +124,9 @@
         },
         methods : {
             capitalize (str) {
-                // console.log("str before",str)
+                // // console.log("str before",str)
                 str = str[0].toUpperCase() + str.slice(1)
-                // console.log("str after",str)                
+                // // console.log("str after",str)                
                 return str;
             },
             show (index) {
@@ -135,12 +135,12 @@
             sendEmail (params) {
                 let self = this;
                 let data = params.row
-                console.log("data-------",data)
+                // console.log("data-------",data)
                 var SendEmailBody = SendEmailBodyInvite.replace(/WriteSenderNameHere/i, data.fromEmail);
                 SendEmailBody = SendEmailBody.replace(/domainKey/g, process.env.domainkey);
                 SendEmailBody = SendEmailBody.replace(/SYSTEMNAME/g, Object.keys(data.role)[0]);
                 SendEmailBody = SendEmailBody.replace(/ROLE/g, Object.values(data.role)[0]);
-                // console.log("SendEmailBody",SendEmailBody)
+                // // console.log("SendEmailBody",SendEmailBody)
                 axios({
                     method: 'post',
                     url: config.default.emailUrl,
@@ -148,7 +148,7 @@
                     data: { "to": data.toEmail, "from": data.fromEmail, "subject": "Invitation from Flowz", "body": SendEmailBody}
                 })
                 .then(async (result) => {
-                    console.log("result",result);
+                    // console.log("result",result);
                     params.row.flag.sendMailFlag = false;
                     self.$Notice.success({
                         duration:0,
@@ -157,7 +157,7 @@
                     return true;
                 })
                 .catch(function(err){
-                    console.log(err.response)
+                    // console.log(err.response)
                     params.row.flag.sendMailFlag = false;
                     if(err.response.status == 401){
                             let location = psl.parse(window.location.hostname)
@@ -207,7 +207,7 @@
                                 fromEmail: params.row.fromEmail, 
                                 subscription_invitation_id:params.row.id
                             }
-                        console.log(params)
+                        // console.log(params)
                         axios({
                             method:'delete',
                             url: subscriptionUrl+'invite',
@@ -218,7 +218,7 @@
                             }
                         })
                         .then(function(response) {
-                            console.log(response)
+                            // console.log(response)
                             self.data6.splice(params.index, 1);
                             params.row.flag.unAssignFlag = false;
                             // self.$Message.success('User Un-assigned successfully');
@@ -228,7 +228,7 @@
                             });
                         }).catch(function(error){
                             params.row.flag.unAssignFlag = false;
-                            console.log(error)
+                            // console.log(error)
                             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                                 let location = psl.parse(window.location.hostname)
                                 location = location.domain === null ? location.input : location.domain
@@ -270,7 +270,7 @@
             async init(){
                 
                 let self = this
-                console.log(this.row)
+                // console.log(this.row)
                  //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                     //axios.get(subscriptionUrl + "subscription-invitation?subscriptionId="+this.row.subscriptionId).then(function(result){
                         // axios.get( "http://172.16.230.86:3030/" + "subscription-invitation?subscriptionId="+this.row.subscriptionId)
@@ -288,7 +288,7 @@
                     if(result.data.data.length == 0){
                         self.assignee = "No assignee found for this subscription"
                     }else{
-                        console.log(result)
+                        // console.log(result)
                         self.assignee = result.data.data
                         for (let f of self.assignee) {
                             f['flag'] = {
@@ -296,11 +296,11 @@
                                 unAssignFlag : false
                             };
                         }
-                        console.log("self.assignee",self.assignee)
+                        // console.log("self.assignee",self.assignee)
                         self.data6 = self.assignee
                     }
                 }).catch(function (error){
-                    console.log('Error', error)
+                    // console.log('Error', error)
                     if(error.message == 'Network Error'){
                         self.$Notice.error({
                             title : 'Error',

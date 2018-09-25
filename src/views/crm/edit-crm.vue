@@ -74,7 +74,7 @@
 											<Option v-for="item in customerData" :value="item.Name" :key="item.id">{{ item.Name }}</Option>
 										</div>
 										<div v-if="domainConfig=='QB'">
-											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.id">{{ item.DisplayName }}</Option>											
+											<Option v-for="item in customerData" :value="item.DisplayName" :key="item.id">{{ item.DisplayName }}</Option>
 										</div> -->
 									</Select>
 								<!--	<auto-complete :data="customerData" :filter-method="filterMethod" placeholder="Select Customer..." v-model="finaldata.cname" clearable></auto-complete>
@@ -178,16 +178,16 @@
 					<TabPane label="Notes:" icon="edit">
 						<textarea name="editor1"></textarea>
 						<div id="c2597">
-              <div v-if="finaldata.fileupload" style="padding:10px"> 
-                <Table border stripe :columns="columns1" :data="data1"></Table>             
+              <div v-if="finaldata.fileupload" style="padding:10px">
+                <Table border stripe :columns="columns1" :data="data1"></Table>
                 <!-- <div v-for="item in finaldata.fileupload" style="margin-top: 10px;margin-left: 20px;"><a :href="item.url">{{item.filename}}</a></div> -->
               </div>
-              <div v-else>    
+              <div v-else>
               </div>
-  							<Upload id="fileUpload":before-upload="handleUpload" action='' :show-upload-list="uploadlist" style="padding:10px"> 
+  							<Upload id="fileUpload":before-upload="handleUpload" action='' :show-upload-list="uploadlist" style="padding:10px">
                 <Button type="ghost" icon="ios-cloud-upload-outline">Select new file </Button>
-              </Upload> 
-                <div v-if="file !== ''" style="padding:10px">Selected file: {{ file.name }} 
+              </Upload>
+                <div v-if="file !== ''" style="padding:10px">Selected file: {{ file.name }}
                   <Button @click="removefile()" type="ghost" shape="circle" icon="android-close"></Button>
                 </div>
                 <!--<div v-if="file !== ''"><Button type="ghost" @click="removefile()">Remove</Button></div>-->
@@ -215,7 +215,7 @@
   import Cookies from 'js-cookie';
   import moment from 'moment';
   import psl from 'psl';
-  let axios = require('axios'); 
+  let axios = require('axios');
   let _ = require('lodash');
   var nextdate;
   var priceinput;
@@ -265,7 +265,7 @@
           priceinput: '',
           price: '',
           email: '',
-          phone: '', 
+          phone: '',
         },
         columns1: [
           {
@@ -282,8 +282,7 @@
               key: 'Status',
               align: 'center',
               width: 150,
-              render: (h, params) => {   
-              console.log('params--------->',params)            
+              render: (h, params) => {
                   return h('div', [
                     h('Tooltip', {
                         props: {
@@ -306,13 +305,13 @@
                             },
                             on: {
                               click: () => {
-                                // console.log(params)
+                                // // console.log(params)
                                 // window.location.href = params.row.url;
                                 this.DownloadFile(params.row.url);
                               }
                           }
                         })
-                      ]),               
+                      ]),
                     h('Tooltip', {
                         props: {
                           placement: 'top',
@@ -339,7 +338,7 @@
                               }
                           }
                         })
-                      ])             
+                      ])
                   ])
               }
             }
@@ -379,7 +378,6 @@
 			},
       async handleUpload (file) {
         var self = this
-        console.log('file',file)
         if(file.size >= 1e+8){
 					this.$Notice.error({
             title: 'File Limit',
@@ -397,8 +395,6 @@
         self.$Loading.start()
         // var result = await (
           await axios.get(databasepost  + this.$route.params.id).then(res => {
-            console.log('Response >>>>>>>>>>>>>>> ', JSON.stringify(res.data))
-            console.log("==========-----------subscriptionId",res.data.subscriptionId,self.mSubcriptionID)
             if (res.data.subscriptionId !== self.mSubcriptionID) {
                 self.$router.push("/relationship/list-relationship")
             }
@@ -415,7 +411,6 @@
             }
            // return res.data
           }).catch(error => {
-            console.log('Error >>>>>>>>>>>>>>', error)
             if(error.message == 'Network Error'){
                 self.$Notice.error({
                     title: "Error",
@@ -423,13 +418,13 @@
                     duration: 10
                 })
             }else if(error.response.status == 401){
-              
+
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -441,7 +436,7 @@
             }
             else if(error.response.status == 403){
                 self.$Notice.error({
-                    duration:0, 
+                    duration:0,
                     title: error.response.statusText,
                     desc:error.response.data.message+'. Please <a href="'+configService.default.flowzDashboardUrl+'/subscription-list" target="_blank">Subscribe</a>'
                 });
@@ -454,8 +449,7 @@
             }
           })
           //)
-        console.log('RESULT ..................', self.finaldata)
-        
+
       },
       configChange (data) {
         this.customerData = []
@@ -478,12 +472,11 @@
           }
         })
         .then(async function(response) {
-          console.log("%%%%%%%%%%%%%%%%%%%response",response)
-          self.domainConfig=response.data.domain 
+          self.domainConfig=response.data.domain
           if(response.data.domain == 'custom'){
             self.customCustomerUrl = response.data.customer_url;
             self.customInvoiceUrl = response.data.invoice_url;
-            
+
             await axios({
               method: 'get',
               url: self.customCustomerUrl,
@@ -493,21 +486,18 @@
               }
             })
             .then(function (response) {
-              console.log(response)
               resp = response.data.data
               self.customerData = resp
-              console.log("self.customerData", self.customerData)
             })
             .catch(function (error) {
-              console.log(error.response)
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                   let location = psl.parse(window.location.hostname)
                   location = location.domain === null ? location.input : location.domain
-                  
-                  Cookies.remove('auth_token' ,{domain: location}) 
-                  Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                  Cookies.remove('auth_token' ,{domain: location})
+                  Cookies.remove('subscriptionId' ,{domain: location})
                   self.$store.commit('logout', self);
-                  
+
                   self.$router.push({
                       name: 'login'
                   });
@@ -544,7 +534,6 @@
               },
             })
             .then(function (response) {
-              console.log("contact response",response);
 							// resp = response.data
 							// self.customerData = _.sortBy(resp[0].data,['Name']);
 							if (response.data[0].data.hasOwnProperty('data')) {
@@ -577,18 +566,16 @@
 							}
               // resp = response.data
               // self.customerData = resp[0].data
-              console.log('---------self.customerData',self.customerData)
             })
             .catch(function (error) {
-              console.log(error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -614,15 +601,15 @@
           }
         })
         .catch(function (error) {
-          console.log("error",error);
+          // // console.log("error",error);
           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -643,9 +630,8 @@
                     desc: error.response.data.message,
                     duration: 10
                 })
-            }   
+            }
         });
-        console.log("response------>iuy",self.customerData);
       },
       async dbdata() {
         var self = this
@@ -655,15 +641,14 @@
               result1 = data.data[0];
               self.crmdata = result1
           },error: function(error){
-            console.log("error",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -687,28 +672,26 @@
             }
           }
         });
-        console.log("json data databaseurl",result1);
       },
       async projectlist() {
         var self = this
         await $.ajax({
             url: momapi,
             success: function (data) {
-            console.log(">>>>>>>>>>>>>>> " , data)
                 result1 = data;
                 self.momdata = _.map(result1, (d) => {
                   return {label: d.project_name, value: d.project_name}
                 })
             },error: function(error){
-              console.log("error",error);
+              // // console.log("error",error);
               if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -742,7 +725,6 @@
           url: assigneeapi,
           success: function (data) {
               result1 = data.data;
-              console.log(data)
               var myarr = []
               _.forEach(result1, (d) => {
                 if (d.hasOwnProperty('fullname')) {
@@ -761,15 +743,14 @@
               self.assigneedata = _.sortBy(myarr,['value']);
               self.$Loading.finish();
           },error: function(error){
-            console.log("error",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
               let location = psl.parse(window.location.hostname)
               location = location.domain === null ? location.input : location.domain
-              
-              Cookies.remove('auth_token' ,{domain: location}) 
-              Cookies.remove('subscriptionId' ,{domain: location}) 
+
+              Cookies.remove('auth_token' ,{domain: location})
+              Cookies.remove('subscriptionId' ,{domain: location})
               self.$store.commit('logout', self);
-              
+
               self.$router.push({
                   name: 'login'
               });
@@ -793,7 +774,7 @@
             }
           }
         });
-      },  
+      },
       async postdata() {
         let self = this
         let desc = CKEDITOR.instances.editor1.getData()
@@ -806,29 +787,25 @@
           if (mail != false && phone != false) {
             this.loading = true
               var file = this.file
-              console.log('uuuuuu',file)
               if(file != ''){
                 if(this.finaldata.fileupload != undefined){
                   var noOfFiles = this.finaldata.fileupload.length
-                  console.log('&&&&&&&&&&&&',noOfFiles)
                 }else{
                   var noOfFiles = 0
                 }
                 if(noOfFiles < 5){
                   var reader = new FileReader();
                   reader.readAsDataURL(file);
-                  // console.log('reader',reader);
+                  // // console.log('reader',reader);
                   reader.addEventListener("load", async function () {
-                    console.log('uuuuuu',file.name)
                     var fileupObj = {
                       "filename":file.name,
                       "url":reader.result
                     }
                     if(self.finaldata.fileupload == undefined){
                       self.finaldata['fileupload'] = []
-                      
+
                     }
-                    console.log('**************************************',self.finaldata)
                     self.finaldata.fileupload.push(fileupObj);
                     await $.ajax({
                       type: 'PATCH',
@@ -845,20 +822,18 @@
                                 desc: 'Edit CRM case is Saved. ',
                           duration: 4.5
                               });
-                        console.log("json data******123",result);
                         self.$router.push("/relationship/list-relationship")
                       },error: function(error){
-                        self.loading = false,
-                          console.log("error",error);
+                        self.loading = false
                           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                            
+
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                            Cookies.remove('auth_token' ,{domain: location})
+                            Cookies.remove('subscriptionId' ,{domain: location})
                             self.$store.commit('logout', self);
-                            
+
                             self.$router.push({
                               name: 'login'
                             });
@@ -890,8 +865,6 @@
                 }
               }else{
 
-                console.log("running else condition")
-                console.log("**********************",self.finaldata);
                 await $.ajax({
                       type: 'PATCH',
                       url: databasepost + self.$route.params.id,
@@ -907,20 +880,18 @@
                                 desc: 'Edit CRM case is Saved. ',
                           duration: 4.5
                               });
-                        console.log("json data******123",result);
                         self.$router.push("/relationship/list-relationship")
                       },error: function(error){
-                        self.loading = false,
-                          console.log("error",error);
+                        self.loading = false
                           if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
-                            
+
                             let location = psl.parse(window.location.hostname)
                             location = location.domain === null ? location.input : location.domain
-                            
-                            Cookies.remove('auth_token' ,{domain: location}) 
-                            Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                            Cookies.remove('auth_token' ,{domain: location})
+                            Cookies.remove('subscriptionId' ,{domain: location})
                             self.$store.commit('logout', self);
-                            
+
                             self.$router.push({
                               name: 'login'
                             });
@@ -958,7 +929,7 @@
 							desc: 'Please Select Customer OR Assignee. ',
 							duration: 4.5
 						});
-				}		
+				}
       },
       init() {
         let self = this;
@@ -974,19 +945,18 @@
         })
         .then(function (response) {
           self.mData = response.data.data;
-          console.log("config data list................self.mData",self.mData)
           // self.config1 = self.mData[0].id;
-          // self.calldata()    
+          // self.calldata()
         }).catch(error => {
-            console.log("-------",error);
+            // // console.log("-------",error);
             if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                 let location = psl.parse(window.location.hostname)
                 location = location.domain === null ? location.input : location.domain
-                
-                Cookies.remove('auth_token' ,{domain: location}) 
-                Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                Cookies.remove('auth_token' ,{domain: location})
+                Cookies.remove('subscriptionId' ,{domain: location})
                 self.$store.commit('logout', self);
-                
+
                 self.$router.push({
                     name: 'login'
                 });
@@ -1012,11 +982,9 @@
       },
       async DeleteFile(params,id){
         let self = this
-        console.log('params',params)
-        console.log('id------->',id)
-        // console.log(this.data1)
+        // // console.log(this.data1)
         // let arr = _.filter(this.data1, function(num){ return num.filename = params.filename });
-        // console.log(arr)
+        // // console.log(arr)
         this.$Modal.confirm({
           okText: 'OK',
           cancelText: 'Cancel',
@@ -1031,27 +999,25 @@
               },
               data: params.row,
               success: function (data11) {
-                console.log("json data******123",data11);
                 self.$Notice.success({
                   title: 'Sucess',
                   desc: 'File successfully deleted ',
                   duration: 4.5
                 });
-               
+
                   self.data1 = data11.fileupload
                   self.finaldata.fileupload = data11.fileupload
-                
+
                 //self.data1.splice()
               },error: function(error){
-                  console.log("error",error);
                   if(error.hasOwnProperty('response') && error.response.hasOwnProperty('status') && error.response.status == 401){
                     let location = psl.parse(window.location.hostname)
                     location = location.domain === null ? location.input : location.domain
-                    
-                    Cookies.remove('auth_token' ,{domain: location}) 
-                    Cookies.remove('subscriptionId' ,{domain: location}) 
+
+                    Cookies.remove('auth_token' ,{domain: location})
+                    Cookies.remove('subscriptionId' ,{domain: location})
                     self.$store.commit('logout', self);
-                    
+
                     self.$router.push({
                         name: 'login'
                     });
@@ -1083,9 +1049,7 @@
       }
   },
     mounted() {
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^^', databasepost)
       CKEDITOR.replace("editor1");
-      console.log("this.$route.params.id", this.$route.params.id)
       this.showdata()
       this.init()
       this.dbdata()
