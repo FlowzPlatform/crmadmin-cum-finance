@@ -146,8 +146,8 @@ jsc */
       // draw back if power version is requested and registered
           if (/(^|[ ,])powerpaste([, ]|$)/.test(editor.settings.plugins) && PluginManager.get('powerpaste')) {
         /* eslint no-console:0 */
-              if (typeof window.console !== 'undefined' && window.console.log) {
-                  window.console.log('PowerPaste is incompatible with Paste plugin! Remove \'paste\' from the \'plugins\' option.');
+              if (typeof window.console !== 'undefined' && window.// console.log) {
+                  window.// console.log('PowerPaste is incompatible with Paste plugin! Remove \'paste\' from the \'plugins\' option.');
               }
               return true;
           } else {

@@ -26,6 +26,11 @@ export default {
         return {
             themeList: [
                 {
+                    name: 'black_y',
+                    menu: '#495060',
+                    element: '#e96500'
+                },
+                {
                     name: 'black_b',
                     menu: '#495060',
                     element: '#2d8cf0'
@@ -35,36 +40,32 @@ export default {
                     menu: '#495060',
                     element: '#00a854'
                 },
-                {
-                    name: 'black_y',
-                    menu: '#495060',
-                    element: '#e96500'
-                },
+                
                 {
                     name: 'black_r',
                     menu: '#495060',
                     element: '#e43e31'
-                },
-                {
-                    name: 'light_b',
-                    menu: '#495060',
-                    element: '#2d8cf0'
-                },
-                {
-                    name: 'light_g',
-                    menu: '#495060',
-                    element: '#00a854'
-                },
-                {
-                    name: 'light_y',
-                    menu: '#495060',
-                    element: '#e96500'
-                },
-                {
-                    name: 'light_r',
-                    menu: '#495060',
-                    element: '#e43e31'
                 }
+                // {
+                //     name: 'light_b',
+                //     menu: '#495060',
+                //     element: '#2d8cf0'
+                // },
+                // {
+                //     name: 'light_g',
+                //     menu: '#495060',
+                //     element: '#00a854'
+                // },
+                // {
+                //     name: 'light_y',
+                //     menu: '#495060',
+                //     element: '#e96500'
+                // },
+                // {
+                //     name: 'light_r',
+                //     menu: '#495060',
+                //     element: '#e43e31'
+                // }
             ]
         };
     },

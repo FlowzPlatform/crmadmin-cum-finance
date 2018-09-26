@@ -4,7 +4,7 @@
 
 <template>
     <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" :theme="menuTheme" width="auto" @on-select="changeMenu">
-        <template v-for="item in menuList">
+        <template v-for="item in testArray">
             <MenuItem v-if="item.children.length<=1" :name="item.children[0].name" :key="item.path">
                 <Icon :type="item.icon" :size="iconSize" :key="item.path"></Icon>
                 <span class="layout-text" :key="item.path">{{ itemTitle(item) }}</span>
@@ -40,6 +40,11 @@ export default {
             type: Array
         }
     },
+    data() {
+        return {
+            testArray: null
+        }
+    },
     methods: {
         changeMenu (active) {
             this.$emit('on-change', active);
@@ -61,7 +66,11 @@ export default {
     },
     mounted(){
         
-        console.log(this.menuList)
+        // console.log("--------------------",this.menuList)
+        this.testArray = this.menuList.filter(function(e)  {
+            // // console.log("------------********",e.name)
+           return e.name !== 'INVITE1';
+        })
     }
 
 };
