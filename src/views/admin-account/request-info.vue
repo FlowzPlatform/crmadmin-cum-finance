@@ -106,7 +106,7 @@ export default {
           render: (h,params) => {
             // return params.row.productInfo[0].username
              return h('div', [
-                h('span', params.row.productInfo[0].username)
+                h('span', params.row.userDetail.fullname)
               ]);
           }
       },
@@ -136,7 +136,7 @@ export default {
         "title": "Requested On",
         // "key": "created_at",
         render:(h,{row})=>{
-                var date1 = moment(row.created_at).format('DD-MMM-YYYY')
+                var date1 = moment(row.createAt).format('DD-MMM-YYYY')
                 return h('div', [
                   h('span', date1)
                 ]);
@@ -196,8 +196,10 @@ export default {
       this.listData(this.website);
     },
     async viewDetails(params,status){
-        if (!status) return
-        $('.ivu-table-cell-expand-expanded').click()
+        // console.log('params',params)
+        // console.log('status',status)
+        // if (!status) return
+        // $('.ivu-table-cell-expand-expanded').click()
     },
     async changeData() {
       this.filterArray = this.data

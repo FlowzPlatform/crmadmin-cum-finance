@@ -38,7 +38,7 @@ module.exports = {
         forgotPasswordUrl: 'https://api.' + process.env.domainkey + '/auth/api/forgetpassword',
 
         // resetpassword :                 "https://auth."+process.env.domainkey+"/api/resetpassword",
-        resetPasswordRedirectUrl: 'https://crm."+process.env.domainkey+"/#/reset-password',
+        resetPasswordRedirectUrl: 'https://crm.'+process.env.domainkey+'/#/reset-password',
         resetPasswordUrl: 'https://api.' + process.env.domainkey + '/auth/api/resetpassword',
         changepassword: 'https://api.' + process.env.domainkey + '/auth/api/changepassword',
         feathersServiceBaseUrl: 'https://api.' + process.env.domainkey + '/auth/serverapi/',
@@ -86,10 +86,15 @@ module.exports = {
         orderapi: 'https://api.' + process.env.domainkey + '/serverapi/myOrders',
         
         requestinfoapi: 'https://api.' + process.env.domainkey + '/serverapi/request-info',
+        // requestinfoapi: 'http://localhost:3032/request-info',
         requestquoteapi: 'https://api.' + process.env.domainkey + '/serverapi/request-quote',
+        // requestquoteapi: 'http://localhost:3032/request-quote',
         subscriptionWebsitesapi: 'https://api.' + process.env.domainkey + '/serverapi/subscription-websites',
+        // subscriptionWebsitesapi: 'http://localhost:3032/subscription-websites',
         commentrequestapi: 'https://api.' + process.env.domainkey + '/serverapi/comment-request',
+        // commentrequestapi: 'http://localhost:3032/comment-request',
         socketUrlapi: 'wss://ws.' + process.env.domainkey + ':' + socketPort,
+        // socketUrlapi: 'http://localhost:4032/',
 
         emailUrl: 'https://api.' + process.env.domainkey + '/vmailmicro/sendemaildata',
         productImageUrl: 'https://res.cloudinary.com/flowz/image/upload/v1531481668/websites/images/no-image.png',
