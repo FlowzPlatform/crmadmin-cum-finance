@@ -147,7 +147,8 @@
                             <p class="emailText" v-html="item.message"></p>
                             <span class="receivedDate">
                               <!-- <span v-if="item.isEdited">{{getDate(item.edited_at)}}</span> -->
-                              <span>{{getDate(item.created_at)}}</span>
+                              <!--<span>{{getDate(item.created_at)}}</span>-->
+                              <time class="timeago" :datetime="item.created_at">{{item.created_at}}</time>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
                               <span><strong>{{item.created_by}}</strong></span>
                             </span>
@@ -166,7 +167,8 @@
 
                               <span style="color:red;cursor:pointer" v-on:click="deleteItem(item)">Delete</span> -->
                               <!-- <span v-if="item.isEdited">Edited {{getDate(item.edited_at)}}</span> -->
-                              <span>{{getDate(item.created_at)}}</span>
+                              <!--<span>{{getDate(item.created_at)}}</span>-->
+                              <time class="timeago" :datetime="item.created_at">{{item.created_at}}</time>
                               <!-- <span v-if="item.isEdited">{{item.edited_by}}</span> -->
                               <span><strong>{{item.created_by}}</strong></span>
                             </span>
@@ -189,11 +191,11 @@
                           </div>
                           <div class="request-post-comment">
                                 <div class="post-comment-text-box form-group">
-                                  <Input type="textarea" v-model="commentMessage" id="commentrequestinfo_comment"  placeholder="Type a message" :rows="1" @on-keyup ="myFunction()"></Input>
+                                  <Input type="text" v-model="commentMessage" id="commentrequestinfo_comment"  placeholder="Type a message" :rows="1" @on-keyup ="myFunction()"></Input>
                                   <div class="btn-box-main pointerst-comment-btn">
-                                  <Tooltip content="Send(Ctrl-Enter)" placement="top">
-                                    <Button class="btn btn-default btn-sm" icon="android-send" @click= "sendcomment()"></Button>
-                                  </Tooltip>
+                                    <Tooltip content="Send(Enter)" placement="top">
+                                      <Button class="btn btn-default btn-sm" icon="android-send" @click= "sendcomment()"></Button>
+                                    </Tooltip>
                                   </div>
                                 </div>
                           </div>
@@ -236,6 +238,18 @@ export default {
     }
   },
   methods: {
+    async timeAgo() {
+				let self = this;
+
+				var elements = await document.getElementsByClassName('timeago');
+				for (var i in elements) {
+					let $this = elements[i];
+					// console.log('$this',elements[i], typeof $this);
+					if (typeof $this === 'object') {
+						$this.innerHTML = moment($this.getAttribute('title') || $this.getAttribute('datetime')).fromNow();
+					}
+				}
+			},
     getImgUrl (product) {
       let ProductImage = config.default.productImageUrl;
       if (product.images != undefined) {
@@ -272,17 +286,18 @@ export default {
        }).then(function (response) {
         // self.messageDataDisplay.push({message: self.commentMessage, created_at: date, created_by: self.userid})
         let height
-        setTimeout(function(){
+        // setTimeout(function(){
           height = document.getElementsByClassName("chat")[0].scrollHeight;
           $('.chat').animate({scrollTop: height });
-        },1000)
+        // },1000)
         self.commentMessage = '';
       })
       }
     },
      myFunction(){
 
-        if(event.key == "Enter" && event.ctrlKey == true){
+        // if(event.key == "Enter" && event.ctrlKey == true){
+        if(event.key == "Enter"){
           this.sendcomment();
         }
     },
@@ -295,6 +310,8 @@ export default {
     // }
   },
   mounted(){
+    this.messageDataDisplay=[];
+    let callTimer = setInterval(this.timeAgo, 60000);
     var self = this
     this.requestUser = this.row.productInfo[0].username
     let socketurl = io(config.default.socketUrlapi,{reconnection: true})
@@ -303,24 +320,26 @@ export default {
 
       app.service("comment-request").on("created" , (message) =>{
         self.messageDataDisplay = message.message
-        setTimeout(function(){
+        self.timeAgo();
+        // setTimeout(function(){
           let height = document.getElementsByClassName("chat")[0].scrollHeight;
           $('.chat').animate({scrollTop: height });
-        },1000)
+        // },1000)
       })
 
       app.service("comment-request").on("updated" , (message) =>{
         self.messageDataDisplay = message.message
-        setTimeout(function(){
+        self.timeAgo();
+        // setTimeout(function(){
           let height = document.getElementsByClassName("chat")[0].scrollHeight;
           $('.chat').animate({scrollTop: height });
-        },1000)
+        // },1000)
       })
-    this.created_date = moment(this.row.createdAt).format('DD-MMM-YYYY')
+    this.created_date = moment(this.row.createAt).format('DD-MMM-YYYY')
 
     axios({
         method: 'get',
-        url: 'https://api.flowzcluster.tk/user/getuserdetails/' + this.row.userId,
+        url: 'https://api.'+process.env.domainkey +'/user/getuserdetails/' + this.row.userId,
         headers: {
           'Authorization': Cookies.get('auth_token')
         }
@@ -342,12 +361,13 @@ export default {
         self.userid = Cookies.get('user')
         if(response.data.data.length != 0){
           self.messageDataDisplay = response.data.data[0].message
+          self.timeAgo();
           // self.messageData = _.filter(response.data.data[0].message, ['created_by', self.userid]);
           let height
-          setTimeout(function(){
+          // setTimeout(function(){
              height = document.getElementsByClassName("chat")[0].scrollHeight;
             $('.chat').animate({scrollTop: height });
-          },1000)
+          // },1000)
         }
       })
 
