@@ -179,7 +179,7 @@
                     // console.log("item",item)
                     let resp = await axios({
                         method: 'get',
-                        url: "https://api.flowzcluster.tk/user/getuserdetails/"+item.key,
+                        url: "https://api."+ process.env.domainkey +"/user/getuserdetails/"+item.key,
                         headers: {
                             'Authorization': Cookies.get('auth_token')
                         } 
@@ -444,7 +444,7 @@
                let self = this;
                 axios({
                     method: 'get',
-                    url: "https://api.flowzcluster.tk/pdmnew/filters/username",
+                    url: "https://api."+process.env.domainkey+"/pdmnew/filters/username",
                     // params: {
                     //   owner_id: self.userid
                     // },
