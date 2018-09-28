@@ -47,12 +47,14 @@ else
       RANCHER_ACCESSKEY="$RANCHER_ACCESSKEY_QA";
       RANCHER_SECRETKEY="$RANCHER_SECRETKEY_QA";
       RANCHER_URL="$RANCHER_URL_QA";
+
       SERVICE_NAME="$SERVICE_NAME_QA";
       STACK_SERVICE_NAME_FOR_FRONT="$STACK_SERVICE_NAME_FOR_FRONT_QA";
   }
 fi
 
 SERVICE_ID=`curl -u ""$RANCHER_ACCESSKEY":"$RANCHER_SECRETKEY"" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' "$RANCHER_URL/v2-beta/projects/$ENV_ID/services?name=$SERVICE_NAME" | jq '.data[].id' | tr -d '"'`
+
 echo $SERVICE_ID
 
 echo "waiting for service to upgrade "

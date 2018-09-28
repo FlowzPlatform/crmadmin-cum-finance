@@ -1,5 +1,5 @@
 [Settings]
-ID = "Develop-I"
+ID = "QA-I"
 [build]
   # This will be your default build command
   command = "npm run build"
@@ -22,5 +22,3 @@ ID = "Develop-I"
   to = "/index.html"
   status = 200
   force = true
-  
-  

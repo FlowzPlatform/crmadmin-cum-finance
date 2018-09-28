@@ -69,6 +69,7 @@ else
 fi
 
 SERVICE_ID=`curl -u ""$RANCHER_ACCESSKEY":"$RANCHER_SECRETKEY"" -X GET -H 'Accept: application/json' -H 'Content-Type: application/json' "$RANCHER_URL/v2-beta/projects/$ENV_ID/services?name=$SERVICE_NAME" | jq '.data[].id' | tr -d '"'`
+
 echo $SERVICE_ID
 
 curl -u ""$RANCHER_ACCESSKEY":"$RANCHER_SECRETKEY"" \
